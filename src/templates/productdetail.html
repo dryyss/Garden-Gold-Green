@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <script> window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            'brand-green': '#00C853',
+                            'brand-gold': '#FFD700',
+                            'brand-silver': '#C0C0C0',
+                            'brand-black': '#0A0A0A',
+                        },
+                        fontFamily: {
+                            'poppins': ['Poppins', 'sans-serif'],
+                        },
+                        boxShadow: {
+                            'gold-glow': '0 0 15px rgba(255, 215, 0, 0.4)',
+                            'green-glow': '0 0 15px rgba(0, 200, 83, 0.4)',
+                        }
+                    }
+                }
+            }
+        </script>
+        <style>
+            ::-webkit-scrollbar { display: none; }
+            body {
+                font-family: 'Poppins', sans-serif;
+                background-color: #0A0A0A;
+                color: #E0E0E0;
+            }
+            .card-bg {
+                background: linear-gradient(145deg, #1a1a1a, #101010);
+                border: 1px solid rgba(255, 215, 0, 0.1);
+            }
+            .gold-text-gradient {
+                background: -webkit-linear-gradient(45deg, #FFD700, #E4A11B);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+            .btn-gold {
+                background: linear-gradient(45deg, #FFD700, #E4A11B);
+                transition: all 0.3s ease;
+            }
+            .btn-gold:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+            }
+        </style>
+    </head>
+    <body class="bg-brand-black">
+
+    <header id="header" class="fixed top-0 left-0 right-0 z-50 bg-brand-black/80 backdrop-blur-sm border-b border-white/10">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div id="logo-container" class="flex items-center">
+                <img class="h-12 w-12 mr-3" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/3502eeee1d-8b74fb2897ec37469c9d.png" alt="3G - Garden Gold Green logo, gold, green, and silver colors, luxurious, premium CBD brand" />
+                <span class="text-white text-xl font-bold tracking-wider">GARDEN GOLD GREEN</span>
+            </div>
+            <nav id="main-nav" class="hidden md:flex items-center space-x-8">
+                <span class="text-white hover:text-brand-gold transition-colors duration-300 cursor-pointer font-semibold">Shop</span>
+                <span class="text-gray-300 hover:text-brand-gold transition-colors duration-300 cursor-pointer">About Us</span>
+                <span class="text-gray-300 hover:text-brand-gold transition-colors duration-300 cursor-pointer">Learn</span>
+                <span class="text-gray-300 hover:text-brand-gold transition-colors duration-300 cursor-pointer">Contact</span>
+            </nav>
+            <div id="header-actions" class="flex items-center space-x-6">
+                <button class="text-gray-300 hover:text-brand-gold transition-colors duration-300">
+                    <i class="fa-solid fa-magnifying-glass text-lg"></i>
+                </button>
+                <button class="text-gray-300 hover:text-brand-gold transition-colors duration-300">
+                    <i class="fa-regular fa-user text-lg"></i>
+                </button>
+                <button class="relative text-gray-300 hover:text-brand-gold transition-colors duration-300">
+                    <i class="fa-solid fa-cart-shopping text-lg"></i>
+                    <span class="absolute -top-2 -right-2 bg-brand-green text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main id="main-content" class="pt-24">
+        <section id="product-detail-section" class="py-16">
+            <div class="container mx-auto px-6">
+                <div id="product-breadcrumbs" class="text-sm text-gray-400 mb-8">
+                    <span>Shop</span>
+                    <i class="fa-solid fa-chevron-right mx-2 text-xs"></i>
+                    <span>CBD Oils</span>
+                    <i class="fa-solid fa-chevron-right mx-2 text-xs"></i>
+                    <span class="text-white">3G Gold Standard CBD Oil</span>
+                </div>
+                <div id="product-layout" class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                    <div id="product-image-gallery">
+                        <div class="mb-4 rounded-xl overflow-hidden card-bg p-4">
+                            <img class="w-full h-auto object-cover rounded-lg" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/66b1cf7cdb-92d875ae5593183a6dec.png" alt="Elegant glass dropper bottle with a gold cap containing golden CBD oil, showcased on a dark, luxurious background with a single, dramatic spotlight highlighting the product, minimalist product photography" />
+                        </div>
+                        <div class="grid grid-cols-4 gap-4">
+                            <div class="rounded-lg overflow-hidden border-2 border-brand-gold cursor-pointer card-bg p-1">
+                                <img class="w-full h-full object-cover rounded-md" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/6150e371c9-cf959decb319ba5f18c3.png" alt="Close-up shot of the CBD oil dropper, showing a single drop of golden oil about to fall, against a dark, moody background, macro photography" />
+                            </div>
+                            <div class="rounded-lg overflow-hidden border-2 border-transparent hover:border-brand-gold cursor-pointer card-bg p-1 transition-all duration-300">
+                                <img class="w-full h-full object-cover rounded-md" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/efac7e243f-ef87256518694e833470.png" alt="The CBD oil bottle next to its premium black and gold packaging box, with a cannabis leaf silhouette in the background, luxury product branding shot" />
+                            </div>
+                            <div class="rounded-lg overflow-hidden border-2 border-transparent hover:border-brand-gold cursor-pointer card-bg p-1 transition-all duration-300">
+                                <img class="w-full h-full object-cover rounded-md" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/f28d3694b1-28c8a8a3cb15af90b81e.png" alt="Lifestyle shot of the CBD oil bottle on a modern wooden table next to a cup of herbal tea and a book, creating a serene and relaxing atmosphere" />
+                            </div>
+                            <div class="rounded-lg overflow-hidden border-2 border-transparent hover:border-brand-gold cursor-pointer card-bg p-1 transition-all duration-300">
+                                <img class="w-full h-full object-cover rounded-md" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/1e35a2c76f-de53739e78b26d48fd5d.png" alt="A texture shot of the golden CBD oil inside the bottle, with light refracting through the glass, creating a beautiful, abstract image" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="product-info-details">
+                        <span class="text-brand-green font-semibold text-sm">FULL SPECTRUM TINCTURE</span>
+                        <h1 class="text-4xl font-bold text-white my-3">3G Gold Standard CBD Oil</h1>
+                        <div class="flex items-center mb-4">
+                            <div class="text-brand-gold">
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star-half-stroke"></i>
+                            </div>
+                            <span class="text-gray-400 ml-3">(128 Reviews)</span>
+                        </div>
+                        <p class="text-gray-300 mb-6 leading-relaxed">
+                            Our flagship product, the Gold Standard CBD Oil, offers a potent, full-spectrum blend of cannabinoids and terpenes. Meticulously extracted from organic hemp to support balance, recovery, and overall well-being.
+                        </p>
+                        <span class="text-4xl font-bold gold-text-gradient mb-6 block">$79.99</span>
+
+                        <div id="product-options" class="mb-6">
+                            <label for="strength" class="block text-white font-semibold mb-2">Strength:</label>
+                            <select id="strength" class="w-full bg-white/5 border border-white/20 rounded-lg py-3 px-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold transition-all duration-300">
+                                <option>1000mg - Standard Potency</option>
+                                <option>2000mg - Extra Strength</option>
+                                <option>3000mg - Max Potency</option>
+                            </select>
+                        </div>
+                        
+                        <div id="product-actions" class="flex items-center gap-4 mb-8">
+                            <div class="flex items-center border border-white/20 rounded-full p-1">
+                                <button class="w-10 h-10 text-gray-400 hover:text-white transition-colors">-</button>
+                                <span class="w-10 text-center font-semibold text-white">1</span>
+                                <button class="w-10 h-10 text-gray-400 hover:text-white transition-colors">+</button>
+                            </div>
+                            <button class="btn-gold text-black font-bold py-3 px-8 rounded-full shadow-gold-glow flex-grow text-lg flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-cart-shopping"></i>
+                                Add to Cart
+                            </button>
+                        </div>
+
+                        <div id="product-benefits" class="space-y-4">
+                            <div class="flex items-center text-sm">
+                                <i class="fa-solid fa-check-circle text-brand-green mr-3"></i>
+                                <span class="text-gray-300">100% Organic & Non-GMO</span>
+                            </div>
+                            <div class="flex items-center text-sm">
+                                <i class="fa-solid fa-check-circle text-brand-green mr-3"></i>
+                                <span class="text-gray-300">Third-Party Lab Tested</span>
+                            </div>
+                            <div class="flex items-center text-sm">
+                                <i class="fa-solid fa-check-circle text-brand-green mr-3"></i>
+                                <span class="text-gray-300">Made in the USA</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="product-extra-info" class="py-16 bg-[#111111]">
+            <div class="container mx-auto px-6">
+                <div class="border-b border-white/10 mb-8">
+                    <nav id="info-tabs" class="flex space-x-8">
+                        <button class="text-white font-semibold pb-4 border-b-2 border-brand-gold">Description</button>
+                        <button class="text-gray-400 font-semibold pb-4 border-b-2 border-transparent hover:text-white hover:border-brand-gold transition-all">How to Use</button>
+                        <button class="text-gray-400 font-semibold pb-4 border-b-2 border-transparent hover:text-white hover:border-brand-gold transition-all">Lab Results</button>
+                    </nav>
+                </div>
+                <div id="tab-content" class="text-gray-300 leading-loose">
+                    <h3 class="text-2xl font-semibold text-white mb-4">Unleash the Power of Nature</h3>
+                    <p class="mb-4">The Garden Gold Green Standard is more than just CBD; it's a holistic experience. Our full-spectrum oil contains a rich profile of beneficial cannabinoids, including CBD, CBG, and CBC, along with natural terpenes that work synergistically to enhance the therapeutic effects—a phenomenon known as the "entourage effect."</p>
+                    <p>Sourced from sun-grown hemp in the fertile fields of Colorado, each plant is cultivated with organic practices, free from pesticides and herbicides. We use a state-of-the-art CO2 extraction process to ensure maximum purity and potency, preserving the plant's natural goodness in every single drop. This meticulous process results in a smooth, clean-tasting oil with a subtle, earthy flavor profile.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="customer-reviews" class="py-24 bg-brand-black">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold mb-2 gold-text-gradient">Community Feedback</h2>
+                    <p class="text-lg text-gray-400">Real experiences from valued customers.</p>
+                </div>
+                <div class="space-y-8 max-w-4xl mx-auto">
+                    <div id="review-1" class="card-bg p-6 rounded-xl flex gap-6">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg" class="w-14 h-14 rounded-full border-2 border-brand-gold" alt="Reviewer avatar"/>
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <h4 class="font-semibold text-white">Jessica M.</h4>
+                                <span class="text-xs text-gray-500">2 days ago</span>
+                            </div>
+                            <div class="text-brand-gold mb-2">
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                            </div>
+                            <p class="text-gray-300">"This is hands down the best CBD oil I've ever tried. The quality is exceptional, and it has significantly helped with my anxiety. The packaging is also beautiful. Worth every penny!"</p>
+                        </div>
+                    </div>
+                    <div id="review-2" class="card-bg p-6 rounded-xl flex gap-6">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-4.jpg" class="w-14 h-14 rounded-full border-2 border-brand-gold" alt="Reviewer avatar"/>
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <h4 class="font-semibold text-white">Michael R.</h4>
+                                <span class="text-xs text-gray-500">1 week ago</span>
+                            </div>
+                            <div class="text-brand-gold mb-2">
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                            </div>
+                            <p class="text-gray-300">"Good product, definitely helps me relax after a long day at work. I wish the 1000mg came with a flavored option, but the natural taste is fine. Fast shipping."</p>
+                        </div>
+                    </div>
+                     <div class="text-center pt-4">
+                        <button class="bg-transparent border-2 border-brand-gold text-brand-gold font-semibold py-2 px-6 rounded-full hover:bg-brand-gold hover:text-black transition-all duration-300">
+                            Load More Reviews
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="related-products" class="py-24 bg-[#111111]">
+            <div class="container mx-auto px-6">
+                <div id="related-products-header" class="text-center mb-16">
+                    <h2 class="text-4xl font-bold mb-2 gold-text-gradient">You Might Also Like</h2>
+                    <p class="text-lg text-gray-400">Complete your wellness routine with these premium selections.</p>
+                </div>
+                <div id="related-product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div id="product-card-2" class="card-bg rounded-xl overflow-hidden group transform hover:-translate-y-2 transition-transform duration-300 shadow-lg hover:shadow-gold-glow">
+                        <div class="h-72 overflow-hidden">
+                            <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/13e858cc8d-637bf1d680406a75290c.png" alt="Luxurious jar of CBD cream with gold and green labeling, sitting on a marble surface with a green plant in the background, high-end cosmetic photography" />
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold text-white mb-2">Emerald Soothe CBD Balm</h3>
+                            <p class="text-gray-400 mb-4">500mg Topical Relief</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-2xl font-bold gold-text-gradient">$54.99</span>
+                                <button class="btn-gold text-black font-bold py-2 px-5 rounded-full text-sm">View Product</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="product-card-3" class="card-bg rounded-xl overflow-hidden group transform hover:-translate-y-2 transition-transform duration-300 shadow-lg hover:shadow-gold-glow">
+                        <div class="h-72 overflow-hidden">
+                           <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/470f610f98-f37989c3bca4951d3ec3.png" alt="Premium packaging for CBD gummies, dark box with gold foil lettering, showing a few colorful gummies next to it, lifestyle product shot" />
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold text-white mb-2">Green Serenity Gummies</h3>
+                            <p class="text-gray-400 mb-4">25mg per Gummy</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-2xl font-bold gold-text-gradient">$49.99</span>
+                                <button class="btn-gold text-black font-bold py-2 px-5 rounded-full text-sm">View Product</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="product-card-4" class="card-bg rounded-xl overflow-hidden group transform hover:-translate-y-2 transition-transform duration-300 shadow-lg hover:shadow-gold-glow">
+                        <div class="h-72 overflow-hidden">
+                           <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/e58d4a46a6-f28e2de260c6d36e2d31.png" alt="Sleek, silver vape pen for CBD with green and gold accents, emitting a soft vapor, against a dark, tech-inspired background, modern product shot" />
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold text-white mb-2">Silver Purity CBD Vape</h3>
+                            <p class="text-gray-400 mb-4">500mg Fast-Acting</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-2xl font-bold gold-text-gradient">$45.99</span>
+                                <button class="btn-gold text-black font-bold py-2 px-5 rounded-full text-sm">View Product</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer id="footer" class="bg-black py-16">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div id="footer-brand" class="col-span-1 md:col-span-1">
+                    <div class="flex items-center mb-4">
+                        <img class="h-10 w-10 mr-2" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/defad6bb57-cb8488a377dee3620ae4.png" alt="3G - Garden Gold Green logo icon, gold and green, simple and elegant" />
+                        <span class="text-white text-lg font-bold">GARDEN GOLD GREEN</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">Nature's finest elixir, delivered.</p>
+                    <div class="flex space-x-4 mt-6">
+                        <span class="text-gray-400 hover:text-brand-gold cursor-pointer"><i class="fa-brands fa-instagram text-xl"></i></span>
+                        <span class="text-gray-400 hover:text-brand-gold cursor-pointer"><i class="fa-brands fa-facebook text-xl"></i></span>
+                        <span class="text-gray-400 hover:text-brand-gold cursor-pointer"><i class="fa-brands fa-twitter text-xl"></i></span>
+                    </div>
+                </div>
+                <div id="footer-links-shop">
+                    <h5 class="font-semibold text-white mb-4">Shop</h5>
+                    <ul class="space-y-2">
+                        <li><span class="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">CBD Oils</span></li>
+                        <li><span class="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">Topicals</span></li>
+                        <li><span class="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">Gummies</span></li>
+                        <li><span class="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">All Products</span></li>
+                    </ul>
+                </div>
+                <div id="footer-links-company">
+                    <h5 class="font-semibold text-white mb-4">Company</h5>
+                    <ul class="space-y-2">
+                        <li><span class="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">About Us</span></li>
+                        <li><span class="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">Contact</span></li>
+                        <li><span class="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">FAQ</span></li>
+                        <li><span class="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">Blog</span></li>
+                    </ul>
+                </div>
+                <div id="footer-links-legal">
+                    <h5 class="font-semibold text-white mb-4">Legal</h5>
+                    <ul class="space-y-2">
+                        <li><span class="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">Terms & Conditions</span></li>
+                        <li><span class="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">Privacy Policy</span></li>
+                        <li><span class="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">Shipping & Returns</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div id="footer-bottom" class="mt-16 pt-8 border-t border-white/10 text-center text-gray-500 text-sm">
+                <p>&copy; 2025 Garden Gold Green. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function changeImage(src) {
+            document.getElementById('main-product-image').src = src;
+            const thumbnails = document.querySelectorAll('#product-image-gallery .grid > div');
+            thumbnails.forEach(thumb => {
+                thumb.classList.remove('border-brand-gold');
+                thumb.classList.add('border-transparent');
+                if (thumb.querySelector('img').src === src) {
+                    thumb.classList.add('border-brand-gold');
+                    thumb.classList.remove('border-transparent');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

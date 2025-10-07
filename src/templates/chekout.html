@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <script> window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            'brand-green': '#00C853',
+                            'brand-gold': '#FFD700',
+                            'brand-silver': '#C0C0C0',
+                            'brand-black': '#0A0A0A',
+                            'brand-gray': '#1A1A1A',
+                        },
+                        fontFamily: {
+                            'poppins': ['Poppins', 'sans-serif'],
+                        },
+                        boxShadow: {
+                            'gold-glow': '0 0 15px rgba(255, 215, 0, 0.4)',
+                            'green-glow': '0 0 15px rgba(0, 200, 83, 0.4)',
+                        },
+                        borderColor: {
+                            'gold-focus': 'rgba(255, 215, 0, 0.6)',
+                        }
+                    }
+                }
+            }
+        </script>
+        <style>
+            ::-webkit-scrollbar { display: none; }
+            body {
+                font-family: 'Poppins', sans-serif;
+                background-color: #0A0A0A;
+                color: #E0E0E0;
+            }
+            .card-bg {
+                background: linear-gradient(145deg, #1a1a1a, #101010);
+                border: 1px solid rgba(255, 215, 0, 0.1);
+            }
+            .gold-text-gradient {
+                background: -webkit-linear-gradient(45deg, #FFD700, #E4A11B);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+            .btn-gold {
+                background: linear-gradient(45deg, #FFD700, #E4A11B);
+                transition: all 0.3s ease;
+            }
+            .btn-gold:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+            }
+            .input-field {
+                background-color: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 0.5rem;
+                padding: 0.75rem 1rem;
+                color: #FFFFFF;
+                transition: all 0.3s ease;
+            }
+            .input-field:focus {
+                outline: none;
+                border-color: #FFD700;
+                box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.3);
+            }
+            .radio-label {
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                transition: all 0.3s ease;
+            }
+            .radio-input:checked + .radio-label {
+                border-color: #FFD700;
+                background-color: rgba(255, 215, 0, 0.1);
+            }
+        </style>
+    </head>
+    <body class="bg-brand-black">
+
+        <header id="header" class="sticky top-0 left-0 right-0 z-50 bg-brand-black/80 backdrop-blur-sm border-b border-white/10">
+            <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+                <div id="logo-container" class="flex items-center">
+                    <img class="h-12 w-12 mr-3" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/3502eeee1d-8b74fb2897ec37469c9d.png" alt="3G - Garden Gold Green logo, gold, green, and silver colors, luxurious, premium CBD brand" />
+                    <span class="text-white text-xl font-bold tracking-wider">GARDEN GOLD GREEN</span>
+                </div>
+                <nav id="main-nav" class="hidden md:flex items-center space-x-8">
+                    <span class="text-gray-300 hover:text-brand-gold transition-colors duration-300 cursor-pointer">Shop</span>
+                    <span class="text-gray-300 hover:text-brand-gold transition-colors duration-300 cursor-pointer">About Us</span>
+                    <span class="text-gray-300 hover:text-brand-gold transition-colors duration-300 cursor-pointer">Learn</span>
+                    <span class="text-gray-300 hover:text-brand-gold transition-colors duration-300 cursor-pointer">Contact</span>
+                </nav>
+                <div id="header-actions" class="flex items-center space-x-6">
+                    <button class="text-gray-300 hover:text-brand-gold transition-colors duration-300">
+                        <i class="fa-solid fa-magnifying-glass text-lg"></i>
+                    </button>
+                    <button class="text-gray-300 hover:text-brand-gold transition-colors duration-300">
+                        <i class="fa-regular fa-user text-lg"></i>
+                    </button>
+                    <button class="relative text-gray-300 hover:text-brand-gold transition-colors duration-300">
+                        <i class="fa-solid fa-cart-shopping text-lg"></i>
+                        <span class="absolute -top-2 -right-2 bg-brand-green text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">2</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main id="checkout-page">
+            <div id="checkout-container" class="container mx-auto px-6 py-16 lg:py-24">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+                    
+                    <div id="checkout-form-section" class="lg:col-span-7">
+                        <div id="checkout-steps" class="flex items-center text-sm text-gray-400 mb-8">
+                            <span>Cart</span>
+                            <i class="fa-solid fa-chevron-right mx-3 text-xs"></i>
+                            <span class="font-semibold text-brand-gold">Information</span>
+                            <i class="fa-solid fa-chevron-right mx-3 text-xs"></i>
+                            <span>Shipping</span>
+                            <i class="fa-solid fa-chevron-right mx-3 text-xs"></i>
+                            <span>Payment</span>
+                        </div>
+
+                        <div id="contact-information-section" class="mb-10">
+                            <h2 class="text-2xl font-semibold text-white mb-4">Contact Information</h2>
+                            <div class="flex items-center text-sm mb-6">
+                                <p class="text-gray-300">Already have an account?</p>
+                                <span class="ml-2 font-semibold text-brand-gold hover:text-yellow-300 transition cursor-pointer">Log in</span>
+                            </div>
+                            <input type="email" placeholder="Email Address" class="input-field w-full" value="jessica.m@email.com">
+                        </div>
+                        
+                        <div id="shipping-address-section" class="mb-10">
+                            <h2 class="text-2xl font-semibold text-white mb-4">Shipping Address</h2>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <input type="text" placeholder="First Name" class="input-field">
+                                <input type="text" placeholder="Last Name" class="input-field">
+                                <div class="sm:col-span-2">
+                                    <input type="text" placeholder="Address" class="input-field w-full">
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <input type="text" placeholder="Apartment, suite, etc. (optional)" class="input-field w-full">
+                                </div>
+                                <input type="text" placeholder="City" class="input-field">
+                                <select class="input-field">
+                                    <option>United States</option>
+                                    <option>Canada</option>
+                                    <option>United Kingdom</option>
+                                </select>
+                                <select class="input-field">
+                                    <option>California</option>
+                                    <option>New York</option>
+                                    <option>Texas</option>
+                                </select>
+                                <input type="text" placeholder="ZIP Code" class="input-field">
+                            </div>
+                        </div>
+
+                        <div id="shipping-method-section" class="mb-10">
+                            <h2 class="text-2xl font-semibold text-white mb-4">Shipping Method</h2>
+                            <div class="space-y-4">
+                                <div class="relative">
+                                    <input type="radio" id="shipping-standard" name="shipping" class="hidden radio-input" checked>
+                                    <label for="shipping-standard" class="radio-label p-4 rounded-lg flex justify-between items-center cursor-pointer">
+                                        <div>
+                                            <p class="font-medium text-white">Standard Shipping</p>
+                                            <p class="text-sm text-gray-400">5-7 Business Days</p>
+                                        </div>
+                                        <span class="font-semibold text-white">$4.99</span>
+                                    </label>
+                                </div>
+                                <div class="relative">
+                                    <input type="radio" id="shipping-express" name="shipping" class="hidden radio-input">
+                                    <label for="shipping-express" class="radio-label p-4 rounded-lg flex justify-between items-center cursor-pointer">
+                                        <div>
+                                            <p class="font-medium text-white">Express Shipping</p>
+                                            <p class="text-sm text-gray-400">2-3 Business Days</p>
+                                        </div>
+                                        <span class="font-semibold text-white">$12.99</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="payment-section">
+                            <h2 class="text-2xl font-semibold text-white mb-4">Payment</h2>
+                            <p class="text-sm text-gray-400 mb-4">All transactions are secure and encrypted.</p>
+                            <div class="card-bg p-6 rounded-lg">
+                                <div class="flex justify-between items-center mb-4">
+                                    <p class="font-medium text-white">Credit Card</p>
+                                    <div class="flex space-x-2">
+                                        <i class="fa-brands fa-cc-visa text-2xl text-gray-300"></i>
+                                        <i class="fa-brands fa-cc-mastercard text-2xl text-gray-300"></i>
+                                        <i class="fa-brands fa-cc-amex text-2xl text-gray-300"></i>
+                                    </div>
+                                </div>
+                                <div class="space-y-4">
+                                    <div class="relative">
+                                        <input type="text" placeholder="Card Number" class="input-field w-full pr-12">
+                                        <i class="fa-solid fa-credit-card absolute top-1/2 right-4 transform -translate-y-1/2 text-gray-400"></i>
+                                    </div>
+                                    <input type="text" placeholder="Name on Card" class="input-field w-full">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <input type="text" placeholder="Expiration Date (MM/YY)" class="input-field">
+                                        <div class="relative">
+                                            <input type="text" placeholder="CVV" class="input-field w-full pr-12">
+                                            <i class="fa-solid fa-lock absolute top-1/2 right-4 transform -translate-y-1/2 text-gray-400"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-6 flex items-start">
+                                    <input type="checkbox" id="billing-same" class="mt-1 h-4 w-4 rounded bg-brand-gray border-gray-500 text-brand-gold focus:ring-brand-gold">
+                                    <label for="billing-same" class="ml-3 text-sm text-gray-300">Billing address is same as shipping</label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div id="order-summary-section" class="lg:col-span-5">
+                        <div class="card-bg rounded-xl p-8 sticky top-28">
+                            <h2 class="text-2xl font-semibold text-white border-b border-white/10 pb-4 mb-6">Order Summary</h2>
+                            
+                            <div id="cart-items-list" class="space-y-6 mb-6 max-h-64 overflow-y-auto pr-2">
+                                <div id="item-1" class="flex items-center">
+                                    <div class="relative">
+                                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/66b1cf7cdb-c02f47c712612795b7b9.png" class="w-20 h-20 rounded-lg object-cover border border-white/10" alt="CBD Oil">
+                                        <span class="absolute -top-2 -right-2 bg-brand-gold text-black text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center">1</span>
+                                    </div>
+                                    <div class="ml-4 flex-grow">
+                                        <p class="font-medium text-white">3G Gold Standard CBD Oil</p>
+                                        <p class="text-sm text-gray-400">1000mg</p>
+                                    </div>
+                                    <p class="font-semibold text-white">$79.99</p>
+                                </div>
+
+                                <div id="item-2" class="flex items-center">
+                                     <div class="relative">
+                                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/13e858cc8d-637bf1d680406a75290c.png" class="w-20 h-20 rounded-lg object-cover border border-white/10" alt="CBD Balm">
+                                        <span class="absolute -top-2 -right-2 bg-brand-gold text-black text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center">1</span>
+                                    </div>
+                                    <div class="ml-4 flex-grow">
+                                        <p class="font-medium text-white">Emerald Soothe CBD Balm</p>
+                                        <p class="text-sm text-gray-400">500mg</p>
+                                    </div>
+                                    <p class="font-semibold text-white">$54.99</p>
+                                </div>
+                            </div>
+
+                            <div id="promo-code-section" class="border-t border-white/10 pt-6 mb-6">
+                                <div class="flex gap-4">
+                                    <input type="text" placeholder="Discount code or gift card" class="input-field w-full">
+                                    <button class="bg-gray-600/50 text-white font-semibold py-2 px-6 rounded-lg hover:bg-gray-500/50 transition-colors">Apply</button>
+                                </div>
+                            </div>
+                            
+                            <div id="cost-breakdown" class="space-y-3 border-t border-white/10 pt-6 mb-6">
+                                <div class="flex justify-between text-gray-300">
+                                    <p>Subtotal</p>
+                                    <p>$134.98</p>
+                                </div>
+                                <div class="flex justify-between text-gray-300">
+                                    <p>Shipping</p>
+                                    <p>$4.99</p>
+                                </div>
+                                <div class="flex justify-between text-gray-300">
+                                    <p>Taxes</p>
+                                    <p>$8.44</p>
+                                </div>
+                            </div>
+
+                            <div id="total-cost" class="flex justify-between items-center border-t border-white/10 pt-6 mb-8">
+                                <p class="text-lg font-medium text-white">Total</p>
+                                <p class="text-3xl font-bold gold-text-gradient">$148.41</p>
+                            </div>
+                            
+                            <button id="place-order-button" class="btn-gold w-full text-black font-bold py-4 rounded-full text-lg shadow-gold-glow flex items-center justify-center">
+                                <i class="fa-solid fa-shield-halved mr-3"></i>
+                                Place Order
+                            </button>
+                            <p class="text-center text-xs text-gray-500 mt-4">
+                                <i class="fa-solid fa-lock mr-1"></i> Secure Payment via Stripe
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer id="footer" class="bg-black py-16">
+            <div class="container mx-auto px-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <div id="footer-brand" class="col-span-1 md:col-span-1">
+                        <div class="flex items-center mb-4">
+                            <img class="h-10 w-10 mr-2" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/defad6bb57-cb8488a377dee3620ae4.png" alt="3G - Garden Gold Green logo icon, gold and green, simple and elegant" />
+                            <span class="text-white text-lg font-bold">GARDEN GOLD GREEN</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">Nature's finest elixir, delivered.</p>
+                        <div class="flex space-x-4 mt-6">
+                            <span class="text-gray-400 hover:text-brand-gold cursor-pointer"><i class="fa-brands fa-instagram text-xl"></i></span>
+                            <span class="text-gray-400 hover:text-brand-gold cursor-pointer"><i class="fa-brands fa-facebook text-xl"></i></span>
+                            <span class="text-gray-400 hover:text-brand-gold cursor-pointer"><i class="fa-brands fa-twitter text-xl"></i></span>
+                        </div>
+                    </div>
+                    <div id="footer-links-shop">
+                        <h5 class="font-semibold text-white mb-4">Shop</h5>
+                        <ul class="space-y-2">
+                            <li><span class="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">CBD Oils</span></li>
+                            <li><span class="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">Topicals</span></li>
+                            <li><span class="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">Gummies</span></li>
+                            <li><span class="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">All Products</span></li>
+                        </ul>
+                    </div>
+                    <div id="footer-links-company">
+                        <h5 class="font-semibold text-white mb-4">Company</h5>
+                        <ul class="space-y-2">
+                            <li><span class="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">About Us</span></li>
+                            <li><span class="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">Contact</span></li>
+                            <li><span class="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">FAQ</span></li>
+                            <li><span class="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">Blog</span></li>
+                        </ul>
+                    </div>
+                    <div id="footer-links-legal">
+                        <h5 class="font-semibold text-white mb-4">Legal</h5>
+                        <ul class="space-y-2">
+                            <li><span class="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">Terms & Conditions</span></li>
+                            <li><span class="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">Privacy Policy</span></li>
+                            <li><span class="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">Shipping & Returns</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div id="footer-bottom" class="mt-16 pt-8 border-t border-white/10 text-center text-gray-500 text-sm">
+                    <p>&copy; 2025 Garden Gold Green. All Rights Reserved.</p>
+                </div>
+            </div>
+        </footer>
+
+    </body>
+    </html>

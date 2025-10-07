@@ -1,0 +1,2102 @@
+[
+  {
+    "id": "1",
+    "title": "3G Gold Standard CBD Oil 10%",
+    "slug": "3g-gold-standard-cbd-oil-10",
+    "description": "Huile de CBD premium à 10% de concentration. Idéale pour la relaxation et le bien-être quotidien. Produit 100% naturel, testé en laboratoire.",
+    "priceCents": 2990,
+    "currency": "EUR",
+    "cbdPercent": 10,
+    "sku": "GG-OL-10",
+    "stock": 50,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD+Oil+10%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Huiles CBD",
+        "slug": "huiles-cbd"
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "title": "3G Gold Standard CBD Oil 20%",
+    "slug": "3g-gold-standard-cbd-oil-20",
+    "description": "Huile de CBD à haute concentration (20%) pour un usage intensif. Parfaite pour les utilisateurs expérimentés.",
+    "priceCents": 4990,
+    "currency": "EUR",
+    "cbdPercent": 20,
+    "sku": "GG-OL-20",
+    "stock": 30,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD+Oil+20%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Huiles CBD",
+        "slug": "huiles-cbd"
+      }
+    ]
+  },
+  {
+    "id": "3",
+    "title": "Emerald Soothe CBD Balm",
+    "slug": "emerald-soothe-cbd-balm",
+    "description": "Crème hydratante enrichie au CBD pour une peau douce et apaisée. Formule naturelle avec huiles essentielles.",
+    "priceCents": 3490,
+    "currency": "EUR",
+    "cbdPercent": 2,
+    "sku": "GG-CR-REL",
+    "stock": 40,
+    "images": [
+      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD+Cream+2%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Cosmétiques CBD",
+        "slug": "cosmetiques-cbd"
+      }
+    ]
+  },
+  {
+    "id": "4",
+    "title": "Green Serenity Gummies",
+    "slug": "green-serenity-gummies",
+    "description": "Gummies CBD délicieux avec 25mg de CBD par gomme. Parfait pour une consommation discrète et pratique.",
+    "priceCents": 4999,
+    "currency": "EUR",
+    "cbdPercent": 5,
+    "sku": "GG-GU-25",
+    "stock": 75,
+    "images": [
+      "https://via.placeholder.com/400x288/C0C0C0/000000?text=CBD+Gummies+25mg"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Fleurs CBD",
+        "slug": "fleurs-cbd"
+      }
+    ]
+  },
+  {
+    "id": "5",
+    "title": "Premium CBD Capsules 15mg",
+    "slug": "premium-cbd-capsules-15mg",
+    "description": "Capsules de CBD pratiques et précises. Dosage exact de 15mg par capsule pour un contrôle optimal.",
+    "priceCents": 5990,
+    "currency": "EUR",
+    "cbdPercent": 15,
+    "sku": "GG-CP-15",
+    "stock": 60,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD+Capsules+15mg"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Huiles CBD",
+        "slug": "huiles-cbd"
+      }
+    ]
+  },
+  {
+    "id": "6",
+    "title": "CBD Vape Pen Starter Kit",
+    "slug": "cbd-vape-pen-starter-kit",
+    "description": "Kit de démarrage complet pour vapoter du CBD. Inclut la batterie rechargeable et 3 cartouches de saveurs différentes.",
+    "priceCents": 8990,
+    "currency": "EUR",
+    "cbdPercent": 30,
+    "sku": "GG-VP-ST",
+    "stock": 25,
+    "images": [
+      "https://via.placeholder.com/400x288/FFD700/000000?text=Vape+Pen+Kit"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Fleurs CBD",
+        "slug": "fleurs-cbd"
+      }
+    ]
+  },
+  {
+    "id": "7",
+    "title": "CBD Massage Oil Relax",
+    "slug": "cbd-massage-oil-relax",
+    "description": "Huile de massage enrichie au CBD pour détendre les muscles et apaiser l'esprit. Parfaite pour les massages thérapeutiques.",
+    "priceCents": 4290,
+    "currency": "EUR",
+    "cbdPercent": 8,
+    "sku": "GG-MO-REL",
+    "stock": 35,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Massage+Oil+8%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Cosmétiques CBD",
+        "slug": "cosmetiques-cbd"
+      }
+    ]
+  },
+  {
+    "id": "8",
+    "title": "CBD Sleep Gummies 50mg",
+    "slug": "cbd-sleep-gummies-50mg",
+    "description": "Gummies CBD spécialement formulés pour favoriser un sommeil réparateur. 50mg de CBD par gomme.",
+    "priceCents": 6990,
+    "currency": "EUR",
+    "cbdPercent": 10,
+    "sku": "GG-SG-50",
+    "stock": 45,
+    "images": [
+      "https://via.placeholder.com/400x288/C0C0C0/000000?text=Sleep+Gummies+50mg"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Fleurs CBD",
+        "slug": "fleurs-cbd"
+      }
+    ]
+  },
+  {
+    "id": "9",
+    "title": "CBD Face Serum Anti-Aging",
+    "slug": "cbd-face-serum-anti-aging",
+    "description": "Sérum visage anti-âge enrichi au CBD. R réduit les rides et améliore l'élasticité de la peau.",
+    "priceCents": 7990,
+    "currency": "EUR",
+    "cbdPercent": 3,
+    "sku": "GG-FS-AA",
+    "stock": 20,
+    "images": [
+      "https://via.placeholder.com/400x288/FFD700/000000?text=Face+Serum+3%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Cosmétiques CBD",
+        "slug": "cosmetiques-cbd"
+      }
+    ]
+  },
+  {
+    "id": "10",
+    "title": "CBD Pet Treats Small Dogs",
+    "slug": "cbd-pet-treats-small-dogs",
+    "description": "Friandises CBD pour petits chiens. Aide à réduire l'anxiété et améliore le bien-être de votre animal.",
+    "priceCents": 2490,
+    "currency": "EUR",
+    "cbdPercent": 1,
+    "sku": "GG-PT-SD",
+    "stock": 80,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Pet+Treats+1%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Fleurs CBD",
+        "slug": "fleurs-cbd"
+      }
+    ]
+  },
+  {
+    "id": "11",
+    "title": "CBD Tincture 10%",
+    "slug": "cbd-tincture-10",
+    "description": "Excellente qualité CBD 10% pour une expérience optimale. Idéal pour un usage quotidien et le bien-être général.",
+    "priceCents": 8990,
+    "currency": "EUR",
+    "cbdPercent": 10,
+    "sku": "GG-HU-011",
+    "stock": 51,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Tincture%2010%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Huiles CBD",
+        "slug": "huiles-cbd"
+      }
+    ]
+  },
+  {
+    "id": "12",
+    "title": "CBD Vape Juice 20%",
+    "slug": "cbd-vape-juice-20",
+    "description": "Excellente qualité CBD 20% pour une expérience optimale. Idéal pour un usage quotidien et le bien-être général.",
+    "priceCents": 6990,
+    "currency": "EUR",
+    "cbdPercent": 20,
+    "sku": "GG-VA-012",
+    "stock": 35,
+    "images": [
+      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Vape%20Juice%2020%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Vape CBD",
+        "slug": "vape-cbd"
+      }
+    ]
+  },
+  {
+    "id": "13",
+    "title": "CBD Vape Juice 25%",
+    "slug": "cbd-vape-juice-25",
+    "description": "Formule premium avec 25% de CBD, conçue pour offrir les meilleurs résultats. Produit 100% naturel.",
+    "priceCents": 1990,
+    "currency": "EUR",
+    "cbdPercent": 25,
+    "sku": "GG-VA-013",
+    "stock": 66,
+    "images": [
+      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Vape%20Juice%2025%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Vape CBD",
+        "slug": "vape-cbd"
+      }
+    ]
+  },
+  {
+    "id": "14",
+    "title": "Sublingual Drops 10%",
+    "slug": "sublingual-drops-10",
+    "description": "Produit CBD premium de haute qualité avec 10% de CBD. Fabriqué avec des ingrédients naturels et testé en laboratoire.",
+    "priceCents": 8990,
+    "currency": "EUR",
+    "cbdPercent": 10,
+    "sku": "GG-HU-014",
+    "stock": 21,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Sublingual%20Drops%2010%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Huiles CBD",
+        "slug": "huiles-cbd"
+      }
+    ]
+  },
+  {
+    "id": "15",
+    "title": "CBD Tablets 15%",
+    "slug": "cbd-tablets-15",
+    "description": "Produit CBD premium de haute qualité avec 15% de CBD. Fabriqué avec des ingrédients naturels et testé en laboratoire.",
+    "priceCents": 7990,
+    "currency": "EUR",
+    "cbdPercent": 15,
+    "sku": "GG-CA-015",
+    "stock": 20,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Tablets%2015%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Capsules CBD",
+        "slug": "capsules-cbd"
+      }
+    ]
+  },
+  {
+    "id": "16",
+    "title": "Broad Spectrum Oil 30%",
+    "slug": "broad-spectrum-oil-30",
+    "description": "Excellente qualité CBD 30% pour une expérience optimale. Idéal pour un usage quotidien et le bien-être général.",
+    "priceCents": 1990,
+    "currency": "EUR",
+    "cbdPercent": 30,
+    "sku": "GG-HU-016",
+    "stock": 109,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Broad%20Spectrum%20Oil%2030%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Huiles CBD",
+        "slug": "huiles-cbd"
+      }
+    ]
+  },
+  {
+    "id": "17",
+    "title": "CBD Gummies 8%",
+    "slug": "cbd-gummies-8",
+    "description": "Formule premium avec 8% de CBD, conçue pour offrir les meilleurs résultats. Produit 100% naturel.",
+    "priceCents": 1990,
+    "currency": "EUR",
+    "cbdPercent": 8,
+    "sku": "GG-FL-017",
+    "stock": 72,
+    "images": [
+      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Gummies%208%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Fleurs CBD",
+        "slug": "fleurs-cbd"
+      }
+    ]
+  },
+  {
+    "id": "18",
+    "title": "CBD Coffee 3%",
+    "slug": "cbd-coffee-3",
+    "description": "Excellente qualité CBD 3% pour une expérience optimale. Idéal pour un usage quotidien et le bien-être général.",
+    "priceCents": 4990,
+    "currency": "EUR",
+    "cbdPercent": 3,
+    "sku": "GG-FL-018",
+    "stock": 78,
+    "images": [
+      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Coffee%203%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Fleurs CBD",
+        "slug": "fleurs-cbd"
+      }
+    ]
+  },
+  {
+    "id": "19",
+    "title": "Raw CBD Oil 1%",
+    "slug": "raw-cbd-oil-1",
+    "description": "Excellente qualité CBD 1% pour une expérience optimale. Idéal pour un usage quotidien et le bien-être général.",
+    "priceCents": 7990,
+    "currency": "EUR",
+    "cbdPercent": 1,
+    "sku": "GG-HU-019",
+    "stock": 11,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Raw%20CBD%20Oil%201%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Huiles CBD",
+        "slug": "huiles-cbd"
+      }
+    ]
+  },
+  {
+    "id": "20",
+    "title": "CBD Cookies 3%",
+    "slug": "cbd-cookies-3",
+    "description": "Produit CBD premium de haute qualité avec 3% de CBD. Fabriqué avec des ingrédients naturels et testé en laboratoire.",
+    "priceCents": 4990,
+    "currency": "EUR",
+    "cbdPercent": 3,
+    "sku": "GG-FL-020",
+    "stock": 83,
+    "images": [
+      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Cookies%203%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Fleurs CBD",
+        "slug": "fleurs-cbd"
+      }
+    ]
+  },
+  {
+    "id": "21",
+    "title": "Isolate Oil 8%",
+    "slug": "isolate-oil-8",
+    "description": "Formule premium avec 8% de CBD, conçue pour offrir les meilleurs résultats. Produit 100% naturel.",
+    "priceCents": 5990,
+    "currency": "EUR",
+    "cbdPercent": 8,
+    "sku": "GG-HU-021",
+    "stock": 18,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Isolate%20Oil%208%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Huiles CBD",
+        "slug": "huiles-cbd"
+      }
+    ]
+  },
+  {
+    "id": "22",
+    "title": "CBD Cookies 2%",
+    "slug": "cbd-cookies-2",
+    "description": "CBD 2% de qualité supérieure, soigneusement sélectionné et testé pour garantir pureté et efficacité.",
+    "priceCents": 3990,
+    "currency": "EUR",
+    "cbdPercent": 2,
+    "sku": "GG-FL-022",
+    "stock": 60,
+    "images": [
+      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Cookies%202%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Fleurs CBD",
+        "slug": "fleurs-cbd"
+      }
+    ]
+  },
+  {
+    "id": "23",
+    "title": "CBD Tablets 3%",
+    "slug": "cbd-tablets-3",
+    "description": "CBD 3% de qualité supérieure, soigneusement sélectionné et testé pour garantir pureté et efficacité.",
+    "priceCents": 7990,
+    "currency": "EUR",
+    "cbdPercent": 3,
+    "sku": "GG-CA-023",
+    "stock": 88,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Tablets%203%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Capsules CBD",
+        "slug": "capsules-cbd"
+      }
+    ]
+  },
+  {
+    "id": "24",
+    "title": "Isolate Oil 15%",
+    "slug": "isolate-oil-15",
+    "description": "Produit CBD premium de haute qualité avec 15% de CBD. Fabriqué avec des ingrédients naturels et testé en laboratoire.",
+    "priceCents": 5990,
+    "currency": "EUR",
+    "cbdPercent": 15,
+    "sku": "GG-HU-024",
+    "stock": 103,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Isolate%20Oil%2015%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Huiles CBD",
+        "slug": "huiles-cbd"
+      }
+    ]
+  },
+  {
+    "id": "25",
+    "title": "CBD Cartridge 20%",
+    "slug": "cbd-cartridge-20",
+    "description": "CBD 20% de qualité supérieure, soigneusement sélectionné et testé pour garantir pureté et efficacité.",
+    "priceCents": 8990,
+    "currency": "EUR",
+    "cbdPercent": 20,
+    "sku": "GG-VA-025",
+    "stock": 61,
+    "images": [
+      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Cartridge%2020%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Vape CBD",
+        "slug": "vape-cbd"
+      }
+    ]
+  },
+  {
+    "id": "26",
+    "title": "CBD Protein Powder 1%",
+    "slug": "cbd-protein-powder-1",
+    "description": "Excellente qualité CBD 1% pour une expérience optimale. Idéal pour un usage quotidien et le bien-être général.",
+    "priceCents": 3990,
+    "currency": "EUR",
+    "cbdPercent": 1,
+    "sku": "GG-FL-026",
+    "stock": 94,
+    "images": [
+      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Protein%20Powder%201%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Fleurs CBD",
+        "slug": "fleurs-cbd"
+      }
+    ]
+  },
+  {
+    "id": "27",
+    "title": "Raw CBD Oil 1%",
+    "slug": "raw-cbd-oil-1",
+    "description": "Formule premium avec 1% de CBD, conçue pour offrir les meilleurs résultats. Produit 100% naturel.",
+    "priceCents": 8990,
+    "currency": "EUR",
+    "cbdPercent": 1,
+    "sku": "GG-HU-027",
+    "stock": 42,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Raw%20CBD%20Oil%201%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Huiles CBD",
+        "slug": "huiles-cbd"
+      }
+    ]
+  },
+  {
+    "id": "28",
+    "title": "CBD Coffee 50%",
+    "slug": "cbd-coffee-50",
+    "description": "Formule premium avec 50% de CBD, conçue pour offrir les meilleurs résultats. Produit 100% naturel.",
+    "priceCents": 6990,
+    "currency": "EUR",
+    "cbdPercent": 50,
+    "sku": "GG-FL-028",
+    "stock": 82,
+    "images": [
+      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Coffee%2050%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Fleurs CBD",
+        "slug": "fleurs-cbd"
+      }
+    ]
+  },
+  {
+    "id": "29",
+    "title": "CBD Pods 3%",
+    "slug": "cbd-pods-3",
+    "description": "Excellente qualité CBD 3% pour une expérience optimale. Idéal pour un usage quotidien et le bien-être général.",
+    "priceCents": 8990,
+    "currency": "EUR",
+    "cbdPercent": 3,
+    "sku": "GG-VA-029",
+    "stock": 59,
+    "images": [
+      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Pods%203%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Vape CBD",
+        "slug": "vape-cbd"
+      }
+    ]
+  },
+  {
+    "id": "30",
+    "title": "CBD Pods 1%",
+    "slug": "cbd-pods-1",
+    "description": "CBD 1% de qualité supérieure, soigneusement sélectionné et testé pour garantir pureté et efficacité.",
+    "priceCents": 1990,
+    "currency": "EUR",
+    "cbdPercent": 1,
+    "sku": "GG-VA-030",
+    "stock": 109,
+    "images": [
+      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Pods%201%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Vape CBD",
+        "slug": "vape-cbd"
+      }
+    ]
+  },
+  {
+    "id": "31",
+    "title": "CBD Pills 25%",
+    "slug": "cbd-pills-25",
+    "description": "Formule premium avec 25% de CBD, conçue pour offrir les meilleurs résultats. Produit 100% naturel.",
+    "priceCents": 4990,
+    "currency": "EUR",
+    "cbdPercent": 25,
+    "sku": "GG-CA-031",
+    "stock": 22,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Pills%2025%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Capsules CBD",
+        "slug": "capsules-cbd"
+      }
+    ]
+  },
+  {
+    "id": "32",
+    "title": "CBD Energy Bar 8%",
+    "slug": "cbd-energy-bar-8",
+    "description": "CBD 8% de qualité supérieure, soigneusement sélectionné et testé pour garantir pureté et efficacité.",
+    "priceCents": 6990,
+    "currency": "EUR",
+    "cbdPercent": 8,
+    "sku": "GG-FL-032",
+    "stock": 61,
+    "images": [
+      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Energy%20Bar%208%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Fleurs CBD",
+        "slug": "fleurs-cbd"
+      }
+    ]
+  },
+  {
+    "id": "33",
+    "title": "Sublingual Drops 1%",
+    "slug": "sublingual-drops-1",
+    "description": "Formule premium avec 1% de CBD, conçue pour offrir les meilleurs résultats. Produit 100% naturel.",
+    "priceCents": 4990,
+    "currency": "EUR",
+    "cbdPercent": 1,
+    "sku": "GG-HU-033",
+    "stock": 99,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Sublingual%20Drops%201%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Huiles CBD",
+        "slug": "huiles-cbd"
+      }
+    ]
+  },
+  {
+    "id": "34",
+    "title": "CBD Capsules 15%",
+    "slug": "cbd-capsules-15",
+    "description": "CBD 15% de qualité supérieure, soigneusement sélectionné et testé pour garantir pureté et efficacité.",
+    "priceCents": 6990,
+    "currency": "EUR",
+    "cbdPercent": 15,
+    "sku": "GG-CA-034",
+    "stock": 54,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Capsules%2015%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Capsules CBD",
+        "slug": "capsules-cbd"
+      }
+    ]
+  },
+  {
+    "id": "35",
+    "title": "CBD Tablets 3%",
+    "slug": "cbd-tablets-3",
+    "description": "Excellente qualité CBD 3% pour une expérience optimale. Idéal pour un usage quotidien et le bien-être général.",
+    "priceCents": 3990,
+    "currency": "EUR",
+    "cbdPercent": 3,
+    "sku": "GG-CA-035",
+    "stock": 31,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Tablets%203%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Capsules CBD",
+        "slug": "capsules-cbd"
+      }
+    ]
+  },
+  {
+    "id": "36",
+    "title": "Raw CBD Oil 50%",
+    "slug": "raw-cbd-oil-50",
+    "description": "Excellente qualité CBD 50% pour une expérience optimale. Idéal pour un usage quotidien et le bien-être général.",
+    "priceCents": 5990,
+    "currency": "EUR",
+    "cbdPercent": 50,
+    "sku": "GG-HU-036",
+    "stock": 55,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Raw%20CBD%20Oil%2050%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Huiles CBD",
+        "slug": "huiles-cbd"
+      }
+    ]
+  },
+  {
+    "id": "37",
+    "title": "CBD Honey 1%",
+    "slug": "cbd-honey-1",
+    "description": "Produit CBD premium de haute qualité avec 1% de CBD. Fabriqué avec des ingrédients naturels et testé en laboratoire.",
+    "priceCents": 2990,
+    "currency": "EUR",
+    "cbdPercent": 1,
+    "sku": "GG-FL-037",
+    "stock": 53,
+    "images": [
+      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Honey%201%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Fleurs CBD",
+        "slug": "fleurs-cbd"
+      }
+    ]
+  },
+  {
+    "id": "38",
+    "title": "CBD Chocolates 2%",
+    "slug": "cbd-chocolates-2",
+    "description": "CBD 2% de qualité supérieure, soigneusement sélectionné et testé pour garantir pureté et efficacité.",
+    "priceCents": 1990,
+    "currency": "EUR",
+    "cbdPercent": 2,
+    "sku": "GG-FL-038",
+    "stock": 52,
+    "images": [
+      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Chocolates%202%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Fleurs CBD",
+        "slug": "fleurs-cbd"
+      }
+    ]
+  },
+  {
+    "id": "39",
+    "title": "CBD Cream 20%",
+    "slug": "cbd-cream-20",
+    "description": "Produit CBD premium de haute qualité avec 20% de CBD. Fabriqué avec des ingrédients naturels et testé en laboratoire.",
+    "priceCents": 1490,
+    "currency": "EUR",
+    "cbdPercent": 20,
+    "sku": "GG-CO-039",
+    "stock": 106,
+    "images": [
+      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Cream%2020%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Cosmétiques CBD",
+        "slug": "cosmetiques-cbd"
+      }
+    ]
+  },
+  {
+    "id": "40",
+    "title": "CBD Soap 8%",
+    "slug": "cbd-soap-8",
+    "description": "Excellente qualité CBD 8% pour une expérience optimale. Idéal pour un usage quotidien et le bien-être général.",
+    "priceCents": 7490,
+    "currency": "EUR",
+    "cbdPercent": 8,
+    "sku": "GG-CO-040",
+    "stock": 51,
+    "images": [
+      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Soap%208%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Cosmétiques CBD",
+        "slug": "cosmetiques-cbd"
+      }
+    ]
+  },
+  {
+    "id": "41",
+    "title": "CBD Cartridge 15%",
+    "slug": "cbd-cartridge-15",
+    "description": "CBD 15% de qualité supérieure, soigneusement sélectionné et testé pour garantir pureté et efficacité.",
+    "priceCents": 7990,
+    "currency": "EUR",
+    "cbdPercent": 15,
+    "sku": "GG-VA-041",
+    "stock": 54,
+    "images": [
+      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Cartridge%2015%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Vape CBD",
+        "slug": "vape-cbd"
+      }
+    ]
+  },
+  {
+    "id": "42",
+    "title": "CBD Protein Powder 20%",
+    "slug": "cbd-protein-powder-20",
+    "description": "Excellente qualité CBD 20% pour une expérience optimale. Idéal pour un usage quotidien et le bien-être général.",
+    "priceCents": 5990,
+    "currency": "EUR",
+    "cbdPercent": 20,
+    "sku": "GG-FL-042",
+    "stock": 47,
+    "images": [
+      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Protein%20Powder%2020%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Fleurs CBD",
+        "slug": "fleurs-cbd"
+      }
+    ]
+  },
+  {
+    "id": "43",
+    "title": "CBD Gummies 5%",
+    "slug": "cbd-gummies-5",
+    "description": "Formule premium avec 5% de CBD, conçue pour offrir les meilleurs résultats. Produit 100% naturel.",
+    "priceCents": 6990,
+    "currency": "EUR",
+    "cbdPercent": 5,
+    "sku": "GG-FL-043",
+    "stock": 96,
+    "images": [
+      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Gummies%205%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Fleurs CBD",
+        "slug": "fleurs-cbd"
+      }
+    ]
+  },
+  {
+    "id": "44",
+    "title": "CBD Cookies 5%",
+    "slug": "cbd-cookies-5",
+    "description": "Excellente qualité CBD 5% pour une expérience optimale. Idéal pour un usage quotidien et le bien-être général.",
+    "priceCents": 1990,
+    "currency": "EUR",
+    "cbdPercent": 5,
+    "sku": "GG-FL-044",
+    "stock": 109,
+    "images": [
+      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Cookies%205%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Fleurs CBD",
+        "slug": "fleurs-cbd"
+      }
+    ]
+  },
+  {
+    "id": "45",
+    "title": "CBD Shampoo 30%",
+    "slug": "cbd-shampoo-30",
+    "description": "Formule premium avec 30% de CBD, conçue pour offrir les meilleurs résultats. Produit 100% naturel.",
+    "priceCents": 3490,
+    "currency": "EUR",
+    "cbdPercent": 30,
+    "sku": "GG-CO-045",
+    "stock": 67,
+    "images": [
+      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Shampoo%2030%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Cosmétiques CBD",
+        "slug": "cosmetiques-cbd"
+      }
+    ]
+  },
+  {
+    "id": "46",
+    "title": "CBD Oil 50%",
+    "slug": "cbd-oil-50",
+    "description": "Produit CBD premium de haute qualité avec 50% de CBD. Fabriqué avec des ingrédients naturels et testé en laboratoire.",
+    "priceCents": 4990,
+    "currency": "EUR",
+    "cbdPercent": 50,
+    "sku": "GG-HU-046",
+    "stock": 13,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Oil%2050%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Huiles CBD",
+        "slug": "huiles-cbd"
+      }
+    ]
+  },
+  {
+    "id": "47",
+    "title": "CBD Cream 15%",
+    "slug": "cbd-cream-15",
+    "description": "Excellente qualité CBD 15% pour une expérience optimale. Idéal pour un usage quotidien et le bien-être général.",
+    "priceCents": 7490,
+    "currency": "EUR",
+    "cbdPercent": 15,
+    "sku": "GG-CO-047",
+    "stock": 35,
+    "images": [
+      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Cream%2015%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Cosmétiques CBD",
+        "slug": "cosmetiques-cbd"
+      }
+    ]
+  },
+  {
+    "id": "48",
+    "title": "CBD Cream 30%",
+    "slug": "cbd-cream-30",
+    "description": "Excellente qualité CBD 30% pour une expérience optimale. Idéal pour un usage quotidien et le bien-être général.",
+    "priceCents": 4490,
+    "currency": "EUR",
+    "cbdPercent": 30,
+    "sku": "GG-CO-048",
+    "stock": 20,
+    "images": [
+      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Cream%2030%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Cosmétiques CBD",
+        "slug": "cosmetiques-cbd"
+      }
+    ]
+  },
+  {
+    "id": "49",
+    "title": "Sublingual Drops 2%",
+    "slug": "sublingual-drops-2",
+    "description": "CBD 2% de qualité supérieure, soigneusement sélectionné et testé pour garantir pureté et efficacité.",
+    "priceCents": 3990,
+    "currency": "EUR",
+    "cbdPercent": 2,
+    "sku": "GG-HU-049",
+    "stock": 76,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Sublingual%20Drops%202%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Huiles CBD",
+        "slug": "huiles-cbd"
+      }
+    ]
+  },
+  {
+    "id": "50",
+    "title": "CBD Softgels 10%",
+    "slug": "cbd-softgels-10",
+    "description": "Produit CBD premium de haute qualité avec 10% de CBD. Fabriqué avec des ingrédients naturels et testé en laboratoire.",
+    "priceCents": 2990,
+    "currency": "EUR",
+    "cbdPercent": 10,
+    "sku": "GG-CA-050",
+    "stock": 107,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Softgels%2010%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Capsules CBD",
+        "slug": "capsules-cbd"
+      }
+    ]
+  },
+  {
+    "id": "51",
+    "title": "CBD Gel Caps 8%",
+    "slug": "cbd-gel-caps-8",
+    "description": "Produit CBD premium de haute qualité avec 8% de CBD. Fabriqué avec des ingrédients naturels et testé en laboratoire.",
+    "priceCents": 4990,
+    "currency": "EUR",
+    "cbdPercent": 8,
+    "sku": "GG-CA-051",
+    "stock": 109,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Gel%20Caps%208%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Capsules CBD",
+        "slug": "capsules-cbd"
+      }
+    ]
+  },
+  {
+    "id": "52",
+    "title": "Raw CBD Oil 8%",
+    "slug": "raw-cbd-oil-8",
+    "description": "Formule premium avec 8% de CBD, conçue pour offrir les meilleurs résultats. Produit 100% naturel.",
+    "priceCents": 8990,
+    "currency": "EUR",
+    "cbdPercent": 8,
+    "sku": "GG-HU-052",
+    "stock": 69,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Raw%20CBD%20Oil%208%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Huiles CBD",
+        "slug": "huiles-cbd"
+      }
+    ]
+  },
+  {
+    "id": "53",
+    "title": "CBD Tincture 2%",
+    "slug": "cbd-tincture-2",
+    "description": "Formule premium avec 2% de CBD, conçue pour offrir les meilleurs résultats. Produit 100% naturel.",
+    "priceCents": 6990,
+    "currency": "EUR",
+    "cbdPercent": 2,
+    "sku": "GG-HU-053",
+    "stock": 104,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Tincture%202%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Huiles CBD",
+        "slug": "huiles-cbd"
+      }
+    ]
+  },
+  {
+    "id": "54",
+    "title": "CBD Shampoo 30%",
+    "slug": "cbd-shampoo-30",
+    "description": "Produit CBD premium de haute qualité avec 30% de CBD. Fabriqué avec des ingrédients naturels et testé en laboratoire.",
+    "priceCents": 1490,
+    "currency": "EUR",
+    "cbdPercent": 30,
+    "sku": "GG-CO-054",
+    "stock": 10,
+    "images": [
+      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Shampoo%2030%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Cosmétiques CBD",
+        "slug": "cosmetiques-cbd"
+      }
+    ]
+  },
+  {
+    "id": "55",
+    "title": "CBD Wax 5%",
+    "slug": "cbd-wax-5",
+    "description": "Formule premium avec 5% de CBD, conçue pour offrir les meilleurs résultats. Produit 100% naturel.",
+    "priceCents": 4990,
+    "currency": "EUR",
+    "cbdPercent": 5,
+    "sku": "GG-VA-055",
+    "stock": 75,
+    "images": [
+      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Wax%205%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Vape CBD",
+        "slug": "vape-cbd"
+      }
+    ]
+  },
+  {
+    "id": "56",
+    "title": "CBD Lip Balm 2%",
+    "slug": "cbd-lip-balm-2",
+    "description": "Excellente qualité CBD 2% pour une expérience optimale. Idéal pour un usage quotidien et le bien-être général.",
+    "priceCents": 6490,
+    "currency": "EUR",
+    "cbdPercent": 2,
+    "sku": "GG-CO-056",
+    "stock": 75,
+    "images": [
+      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Lip%20Balm%202%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Cosmétiques CBD",
+        "slug": "cosmetiques-cbd"
+      }
+    ]
+  },
+  {
+    "id": "57",
+    "title": "CBD Cookies 15%",
+    "slug": "cbd-cookies-15",
+    "description": "Excellente qualité CBD 15% pour une expérience optimale. Idéal pour un usage quotidien et le bien-être général.",
+    "priceCents": 1990,
+    "currency": "EUR",
+    "cbdPercent": 15,
+    "sku": "GG-FL-057",
+    "stock": 54,
+    "images": [
+      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Cookies%2015%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Fleurs CBD",
+        "slug": "fleurs-cbd"
+      }
+    ]
+  },
+  {
+    "id": "58",
+    "title": "CBD Tablets 15%",
+    "slug": "cbd-tablets-15",
+    "description": "Formule premium avec 15% de CBD, conçue pour offrir les meilleurs résultats. Produit 100% naturel.",
+    "priceCents": 6990,
+    "currency": "EUR",
+    "cbdPercent": 15,
+    "sku": "GG-CA-058",
+    "stock": 103,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Tablets%2015%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Capsules CBD",
+        "slug": "capsules-cbd"
+      }
+    ]
+  },
+  {
+    "id": "59",
+    "title": "CBD Honey 50%",
+    "slug": "cbd-honey-50",
+    "description": "CBD 50% de qualité supérieure, soigneusement sélectionné et testé pour garantir pureté et efficacité.",
+    "priceCents": 5990,
+    "currency": "EUR",
+    "cbdPercent": 50,
+    "sku": "GG-FL-059",
+    "stock": 55,
+    "images": [
+      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Honey%2050%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Fleurs CBD",
+        "slug": "fleurs-cbd"
+      }
+    ]
+  },
+  {
+    "id": "60",
+    "title": "Raw CBD Oil 3%",
+    "slug": "raw-cbd-oil-3",
+    "description": "Formule premium avec 3% de CBD, conçue pour offrir les meilleurs résultats. Produit 100% naturel.",
+    "priceCents": 5990,
+    "currency": "EUR",
+    "cbdPercent": 3,
+    "sku": "GG-HU-060",
+    "stock": 54,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Raw%20CBD%20Oil%203%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Huiles CBD",
+        "slug": "huiles-cbd"
+      }
+    ]
+  },
+  {
+    "id": "61",
+    "title": "Full Spectrum Oil 5%",
+    "slug": "full-spectrum-oil-5",
+    "description": "Excellente qualité CBD 5% pour une expérience optimale. Idéal pour un usage quotidien et le bien-être général.",
+    "priceCents": 2990,
+    "currency": "EUR",
+    "cbdPercent": 5,
+    "sku": "GG-HU-061",
+    "stock": 75,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Full%20Spectrum%20Oil%205%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Huiles CBD",
+        "slug": "huiles-cbd"
+      }
+    ]
+  },
+  {
+    "id": "62",
+    "title": "CBD Capsules 5%",
+    "slug": "cbd-capsules-5",
+    "description": "CBD 5% de qualité supérieure, soigneusement sélectionné et testé pour garantir pureté et efficacité.",
+    "priceCents": 3990,
+    "currency": "EUR",
+    "cbdPercent": 5,
+    "sku": "GG-CA-062",
+    "stock": 23,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Capsules%205%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Capsules CBD",
+        "slug": "capsules-cbd"
+      }
+    ]
+  },
+  {
+    "id": "63",
+    "title": "CBD Tincture 5%",
+    "slug": "cbd-tincture-5",
+    "description": "Formule premium avec 5% de CBD, conçue pour offrir les meilleurs résultats. Produit 100% naturel.",
+    "priceCents": 4990,
+    "currency": "EUR",
+    "cbdPercent": 5,
+    "sku": "GG-HU-063",
+    "stock": 59,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Tincture%205%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Huiles CBD",
+        "slug": "huiles-cbd"
+      }
+    ]
+  },
+  {
+    "id": "64",
+    "title": "CBD Oil 10%",
+    "slug": "cbd-oil-10",
+    "description": "Excellente qualité CBD 10% pour une expérience optimale. Idéal pour un usage quotidien et le bien-être général.",
+    "priceCents": 6990,
+    "currency": "EUR",
+    "cbdPercent": 10,
+    "sku": "GG-HU-064",
+    "stock": 52,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Oil%2010%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Huiles CBD",
+        "slug": "huiles-cbd"
+      }
+    ]
+  },
+  {
+    "id": "65",
+    "title": "CBD Balm 8%",
+    "slug": "cbd-balm-8",
+    "description": "Excellente qualité CBD 8% pour une expérience optimale. Idéal pour un usage quotidien et le bien-être général.",
+    "priceCents": 1490,
+    "currency": "EUR",
+    "cbdPercent": 8,
+    "sku": "GG-CO-065",
+    "stock": 60,
+    "images": [
+      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Balm%208%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Cosmétiques CBD",
+        "slug": "cosmetiques-cbd"
+      }
+    ]
+  },
+  {
+    "id": "66",
+    "title": "CBD Balm 1%",
+    "slug": "cbd-balm-1",
+    "description": "Produit CBD premium de haute qualité avec 1% de CBD. Fabriqué avec des ingrédients naturels et testé en laboratoire.",
+    "priceCents": 1490,
+    "currency": "EUR",
+    "cbdPercent": 1,
+    "sku": "GG-CO-066",
+    "stock": 92,
+    "images": [
+      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Balm%201%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Cosmétiques CBD",
+        "slug": "cosmetiques-cbd"
+      }
+    ]
+  },
+  {
+    "id": "67",
+    "title": "Full Spectrum Oil 8%",
+    "slug": "full-spectrum-oil-8",
+    "description": "Produit CBD premium de haute qualité avec 8% de CBD. Fabriqué avec des ingrédients naturels et testé en laboratoire.",
+    "priceCents": 5990,
+    "currency": "EUR",
+    "cbdPercent": 8,
+    "sku": "GG-HU-067",
+    "stock": 35,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Full%20Spectrum%20Oil%208%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Huiles CBD",
+        "slug": "huiles-cbd"
+      }
+    ]
+  },
+  {
+    "id": "68",
+    "title": "CBD Disposable Pen 8%",
+    "slug": "cbd-disposable-pen-8",
+    "description": "Excellente qualité CBD 8% pour une expérience optimale. Idéal pour un usage quotidien et le bien-être général.",
+    "priceCents": 6990,
+    "currency": "EUR",
+    "cbdPercent": 8,
+    "sku": "GG-VA-068",
+    "stock": 97,
+    "images": [
+      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Disposable%20Pen%208%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Vape CBD",
+        "slug": "vape-cbd"
+      }
+    ]
+  },
+  {
+    "id": "69",
+    "title": "CBD Shampoo 1%",
+    "slug": "cbd-shampoo-1",
+    "description": "Produit CBD premium de haute qualité avec 1% de CBD. Fabriqué avec des ingrédients naturels et testé en laboratoire.",
+    "priceCents": 7490,
+    "currency": "EUR",
+    "cbdPercent": 1,
+    "sku": "GG-CO-069",
+    "stock": 58,
+    "images": [
+      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Shampoo%201%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Cosmétiques CBD",
+        "slug": "cosmetiques-cbd"
+      }
+    ]
+  },
+  {
+    "id": "70",
+    "title": "CBD Gel Caps 8%",
+    "slug": "cbd-gel-caps-8",
+    "description": "Produit CBD premium de haute qualité avec 8% de CBD. Fabriqué avec des ingrédients naturels et testé en laboratoire.",
+    "priceCents": 7990,
+    "currency": "EUR",
+    "cbdPercent": 8,
+    "sku": "GG-CA-070",
+    "stock": 53,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Gel%20Caps%208%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Capsules CBD",
+        "slug": "capsules-cbd"
+      }
+    ]
+  },
+  {
+    "id": "71",
+    "title": "CBD Vape Juice 10%",
+    "slug": "cbd-vape-juice-10",
+    "description": "Produit CBD premium de haute qualité avec 10% de CBD. Fabriqué avec des ingrédients naturels et testé en laboratoire.",
+    "priceCents": 3990,
+    "currency": "EUR",
+    "cbdPercent": 10,
+    "sku": "GG-VA-071",
+    "stock": 32,
+    "images": [
+      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Vape%20Juice%2010%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Vape CBD",
+        "slug": "vape-cbd"
+      }
+    ]
+  },
+  {
+    "id": "72",
+    "title": "Full Spectrum Oil 25%",
+    "slug": "full-spectrum-oil-25",
+    "description": "Excellente qualité CBD 25% pour une expérience optimale. Idéal pour un usage quotidien et le bien-être général.",
+    "priceCents": 4990,
+    "currency": "EUR",
+    "cbdPercent": 25,
+    "sku": "GG-HU-072",
+    "stock": 56,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Full%20Spectrum%20Oil%2025%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Huiles CBD",
+        "slug": "huiles-cbd"
+      }
+    ]
+  },
+  {
+    "id": "73",
+    "title": "CBD Cookies 25%",
+    "slug": "cbd-cookies-25",
+    "description": "Formule premium avec 25% de CBD, conçue pour offrir les meilleurs résultats. Produit 100% naturel.",
+    "priceCents": 4990,
+    "currency": "EUR",
+    "cbdPercent": 25,
+    "sku": "GG-FL-073",
+    "stock": 10,
+    "images": [
+      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Cookies%2025%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Fleurs CBD",
+        "slug": "fleurs-cbd"
+      }
+    ]
+  },
+  {
+    "id": "74",
+    "title": "Full Spectrum Oil 3%",
+    "slug": "full-spectrum-oil-3",
+    "description": "Produit CBD premium de haute qualité avec 3% de CBD. Fabriqué avec des ingrédients naturels et testé en laboratoire.",
+    "priceCents": 1990,
+    "currency": "EUR",
+    "cbdPercent": 3,
+    "sku": "GG-HU-074",
+    "stock": 47,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Full%20Spectrum%20Oil%203%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Huiles CBD",
+        "slug": "huiles-cbd"
+      }
+    ]
+  },
+  {
+    "id": "75",
+    "title": "CBD Honey 20%",
+    "slug": "cbd-honey-20",
+    "description": "Formule premium avec 20% de CBD, conçue pour offrir les meilleurs résultats. Produit 100% naturel.",
+    "priceCents": 3990,
+    "currency": "EUR",
+    "cbdPercent": 20,
+    "sku": "GG-FL-075",
+    "stock": 69,
+    "images": [
+      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Honey%2020%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Fleurs CBD",
+        "slug": "fleurs-cbd"
+      }
+    ]
+  },
+  {
+    "id": "76",
+    "title": "CBD Gel Caps 50%",
+    "slug": "cbd-gel-caps-50",
+    "description": "Excellente qualité CBD 50% pour une expérience optimale. Idéal pour un usage quotidien et le bien-être général.",
+    "priceCents": 7990,
+    "currency": "EUR",
+    "cbdPercent": 50,
+    "sku": "GG-CA-076",
+    "stock": 34,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Gel%20Caps%2050%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Capsules CBD",
+        "slug": "capsules-cbd"
+      }
+    ]
+  },
+  {
+    "id": "77",
+    "title": "CBD Capsules 50%",
+    "slug": "cbd-capsules-50",
+    "description": "Excellente qualité CBD 50% pour une expérience optimale. Idéal pour un usage quotidien et le bien-être général.",
+    "priceCents": 5990,
+    "currency": "EUR",
+    "cbdPercent": 50,
+    "sku": "GG-CA-077",
+    "stock": 96,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Capsules%2050%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Capsules CBD",
+        "slug": "capsules-cbd"
+      }
+    ]
+  },
+  {
+    "id": "78",
+    "title": "CBD Wax 1%",
+    "slug": "cbd-wax-1",
+    "description": "Produit CBD premium de haute qualité avec 1% de CBD. Fabriqué avec des ingrédients naturels et testé en laboratoire.",
+    "priceCents": 2990,
+    "currency": "EUR",
+    "cbdPercent": 1,
+    "sku": "GG-VA-078",
+    "stock": 102,
+    "images": [
+      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Wax%201%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Vape CBD",
+        "slug": "vape-cbd"
+      }
+    ]
+  },
+  {
+    "id": "79",
+    "title": "CBD Pills 50%",
+    "slug": "cbd-pills-50",
+    "description": "Excellente qualité CBD 50% pour une expérience optimale. Idéal pour un usage quotidien et le bien-être général.",
+    "priceCents": 4990,
+    "currency": "EUR",
+    "cbdPercent": 50,
+    "sku": "GG-CA-079",
+    "stock": 50,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Pills%2050%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Capsules CBD",
+        "slug": "capsules-cbd"
+      }
+    ]
+  },
+  {
+    "id": "80",
+    "title": "CBD Serum 25%",
+    "slug": "cbd-serum-25",
+    "description": "Formule premium avec 25% de CBD, conçue pour offrir les meilleurs résultats. Produit 100% naturel.",
+    "priceCents": 2490,
+    "currency": "EUR",
+    "cbdPercent": 25,
+    "sku": "GG-CO-080",
+    "stock": 101,
+    "images": [
+      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Serum%2025%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Cosmétiques CBD",
+        "slug": "cosmetiques-cbd"
+      }
+    ]
+  },
+  {
+    "id": "81",
+    "title": "CBD Face Mask 25%",
+    "slug": "cbd-face-mask-25",
+    "description": "Formule premium avec 25% de CBD, conçue pour offrir les meilleurs résultats. Produit 100% naturel.",
+    "priceCents": 4490,
+    "currency": "EUR",
+    "cbdPercent": 25,
+    "sku": "GG-CO-081",
+    "stock": 102,
+    "images": [
+      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Face%20Mask%2025%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Cosmétiques CBD",
+        "slug": "cosmetiques-cbd"
+      }
+    ]
+  },
+  {
+    "id": "82",
+    "title": "CBD Chocolates 10%",
+    "slug": "cbd-chocolates-10",
+    "description": "CBD 10% de qualité supérieure, soigneusement sélectionné et testé pour garantir pureté et efficacité.",
+    "priceCents": 3990,
+    "currency": "EUR",
+    "cbdPercent": 10,
+    "sku": "GG-FL-082",
+    "stock": 21,
+    "images": [
+      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Chocolates%2010%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Fleurs CBD",
+        "slug": "fleurs-cbd"
+      }
+    ]
+  },
+  {
+    "id": "83",
+    "title": "CBD Pods 1%",
+    "slug": "cbd-pods-1",
+    "description": "CBD 1% de qualité supérieure, soigneusement sélectionné et testé pour garantir pureté et efficacité.",
+    "priceCents": 8990,
+    "currency": "EUR",
+    "cbdPercent": 1,
+    "sku": "GG-VA-083",
+    "stock": 35,
+    "images": [
+      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Pods%201%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Vape CBD",
+        "slug": "vape-cbd"
+      }
+    ]
+  },
+  {
+    "id": "84",
+    "title": "CBD Brownies 5%",
+    "slug": "cbd-brownies-5",
+    "description": "Formule premium avec 5% de CBD, conçue pour offrir les meilleurs résultats. Produit 100% naturel.",
+    "priceCents": 3990,
+    "currency": "EUR",
+    "cbdPercent": 5,
+    "sku": "GG-FL-084",
+    "stock": 20,
+    "images": [
+      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Brownies%205%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Fleurs CBD",
+        "slug": "fleurs-cbd"
+      }
+    ]
+  },
+  {
+    "id": "85",
+    "title": "CBD Cartridge 1%",
+    "slug": "cbd-cartridge-1",
+    "description": "CBD 1% de qualité supérieure, soigneusement sélectionné et testé pour garantir pureté et efficacité.",
+    "priceCents": 7990,
+    "currency": "EUR",
+    "cbdPercent": 1,
+    "sku": "GG-VA-085",
+    "stock": 22,
+    "images": [
+      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Cartridge%201%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Vape CBD",
+        "slug": "vape-cbd"
+      }
+    ]
+  },
+  {
+    "id": "86",
+    "title": "CBD Pills 10%",
+    "slug": "cbd-pills-10",
+    "description": "Formule premium avec 10% de CBD, conçue pour offrir les meilleurs résultats. Produit 100% naturel.",
+    "priceCents": 6990,
+    "currency": "EUR",
+    "cbdPercent": 10,
+    "sku": "GG-CA-086",
+    "stock": 28,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Pills%2010%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Capsules CBD",
+        "slug": "capsules-cbd"
+      }
+    ]
+  },
+  {
+    "id": "87",
+    "title": "CBD Tincture 2%",
+    "slug": "cbd-tincture-2",
+    "description": "Excellente qualité CBD 2% pour une expérience optimale. Idéal pour un usage quotidien et le bien-être général.",
+    "priceCents": 1990,
+    "currency": "EUR",
+    "cbdPercent": 2,
+    "sku": "GG-HU-087",
+    "stock": 95,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Tincture%202%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Huiles CBD",
+        "slug": "huiles-cbd"
+      }
+    ]
+  },
+  {
+    "id": "88",
+    "title": "CBD Coffee 30%",
+    "slug": "cbd-coffee-30",
+    "description": "Formule premium avec 30% de CBD, conçue pour offrir les meilleurs résultats. Produit 100% naturel.",
+    "priceCents": 6990,
+    "currency": "EUR",
+    "cbdPercent": 30,
+    "sku": "GG-FL-088",
+    "stock": 89,
+    "images": [
+      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Coffee%2030%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Fleurs CBD",
+        "slug": "fleurs-cbd"
+      }
+    ]
+  },
+  {
+    "id": "89",
+    "title": "CBD Tea 50%",
+    "slug": "cbd-tea-50",
+    "description": "Excellente qualité CBD 50% pour une expérience optimale. Idéal pour un usage quotidien et le bien-être général.",
+    "priceCents": 5990,
+    "currency": "EUR",
+    "cbdPercent": 50,
+    "sku": "GG-FL-089",
+    "stock": 73,
+    "images": [
+      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Tea%2050%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Fleurs CBD",
+        "slug": "fleurs-cbd"
+      }
+    ]
+  },
+  {
+    "id": "90",
+    "title": "CBD Extract 1%",
+    "slug": "cbd-extract-1",
+    "description": "Formule premium avec 1% de CBD, conçue pour offrir les meilleurs résultats. Produit 100% naturel.",
+    "priceCents": 4990,
+    "currency": "EUR",
+    "cbdPercent": 1,
+    "sku": "GG-HU-090",
+    "stock": 51,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Extract%201%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Huiles CBD",
+        "slug": "huiles-cbd"
+      }
+    ]
+  },
+  {
+    "id": "91",
+    "title": "CBD Chocolates 20%",
+    "slug": "cbd-chocolates-20",
+    "description": "Produit CBD premium de haute qualité avec 20% de CBD. Fabriqué avec des ingrédients naturels et testé en laboratoire.",
+    "priceCents": 3990,
+    "currency": "EUR",
+    "cbdPercent": 20,
+    "sku": "GG-FL-091",
+    "stock": 77,
+    "images": [
+      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Chocolates%2020%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Fleurs CBD",
+        "slug": "fleurs-cbd"
+      }
+    ]
+  },
+  {
+    "id": "92",
+    "title": "Sublingual Drops 2%",
+    "slug": "sublingual-drops-2",
+    "description": "Formule premium avec 2% de CBD, conçue pour offrir les meilleurs résultats. Produit 100% naturel.",
+    "priceCents": 5990,
+    "currency": "EUR",
+    "cbdPercent": 2,
+    "sku": "GG-HU-092",
+    "stock": 73,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Sublingual%20Drops%202%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Huiles CBD",
+        "slug": "huiles-cbd"
+      }
+    ]
+  },
+  {
+    "id": "93",
+    "title": "CBD Tablets 25%",
+    "slug": "cbd-tablets-25",
+    "description": "CBD 25% de qualité supérieure, soigneusement sélectionné et testé pour garantir pureté et efficacité.",
+    "priceCents": 6990,
+    "currency": "EUR",
+    "cbdPercent": 25,
+    "sku": "GG-CA-093",
+    "stock": 103,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Tablets%2025%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Capsules CBD",
+        "slug": "capsules-cbd"
+      }
+    ]
+  },
+  {
+    "id": "94",
+    "title": "CBD Lotion 2%",
+    "slug": "cbd-lotion-2",
+    "description": "CBD 2% de qualité supérieure, soigneusement sélectionné et testé pour garantir pureté et efficacité.",
+    "priceCents": 6490,
+    "currency": "EUR",
+    "cbdPercent": 2,
+    "sku": "GG-CO-094",
+    "stock": 16,
+    "images": [
+      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Lotion%202%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Cosmétiques CBD",
+        "slug": "cosmetiques-cbd"
+      }
+    ]
+  },
+  {
+    "id": "95",
+    "title": "CBD Balm 15%",
+    "slug": "cbd-balm-15",
+    "description": "Produit CBD premium de haute qualité avec 15% de CBD. Fabriqué avec des ingrédients naturels et testé en laboratoire.",
+    "priceCents": 5490,
+    "currency": "EUR",
+    "cbdPercent": 15,
+    "sku": "GG-CO-095",
+    "stock": 62,
+    "images": [
+      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Balm%2015%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Cosmétiques CBD",
+        "slug": "cosmetiques-cbd"
+      }
+    ]
+  },
+  {
+    "id": "96",
+    "title": "CBD Tablets 3%",
+    "slug": "cbd-tablets-3",
+    "description": "CBD 3% de qualité supérieure, soigneusement sélectionné et testé pour garantir pureté et efficacité.",
+    "priceCents": 3990,
+    "currency": "EUR",
+    "cbdPercent": 3,
+    "sku": "GG-CA-096",
+    "stock": 11,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Tablets%203%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Capsules CBD",
+        "slug": "capsules-cbd"
+      }
+    ]
+  },
+  {
+    "id": "97",
+    "title": "Isolate Oil 5%",
+    "slug": "isolate-oil-5",
+    "description": "Excellente qualité CBD 5% pour une expérience optimale. Idéal pour un usage quotidien et le bien-être général.",
+    "priceCents": 8990,
+    "currency": "EUR",
+    "cbdPercent": 5,
+    "sku": "GG-HU-097",
+    "stock": 18,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Isolate%20Oil%205%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Huiles CBD",
+        "slug": "huiles-cbd"
+      }
+    ]
+  },
+  {
+    "id": "98",
+    "title": "CBD Balm 10%",
+    "slug": "cbd-balm-10",
+    "description": "Formule premium avec 10% de CBD, conçue pour offrir les meilleurs résultats. Produit 100% naturel.",
+    "priceCents": 7490,
+    "currency": "EUR",
+    "cbdPercent": 10,
+    "sku": "GG-CO-098",
+    "stock": 41,
+    "images": [
+      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Balm%2010%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Cosmétiques CBD",
+        "slug": "cosmetiques-cbd"
+      }
+    ]
+  },
+  {
+    "id": "99",
+    "title": "CBD Tincture 10%",
+    "slug": "cbd-tincture-10",
+    "description": "Formule premium avec 10% de CBD, conçue pour offrir les meilleurs résultats. Produit 100% naturel.",
+    "priceCents": 6990,
+    "currency": "EUR",
+    "cbdPercent": 10,
+    "sku": "GG-HU-099",
+    "stock": 30,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Tincture%2010%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Huiles CBD",
+        "slug": "huiles-cbd"
+      }
+    ]
+  },
+  {
+    "id": "100",
+    "title": "CBD Gel Caps 1%",
+    "slug": "cbd-gel-caps-1",
+    "description": "CBD 1% de qualité supérieure, soigneusement sélectionné et testé pour garantir pureté et efficacité.",
+    "priceCents": 4990,
+    "currency": "EUR",
+    "cbdPercent": 1,
+    "sku": "GG-CA-100",
+    "stock": 59,
+    "images": [
+      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Gel%20Caps%201%25"
+    ],
+    "published": true,
+    "categories": [
+      {
+        "name": "Capsules CBD",
+        "slug": "capsules-cbd"
+      }
+    ]
+  }
+]
