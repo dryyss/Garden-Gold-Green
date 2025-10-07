@@ -39,7 +39,12 @@ function getProducts(searchParams: URLSearchParams) {
   const priceRange = searchParams.get('price')
   const cbdRange = searchParams.get('cbd')
   const page = parseInt(searchParams.get('page') || '1')
-  const limit = 12
+  const viewMode = searchParams.get('view') || 'grid'
+  
+  // Calculer le nombre de produits par page en fonction du mode d'affichage
+  // Grid: 3 colonnes x 4 lignes = 12 produits
+  // List: 7 colonnes (max) x 4 lignes = 28 produits
+  const limit = viewMode === 'list' ? 28 : 12
   
   let filteredProducts = productsData
     .filter(product => product.published)
@@ -160,7 +165,7 @@ export default function ProductsPage() {
   const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '')
   const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'newest')
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || '')
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>((searchParams.get('view') as 'grid' | 'list') || 'grid')
   const [showFilters, setShowFilters] = useState(false)
 
   useEffect(() => {
@@ -168,6 +173,7 @@ export default function ProductsPage() {
     setSearchTerm(searchParams.get('search') || '')
     setSortBy(searchParams.get('sort') || 'newest')
     setSelectedCategory(searchParams.get('category') || '')
+    setViewMode((searchParams.get('view') as 'grid' | 'list') || 'grid')
   }, [searchParams])
 
   const { products, pagination } = productsData
@@ -231,6 +237,15 @@ export default function ProductsPage() {
   // Fonction pour effacer tous les filtres
   const clearFilters = () => {
     window.history.pushState({}, '', '/products')
+  }
+
+  // Fonction pour gérer le changement de mode d'affichage
+  const handleViewModeChange = (mode: 'grid' | 'list') => {
+    const params = new URLSearchParams(searchParams)
+    params.set('view', mode)
+    params.delete('page') // Reset à la page 1 car le nombre de produits change
+    setViewMode(mode)
+    window.history.pushState({}, '', `/products?${params.toString()}`)
   }
 
   return (
@@ -415,6 +430,9 @@ export default function ProductsPage() {
                 <h2 className="text-xl font-semibold text-white">
                   {pagination.totalProducts} produit{pagination.totalProducts > 1 ? 's' : ''}
                 </h2>
+                <div className="text-sm text-gray-400">
+                  • {viewMode === 'list' ? '28' : '12'} par page (4 lignes)
+                </div>
                 {(searchParams.get('category') || searchParams.get('search') || searchParams.get('price') || searchParams.get('cbd')) && (
                   <button
                     onClick={clearFilters}
@@ -453,22 +471,24 @@ export default function ProductsPage() {
                 {/* Boutons de vue */}
                 <div className="flex items-center space-x-2">
                   <button 
-                    onClick={() => setViewMode('grid')}
+                    onClick={() => handleViewModeChange('grid')}
                     className={`p-2 rounded-lg transition-colors ${
                       viewMode === 'grid'
                         ? 'bg-brand-gold text-black'
                         : 'text-gray-300 hover:text-brand-gold hover:bg-white/5'
                     }`}
+                    title="Vue grille (3 colonnes)"
                   >
                     <FontAwesomeIcon icon={faTh} className="h-4 w-4" />
                   </button>
                   <button 
-                    onClick={() => setViewMode('list')}
+                    onClick={() => handleViewModeChange('list')}
                     className={`p-2 rounded-lg transition-colors ${
                       viewMode === 'list'
                         ? 'bg-brand-gold text-black'
                         : 'text-gray-300 hover:text-brand-gold hover:bg-white/5'
                     }`}
+                    title="Vue compacte (5-7 colonnes)"
                   >
                     <FontAwesomeIcon icon={faList} className="h-4 w-4" />
                   </button>

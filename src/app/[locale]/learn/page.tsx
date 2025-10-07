@@ -151,7 +151,7 @@ export default function LearnPage() {
         <div className="relative container mx-auto px-6 text-center">
           <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
             Learn About <span className="gold-text-gradient">CBD</span>
-          </h1>
+            </h1>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
             Discover the science, benefits, and proper use of CBD through our comprehensive 
             educational resources and expert insights.
@@ -176,8 +176,8 @@ export default function LearnPage() {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full bg-white/5 border border-white/20 rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold transition-all duration-300"
               />
-            </div>
-
+          </div>
+          
             {/* Category Filter */}
             <div className="lg:w-64">
               <select
@@ -191,8 +191,8 @@ export default function LearnPage() {
                   </option>
                 ))}
               </select>
-            </div>
-          </div>
+                </div>
+              </div>
 
           {/* Tags */}
           <div className="mt-4">
@@ -219,12 +219,12 @@ export default function LearnPage() {
                 >
                   {tag}
                 </button>
-              ))}
-            </div>
+            ))}
           </div>
         </div>
+        </div>
 
-        {/* Featured Articles */}
+      {/* Featured Articles */}
         {featuredArticles.length > 0 && (
           <div className="mb-16">
             <h2 className="text-3xl font-bold text-white mb-8">Featured Articles</h2>
@@ -232,20 +232,20 @@ export default function LearnPage() {
               {featuredArticles.map((article) => (
                 <div key={article.id} className="card-bg rounded-xl overflow-hidden group">
                   <div className="relative h-64 overflow-hidden">
-                    <Image
-                      src={article.image}
-                      alt={article.title}
+                  <Image
+                    src={article.image}
+                    alt={article.title}
                       width={600}
                       height={256}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute top-4 left-4">
+                  />
+                  <div className="absolute top-4 left-4">
                       <span className="bg-brand-gold text-black text-xs font-semibold px-2 py-1 rounded-full">
                         Featured
-                      </span>
-                    </div>
+                    </span>
                   </div>
-                  <div className="p-6">
+                </div>
+                <div className="p-6">
                     <div className="flex items-center gap-4 text-sm text-gray-400 mb-4">
                       <div className="flex items-center gap-1">
                         <FontAwesomeIcon icon={faUser} />
@@ -258,11 +258,11 @@ export default function LearnPage() {
                     </div>
                     <h3 className="text-xl font-bold text-white mb-3 group-hover:text-brand-gold transition-colors">
                       {article.title}
-                    </h3>
+                  </h3>
                     <p className="text-gray-400 mb-4 line-clamp-3">
                       {article.excerpt}
                     </p>
-                    <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between">
                       <div className="flex flex-wrap gap-2">
                         {article.tags.slice(0, 2).map(tag => (
                           <span key={tag} className="text-xs bg-white/10 text-gray-300 px-2 py-1 rounded">
@@ -270,19 +270,19 @@ export default function LearnPage() {
                           </span>
                         ))}
                       </div>
-                      <Link
+                    <Link
                         href={`/learn/${article.id}`}
                         className="text-brand-gold hover:text-brand-gold/80 transition-colors flex items-center gap-1"
-                      >
+                    >
                         Read More
                         <FontAwesomeIcon icon={faChevronRight} className="text-xs" />
-                      </Link>
-                    </div>
+                    </Link>
                   </div>
                 </div>
-              ))}
-            </div>
+                </div>
+            ))}
           </div>
+        </div>
         )}
 
         {/* Regular Articles */}
@@ -293,25 +293,25 @@ export default function LearnPage() {
               {regularArticles.map((article) => (
                 <div key={article.id} className="card-bg rounded-xl overflow-hidden group">
                   <div className="relative h-48 overflow-hidden">
-                    <Image
+                <Image
                       src={article.image}
                       alt={article.title}
                       width={400}
                       height={192}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                  </div>
-                  <div className="p-6">
+              </div>
+              <div className="p-6">
                     <div className="flex items-center gap-4 text-sm text-gray-400 mb-3">
                       <div className="flex items-center gap-1">
                         <FontAwesomeIcon icon={faUser} />
                         <span>{article.author}</span>
-                      </div>
+                </div>
                       <div className="flex items-center gap-1">
                         <FontAwesomeIcon icon={faClock} />
                         <span>{article.readTime}</span>
-                      </div>
-                    </div>
+              </div>
+            </div>
                     <h3 className="text-lg font-bold text-white mb-3 group-hover:text-brand-gold transition-colors line-clamp-2">
                       {article.title}
                     </h3>
@@ -325,7 +325,7 @@ export default function LearnPage() {
                             {tag}
                           </span>
                         ))}
-                      </div>
+                </div>
                       <Link
                         href={`/learn/${article.id}`}
                         className="text-brand-gold hover:text-brand-gold/80 transition-colors flex items-center gap-1"
@@ -333,12 +333,12 @@ export default function LearnPage() {
                         Read
                         <FontAwesomeIcon icon={faChevronRight} className="text-xs" />
                       </Link>
-                    </div>
-                  </div>
                 </div>
-              ))}
+              </div>
             </div>
+              ))}
           </div>
+        </div>
         )}
 
         {/* No Results */}
@@ -373,7 +373,7 @@ export default function LearnPage() {
             </div>
           </div>
         </div>
-      </div>
+    </div>
     </main>
   )
 }
