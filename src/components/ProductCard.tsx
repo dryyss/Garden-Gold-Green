@@ -3,7 +3,10 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPlus, faMinus, faCheck, faShoppingCart } from '@fortawesome/free-solid-svg-icons'
 import { useCart } from '@/contexts/CartContext'
+import { useNotifications } from '@/contexts/NotificationContext'
 import { StarRating } from './StarRating'
 
 interface Product {
@@ -29,26 +32,68 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, className = '' }: ProductCardProps) {
-  const [isLoading, setIsLoading] = useState(false)
-  const { dispatch } = useCart()
+  const [quantity, setQuantity] = useState(1)
+  const [isAdding, setIsAdding] = useState(false)
+  const [isAdded, setIsAdded] = useState(false)
+  const { dispatch, state } = useCart()
+  const { addNotification } = useNotifications()
+
+  // Récupérer la quantité actuelle dans le panier
+  const cartItem = state.items.find(item => item.id === product.id)
+  const cartQuantity = cartItem?.quantity || 0
+
+  const handleQuantityChange = (delta: number) => {
+    setQuantity(prev => Math.max(1, Math.min(99, prev + delta)))
+  }
 
   const handleAddToCart = async () => {
-    setIsLoading(true)
+    if (isAdding || isAdded) return
+
+    setIsAdding(true)
+    
     try {
-      dispatch({
-        type: 'ADD_ITEM',
-        payload: {
-          id: product.id,
-          name: product.name,
-          price: product.price,
-          image: product.image,
-          quantity: 1
-        }
+      // Ajouter la quantité sélectionnée
+      for (let i = 0; i < quantity; i++) {
+        dispatch({
+          type: 'ADD_ITEM',
+          payload: {
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            image: product.image,
+            cbdPercent: product.cbdPercent,
+            slug: product.slug
+          }
+        })
+      }
+
+      // Animation de succès
+      setIsAdded(true)
+      
+      // Notification
+      addNotification({
+        type: 'success',
+        title: 'Produit ajouté !',
+        message: `${quantity} x ${product.name} ajouté${quantity > 1 ? 's' : ''} au panier`,
+        duration: 3000
       })
+
+      // Reset après 2 secondes
+      setTimeout(() => {
+        setIsAdded(false)
+        setIsAdding(false)
+        setQuantity(1) // Reset la quantité
+      }, 2000)
+
     } catch (error) {
       console.error('Error adding to cart:', error)
-    } finally {
-      setIsLoading(false)
+      setIsAdding(false)
+      addNotification({
+        type: 'error',
+        title: 'Erreur',
+        message: 'Impossible d\'ajouter le produit au panier',
+        duration: 3000
+      })
     }
   }
 
@@ -120,22 +165,79 @@ export function ProductCard({ product, className = '' }: ProductCardProps) {
           </span>
         </div>
 
+        {/* Indicateur de quantité dans le panier */}
+        {cartQuantity > 0 && (
+          <div className="mb-3 flex items-center justify-center">
+            <div className="bg-brand-green/20 text-brand-green px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2">
+              <FontAwesomeIcon icon={faShoppingCart} className="w-3 h-3" />
+              <span>{cartQuantity} dans le panier</span>
+            </div>
+          </div>
+        )}
+
+        {/* Sélecteur de quantité */}
+        <div className="mb-3 flex items-center justify-center gap-3">
+          <span className="text-gray-400 text-sm">Quantité:</span>
+          <div className="flex items-center border border-white/20 rounded-lg">
+            <button
+              onClick={() => handleQuantityChange(-1)}
+              disabled={quantity <= 1}
+              className="p-2 text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              title="Diminuer"
+            >
+              <FontAwesomeIcon icon={faMinus} className="w-3 h-3" />
+            </button>
+            
+            <input
+              type="number"
+              value={quantity}
+              onChange={(e) => {
+                const val = parseInt(e.target.value) || 1
+                setQuantity(Math.max(1, Math.min(99, val)))
+              }}
+              min={1}
+              max={99}
+              className="w-12 text-center bg-transparent text-white border-none outline-none"
+            />
+            
+            <button
+              onClick={() => handleQuantityChange(1)}
+              disabled={quantity >= 99}
+              className="p-2 text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              title="Augmenter"
+            >
+              <FontAwesomeIcon icon={faPlus} className="w-3 h-3" />
+            </button>
+          </div>
+        </div>
+
+        {/* Bouton Ajouter au panier avec animation */}
         <button
           onClick={handleAddToCart}
-          disabled={!product.inStock || isLoading}
-          className={`w-full font-bold py-2 px-5 rounded-full text-sm transition-all duration-300 ${
-            product.inStock
-              ? 'btn-gold text-black hover:shadow-gold-glow'
+          disabled={!product.inStock || isAdding || isAdded}
+          className={`w-full font-bold py-3 px-5 rounded-full text-sm transition-all duration-300 flex items-center justify-center gap-2 ${
+            isAdded
+              ? 'bg-brand-green text-white shadow-green-glow'
+              : product.inStock
+              ? 'btn-gold text-black hover:shadow-gold-glow hover:scale-105'
               : 'bg-gray-600 text-gray-400 cursor-not-allowed'
-          } ${isLoading ? 'opacity-50' : ''}`}
+          } ${isAdding ? 'opacity-75 cursor-not-allowed' : ''}`}
         >
-          {isLoading ? (
-            <div className="flex items-center justify-center gap-2">
-              <div className="spinner"></div>
-              Ajout...
-            </div>
+          {isAdding ? (
+            <>
+              <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+              <span>Ajout...</span>
+            </>
+          ) : isAdded ? (
+            <>
+              <FontAwesomeIcon icon={faCheck} className="w-4 h-4 animate-bounce" />
+              <span>Ajouté !</span>
+            </>
           ) : product.inStock ? (
-            'Ajouter au panier'
+            <>
+              <FontAwesomeIcon icon={faShoppingCart} className="w-4 h-4" />
+              <span>Ajouter au panier</span>
+            </>
           ) : (
             'Rupture de stock'
           )}

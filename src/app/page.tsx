@@ -22,7 +22,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { Newsletter } from '@/components/Newsletter'
 import { ProductCard } from '@/components/ProductCard'
-import { AddToCartButtonDemo } from '@/components/AddToCartButtonDemo'
 import productsData from '@/data/products.json'
 
 // Transformer les données de l'ancienne structure vers la nouvelle
@@ -475,13 +474,6 @@ export default function Home() {
               </Link>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Démonstration des Boutons */}
-      <section className="py-16 bg-gray-900">
-        <div className="container mx-auto px-6">
-          <AddToCartButtonDemo />
         </div>
       </section>
 

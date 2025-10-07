@@ -48,7 +48,7 @@ function getProducts(searchParams: URLSearchParams) {
   // Filtrer par catégorie
   if (category) {
     filteredProducts = filteredProducts.filter(product => 
-      product.categories.some(cat => cat.slug === category)
+      product.categories.some((cat: any) => cat.slug === category)
     )
   }
   
@@ -276,7 +276,7 @@ export default function ProductsPage() {
       </div>
 
       {/* Layout avec filtres fixes et produits scrollables */}
-      <div className="flex h-screen">
+      <div className="flex" style={{ height: 'calc(100vh - 200px)' }}>
         {/* Sidebar des filtres - Fixe */}
         <div className="w-80 bg-brand-black border-r border-white/10 flex-shrink-0 overflow-y-auto">
           <div className="p-6">
@@ -406,9 +406,9 @@ export default function ProductsPage() {
           </div>
         </div>
 
-        {/* Zone principale des produits - Scrollable */}
-        <div className="flex-1 overflow-y-auto">
-          <div className="p-6">
+        {/* Zone principale des produits - Scrollable avec pagination fixe */}
+        <div className="flex-1 flex flex-col">
+          <div className="flex-1 overflow-y-auto p-6">
             {/* Barre de contrôles */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-4">
@@ -481,7 +481,7 @@ export default function ProductsPage() {
               <div className={`grid gap-6 ${
                 viewMode === 'grid' 
                   ? 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3' 
-                  : 'grid-cols-1'
+                  : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7'
               }`}>
                 <Suspense fallback={<div className="text-white">Loading...</div>}>
                   {products.map((product) => (
@@ -510,56 +510,80 @@ export default function ProductsPage() {
               </div>
             )}
 
-            {/* Pagination */}
-            {pagination.totalPages > 1 && (
-              <div className="flex items-center justify-center space-x-2 mt-12">
-                <Link
-                  href={`/products?${new URLSearchParams({
-                    ...Object.fromEntries(searchParams.entries()),
-                    page: (pagination.currentPage - 1).toString()
-                  }).toString()}`}
-                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                    !pagination.hasPrevPage
-                      ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                      : 'bg-white/10 text-white hover:bg-white/20'
-                  }`}
-                >
-                  Précédent
-                </Link>
-
-                {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map((page) => (
-                  <Link
-                    key={page}
-                    href={`/products?${new URLSearchParams({
-                      ...Object.fromEntries(searchParams.entries()),
-                      page: page.toString()
-                    }).toString()}`}
-                    className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                      page === pagination.currentPage
-                        ? 'bg-brand-gold text-black'
-                        : 'bg-white/10 text-white hover:bg-white/20'
-                    }`}
-                  >
-                    {page}
-                  </Link>
-                ))}
-
-                <Link
-                  href={`/products?${new URLSearchParams({
-                    ...Object.fromEntries(searchParams.entries()),
-                    page: (pagination.currentPage + 1).toString()
-                  }).toString()}`}
-                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                    !pagination.hasNextPage
-                      ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                      : 'bg-white/10 text-white hover:bg-white/20'
-                  }`}
-                >
-                  Suivant
-                </Link>
-              </div>
-            )}
           </div>
+
+          {/* Pagination fixée en bas */}
+          {pagination.totalPages > 1 && (
+            <div className="border-t border-white/10 bg-brand-black p-4 flex items-center justify-center space-x-2">
+              <Link
+                href={`/products?${new URLSearchParams({
+                  ...Object.fromEntries(searchParams.entries()),
+                  page: (pagination.currentPage - 1).toString()
+                }).toString()}`}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                  !pagination.hasPrevPage
+                    ? 'bg-gray-600 text-gray-400 cursor-not-allowed pointer-events-none'
+                    : 'bg-white/10 text-white hover:bg-white/20'
+                }`}
+              >
+                Précédent
+              </Link>
+
+              {/* Afficher seulement les pages pertinentes */}
+              {(() => {
+                const currentPage = pagination.currentPage
+                const totalPages = pagination.totalPages
+                const pages: number[] = []
+                
+                // Toujours afficher la première page
+                pages.push(1)
+                
+                // Pages autour de la page actuelle
+                for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
+                  if (!pages.includes(i)) pages.push(i)
+                }
+                
+                // Toujours afficher la dernière page
+                if (totalPages > 1 && !pages.includes(totalPages)) pages.push(totalPages)
+                
+                return pages.map((page, index) => (
+                  <div key={page} className="flex items-center">
+                    {/* Ajouter "..." si il y a un gap */}
+                    {index > 0 && page > pages[index - 1] + 1 && (
+                      <span className="px-2 text-gray-500">...</span>
+                    )}
+                    <Link
+                      href={`/products?${new URLSearchParams({
+                        ...Object.fromEntries(searchParams.entries()),
+                        page: page.toString()
+                      }).toString()}`}
+                      className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                        page === currentPage
+                          ? 'bg-brand-gold text-black'
+                          : 'bg-white/10 text-white hover:bg-white/20'
+                      }`}
+                    >
+                      {page}
+                    </Link>
+                  </div>
+                ))
+              })()}
+
+              <Link
+                href={`/products?${new URLSearchParams({
+                  ...Object.fromEntries(searchParams.entries()),
+                  page: (pagination.currentPage + 1).toString()
+                }).toString()}`}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                  !pagination.hasNextPage
+                    ? 'bg-gray-600 text-gray-400 cursor-not-allowed pointer-events-none'
+                    : 'bg-white/10 text-white hover:bg-white/20'
+                }`}
+              >
+                Suivant
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>

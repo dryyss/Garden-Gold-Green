@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faShoppingCart, faCheck, faSpinner, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons'
+import { faShoppingCart, faCheck, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { useCart } from '@/contexts/CartContext'
 import { useNotifications } from '@/contexts/NotificationContext'
 import { CartFlyAnimation } from './CartFlyAnimation'
@@ -23,34 +23,28 @@ interface AddToCartButtonProps {
   className?: string
   children?: React.ReactNode
   showNotification?: boolean
-  showQuantity?: boolean
-  variant?: 'default' | 'compact' | 'full'
 }
 
 export function AddToCartButton({ 
   product, 
   className = '', 
   children, 
-  showNotification = true,
-  showQuantity = true,
-  variant = 'default'
+  showNotification = true 
 }: AddToCartButtonProps) {
-  const { state, dispatch } = useCart()
+  const { dispatch } = useCart()
   const { addNotification } = useNotifications()
   const [isAdding, setIsAdding] = useState(false)
   const [isAdded, setIsAdded] = useState(false)
+  const [isAnimating, setIsAnimating] = useState(false)
   const [showFlyAnimation, setShowFlyAnimation] = useState(false)
   const [showConfetti, setShowConfetti] = useState(false)
   const buttonRef = useRef<HTMLButtonElement>(null)
-
-  // Trouver la quantité actuelle du produit dans le panier
-  const cartItem = state.items.find(item => item.id === product.id)
-  const currentQuantity = cartItem?.quantity || 0
 
   const handleAddToCart = async () => {
     if (isAdding || isAdded) return
 
     setIsAdding(true)
+    setIsAnimating(true)
 
     // Animation de pulsation
     if (buttonRef.current) {
@@ -97,13 +91,17 @@ export function AddToCartButton({
       setTimeout(() => {
         setIsAdded(false)
         setIsAdding(false)
+        setIsAnimating(false)
+        setShowFlyAnimation(false)
+        setShowConfetti(false)
         if (buttonRef.current) {
           buttonRef.current.classList.remove('animate-bounce')
         }
       }, 2000)
 
-    } catch {
+    } catch (error) {
       setIsAdding(false)
+      setIsAnimating(false)
       if (buttonRef.current) {
         buttonRef.current.classList.remove('animate-pulse-custom')
       }
@@ -116,24 +114,6 @@ export function AddToCartButton({
           duration: 3000
         })
       }
-    }
-  }
-
-  const handleRemoveFromCart = () => {
-    dispatch({
-      type: 'REMOVE_ITEM',
-      payload: product.id
-    })
-  }
-
-  const handleUpdateQuantity = (newQuantity: number) => {
-    if (newQuantity <= 0) {
-      handleRemoveFromCart()
-    } else {
-      dispatch({
-        type: 'UPDATE_QUANTITY',
-        payload: { id: product.id, quantity: newQuantity }
-      })
     }
   }
 
@@ -156,32 +136,6 @@ export function AddToCartButton({
       )
     }
 
-    if (currentQuantity > 0 && showQuantity) {
-      return (
-        <div className="flex items-center justify-between w-full">
-          <button
-            onClick={(e) => {
-              e.stopPropagation()
-              handleUpdateQuantity(currentQuantity - 1)
-            }}
-            className="w-6 h-6 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
-          >
-            <FontAwesomeIcon icon={faMinus} className="text-xs" />
-          </button>
-          <span className="font-bold">{currentQuantity}</span>
-          <button
-            onClick={(e) => {
-              e.stopPropagation()
-              handleUpdateQuantity(currentQuantity + 1)
-            }}
-            className="w-6 h-6 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
-          >
-            <FontAwesomeIcon icon={faPlus} className="text-xs" />
-          </button>
-        </div>
-      )
-    }
-
     return (
       <>
         <FontAwesomeIcon icon={faShoppingCart} />
@@ -194,30 +148,14 @@ export function AddToCartButton({
     const baseClasses = `btn-gold text-black font-bold py-2 px-5 rounded-full text-sm inline-flex items-center gap-2 transition-all duration-300 ${className}`
     
     if (isAdded) {
-      return `${baseClasses} bg-brand-green hover:bg-brand-green/90 shadow-green-glow scale-105`
+      return `${baseClasses} bg-brand-green hover:bg-brand-green/90 shadow-green-glow`
     }
     
     if (isAdding) {
       return `${baseClasses} opacity-75 cursor-not-allowed`
     }
-
-    if (currentQuantity > 0 && showQuantity) {
-      return `${baseClasses} bg-brand-green hover:bg-brand-green/90 shadow-green-glow min-w-[120px]`
-    }
     
     return `${baseClasses} hover:shadow-gold-glow-lg hover:scale-105`
-  }
-
-  // Variants de style
-  const getVariantClasses = () => {
-    switch (variant) {
-      case 'compact':
-        return 'py-1 px-3 text-xs min-w-[100px]'
-      case 'full':
-        return 'py-3 px-6 text-base w-full justify-center'
-      default:
-        return 'py-2 px-5 text-sm'
-    }
   }
 
   return (
@@ -226,7 +164,7 @@ export function AddToCartButton({
         ref={buttonRef}
         onClick={handleAddToCart}
         disabled={isAdding || isAdded}
-        className={`${getButtonClasses()} ${getVariantClasses()}`}
+        className={getButtonClasses()}
         data-add-to-cart
       >
         {getButtonContent()}
