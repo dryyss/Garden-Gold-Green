@@ -296,3 +296,72 @@ export default function AboutPage() {
     </main>
   )
 }
+              Recognized for our commitment to quality and excellence
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-brand-green/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FontAwesomeIcon icon={faShieldAlt} className="text-brand-green text-2xl" />
+              </div>
+              <h3 className="text-lg font-semibold text-white mb-2">USDA Organic</h3>
+              <p className="text-gray-400 text-sm">Certified Organic</p>
+            </div>
+
+            <div className="text-center">
+              <div className="w-16 h-16 bg-brand-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FontAwesomeIcon icon={faAward} className="text-brand-gold text-2xl" />
+              </div>
+              <h3 className="text-lg font-semibold text-white mb-2">ISO 9001</h3>
+              <p className="text-gray-400 text-sm">Quality Management</p>
+            </div>
+
+            <div className="text-center">
+              <div className="w-16 h-16 bg-brand-green/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FontAwesomeIcon icon={faCheckCircle} className="text-brand-green text-2xl" />
+              </div>
+              <h3 className="text-lg font-semibold text-white mb-2">GMP Certified</h3>
+              <p className="text-gray-400 text-sm">Good Manufacturing</p>
+            </div>
+
+            <div className="text-center">
+              <div className="w-16 h-16 bg-brand-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FontAwesomeIcon icon={faFlask} className="text-brand-gold text-2xl" />
+              </div>
+              <h3 className="text-lg font-semibold text-white mb-2">Lab Verified</h3>
+              <p className="text-gray-400 text-sm">Third-Party Tested</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-24 bg-brand-black">
+        <div className="container mx-auto px-6 text-center">
+          <h2 className="text-4xl font-bold text-white mb-6">
+            Ready to Experience the Garden Gold Green Difference?
+          </h2>
+          <p className="text-xl text-gray-400 mb-8 max-w-3xl mx-auto">
+            Join thousands of satisfied customers who trust us for their CBD needs. 
+            Start your wellness journey today.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a
+              href="/products"
+              className="btn-gold text-black font-bold py-4 px-8 rounded-full shadow-gold-glow text-lg"
+            >
+              Shop Our Products
+            </a>
+            <a
+              href="/contact"
+              className="border border-white/20 text-white font-semibold py-4 px-8 rounded-full hover:bg-white/10 transition-colors text-lg"
+            >
+              Contact Us
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+  )
+}

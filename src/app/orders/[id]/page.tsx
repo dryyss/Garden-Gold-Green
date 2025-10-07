@@ -479,3 +479,19 @@ export default function OrderDetailPage() {
     </ProtectedRoute>
   )
 }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  )
+}
+
+export default function OrderDetailPage() {
+  return (
+    <ProtectedRoute>
+      <OrderDetailContent />
+    </ProtectedRoute>
+  )
+}

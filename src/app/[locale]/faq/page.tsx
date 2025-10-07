@@ -273,3 +273,31 @@ export default function FAQPage() {
     </main>
   )
 }
+          <div className="card-bg rounded-xl p-8">
+            <h2 className="text-3xl font-bold text-white mb-4">
+              Still Have Questions?
+            </h2>
+            <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
+              Our customer service team is here to help with any questions you might have.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <a 
+                href="/contact" 
+                className="btn-gold text-black font-semibold py-3 px-8 rounded-full shadow-gold-glow inline-flex items-center justify-center gap-2"
+              >
+                Contact Us
+              </a>
+              <a 
+                href="mailto:support@gardengoldgreen.com"
+                className="border border-white/20 text-white font-semibold py-3 px-8 rounded-full hover:bg-white/10 transition-colors inline-flex items-center justify-center gap-2"
+              >
+                <FontAwesomeIcon icon={faQuestionCircle} />
+                Email Support
+              </a>
+            </div>
+          </div>
+        </div>
+    </div>
+    </main>
+  )
+}

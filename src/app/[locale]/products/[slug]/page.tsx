@@ -370,3 +370,174 @@ export default function ProductDetailPage() {
     </main>
   )
 }
+                value={selectedStrength}
+                onChange={(e) => setSelectedStrength(e.target.value)}
+                className="w-full bg-white/5 border border-white/20 rounded-lg py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-brand-gold transition-all duration-300"
+              >
+                <option>1000mg - Standard Potency</option>
+                <option>2000mg - Extra Strength</option>
+                <option>3000mg - Max Potency</option>
+              </select>
+            </div>
+
+            {/* Quantity and Add to Cart */}
+            <div className="flex items-center gap-4 mb-8">
+              <div className="flex items-center border border-white/20 rounded-full p-1">
+                <button
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  className="w-10 h-10 text-gray-400 hover:text-white transition-colors"
+                >
+                  <FontAwesomeIcon icon={faMinus} />
+                </button>
+                <span className="w-10 text-center font-semibold text-white">{quantity}</span>
+                <button
+                  onClick={() => setQuantity(quantity + 1)}
+                  className="w-10 h-10 text-gray-400 hover:text-white transition-colors"
+                >
+                  <FontAwesomeIcon icon={faPlus} />
+                </button>
+              </div>
+              <button
+                onClick={handleAddToCart}
+                disabled={!product.inStock || isLoading}
+                className={`btn-gold text-black font-bold py-3 px-8 rounded-full shadow-gold-glow flex-grow text-lg flex items-center justify-center gap-2 ${
+                  !product.inStock || isLoading ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
+              >
+                <FontAwesomeIcon icon={faCartShopping} />
+                {isLoading ? 'Adding...' : 'Add to Cart'}
+              </button>
+            </div>
+
+            {/* Product Features */}
+            <div className="space-y-3 mb-8">
+              {product.features.map((feature, index) => (
+                <div key={index} className="flex items-center text-sm">
+                  <FontAwesomeIcon icon={faCheckCircle} className="text-brand-green mr-3" />
+                  <span className="text-gray-300">{feature}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-4">
+              <button className="flex items-center gap-2 text-gray-400 hover:text-brand-gold transition-colors">
+                <FontAwesomeIcon icon={faHeart} />
+                <span>Add to Wishlist</span>
+              </button>
+              <button className="flex items-center gap-2 text-gray-400 hover:text-brand-gold transition-colors">
+                <FontAwesomeIcon icon={faShare} />
+                <span>Share</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Product Details Tabs */}
+      <section className="py-16 bg-[#111111]">
+        <div className="container mx-auto px-6">
+          <div className="border-b border-white/10 mb-8">
+            <nav className="flex space-x-8">
+              {['description', 'usage', 'ingredients', 'lab-results'].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`font-semibold pb-4 border-b-2 transition-all capitalize ${
+                    activeTab === tab
+                      ? 'text-white border-brand-gold'
+                      : 'text-gray-400 border-transparent hover:text-white hover:border-brand-gold'
+                  }`}
+                >
+                  {tab.replace('-', ' ')}
+                </button>
+              ))}
+            </nav>
+          </div>
+
+          <div className="text-gray-300 leading-loose">
+            {activeTab === 'description' && (
+              <div>
+                <h3 className="text-2xl font-semibold text-white mb-4">Unleash the Power of Nature</h3>
+                <p className="mb-4">{product.longDescription}</p>
+                <p>Sourced from sun-grown hemp in the fertile fields of Colorado, each plant is cultivated with organic practices, free from pesticides and herbicides. We use a state-of-the-art CO2 extraction process to ensure maximum purity and potency, preserving the plant's natural goodness in every single drop.</p>
+              </div>
+            )}
+
+            {activeTab === 'usage' && (
+              <div>
+                <h3 className="text-2xl font-semibold text-white mb-4">How to Use</h3>
+                <p className="mb-4">{product.usage}</p>
+                <div className="bg-brand-black/50 p-6 rounded-lg">
+                  <h4 className="text-lg font-semibold text-white mb-2">Recommended Dosage:</h4>
+                  <ul className="space-y-2">
+                    <li>• Beginners: 1-2 drops daily</li>
+                    <li>• Regular users: 3-5 drops daily</li>
+                    <li>• Advanced users: 6-10 drops daily</li>
+                  </ul>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'ingredients' && (
+              <div>
+                <h3 className="text-2xl font-semibold text-white mb-4">Ingredients</h3>
+                <ul className="space-y-2">
+                  {product.ingredients.map((ingredient, index) => (
+                    <li key={index} className="flex items-center">
+                      <FontAwesomeIcon icon={faCheckCircle} className="text-brand-green mr-3" />
+                      {ingredient}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {activeTab === 'lab-results' && (
+              <div>
+                <h3 className="text-2xl font-semibold text-white mb-4">Lab Results</h3>
+                <p className="mb-4">{product.labResults}</p>
+                <div className="bg-brand-black/50 p-6 rounded-lg">
+                  <h4 className="text-lg font-semibold text-white mb-4">Test Results:</h4>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <span className="text-gray-400">CBD Content:</span>
+                      <span className="text-white ml-2 font-semibold">1000mg</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-400">THC Content:</span>
+                      <span className="text-white ml-2 font-semibold">0.0%</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-400">Pesticides:</span>
+                      <span className="text-brand-green ml-2 font-semibold">None Detected</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-400">Heavy Metals:</span>
+                      <span className="text-brand-green ml-2 font-semibold">None Detected</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Related Products */}
+      <section className="py-24 bg-brand-black">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-2 gold-text-gradient">You Might Also Like</h2>
+            <p className="text-lg text-gray-400">Complete your wellness routine with these premium selections.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {relatedProducts.map((relatedProduct) => (
+              <ProductCard key={relatedProduct.id} product={relatedProduct} />
+            ))}
+          </div>
+        </div>
+      </section>
+    </main>
+  )
+}

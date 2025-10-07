@@ -41,8 +41,8 @@ export default function NotFound() {
               <h2 className="text-6xl font-bold text-white mb-4">404</h2>
               <h3 className="text-2xl font-semibold text-white mb-4">Page introuvable</h3>
               <p className="text-gray-400 text-lg leading-relaxed">
-                Désolé, la page que vous recherchez n'existe pas ou a été déplacée. 
-                Il se peut que l'URL soit incorrecte ou que la page ait été supprimée.
+                Désolé, la page que vous recherchez n&apos;existe pas ou a été déplacée. 
+                Il se peut que l&apos;URL soit incorrecte ou que la page ait été supprimée.
               </p>
             </div>
 
@@ -53,7 +53,7 @@ export default function NotFound() {
                 className="btn-gold text-black font-bold py-3 px-8 rounded-full shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300 flex items-center justify-center gap-2"
               >
                 <FontAwesomeIcon icon={faHome} />
-                Retour à l'accueil
+                Retour à l&apos;accueil
               </Link>
               
               <button
@@ -98,7 +98,7 @@ export default function NotFound() {
                 <FontAwesomeIcon icon={faExclamationTriangle} className="text-blue-400 text-xl" />
               </div>
               <h4 className="text-white font-semibold mb-2">Support</h4>
-              <p className="text-gray-400 text-sm">Besoin d'aide ? Contactez-nous</p>
+              <p className="text-gray-400 text-sm">Besoin d&apos;aide ? Contactez-nous</p>
             </Link>
           </div>
 
