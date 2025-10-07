@@ -13,15 +13,15 @@ export default function PrivacyPage() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-4 mb-6">
-            <Link
-              href="/"
+        <Link 
+          href="/" 
               className="text-gray-400 hover:text-brand-gold transition-colors"
-            >
-              <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
-              Retour à l'accueil
-            </Link>
-          </div>
-          
+        >
+          <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
+          Retour à l'accueil
+        </Link>
+      </div>
+
           <div className="flex items-center gap-4 mb-6">
             <div className="w-12 h-12 bg-blue-600/20 rounded-full flex items-center justify-center">
               <FontAwesomeIcon icon={faShieldAlt} className="text-blue-400 text-xl" />
@@ -33,7 +33,7 @@ export default function PrivacyPage() {
           </div>
         </div>
 
-        {/* Content */}
+      {/* Content */}
         <div className="max-w-4xl mx-auto">
           <div className="card-bg rounded-2xl p-8 shadow-2xl">
             <div className="prose prose-invert max-w-none">
@@ -46,7 +46,7 @@ export default function PrivacyPage() {
                   explique comment nous collectons, utilisons et protégeons vos informations personnelles lorsque vous utilisez notre site web 
                   www.gardengoldgreen.com.
                 </p>
-                <p className="text-gray-300 leading-relaxed">
+              <p className="text-gray-300 leading-relaxed">
                   En utilisant notre site, vous acceptez les pratiques décrites dans cette politique de confidentialité.
                 </p>
               </section>
@@ -83,14 +83,14 @@ export default function PrivacyPage() {
                   <li>• Communication concernant vos commandes</li>
                   <li>• Amélioration de nos services et de notre site web</li>
                   <li>• Prévention de la fraude et sécurisation des transactions</li>
-                </ul>
-
+              </ul>
+              
                 <h3 className="text-xl font-semibold text-white mb-3">2.2 Marketing et communications</h3>
                 <ul className="text-gray-300 space-y-2 mb-4">
                   <li>• Envoi de newsletters (avec votre consentement)</li>
                   <li>• Offres personnalisées et recommandations de produits</li>
                   <li>• Enquêtes de satisfaction et études de marché</li>
-                </ul>
+              </ul>
               </section>
 
               {/* Base légale */}
@@ -101,15 +101,15 @@ export default function PrivacyPage() {
                   <li>• <strong>Intérêt légitime :</strong> amélioration du service, prévention de la fraude</li>
                   <li>• <strong>Consentement :</strong> marketing, cookies non essentiels</li>
                   <li>• <strong>Obligation légale :</strong> conservation des données de facturation</li>
-                </ul>
+              </ul>
               </section>
 
               {/* Partage des données */}
               <section className="mb-8">
                 <h2 className="text-2xl font-bold text-white mb-4">4. Partage de vos données</h2>
-                <p className="text-gray-300 leading-relaxed mb-4">
-                  Nous ne vendons jamais vos données personnelles. Nous pouvons partager vos informations avec :
-                </p>
+              <p className="text-gray-300 leading-relaxed mb-4">
+                Nous ne vendons jamais vos données personnelles. Nous pouvons partager vos informations avec :
+              </p>
                 <ul className="text-gray-300 space-y-2 mb-4">
                   <li>• <strong>Prestataires de services :</strong> transporteurs, processeurs de paiement (Stripe)</li>
                   <li>• <strong>Partenaires techniques :</strong> hébergement, analytics (Google Analytics)</li>
@@ -127,7 +127,7 @@ export default function PrivacyPage() {
                   <li>• <strong>Cookies essentiels :</strong> fonctionnement du site, panier d'achat</li>
                   <li>• <strong>Cookies analytiques :</strong> mesure d'audience, performance</li>
                   <li>• <strong>Cookies marketing :</strong> publicité personnalisée (avec consentement)</li>
-                </ul>
+              </ul>
                 <p className="text-gray-300 leading-relaxed">
                   Vous pouvez gérer vos préférences de cookies via les paramètres de votre navigateur.
                 </p>
@@ -136,21 +136,21 @@ export default function PrivacyPage() {
               {/* Sécurité */}
               <section className="mb-8">
                 <h2 className="text-2xl font-bold text-white mb-4">6. Sécurité de vos données</h2>
-                <p className="text-gray-300 leading-relaxed mb-4">
-                  Nous mettons en place des mesures de sécurité appropriées pour protéger vos données :
-                </p>
+              <p className="text-gray-300 leading-relaxed mb-4">
+                Nous mettons en place des mesures de sécurité appropriées pour protéger vos données :
+              </p>
                 <ul className="text-gray-300 space-y-2 mb-4">
-                  <li>• Chiffrement SSL/TLS pour toutes les transmissions</li>
-                  <li>• Accès restreint aux données personnelles</li>
+                <li>• Chiffrement SSL/TLS pour toutes les transmissions</li>
+                <li>• Accès restreint aux données personnelles</li>
                   <li>• Surveillance continue des systèmes</li>
                   <li>• Formation du personnel à la protection des données</li>
-                </ul>
+              </ul>
               </section>
 
               {/* Vos droits */}
               <section className="mb-8">
                 <h2 className="text-2xl font-bold text-white mb-4">7. Vos droits</h2>
-                <p className="text-gray-300 leading-relaxed mb-4">
+              <p className="text-gray-300 leading-relaxed mb-4">
                   Conformément au RGPD, vous disposez des droits suivants :
                 </p>
                 <ul className="text-gray-300 space-y-2 mb-4">
@@ -174,13 +174,13 @@ export default function PrivacyPage() {
                   <li>• <strong>Données de commande :</strong> 10 ans (obligation légale)</li>
                   <li>• <strong>Données marketing :</strong> jusqu'au retrait du consentement</li>
                   <li>• <strong>Cookies :</strong> 13 mois maximum</li>
-                </ul>
+              </ul>
               </section>
 
               {/* Transferts internationaux */}
               <section className="mb-8">
                 <h2 className="text-2xl font-bold text-white mb-4">9. Transferts internationaux</h2>
-                <p className="text-gray-300 leading-relaxed mb-4">
+              <p className="text-gray-300 leading-relaxed mb-4">
                   Certains de nos prestataires peuvent être situés hors de l'Union Européenne. Dans ce cas, nous nous assurons 
                   que des garanties appropriées sont mises en place (clauses contractuelles types, décision d'adéquation).
                 </p>
@@ -189,7 +189,7 @@ export default function PrivacyPage() {
               {/* Modifications */}
               <section className="mb-8">
                 <h2 className="text-2xl font-bold text-white mb-4">10. Modifications de cette politique</h2>
-                <p className="text-gray-300 leading-relaxed mb-4">
+              <p className="text-gray-300 leading-relaxed mb-4">
                   Nous pouvons modifier cette politique de confidentialité. Les modifications importantes vous seront notifiées 
                   par email ou via une notification sur notre site.
                 </p>
@@ -214,7 +214,7 @@ export default function PrivacyPage() {
             </div>
           </div>
         </div>
-      </div>
+    </div>
     </main>
   )
 }

@@ -34,7 +34,30 @@
 }
 
 /* Classes pour le thème */
-.bg-brand-black { background-color: var(--brand-black); }
+.bg-brand-black { 
+  background-color: var(--brand-black);
+  position: relative;
+}
+
+/* Logo en filigrane dans le background du body */
+body.bg-brand-black::before,
+.bg-brand-black.watermark::before {
+  content: '';
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 600px;
+  background-image: url('/logo.png');
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0.015;
+  pointer-events: none;
+  z-index: 0;
+}
+
 .bg-brand-gold { background-color: var(--brand-gold); }
 .bg-brand-green { background-color: var(--brand-green); }
 .bg-brand-silver { background-color: var(--brand-silver); }
