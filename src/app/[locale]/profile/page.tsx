@@ -8,7 +8,7 @@ function ProfileContent() {
   const { state: authState } = useAuth()
 
   return (
-    <div className="bg-brand-black min-h-screen text-gray-300 pt-36">
+    <div className="bg-brand-black min-h-screen text-gray-300 pt-24">
       <div className="container mx-auto px-6 py-8">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl font-bold gold-text-gradient mb-8">Mon Profil</h1>

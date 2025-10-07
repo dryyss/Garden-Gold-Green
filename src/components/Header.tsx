@@ -34,8 +34,19 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false)
   const [showUserMenu, setShowUserMenu] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
   const { state } = useCart()
   const { state: authState, logout, isAdmin } = useAuth()
+
+  // Gérer le scroll pour réduire la barre jaune
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   // Fermer les menus quand on clique ailleurs
   useEffect(() => {
@@ -74,7 +85,7 @@ export function Header() {
   ]
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-brand-black">
+    <header className="sticky top-0 z-50 bg-brand-black transition-all duration-300">
       {/* Top Bar - Info Contact et Livraison */}
       <div className="bg-gradient-to-r from-brand-green to-emerald-600 border-b border-emerald-700">
         <div className="container mx-auto px-4 sm:px-6">
@@ -143,31 +154,25 @@ export function Header() {
               </span>
             </Link>
 
-            {/* Search Bar - Desktop */}
-            <div className="hidden md:flex flex-1 max-w-2xl mx-4 lg:mx-8">
-              <div className="relative w-full">
-                <input
-                  type="text"
-                  placeholder="Que cherchez-vous ?"
-                  onClick={() => setIsSearchModalOpen(true)}
-                  readOnly
-                  className="w-full bg-white/10 border border-white/20 rounded-full py-3 px-6 pr-12 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold focus:bg-white/15 transition-all cursor-pointer"
-                />
-                <button 
-                  onClick={() => setIsSearchModalOpen(true)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-brand-gold text-black rounded-full p-2 w-9 h-9 flex items-center justify-center hover:shadow-gold-glow transition-all"
+            {/* Navigation desktop */}
+            <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8">
+              {navigation.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className="text-gray-300 hover:text-brand-gold transition-colors duration-300 text-sm xl:text-base font-medium"
                 >
-                  <FontAwesomeIcon icon={faMagnifyingGlass} className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
+                  {item.name}
+                </Link>
+              ))}
+            </nav>
 
             {/* Actions */}
             <div className="flex items-center space-x-2 sm:space-x-4">
-              {/* Search button - Mobile only */}
+              {/* Search button */}
               <button 
                 onClick={() => setIsSearchModalOpen(true)}
-                className="md:hidden text-gray-300 hover:text-brand-gold transition-colors duration-300 p-2"
+                className="text-gray-300 hover:text-brand-gold transition-colors duration-300 p-2"
               >
                 <FontAwesomeIcon icon={faMagnifyingGlass} className="w-5 h-5" />
               </button>
@@ -273,8 +278,12 @@ export function Header() {
         </div>
       </div>
 
-      {/* Category Navigation Tabs */}
-      <div className="hidden lg:block bg-brand-gold border-b border-yellow-600">
+      {/* Category Navigation Tabs - Se réduit au scroll */}
+      <div className={`
+        hidden lg:block bg-brand-gold border-b border-yellow-600 overflow-hidden
+        transition-all duration-300
+        ${isScrolled ? 'max-h-0 opacity-0' : 'max-h-20 opacity-100'}
+      `}>
         <div className="container mx-auto px-4 sm:px-6">
           <nav className="flex items-center justify-between py-3">
             {categoryTabs.map((tab) => (

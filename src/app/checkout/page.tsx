@@ -129,7 +129,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <main className="bg-brand-black min-h-screen pt-36">
+    <main className="bg-brand-black min-h-screen pt-24">
       <div className="container mx-auto px-6 py-16">
         <div className="flex items-center gap-4 mb-8">
           <Link

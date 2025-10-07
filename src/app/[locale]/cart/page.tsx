@@ -35,7 +35,7 @@ export default function CartPage() {
 
   if (state.items.length === 0) {
     return (
-      <main className="bg-brand-black min-h-screen pt-36">
+      <main className="bg-brand-black min-h-screen pt-24">
         <div className="container mx-auto px-6 py-16">
           <div className="text-center">
             <FontAwesomeIcon icon={faShoppingBag} className="text-6xl text-gray-600 mb-6" />
@@ -55,7 +55,7 @@ export default function CartPage() {
   }
 
   return (
-    <main className="bg-brand-black min-h-screen pt-36">
+    <main className="bg-brand-black min-h-screen pt-24">
       <div className="container mx-auto px-6 py-16">
         <div className="flex items-center gap-4 mb-8">
           <Link

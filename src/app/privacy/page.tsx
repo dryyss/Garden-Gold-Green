@@ -8,7 +8,7 @@ import { faArrowLeft, faShieldAlt } from '@fortawesome/free-solid-svg-icons'
 
 export default function PrivacyPage() {
   return (
-    <main className="bg-brand-black min-h-screen pt-36">
+    <main className="bg-brand-black min-h-screen pt-24">
       <div className="container mx-auto px-6 py-16">
         {/* Header */}
         <div className="mb-8">

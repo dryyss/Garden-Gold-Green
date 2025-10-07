@@ -96,7 +96,7 @@ export default function OrdersPage() {
   }
 
   return (
-    <div className="bg-brand-black min-h-screen pt-36">
+    <div className="bg-brand-black min-h-screen pt-24">
       <div className="container mx-auto px-6 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">

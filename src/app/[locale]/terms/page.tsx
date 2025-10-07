@@ -4,7 +4,7 @@ import { faArrowLeft, faFileContract, faGavel, faExclamationTriangle } from '@fo
 
 export default function TermsPage() {
   return (
-    <div className="bg-brand-black min-h-screen text-gray-300 pt-36">
+    <div className="bg-brand-black min-h-screen text-gray-300 pt-24">
       {/* Back Button */}
       <div className="container mx-auto px-6 py-8">
         <Link 

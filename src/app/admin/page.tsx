@@ -130,7 +130,7 @@ function AdminContent() {
 
   if (isLoading) {
     return (
-      <div className="bg-brand-black min-h-screen flex items-center justify-center pt-36">
+      <div className="bg-brand-black min-h-screen flex items-center justify-center pt-24">
         <div className="text-center">
           <div className="spinner mx-auto mb-4"></div>
           <p className="text-gray-400">Loading dashboard...</p>
@@ -140,7 +140,7 @@ function AdminContent() {
   }
 
   return (
-    <main className="bg-brand-black min-h-screen pt-36">
+    <main className="bg-brand-black min-h-screen pt-24">
       <div className="container mx-auto px-6 py-8">
         {/* Header */}
         <div className="mb-8">

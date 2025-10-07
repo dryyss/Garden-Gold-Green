@@ -143,7 +143,7 @@ export default function LearnPage() {
   const allTags = Array.from(new Set(articles.flatMap(article => article.tags)))
 
   return (
-    <main className="bg-brand-black min-h-screen pt-36">
+    <main className="bg-brand-black min-h-screen pt-24">
       {/* Hero Section */}
       <section className="relative py-24 overflow-hidden">
         <div className="hero-bg absolute inset-0"></div>

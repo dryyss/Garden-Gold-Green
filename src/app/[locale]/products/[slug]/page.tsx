@@ -122,7 +122,7 @@ export default function ProductDetailPage() {
   const relatedProducts = productsData.filter(p => product.relatedProducts.includes(p.id))
 
   return (
-    <main className="bg-brand-black min-h-screen pt-36">
+    <main className="bg-brand-black min-h-screen pt-24">
       {/* Breadcrumbs */}
       <div className="container mx-auto px-6 py-4">
         <div className="text-sm text-gray-400 mb-8">

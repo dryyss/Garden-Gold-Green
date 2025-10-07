@@ -201,7 +201,7 @@ function OrderDetailContent() {
 
   if (isLoading) {
     return (
-      <div className="bg-brand-black min-h-screen flex items-center justify-center pt-36">
+      <div className="bg-brand-black min-h-screen flex items-center justify-center pt-24">
         <div className="text-center">
           <div className="spinner mx-auto mb-4"></div>
           <p className="text-gray-400">Loading order details...</p>
@@ -212,7 +212,7 @@ function OrderDetailContent() {
 
   if (!order) {
     return (
-      <div className="bg-brand-black min-h-screen flex items-center justify-center pt-36">
+      <div className="bg-brand-black min-h-screen flex items-center justify-center pt-24">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-white mb-4">Order Not Found</h1>
           <p className="text-gray-400 mb-8">The order you're looking for doesn't exist.</p>
@@ -228,7 +228,7 @@ function OrderDetailContent() {
   }
 
   return (
-    <main className="bg-brand-black min-h-screen pt-36">
+    <main className="bg-brand-black min-h-screen pt-24">
       <div className="container mx-auto px-6 py-16">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
