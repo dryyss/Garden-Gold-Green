@@ -25,7 +25,7 @@ export default function CheckoutSuccessPage() {
   }, [dispatch])
 
   return (
-    <main className="bg-brand-black min-h-screen pt-24">
+    <main className="bg-brand-black min-h-screen pt-36">
       <div className="container mx-auto px-6 py-16">
         <div className="max-w-2xl mx-auto text-center">
           {/* Success Icon */}

@@ -13,8 +13,19 @@ import {
   faXmark,
   faSignOutAlt,
   faUserCircle,
-  faCog
+  faCog,
+  faPhone,
+  faEnvelope,
+  faTruck,
+  faPercent
 } from '@fortawesome/free-solid-svg-icons'
+import { 
+  faFacebook, 
+  faTwitter, 
+  faInstagram, 
+  faLinkedin, 
+  faWhatsapp 
+} from '@fortawesome/free-brands-svg-icons'
 import { useCart } from '@/contexts/CartContext'
 import { useAuth } from '@/contexts/AuthContext'
 import { SearchModal } from './SearchModal'
@@ -41,6 +52,17 @@ export function Header() {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [showUserMenu])
 
+  const categoryTabs = [
+    { name: 'Promos -50%', href: '/products?category=promo', badge: 'HOT', color: 'text-red-500' },
+    { name: 'Fleurs CBD', href: '/products?category=fleurs-cbd' },
+    { name: 'Résines', href: '/products?category=resines' },
+    { name: 'Nos packs', href: '/products?category=packs' },
+    { name: 'E-liquides/Vap Pens', href: '/products?category=liquides' },
+    { name: 'Huiles CBD', href: '/products?category=huiles-cbd' },
+    { name: 'Accessoires', href: '/products?category=accessoires' },
+    { name: 'LIQUIDATIONS', href: '/products?category=liquidations', special: true },
+  ]
+
   const navigation = [
     { name: 'Accueil', href: '/' },
     { name: 'Boutique', href: '/products' },
@@ -52,42 +74,103 @@ export function Header() {
   ]
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-brand-black/80 backdrop-blur-sm border-b border-white/10">
-      <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-        {/* Logo */}
-        <div className="flex items-center">
-            <Image 
-              className="h-12 w-12 mr-3" 
-              src="/logo.png" 
-              alt="3G - Garden Gold Green logo, gold, green, and silver colors, luxurious, premium CBD brand"
-              width={48}
-              height={48}
-            />
-          <span className="text-white text-xl font-bold tracking-wider">GARDEN GOLD GREEN</span>
+    <header className="fixed top-0 left-0 right-0 z-50 bg-brand-black">
+      {/* Top Bar - Info Contact et Livraison */}
+      <div className="bg-gradient-to-r from-brand-green to-emerald-600 border-b border-emerald-700">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between py-2 text-xs sm:text-sm">
+            {/* Contact Info */}
+            <div className="flex items-center space-x-4 sm:space-x-6 mb-2 sm:mb-0">
+              <a href="tel:+33778823840" className="flex items-center space-x-1 sm:space-x-2 text-white hover:text-brand-gold transition-colors">
+                <FontAwesomeIcon icon={faPhone} className="w-3 h-3" />
+                <span className="hidden sm:inline">+33 7 78 82 38 40</span>
+              </a>
+              <a href="mailto:contact@gardengoldgreen.com" className="flex items-center space-x-1 sm:space-x-2 text-white hover:text-brand-gold transition-colors">
+                <FontAwesomeIcon icon={faEnvelope} className="w-3 h-3" />
+                <span className="hidden md:inline">contact@gardengoldgreen.com</span>
+              </a>
+            </div>
+
+            {/* Promo Info */}
+            <div className="flex items-center space-x-4 sm:space-x-6">
+              <div className="flex items-center space-x-2 text-white">
+                <FontAwesomeIcon icon={faTruck} className="w-3 h-3 sm:w-4 sm:h-4 text-brand-gold" />
+                <span className="font-semibold">Livraison offerte à partir de 50€</span>
+              </div>
+              <div className="hidden lg:flex items-center space-x-2 text-white">
+                <FontAwesomeIcon icon={faPercent} className="w-3 h-3 sm:w-4 sm:h-4 text-brand-gold" />
+                <span className="font-semibold">10% offert dès 90€ 🎁</span>
+              </div>
+            </div>
+
+            {/* Social Links */}
+            <div className="hidden lg:flex items-center space-x-3">
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-brand-gold transition-colors">
+                <FontAwesomeIcon icon={faFacebook} className="w-4 h-4" />
+              </a>
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-brand-gold transition-colors">
+                <FontAwesomeIcon icon={faTwitter} className="w-4 h-4" />
+              </a>
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-brand-gold transition-colors">
+                <FontAwesomeIcon icon={faInstagram} className="w-4 h-4" />
+              </a>
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-brand-gold transition-colors">
+                <FontAwesomeIcon icon={faLinkedin} className="w-4 h-4" />
+              </a>
+              <a href="https://wa.me/33778823840" target="_blank" rel="noopener noreferrer" className="text-white hover:text-brand-gold transition-colors">
+                <FontAwesomeIcon icon={faWhatsapp} className="w-4 h-4" />
+              </a>
+            </div>
+          </div>
         </div>
+      </div>
 
-        {/* Navigation desktop */}
-        <nav className="hidden md:flex items-center space-x-8">
-          {navigation.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              className="text-gray-300 hover:text-brand-gold transition-colors duration-300 cursor-pointer"
-            >
-              {item.name}
+      {/* Main Navbar - Logo, Search, Actions */}
+      <div className="bg-brand-black/95 backdrop-blur-sm border-b border-white/10">
+        <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6">
+          <div className="flex justify-between items-center gap-4">
+            {/* Logo */}
+            <Link href="/" className="flex items-center flex-shrink-0">
+              <Image 
+                className="h-14 w-14 sm:h-16 sm:w-16" 
+                src="/logo.png" 
+                alt="Garden Gold Green logo"
+                width={64}
+                height={64}
+              />
+              <span className="hidden sm:block text-white text-xl sm:text-2xl font-bold tracking-wider ml-3">
+                GARDEN GOLD GREEN
+              </span>
             </Link>
-          ))}
-        </nav>
 
-        {/* Actions */}
-        <div className="flex items-center space-x-3 sm:space-x-4 md:space-x-6">
-          {/* Search button */}
-          <button 
-            onClick={() => setIsSearchModalOpen(true)}
-            className="text-gray-300 hover:text-brand-gold transition-colors duration-300 p-2"
-          >
-            <FontAwesomeIcon icon={faMagnifyingGlass} className="icon-responsive-md" />
-          </button>
+            {/* Search Bar - Desktop */}
+            <div className="hidden md:flex flex-1 max-w-2xl mx-4 lg:mx-8">
+              <div className="relative w-full">
+                <input
+                  type="text"
+                  placeholder="Que cherchez-vous ?"
+                  onClick={() => setIsSearchModalOpen(true)}
+                  readOnly
+                  className="w-full bg-white/10 border border-white/20 rounded-full py-3 px-6 pr-12 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold focus:bg-white/15 transition-all cursor-pointer"
+                />
+                <button 
+                  onClick={() => setIsSearchModalOpen(true)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-brand-gold text-black rounded-full p-2 w-9 h-9 flex items-center justify-center hover:shadow-gold-glow transition-all"
+                >
+                  <FontAwesomeIcon icon={faMagnifyingGlass} className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              {/* Search button - Mobile only */}
+              <button 
+                onClick={() => setIsSearchModalOpen(true)}
+                className="md:hidden text-gray-300 hover:text-brand-gold transition-colors duration-300 p-2"
+              >
+                <FontAwesomeIcon icon={faMagnifyingGlass} className="w-5 h-5" />
+              </button>
           
           {/* User Menu */}
           {authState.isAuthenticated ? (
@@ -178,20 +261,80 @@ export function Header() {
             )}
           </Link>
 
-          {/* Mobile menu button */}
-          <button
-            className="md:hidden text-gray-300 hover:text-brand-gold transition-colors duration-300 p-2"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            <FontAwesomeIcon icon={isMenuOpen ? faXmark : faBars} className="icon-responsive-md" />
-          </button>
+              {/* Mobile menu button */}
+              <button
+                className="lg:hidden text-gray-300 hover:text-brand-gold transition-colors duration-300 p-2"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              >
+                <FontAwesomeIcon icon={isMenuOpen ? faXmark : faBars} className="w-6 h-6" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Category Navigation Tabs */}
+      <div className="hidden lg:block bg-brand-gold border-b border-yellow-600">
+        <div className="container mx-auto px-4 sm:px-6">
+          <nav className="flex items-center justify-between py-3">
+            {categoryTabs.map((tab) => (
+              <Link
+                key={tab.name}
+                href={tab.href}
+                className={`
+                  relative px-3 xl:px-4 py-2 text-sm xl:text-base font-semibold transition-all duration-300
+                  ${tab.special 
+                    ? 'bg-red-600 text-white rounded-md hover:bg-red-700 animate-pulse' 
+                    : tab.color 
+                    ? `${tab.color} hover:text-white` 
+                    : 'text-black hover:text-white'
+                  }
+                `}
+              >
+                {tab.name}
+                {tab.badge && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full animate-pulse">
+                    {tab.badge}
+                  </span>
+                )}
+              </Link>
+            ))}
+          </nav>
         </div>
       </div>
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="md:hidden bg-brand-black/95 backdrop-blur-sm border-t border-white/10">
+        <div className="lg:hidden bg-brand-black/95 backdrop-blur-sm border-t border-white/10">
           <div className="px-6 py-4 space-y-4">
+            {/* Category Tabs - Mobile */}
+            <div className="border-b border-white/10 pb-4 mb-4">
+              <h3 className="text-brand-gold text-sm font-semibold mb-3 uppercase">Catégories</h3>
+              <div className="space-y-2">
+                {categoryTabs.map((tab) => (
+                  <Link
+                    key={tab.name}
+                    href={tab.href}
+                    className={`
+                      flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors
+                      ${tab.special 
+                        ? 'bg-red-600 text-white' 
+                        : 'text-gray-300 hover:bg-white/10 hover:text-white'
+                      }
+                    `}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <span>{tab.name}</span>
+                    {tab.badge && (
+                      <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                        {tab.badge}
+                      </span>
+                    )}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
             {/* Navigation Links */}
             {navigation.map((item) => (
               <Link
@@ -281,21 +424,11 @@ export function Header() {
         </div>
       )}
 
-      {/* Legal disclaimer banner */}
-      <div className="bg-amber-900/20 border-b border-amber-800/30">
-        <div className="container mx-auto px-6 py-2">
-          <p className="text-xs text-amber-200 text-center">
-            ⚠️ Les produits CBD ne sont pas des médicaments. Consultez votre médecin avant utilisation. 
-            Vente réservée aux personnes majeures.
-          </p>
-        </div>
-      </div>
-
-            {/* Search Modal */}
-            <SearchModal
-              isOpen={isSearchModalOpen}
-              onClose={() => setIsSearchModalOpen(false)}
-            />
-          </header>
+      {/* Search Modal */}
+      <SearchModal
+        isOpen={isSearchModalOpen}
+        onClose={() => setIsSearchModalOpen(false)}
+      />
+    </header>
   )
 }

@@ -98,7 +98,7 @@ export default function BlogPage() {
   const regularPosts = blogPosts.filter(post => !post.featured)
 
   return (
-    <div className="bg-brand-black min-h-screen text-gray-300 pt-24">
+    <div className="bg-brand-black min-h-screen text-gray-300 pt-36">
       {/* Hero Section */}
       <section className="py-20">
         <div className="container mx-auto px-6">

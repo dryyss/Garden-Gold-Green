@@ -169,7 +169,7 @@ function OrdersContent() {
 
   if (isLoading) {
     return (
-      <div className="bg-brand-black min-h-screen flex items-center justify-center pt-24">
+      <div className="bg-brand-black min-h-screen flex items-center justify-center pt-36">
         <div className="text-center">
           <div className="spinner mx-auto mb-4"></div>
           <p className="text-gray-400">Loading your orders...</p>
@@ -179,7 +179,7 @@ function OrdersContent() {
   }
 
   return (
-    <main className="bg-brand-black min-h-screen pt-24">
+    <main className="bg-brand-black min-h-screen pt-36">
       <div className="container mx-auto px-6 py-16">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">Order History</h1>

@@ -88,7 +88,7 @@ export default function CartPage() {
 
   if (state.items.length === 0) {
     return (
-      <div className="min-h-screen bg-brand-black pt-24">
+      <div className="min-h-screen bg-brand-black pt-36">
         <div className="container mx-auto px-4 py-12">
           {/* Breadcrumb */}
           <Breadcrumb 
@@ -142,7 +142,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-brand-black pt-24">
+    <div className="min-h-screen bg-brand-black pt-36">
       <div className="container mx-auto px-4 py-8">
         {/* Breadcrumb */}
         <Breadcrumb 

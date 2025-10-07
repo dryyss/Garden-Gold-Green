@@ -213,7 +213,7 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-brand-black pt-24">
+    <div className="min-h-screen bg-brand-black pt-36">
       {/* Header */}
       <div className="bg-brand-black border-b border-white/10">
         <div className="container mx-auto px-6 py-8">

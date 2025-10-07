@@ -158,7 +158,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   
   if (!post) {
     return (
-      <div className="bg-brand-black min-h-screen text-gray-300 pt-24">
+      <div className="bg-brand-black min-h-screen text-gray-300 pt-36">
         <div className="container mx-auto px-6 py-20 text-center">
           <h1 className="text-4xl font-bold text-white mb-4">Article non trouvé</h1>
           <p className="text-gray-400 mb-8">L'article que vous recherchez n'existe pas.</p>
@@ -171,7 +171,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   return (
-    <div className="bg-brand-black min-h-screen text-gray-300 pt-24">
+    <div className="bg-brand-black min-h-screen text-gray-300 pt-36">
       {/* Back Button */}
       <div className="container mx-auto px-6 py-8">
         <Link 
