@@ -14,10 +14,13 @@ import {
   faPlus,
   faCartShopping,
   faHeart,
-  faShare
+  faShare,
+  faCheck,
+  faSpinner
 } from '@fortawesome/free-solid-svg-icons'
 import { useCart } from '@/contexts/CartContext'
 import { useAuth } from '@/contexts/AuthContext'
+import { useNotifications } from '@/contexts/NotificationContext'
 import { StarRating } from '@/components/StarRating'
 import { ProductCard } from '@/components/ProductCard'
 import { Breadcrumb } from '@/components/Breadcrumb'
@@ -67,6 +70,8 @@ export default function ProductDetailPage() {
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null)
   const [activeTab, setActiveTab] = useState('description')
   const [isLoading, setIsLoading] = useState(false)
+  const [isAdded, setIsAdded] = useState(false)
+  const { addNotification } = useNotifications()
 
   // Transformer les données de l'ancienne structure vers la nouvelle
   const transformProduct = (product: any): Product => {
@@ -127,9 +132,10 @@ export default function ProductDetailPage() {
   }, [params.slug])
 
   const handleAddToCart = async () => {
-    if (!product || !selectedVariant) return
+    if (!product || !selectedVariant || isLoading || isAdded) return
     
     setIsLoading(true)
+    
     try {
       // Ajouter chaque article individuellement
       for (let i = 0; i < quantity; i++) {
@@ -144,12 +150,33 @@ export default function ProductDetailPage() {
           }
         })
       }
-      // Réinitialiser la quantité
-      setQuantity(1)
+      
+      // Animation de succès
+      setIsLoading(false)
+      setIsAdded(true)
+      
+      // Notification de succès
+      addNotification({
+        type: 'success',
+        title: 'Ajouté au panier !',
+        message: `${quantity} x ${product.name} - ${selectedVariant.weight}${selectedVariant.unit}`,
+        duration: 3000
+      })
+      
+      // Réinitialiser après 2 secondes
+      setTimeout(() => {
+        setIsAdded(false)
+        setQuantity(1)
+      }, 2000)
     } catch (error) {
       console.error('Error adding to cart:', error)
-    } finally {
       setIsLoading(false)
+      addNotification({
+        type: 'error',
+        title: 'Erreur',
+        message: 'Impossible d\'ajouter le produit au panier',
+        duration: 3000
+      })
     }
   }
 
@@ -300,13 +327,37 @@ export default function ProductDetailPage() {
               </div>
               <button
                 onClick={handleAddToCart}
-                disabled={!selectedVariant || selectedVariant.stock === 0 || isLoading}
-                className={`btn-gold text-black font-bold py-3 px-8 rounded-full shadow-gold-glow flex-grow text-lg flex items-center justify-center gap-2 ${
-                  !selectedVariant || selectedVariant.stock === 0 || isLoading ? 'opacity-50 cursor-not-allowed' : ''
-                }`}
+                disabled={!selectedVariant || selectedVariant.stock === 0 || isLoading || isAdded}
+                className={`
+                  font-bold py-3 px-8 rounded-full flex-grow text-lg flex items-center justify-center gap-2
+                  transition-all duration-300
+                  ${isAdded
+                    ? 'bg-brand-green text-white shadow-green-glow'
+                    : selectedVariant && selectedVariant.stock > 0
+                    ? 'btn-gold text-black shadow-gold-glow hover:scale-105'
+                    : 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                  }
+                  ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}
+                `}
               >
-                <FontAwesomeIcon icon={faCartShopping} />
-                {isLoading ? 'Ajout...' : selectedVariant?.stock === 0 ? 'Rupture de stock' : 'Ajouter au panier'}
+                {isLoading ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+                    <span>Ajout...</span>
+                  </>
+                ) : isAdded ? (
+                  <>
+                    <FontAwesomeIcon icon={faCheck} className="w-5 h-5 animate-bounce" />
+                    <span>Ajouté !</span>
+                  </>
+                ) : selectedVariant?.stock === 0 ? (
+                  'Rupture de stock'
+                ) : (
+                  <>
+                    <FontAwesomeIcon icon={faCartShopping} />
+                    <span>Ajouter au panier</span>
+                  </>
+                )}
               </button>
             </div>
 

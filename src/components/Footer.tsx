@@ -9,11 +9,11 @@ export function Footer() {
           <div className="col-span-1 md:col-span-1">
             <div className="flex items-center mb-4">
               <Image 
-                className="h-10 w-10 mr-2" 
-                src="https://storage.googleapis.com/uxpilot-auth.appspot.com/defad6bb57-cb8488a377dee3620ae4.png" 
-                alt="3G - Garden Gold Green logo icon, gold and green, simple and elegant"
-                width={40}
-                height={40}
+                className="h-12 w-12 mr-3" 
+                src="/logo.png" 
+                alt="Garden Gold Green - Logo Premium CBD"
+                width={48}
+                height={48}
               />
               <span className="text-white text-lg font-bold">GARDEN GOLD GREEN</span>
             </div>
