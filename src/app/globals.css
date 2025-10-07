@@ -393,15 +393,6 @@ body {
   }
 }
 
-@keyframes bounce-slow {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
 @keyframes pulse {
   0% {
     transform: scale(1);
@@ -446,10 +437,6 @@ body {
 
 .animate-bounce {
   animation: bounce 0.6s ease-in-out;
-}
-
-.animate-bounce-slow {
-  animation: bounce-slow 2s ease-in-out infinite;
 }
 
 .animate-pulse-custom {

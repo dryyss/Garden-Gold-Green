@@ -6,9 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
   faUser, 
   faArrowLeft,
-  faCheckCircle
-} from '@fortawesome/free-solid-svg-icons'
-import { 
+  faCheckCircle,
   faApple,
   faGoogle,
   faFacebook
@@ -102,7 +100,7 @@ export default function AuthPage() {
                 className="w-full bg-black text-white font-bold py-4 px-6 rounded-xl hover:bg-gray-800 transition-all duration-300 flex items-center justify-center gap-3 border border-gray-600"
               >
                 <FontAwesomeIcon icon={faApple} className="text-xl" />
-                {isLoginMode ? 'Continuer avec Apple' : 'S&apos;inscrire avec Apple'}
+                {isLoginMode ? 'Continuer avec Apple' : 'S\'inscrire avec Apple'}
               </button>
 
               {/* Google */}
@@ -112,7 +110,7 @@ export default function AuthPage() {
                 className="w-full bg-white text-gray-800 font-bold py-4 px-6 rounded-xl hover:bg-gray-100 transition-all duration-300 flex items-center justify-center gap-3 border border-gray-300"
               >
                 <FontAwesomeIcon icon={faGoogle} className="text-xl text-red-500" />
-                {isLoginMode ? 'Continuer avec Google' : 'S&apos;inscrire avec Google'}
+                {isLoginMode ? 'Continuer avec Google' : 'S\'inscrire avec Google'}
               </button>
 
               {/* Facebook */}
@@ -122,7 +120,7 @@ export default function AuthPage() {
                 className="w-full bg-blue-600 text-white font-bold py-4 px-6 rounded-xl hover:bg-blue-700 transition-all duration-300 flex items-center justify-center gap-3"
               >
                 <FontAwesomeIcon icon={faFacebook} className="text-xl" />
-                {isLoginMode ? 'Continuer avec Facebook' : 'S&apos;inscrire avec Facebook'}
+                {isLoginMode ? 'Continuer avec Facebook' : 'S\'inscrire avec Facebook'}
               </button>
 
               {/* Auth0 */}
@@ -152,7 +150,7 @@ export default function AuthPage() {
             {/* Switch Mode */}
             <div className="text-center mt-6">
               <p className="text-gray-400">
-                {isLoginMode ? "Vous n&apos;avez pas de compte ?" : "Vous avez déjà un compte ?"}
+                {isLoginMode ? "Vous n'avez pas de compte ?" : "Vous avez déjà un compte ?"}
               </p>
               <button
                 onClick={() => setIsLoginMode(!isLoginMode)}
@@ -190,7 +188,7 @@ export default function AuthPage() {
             <p className="text-xs text-gray-500">
               En continuant, vous acceptez nos{' '}
               <a href="/terms" className="text-brand-gold hover:text-yellow-300">
-                Conditions d&apos;utilisation
+                Conditions d'utilisation
               </a>{' '}
               et notre{' '}
               <a href="/privacy" className="text-brand-gold hover:text-yellow-300">

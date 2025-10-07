@@ -35,7 +35,7 @@ export function Header() {
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false)
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
-  const { state, dispatch } = useCart()
+  const { state } = useCart()
   const { state: authState, logout, isAdmin } = useAuth()
 
   // Gérer le scroll pour réduire la barre jaune
@@ -253,8 +253,8 @@ export function Header() {
           )}
 
           {/* Cart button */}
-          <button 
-            onClick={() => dispatch({ type: 'TOGGLE_CART' })}
+          <Link 
+            href="/cart"
             className="relative text-gray-300 hover:text-brand-gold transition-colors duration-300 p-2"
             data-cart-icon
           >
@@ -264,7 +264,7 @@ export function Header() {
                 {state.totalItems}
               </span>
             )}
-          </button>
+          </Link>
 
               {/* Mobile menu button */}
               <button
