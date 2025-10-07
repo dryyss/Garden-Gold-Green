@@ -21,7 +21,7 @@ interface CartState {
 
 type CartAction =
   | { type: 'ADD_ITEM'; payload: Omit<CartItem, 'quantity'> }
-  | { type: 'REMOVE_ITEM'; payload: string }
+  | { type: 'REMOVE_ITEM'; payload: { id: string } }
   | { type: 'UPDATE_QUANTITY'; payload: { id: string; quantity: number } }
   | { type: 'CLEAR_CART' }
   | { type: 'TOGGLE_CART' }
@@ -62,12 +62,12 @@ function cartReducer(state: CartState, action: CartAction): CartState {
     }
 
     case 'REMOVE_ITEM': {
-      const itemToRemove = state.items.find(item => item.id === action.payload)
+      const itemToRemove = state.items.find(item => item.id === action.payload.id)
       if (!itemToRemove) return state
 
       return {
         ...state,
-        items: state.items.filter(item => item.id !== action.payload),
+        items: state.items.filter(item => item.id !== action.payload.id),
         totalItems: state.totalItems - itemToRemove.quantity,
         totalPrice: state.totalPrice - (itemToRemove.price * itemToRemove.quantity)
       }
@@ -75,7 +75,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
 
     case 'UPDATE_QUANTITY': {
       if (action.payload.quantity <= 0) {
-        return cartReducer(state, { type: 'REMOVE_ITEM', payload: action.payload.id })
+        return cartReducer(state, { type: 'REMOVE_ITEM', payload: { id: action.payload.id } })
       }
 
       const updatedItems = state.items.map(item =>

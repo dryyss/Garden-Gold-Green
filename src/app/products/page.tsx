@@ -424,9 +424,9 @@ export default function ProductsPage() {
 
         {/* Zone principale des produits - Scrollable avec pagination fixe */}
         <div className="flex-1 flex flex-col">
-          <div className="flex-1 overflow-y-auto p-6">
-            {/* Barre de contrôles */}
-            <div className="flex items-center justify-between mb-6">
+          {/* Barre de contrôles - Fixe */}
+          <div className="bg-brand-black border-b border-white/10 px-6 py-4 flex-shrink-0">
+            <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <h2 className="text-xl font-semibold text-white">
                   {pagination.totalProducts} produit{pagination.totalProducts > 1 ? 's' : ''}
@@ -496,7 +496,10 @@ export default function ProductsPage() {
                 </div>
               </div>
             </div>
+          </div>
 
+          {/* Zone scrollable des produits */}
+          <div className="flex-1 overflow-y-auto p-6">
             {/* Grille des produits */}
             {products.length > 0 ? (
               <div className={`grid gap-6 ${
