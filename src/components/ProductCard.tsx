@@ -9,6 +9,16 @@ import { useCart } from '@/contexts/CartContext'
 import { useNotifications } from '@/contexts/NotificationContext'
 import { StarRating } from './StarRating'
 
+interface Variant {
+  id: string
+  weight: number
+  unit: string
+  priceCents: number
+  stock: number
+  sku: string
+  isDefault: boolean
+}
+
 interface Product {
   id: string
   name: string
@@ -24,6 +34,8 @@ interface Product {
   isBestSeller?: boolean
   slug?: string
   cbdPercent?: number
+  variants?: Variant[]
+  totalStock?: number
 }
 
 interface ProductCardProps {
@@ -144,6 +156,21 @@ export function ProductCard({ product, className = '' }: ProductCardProps) {
         <h3 className="text-xl font-semibold text-white mb-2 line-clamp-2">
           {product.name}
         </h3>
+
+        {/* Stock indicator */}
+        {product.totalStock !== undefined && (
+          <div className="mb-2">
+            {product.totalStock === 0 ? (
+              <span className="text-xs text-red-500 font-semibold">Rupture de stock</span>
+            ) : product.totalStock < 10 ? (
+              <span className="text-xs text-orange-500 font-semibold">Plus que {product.totalStock} en stock !</span>
+            ) : product.totalStock < 30 ? (
+              <span className="text-xs text-yellow-500">{product.totalStock} en stock</span>
+            ) : (
+              <span className="text-xs text-green-500">En stock</span>
+            )}
+          </div>
+        )}
 
         <p className="text-gray-400 text-sm mb-4 line-clamp-2">
           {product.description}

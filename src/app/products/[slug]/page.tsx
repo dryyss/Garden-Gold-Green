@@ -22,7 +22,18 @@ import { StarRating } from '@/components/StarRating'
 import { ProductCard } from '@/components/ProductCard'
 import { Breadcrumb } from '@/components/Breadcrumb'
 import { ImageWithLoading, ProductImage } from '@/components/ImageWithLoading'
+import { VariantSelector } from '@/components/VariantSelector'
 import productsData from '@/data/products.json'
+
+interface Variant {
+  id: string
+  weight: number
+  unit: string
+  priceCents: number
+  stock: number
+  sku: string
+  isDefault: boolean
+}
 
 interface Product {
   id: string
@@ -41,6 +52,8 @@ interface Product {
   usage: string
   labResults: string
   relatedProducts: string[]
+  variants: Variant[]
+  totalStock: number
 }
 
 export default function ProductDetailPage() {
@@ -51,7 +64,7 @@ export default function ProductDetailPage() {
   const [product, setProduct] = useState<Product | null>(null)
   const [selectedImage, setSelectedImage] = useState(0)
   const [quantity, setQuantity] = useState(1)
-  const [selectedStrength, setSelectedStrength] = useState('1000mg - Standard Potency')
+  const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null)
   const [activeTab, setActiveTab] = useState('description')
   const [isLoading, setIsLoading] = useState(false)
 
@@ -68,7 +81,9 @@ export default function ProductDetailPage() {
       longDescription: product.longDescription || "Notre produit phare, l'huile CBD Gold Standard, offre un mélange puissant et à spectre complet de cannabinoïdes et de terpènes. Soigneusement extraite de chanvre biologique pour soutenir l'équilibre, la récupération et le bien-être général.",
       rating: 4.5, // Valeur par défaut
       reviewCount: Math.floor(Math.random() * 100) + 10, // Valeur aléatoire
-      inStock: product.stock > 0,
+      inStock: product.totalStock > 0,
+      variants: product.variants || [],
+      totalStock: product.totalStock || product.stock || 0,
       features: [
         '100% Biologique et Non-OGM',
         'Testé en laboratoire tiers',
@@ -104,29 +119,43 @@ export default function ProductDetailPage() {
         'https://storage.googleapis.com/uxpilot-auth.appspot.com/f28d3694b1-28c8a8a3cb15af90b81e.png'
       ]
       setProduct(transformedProduct)
+      
+      // Sélectionner la variante par défaut
+      const defaultVariant = transformedProduct.variants.find(v => v.isDefault) || transformedProduct.variants[0]
+      setSelectedVariant(defaultVariant)
     }
   }, [params.slug])
 
   const handleAddToCart = async () => {
-    if (!product) return
+    if (!product || !selectedVariant) return
     
     setIsLoading(true)
     try {
-      dispatch({
-        type: 'ADD_ITEM',
-        payload: {
-          id: product.id,
-          name: product.name,
-          price: product.price,
-          image: product.images[0],
-          quantity: quantity
-        }
-      })
+      // Ajouter chaque article individuellement
+      for (let i = 0; i < quantity; i++) {
+        dispatch({
+          type: 'ADD_ITEM',
+          payload: {
+            id: `${product.id}-${selectedVariant.id}`,
+            name: `${product.name} - ${selectedVariant.weight}${selectedVariant.unit}`,
+            price: selectedVariant.priceCents / 100,
+            image: product.images[0],
+            quantity: 1
+          }
+        })
+      }
+      // Réinitialiser la quantité
+      setQuantity(1)
     } catch (error) {
       console.error('Error adding to cart:', error)
     } finally {
       setIsLoading(false)
     }
+  }
+
+  const handleVariantChange = (variant: Variant) => {
+    setSelectedVariant(variant)
+    setQuantity(1) // Réinitialiser la quantité lors du changement de variante
   }
 
   const handleAddToFavorites = () => {
@@ -233,28 +262,24 @@ export default function ProductDetailPage() {
 
             <div className="flex items-center gap-4 mb-6">
               <span className="text-4xl font-bold gold-text-gradient">
-                {product.price.toFixed(2)} €
+                {selectedVariant ? (selectedVariant.priceCents / 100).toFixed(2) : product.price.toFixed(2)} €
               </span>
-              {product.originalPrice && product.originalPrice > product.price && (
+              {product.originalPrice && product.originalPrice > (selectedVariant ? selectedVariant.priceCents / 100 : product.price) && (
                 <span className="text-gray-500 line-through text-lg">
                   {product.originalPrice.toFixed(2)} €
                 </span>
               )}
             </div>
 
-            {/* Strength Selection */}
-            <div className="mb-6">
-              <label className="block text-white font-semibold mb-2">Concentration :</label>
-              <select
-                value={selectedStrength}
-                onChange={(e) => setSelectedStrength(e.target.value)}
-                className="w-full bg-white text-black border border-white/20 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-brand-gold transition-all duration-300"
-              >
-                <option className="text-black bg-white">1000mg - Concentration standard</option>
-                <option className="text-black bg-white">2000mg - Concentration élevée</option>
-                <option className="text-black bg-white">3000mg - Concentration maximale</option>
-              </select>
-            </div>
+            {/* Variant Selector */}
+            {product.variants && product.variants.length > 0 && selectedVariant && (
+              <VariantSelector
+                variants={product.variants}
+                selectedVariant={selectedVariant}
+                onVariantChange={handleVariantChange}
+                className="mb-8"
+              />
+            )}
 
             {/* Quantity and Add to Cart */}
             <div className="flex items-center gap-4 mb-8">
@@ -267,7 +292,7 @@ export default function ProductDetailPage() {
                 </button>
                 <span className="w-10 text-center font-semibold text-white">{quantity}</span>
                 <button
-                  onClick={() => setQuantity(quantity + 1)}
+                  onClick={() => setQuantity(Math.min((selectedVariant?.stock || 99), quantity + 1))}
                   className="w-10 h-10 text-gray-400 hover:text-white transition-colors"
                 >
                   <FontAwesomeIcon icon={faPlus} />
@@ -275,13 +300,13 @@ export default function ProductDetailPage() {
               </div>
               <button
                 onClick={handleAddToCart}
-                disabled={!product.inStock || isLoading}
+                disabled={!selectedVariant || selectedVariant.stock === 0 || isLoading}
                 className={`btn-gold text-black font-bold py-3 px-8 rounded-full shadow-gold-glow flex-grow text-lg flex items-center justify-center gap-2 ${
-                  !product.inStock || isLoading ? 'opacity-50 cursor-not-allowed' : ''
+                  !selectedVariant || selectedVariant.stock === 0 || isLoading ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
               >
                 <FontAwesomeIcon icon={faCartShopping} />
-                {isLoading ? 'Ajout...' : 'Ajouter au panier'}
+                {isLoading ? 'Ajout...' : selectedVariant?.stock === 0 ? 'Rupture de stock' : 'Ajouter au panier'}
               </button>
             </div>
 

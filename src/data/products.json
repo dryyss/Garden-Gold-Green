@@ -18,7 +18,37 @@
         "name": "Huiles CBD",
         "slug": "huiles-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "1-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 2990,
+        "stock": 23,
+        "sku": "GG-OL-10-10",
+        "isDefault": true
+      },
+      {
+        "id": "1-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 7475,
+        "stock": 88,
+        "sku": "GG-OL-10-30",
+        "isDefault": false
+      },
+      {
+        "id": "1-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 11960,
+        "stock": 86,
+        "sku": "GG-OL-10-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 197
   },
   {
     "id": "2",
@@ -39,7 +69,37 @@
         "name": "Huiles CBD",
         "slug": "huiles-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "2-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 4990,
+        "stock": 22,
+        "sku": "GG-OL-20-10",
+        "isDefault": true
+      },
+      {
+        "id": "2-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 12475,
+        "stock": 14,
+        "sku": "GG-OL-20-30",
+        "isDefault": false
+      },
+      {
+        "id": "2-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 19960,
+        "stock": 79,
+        "sku": "GG-OL-20-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 115
   },
   {
     "id": "3",
@@ -60,7 +120,37 @@
         "name": "Cosmétiques CBD",
         "slug": "cosmetiques-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "3-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 3490,
+        "stock": 10,
+        "sku": "GG-CR-REL-10",
+        "isDefault": true
+      },
+      {
+        "id": "3-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 8725,
+        "stock": 86,
+        "sku": "GG-CR-REL-30",
+        "isDefault": false
+      },
+      {
+        "id": "3-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 13960,
+        "stock": 69,
+        "sku": "GG-CR-REL-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 165
   },
   {
     "id": "4",
@@ -81,7 +171,46 @@
         "name": "Fleurs CBD",
         "slug": "fleurs-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "4-v1",
+        "weight": 1,
+        "unit": "g",
+        "priceCents": 4999,
+        "stock": 76,
+        "sku": "GG-GU-25-1",
+        "isDefault": true
+      },
+      {
+        "id": "4-v2",
+        "weight": 3,
+        "unit": "g",
+        "priceCents": 12498,
+        "stock": 102,
+        "sku": "GG-GU-25-3",
+        "isDefault": false
+      },
+      {
+        "id": "4-v3",
+        "weight": 5,
+        "unit": "g",
+        "priceCents": 19996,
+        "stock": 55,
+        "sku": "GG-GU-25-5",
+        "isDefault": false
+      },
+      {
+        "id": "4-v4",
+        "weight": 10,
+        "unit": "g",
+        "priceCents": 29994,
+        "stock": 20,
+        "sku": "GG-GU-25-10",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 253
   },
   {
     "id": "5",
@@ -102,7 +231,37 @@
         "name": "Huiles CBD",
         "slug": "huiles-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "5-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 5990,
+        "stock": 18,
+        "sku": "GG-CP-15-10",
+        "isDefault": true
+      },
+      {
+        "id": "5-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 14975,
+        "stock": 87,
+        "sku": "GG-CP-15-30",
+        "isDefault": false
+      },
+      {
+        "id": "5-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 23960,
+        "stock": 81,
+        "sku": "GG-CP-15-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 186
   },
   {
     "id": "6",
@@ -123,7 +282,46 @@
         "name": "Fleurs CBD",
         "slug": "fleurs-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "6-v1",
+        "weight": 1,
+        "unit": "g",
+        "priceCents": 8990,
+        "stock": 80,
+        "sku": "GG-VP-ST-1",
+        "isDefault": true
+      },
+      {
+        "id": "6-v2",
+        "weight": 3,
+        "unit": "g",
+        "priceCents": 22475,
+        "stock": 103,
+        "sku": "GG-VP-ST-3",
+        "isDefault": false
+      },
+      {
+        "id": "6-v3",
+        "weight": 5,
+        "unit": "g",
+        "priceCents": 35960,
+        "stock": 25,
+        "sku": "GG-VP-ST-5",
+        "isDefault": false
+      },
+      {
+        "id": "6-v4",
+        "weight": 10,
+        "unit": "g",
+        "priceCents": 53940,
+        "stock": 67,
+        "sku": "GG-VP-ST-10",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 275
   },
   {
     "id": "7",
@@ -144,7 +342,37 @@
         "name": "Cosmétiques CBD",
         "slug": "cosmetiques-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "7-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 4290,
+        "stock": 40,
+        "sku": "GG-MO-REL-10",
+        "isDefault": true
+      },
+      {
+        "id": "7-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 10725,
+        "stock": 56,
+        "sku": "GG-MO-REL-30",
+        "isDefault": false
+      },
+      {
+        "id": "7-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 17160,
+        "stock": 23,
+        "sku": "GG-MO-REL-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 119
   },
   {
     "id": "8",
@@ -165,7 +393,46 @@
         "name": "Fleurs CBD",
         "slug": "fleurs-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "8-v1",
+        "weight": 1,
+        "unit": "g",
+        "priceCents": 6990,
+        "stock": 65,
+        "sku": "GG-SG-50-1",
+        "isDefault": true
+      },
+      {
+        "id": "8-v2",
+        "weight": 3,
+        "unit": "g",
+        "priceCents": 17475,
+        "stock": 59,
+        "sku": "GG-SG-50-3",
+        "isDefault": false
+      },
+      {
+        "id": "8-v3",
+        "weight": 5,
+        "unit": "g",
+        "priceCents": 27960,
+        "stock": 68,
+        "sku": "GG-SG-50-5",
+        "isDefault": false
+      },
+      {
+        "id": "8-v4",
+        "weight": 10,
+        "unit": "g",
+        "priceCents": 41940,
+        "stock": 37,
+        "sku": "GG-SG-50-10",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 229
   },
   {
     "id": "9",
@@ -186,7 +453,37 @@
         "name": "Cosmétiques CBD",
         "slug": "cosmetiques-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "9-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 7990,
+        "stock": 61,
+        "sku": "GG-FS-AA-10",
+        "isDefault": true
+      },
+      {
+        "id": "9-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 19975,
+        "stock": 26,
+        "sku": "GG-FS-AA-30",
+        "isDefault": false
+      },
+      {
+        "id": "9-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 31960,
+        "stock": 14,
+        "sku": "GG-FS-AA-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 101
   },
   {
     "id": "10",
@@ -207,7 +504,46 @@
         "name": "Fleurs CBD",
         "slug": "fleurs-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "10-v1",
+        "weight": 1,
+        "unit": "g",
+        "priceCents": 2490,
+        "stock": 19,
+        "sku": "GG-PT-SD-1",
+        "isDefault": true
+      },
+      {
+        "id": "10-v2",
+        "weight": 3,
+        "unit": "g",
+        "priceCents": 6225,
+        "stock": 42,
+        "sku": "GG-PT-SD-3",
+        "isDefault": false
+      },
+      {
+        "id": "10-v3",
+        "weight": 5,
+        "unit": "g",
+        "priceCents": 9960,
+        "stock": 47,
+        "sku": "GG-PT-SD-5",
+        "isDefault": false
+      },
+      {
+        "id": "10-v4",
+        "weight": 10,
+        "unit": "g",
+        "priceCents": 14940,
+        "stock": 101,
+        "sku": "GG-PT-SD-10",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 209
   },
   {
     "id": "11",
@@ -228,7 +564,37 @@
         "name": "Huiles CBD",
         "slug": "huiles-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "11-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 8990,
+        "stock": 89,
+        "sku": "GG-HU-011-10",
+        "isDefault": true
+      },
+      {
+        "id": "11-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 22475,
+        "stock": 87,
+        "sku": "GG-HU-011-30",
+        "isDefault": false
+      },
+      {
+        "id": "11-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 35960,
+        "stock": 60,
+        "sku": "GG-HU-011-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 236
   },
   {
     "id": "12",
@@ -249,7 +615,37 @@
         "name": "Vape CBD",
         "slug": "vape-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "12-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 6990,
+        "stock": 51,
+        "sku": "GG-VA-012-10",
+        "isDefault": true
+      },
+      {
+        "id": "12-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 17475,
+        "stock": 68,
+        "sku": "GG-VA-012-30",
+        "isDefault": false
+      },
+      {
+        "id": "12-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 27960,
+        "stock": 85,
+        "sku": "GG-VA-012-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 204
   },
   {
     "id": "13",
@@ -270,7 +666,37 @@
         "name": "Vape CBD",
         "slug": "vape-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "13-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 1990,
+        "stock": 35,
+        "sku": "GG-VA-013-10",
+        "isDefault": true
+      },
+      {
+        "id": "13-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 4975,
+        "stock": 30,
+        "sku": "GG-VA-013-30",
+        "isDefault": false
+      },
+      {
+        "id": "13-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 7960,
+        "stock": 107,
+        "sku": "GG-VA-013-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 172
   },
   {
     "id": "14",
@@ -291,7 +717,37 @@
         "name": "Huiles CBD",
         "slug": "huiles-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "14-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 8990,
+        "stock": 76,
+        "sku": "GG-HU-014-10",
+        "isDefault": true
+      },
+      {
+        "id": "14-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 22475,
+        "stock": 80,
+        "sku": "GG-HU-014-30",
+        "isDefault": false
+      },
+      {
+        "id": "14-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 35960,
+        "stock": 58,
+        "sku": "GG-HU-014-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 214
   },
   {
     "id": "15",
@@ -312,7 +768,37 @@
         "name": "Capsules CBD",
         "slug": "capsules-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "15-v1",
+        "weight": 30,
+        "unit": "caps",
+        "priceCents": 7990,
+        "stock": 16,
+        "sku": "GG-CA-015-30",
+        "isDefault": true
+      },
+      {
+        "id": "15-v2",
+        "weight": 60,
+        "unit": "caps",
+        "priceCents": 19975,
+        "stock": 78,
+        "sku": "GG-CA-015-60",
+        "isDefault": false
+      },
+      {
+        "id": "15-v3",
+        "weight": 90,
+        "unit": "caps",
+        "priceCents": 31960,
+        "stock": 78,
+        "sku": "GG-CA-015-90",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 172
   },
   {
     "id": "16",
@@ -333,7 +819,37 @@
         "name": "Huiles CBD",
         "slug": "huiles-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "16-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 1990,
+        "stock": 44,
+        "sku": "GG-HU-016-10",
+        "isDefault": true
+      },
+      {
+        "id": "16-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 4975,
+        "stock": 75,
+        "sku": "GG-HU-016-30",
+        "isDefault": false
+      },
+      {
+        "id": "16-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 7960,
+        "stock": 68,
+        "sku": "GG-HU-016-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 187
   },
   {
     "id": "17",
@@ -354,7 +870,46 @@
         "name": "Fleurs CBD",
         "slug": "fleurs-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "17-v1",
+        "weight": 1,
+        "unit": "g",
+        "priceCents": 1990,
+        "stock": 46,
+        "sku": "GG-FL-017-1",
+        "isDefault": true
+      },
+      {
+        "id": "17-v2",
+        "weight": 3,
+        "unit": "g",
+        "priceCents": 4975,
+        "stock": 83,
+        "sku": "GG-FL-017-3",
+        "isDefault": false
+      },
+      {
+        "id": "17-v3",
+        "weight": 5,
+        "unit": "g",
+        "priceCents": 7960,
+        "stock": 13,
+        "sku": "GG-FL-017-5",
+        "isDefault": false
+      },
+      {
+        "id": "17-v4",
+        "weight": 10,
+        "unit": "g",
+        "priceCents": 11940,
+        "stock": 66,
+        "sku": "GG-FL-017-10",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 208
   },
   {
     "id": "18",
@@ -375,7 +930,46 @@
         "name": "Fleurs CBD",
         "slug": "fleurs-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "18-v1",
+        "weight": 1,
+        "unit": "g",
+        "priceCents": 4990,
+        "stock": 43,
+        "sku": "GG-FL-018-1",
+        "isDefault": true
+      },
+      {
+        "id": "18-v2",
+        "weight": 3,
+        "unit": "g",
+        "priceCents": 12475,
+        "stock": 51,
+        "sku": "GG-FL-018-3",
+        "isDefault": false
+      },
+      {
+        "id": "18-v3",
+        "weight": 5,
+        "unit": "g",
+        "priceCents": 19960,
+        "stock": 81,
+        "sku": "GG-FL-018-5",
+        "isDefault": false
+      },
+      {
+        "id": "18-v4",
+        "weight": 10,
+        "unit": "g",
+        "priceCents": 29940,
+        "stock": 35,
+        "sku": "GG-FL-018-10",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 210
   },
   {
     "id": "19",
@@ -396,7 +990,37 @@
         "name": "Huiles CBD",
         "slug": "huiles-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "19-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 7990,
+        "stock": 76,
+        "sku": "GG-HU-019-10",
+        "isDefault": true
+      },
+      {
+        "id": "19-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 19975,
+        "stock": 17,
+        "sku": "GG-HU-019-30",
+        "isDefault": false
+      },
+      {
+        "id": "19-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 31960,
+        "stock": 67,
+        "sku": "GG-HU-019-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 160
   },
   {
     "id": "20",
@@ -417,7 +1041,46 @@
         "name": "Fleurs CBD",
         "slug": "fleurs-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "20-v1",
+        "weight": 1,
+        "unit": "g",
+        "priceCents": 4990,
+        "stock": 50,
+        "sku": "GG-FL-020-1",
+        "isDefault": true
+      },
+      {
+        "id": "20-v2",
+        "weight": 3,
+        "unit": "g",
+        "priceCents": 12475,
+        "stock": 16,
+        "sku": "GG-FL-020-3",
+        "isDefault": false
+      },
+      {
+        "id": "20-v3",
+        "weight": 5,
+        "unit": "g",
+        "priceCents": 19960,
+        "stock": 27,
+        "sku": "GG-FL-020-5",
+        "isDefault": false
+      },
+      {
+        "id": "20-v4",
+        "weight": 10,
+        "unit": "g",
+        "priceCents": 29940,
+        "stock": 53,
+        "sku": "GG-FL-020-10",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 146
   },
   {
     "id": "21",
@@ -438,7 +1101,37 @@
         "name": "Huiles CBD",
         "slug": "huiles-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "21-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 5990,
+        "stock": 30,
+        "sku": "GG-HU-021-10",
+        "isDefault": true
+      },
+      {
+        "id": "21-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 14975,
+        "stock": 90,
+        "sku": "GG-HU-021-30",
+        "isDefault": false
+      },
+      {
+        "id": "21-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 23960,
+        "stock": 76,
+        "sku": "GG-HU-021-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 196
   },
   {
     "id": "22",
@@ -459,7 +1152,46 @@
         "name": "Fleurs CBD",
         "slug": "fleurs-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "22-v1",
+        "weight": 1,
+        "unit": "g",
+        "priceCents": 3990,
+        "stock": 28,
+        "sku": "GG-FL-022-1",
+        "isDefault": true
+      },
+      {
+        "id": "22-v2",
+        "weight": 3,
+        "unit": "g",
+        "priceCents": 9975,
+        "stock": 24,
+        "sku": "GG-FL-022-3",
+        "isDefault": false
+      },
+      {
+        "id": "22-v3",
+        "weight": 5,
+        "unit": "g",
+        "priceCents": 15960,
+        "stock": 77,
+        "sku": "GG-FL-022-5",
+        "isDefault": false
+      },
+      {
+        "id": "22-v4",
+        "weight": 10,
+        "unit": "g",
+        "priceCents": 23940,
+        "stock": 108,
+        "sku": "GG-FL-022-10",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 237
   },
   {
     "id": "23",
@@ -480,7 +1212,37 @@
         "name": "Capsules CBD",
         "slug": "capsules-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "23-v1",
+        "weight": 30,
+        "unit": "caps",
+        "priceCents": 7990,
+        "stock": 95,
+        "sku": "GG-CA-023-30",
+        "isDefault": true
+      },
+      {
+        "id": "23-v2",
+        "weight": 60,
+        "unit": "caps",
+        "priceCents": 19975,
+        "stock": 97,
+        "sku": "GG-CA-023-60",
+        "isDefault": false
+      },
+      {
+        "id": "23-v3",
+        "weight": 90,
+        "unit": "caps",
+        "priceCents": 31960,
+        "stock": 32,
+        "sku": "GG-CA-023-90",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 224
   },
   {
     "id": "24",
@@ -501,7 +1263,37 @@
         "name": "Huiles CBD",
         "slug": "huiles-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "24-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 5990,
+        "stock": 50,
+        "sku": "GG-HU-024-10",
+        "isDefault": true
+      },
+      {
+        "id": "24-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 14975,
+        "stock": 17,
+        "sku": "GG-HU-024-30",
+        "isDefault": false
+      },
+      {
+        "id": "24-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 23960,
+        "stock": 104,
+        "sku": "GG-HU-024-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 171
   },
   {
     "id": "25",
@@ -522,7 +1314,37 @@
         "name": "Vape CBD",
         "slug": "vape-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "25-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 8990,
+        "stock": 34,
+        "sku": "GG-VA-025-10",
+        "isDefault": true
+      },
+      {
+        "id": "25-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 22475,
+        "stock": 16,
+        "sku": "GG-VA-025-30",
+        "isDefault": false
+      },
+      {
+        "id": "25-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 35960,
+        "stock": 44,
+        "sku": "GG-VA-025-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 94
   },
   {
     "id": "26",
@@ -543,7 +1365,46 @@
         "name": "Fleurs CBD",
         "slug": "fleurs-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "26-v1",
+        "weight": 1,
+        "unit": "g",
+        "priceCents": 3990,
+        "stock": 65,
+        "sku": "GG-FL-026-1",
+        "isDefault": true
+      },
+      {
+        "id": "26-v2",
+        "weight": 3,
+        "unit": "g",
+        "priceCents": 9975,
+        "stock": 40,
+        "sku": "GG-FL-026-3",
+        "isDefault": false
+      },
+      {
+        "id": "26-v3",
+        "weight": 5,
+        "unit": "g",
+        "priceCents": 15960,
+        "stock": 82,
+        "sku": "GG-FL-026-5",
+        "isDefault": false
+      },
+      {
+        "id": "26-v4",
+        "weight": 10,
+        "unit": "g",
+        "priceCents": 23940,
+        "stock": 59,
+        "sku": "GG-FL-026-10",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 246
   },
   {
     "id": "27",
@@ -564,7 +1425,37 @@
         "name": "Huiles CBD",
         "slug": "huiles-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "27-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 8990,
+        "stock": 57,
+        "sku": "GG-HU-027-10",
+        "isDefault": true
+      },
+      {
+        "id": "27-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 22475,
+        "stock": 28,
+        "sku": "GG-HU-027-30",
+        "isDefault": false
+      },
+      {
+        "id": "27-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 35960,
+        "stock": 98,
+        "sku": "GG-HU-027-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 183
   },
   {
     "id": "28",
@@ -585,7 +1476,46 @@
         "name": "Fleurs CBD",
         "slug": "fleurs-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "28-v1",
+        "weight": 1,
+        "unit": "g",
+        "priceCents": 6990,
+        "stock": 67,
+        "sku": "GG-FL-028-1",
+        "isDefault": true
+      },
+      {
+        "id": "28-v2",
+        "weight": 3,
+        "unit": "g",
+        "priceCents": 17475,
+        "stock": 35,
+        "sku": "GG-FL-028-3",
+        "isDefault": false
+      },
+      {
+        "id": "28-v3",
+        "weight": 5,
+        "unit": "g",
+        "priceCents": 27960,
+        "stock": 74,
+        "sku": "GG-FL-028-5",
+        "isDefault": false
+      },
+      {
+        "id": "28-v4",
+        "weight": 10,
+        "unit": "g",
+        "priceCents": 41940,
+        "stock": 100,
+        "sku": "GG-FL-028-10",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 276
   },
   {
     "id": "29",
@@ -606,7 +1536,37 @@
         "name": "Vape CBD",
         "slug": "vape-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "29-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 8990,
+        "stock": 100,
+        "sku": "GG-VA-029-10",
+        "isDefault": true
+      },
+      {
+        "id": "29-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 22475,
+        "stock": 106,
+        "sku": "GG-VA-029-30",
+        "isDefault": false
+      },
+      {
+        "id": "29-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 35960,
+        "stock": 21,
+        "sku": "GG-VA-029-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 227
   },
   {
     "id": "30",
@@ -627,7 +1587,37 @@
         "name": "Vape CBD",
         "slug": "vape-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "30-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 1990,
+        "stock": 80,
+        "sku": "GG-VA-030-10",
+        "isDefault": true
+      },
+      {
+        "id": "30-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 4975,
+        "stock": 77,
+        "sku": "GG-VA-030-30",
+        "isDefault": false
+      },
+      {
+        "id": "30-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 7960,
+        "stock": 65,
+        "sku": "GG-VA-030-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 222
   },
   {
     "id": "31",
@@ -648,7 +1638,37 @@
         "name": "Capsules CBD",
         "slug": "capsules-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "31-v1",
+        "weight": 30,
+        "unit": "caps",
+        "priceCents": 4990,
+        "stock": 75,
+        "sku": "GG-CA-031-30",
+        "isDefault": true
+      },
+      {
+        "id": "31-v2",
+        "weight": 60,
+        "unit": "caps",
+        "priceCents": 12475,
+        "stock": 72,
+        "sku": "GG-CA-031-60",
+        "isDefault": false
+      },
+      {
+        "id": "31-v3",
+        "weight": 90,
+        "unit": "caps",
+        "priceCents": 19960,
+        "stock": 25,
+        "sku": "GG-CA-031-90",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 172
   },
   {
     "id": "32",
@@ -669,7 +1689,46 @@
         "name": "Fleurs CBD",
         "slug": "fleurs-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "32-v1",
+        "weight": 1,
+        "unit": "g",
+        "priceCents": 6990,
+        "stock": 78,
+        "sku": "GG-FL-032-1",
+        "isDefault": true
+      },
+      {
+        "id": "32-v2",
+        "weight": 3,
+        "unit": "g",
+        "priceCents": 17475,
+        "stock": 84,
+        "sku": "GG-FL-032-3",
+        "isDefault": false
+      },
+      {
+        "id": "32-v3",
+        "weight": 5,
+        "unit": "g",
+        "priceCents": 27960,
+        "stock": 78,
+        "sku": "GG-FL-032-5",
+        "isDefault": false
+      },
+      {
+        "id": "32-v4",
+        "weight": 10,
+        "unit": "g",
+        "priceCents": 41940,
+        "stock": 57,
+        "sku": "GG-FL-032-10",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 297
   },
   {
     "id": "33",
@@ -690,7 +1749,37 @@
         "name": "Huiles CBD",
         "slug": "huiles-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "33-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 4990,
+        "stock": 41,
+        "sku": "GG-HU-033-10",
+        "isDefault": true
+      },
+      {
+        "id": "33-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 12475,
+        "stock": 51,
+        "sku": "GG-HU-033-30",
+        "isDefault": false
+      },
+      {
+        "id": "33-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 19960,
+        "stock": 41,
+        "sku": "GG-HU-033-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 133
   },
   {
     "id": "34",
@@ -711,7 +1800,37 @@
         "name": "Capsules CBD",
         "slug": "capsules-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "34-v1",
+        "weight": 30,
+        "unit": "caps",
+        "priceCents": 6990,
+        "stock": 25,
+        "sku": "GG-CA-034-30",
+        "isDefault": true
+      },
+      {
+        "id": "34-v2",
+        "weight": 60,
+        "unit": "caps",
+        "priceCents": 17475,
+        "stock": 102,
+        "sku": "GG-CA-034-60",
+        "isDefault": false
+      },
+      {
+        "id": "34-v3",
+        "weight": 90,
+        "unit": "caps",
+        "priceCents": 27960,
+        "stock": 84,
+        "sku": "GG-CA-034-90",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 211
   },
   {
     "id": "35",
@@ -732,7 +1851,37 @@
         "name": "Capsules CBD",
         "slug": "capsules-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "35-v1",
+        "weight": 30,
+        "unit": "caps",
+        "priceCents": 3990,
+        "stock": 101,
+        "sku": "GG-CA-035-30",
+        "isDefault": true
+      },
+      {
+        "id": "35-v2",
+        "weight": 60,
+        "unit": "caps",
+        "priceCents": 9975,
+        "stock": 109,
+        "sku": "GG-CA-035-60",
+        "isDefault": false
+      },
+      {
+        "id": "35-v3",
+        "weight": 90,
+        "unit": "caps",
+        "priceCents": 15960,
+        "stock": 60,
+        "sku": "GG-CA-035-90",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 270
   },
   {
     "id": "36",
@@ -753,7 +1902,37 @@
         "name": "Huiles CBD",
         "slug": "huiles-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "36-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 5990,
+        "stock": 15,
+        "sku": "GG-HU-036-10",
+        "isDefault": true
+      },
+      {
+        "id": "36-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 14975,
+        "stock": 94,
+        "sku": "GG-HU-036-30",
+        "isDefault": false
+      },
+      {
+        "id": "36-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 23960,
+        "stock": 85,
+        "sku": "GG-HU-036-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 194
   },
   {
     "id": "37",
@@ -774,7 +1953,46 @@
         "name": "Fleurs CBD",
         "slug": "fleurs-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "37-v1",
+        "weight": 1,
+        "unit": "g",
+        "priceCents": 2990,
+        "stock": 73,
+        "sku": "GG-FL-037-1",
+        "isDefault": true
+      },
+      {
+        "id": "37-v2",
+        "weight": 3,
+        "unit": "g",
+        "priceCents": 7475,
+        "stock": 69,
+        "sku": "GG-FL-037-3",
+        "isDefault": false
+      },
+      {
+        "id": "37-v3",
+        "weight": 5,
+        "unit": "g",
+        "priceCents": 11960,
+        "stock": 42,
+        "sku": "GG-FL-037-5",
+        "isDefault": false
+      },
+      {
+        "id": "37-v4",
+        "weight": 10,
+        "unit": "g",
+        "priceCents": 17940,
+        "stock": 96,
+        "sku": "GG-FL-037-10",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 280
   },
   {
     "id": "38",
@@ -795,7 +2013,46 @@
         "name": "Fleurs CBD",
         "slug": "fleurs-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "38-v1",
+        "weight": 1,
+        "unit": "g",
+        "priceCents": 1990,
+        "stock": 54,
+        "sku": "GG-FL-038-1",
+        "isDefault": true
+      },
+      {
+        "id": "38-v2",
+        "weight": 3,
+        "unit": "g",
+        "priceCents": 4975,
+        "stock": 58,
+        "sku": "GG-FL-038-3",
+        "isDefault": false
+      },
+      {
+        "id": "38-v3",
+        "weight": 5,
+        "unit": "g",
+        "priceCents": 7960,
+        "stock": 17,
+        "sku": "GG-FL-038-5",
+        "isDefault": false
+      },
+      {
+        "id": "38-v4",
+        "weight": 10,
+        "unit": "g",
+        "priceCents": 11940,
+        "stock": 95,
+        "sku": "GG-FL-038-10",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 224
   },
   {
     "id": "39",
@@ -816,7 +2073,37 @@
         "name": "Cosmétiques CBD",
         "slug": "cosmetiques-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "39-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 1490,
+        "stock": 95,
+        "sku": "GG-CO-039-10",
+        "isDefault": true
+      },
+      {
+        "id": "39-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 3725,
+        "stock": 100,
+        "sku": "GG-CO-039-30",
+        "isDefault": false
+      },
+      {
+        "id": "39-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 5960,
+        "stock": 85,
+        "sku": "GG-CO-039-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 280
   },
   {
     "id": "40",
@@ -837,7 +2124,37 @@
         "name": "Cosmétiques CBD",
         "slug": "cosmetiques-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "40-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 7490,
+        "stock": 35,
+        "sku": "GG-CO-040-10",
+        "isDefault": true
+      },
+      {
+        "id": "40-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 18725,
+        "stock": 87,
+        "sku": "GG-CO-040-30",
+        "isDefault": false
+      },
+      {
+        "id": "40-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 29960,
+        "stock": 22,
+        "sku": "GG-CO-040-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 144
   },
   {
     "id": "41",
@@ -858,7 +2175,37 @@
         "name": "Vape CBD",
         "slug": "vape-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "41-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 7990,
+        "stock": 79,
+        "sku": "GG-VA-041-10",
+        "isDefault": true
+      },
+      {
+        "id": "41-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 19975,
+        "stock": 49,
+        "sku": "GG-VA-041-30",
+        "isDefault": false
+      },
+      {
+        "id": "41-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 31960,
+        "stock": 83,
+        "sku": "GG-VA-041-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 211
   },
   {
     "id": "42",
@@ -879,7 +2226,46 @@
         "name": "Fleurs CBD",
         "slug": "fleurs-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "42-v1",
+        "weight": 1,
+        "unit": "g",
+        "priceCents": 5990,
+        "stock": 29,
+        "sku": "GG-FL-042-1",
+        "isDefault": true
+      },
+      {
+        "id": "42-v2",
+        "weight": 3,
+        "unit": "g",
+        "priceCents": 14975,
+        "stock": 96,
+        "sku": "GG-FL-042-3",
+        "isDefault": false
+      },
+      {
+        "id": "42-v3",
+        "weight": 5,
+        "unit": "g",
+        "priceCents": 23960,
+        "stock": 107,
+        "sku": "GG-FL-042-5",
+        "isDefault": false
+      },
+      {
+        "id": "42-v4",
+        "weight": 10,
+        "unit": "g",
+        "priceCents": 35940,
+        "stock": 33,
+        "sku": "GG-FL-042-10",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 265
   },
   {
     "id": "43",
@@ -900,7 +2286,46 @@
         "name": "Fleurs CBD",
         "slug": "fleurs-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "43-v1",
+        "weight": 1,
+        "unit": "g",
+        "priceCents": 6990,
+        "stock": 22,
+        "sku": "GG-FL-043-1",
+        "isDefault": true
+      },
+      {
+        "id": "43-v2",
+        "weight": 3,
+        "unit": "g",
+        "priceCents": 17475,
+        "stock": 88,
+        "sku": "GG-FL-043-3",
+        "isDefault": false
+      },
+      {
+        "id": "43-v3",
+        "weight": 5,
+        "unit": "g",
+        "priceCents": 27960,
+        "stock": 34,
+        "sku": "GG-FL-043-5",
+        "isDefault": false
+      },
+      {
+        "id": "43-v4",
+        "weight": 10,
+        "unit": "g",
+        "priceCents": 41940,
+        "stock": 106,
+        "sku": "GG-FL-043-10",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 250
   },
   {
     "id": "44",
@@ -921,7 +2346,46 @@
         "name": "Fleurs CBD",
         "slug": "fleurs-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "44-v1",
+        "weight": 1,
+        "unit": "g",
+        "priceCents": 1990,
+        "stock": 92,
+        "sku": "GG-FL-044-1",
+        "isDefault": true
+      },
+      {
+        "id": "44-v2",
+        "weight": 3,
+        "unit": "g",
+        "priceCents": 4975,
+        "stock": 14,
+        "sku": "GG-FL-044-3",
+        "isDefault": false
+      },
+      {
+        "id": "44-v3",
+        "weight": 5,
+        "unit": "g",
+        "priceCents": 7960,
+        "stock": 108,
+        "sku": "GG-FL-044-5",
+        "isDefault": false
+      },
+      {
+        "id": "44-v4",
+        "weight": 10,
+        "unit": "g",
+        "priceCents": 11940,
+        "stock": 43,
+        "sku": "GG-FL-044-10",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 257
   },
   {
     "id": "45",
@@ -942,7 +2406,37 @@
         "name": "Cosmétiques CBD",
         "slug": "cosmetiques-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "45-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 3490,
+        "stock": 33,
+        "sku": "GG-CO-045-10",
+        "isDefault": true
+      },
+      {
+        "id": "45-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 8725,
+        "stock": 42,
+        "sku": "GG-CO-045-30",
+        "isDefault": false
+      },
+      {
+        "id": "45-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 13960,
+        "stock": 65,
+        "sku": "GG-CO-045-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 140
   },
   {
     "id": "46",
@@ -963,7 +2457,37 @@
         "name": "Huiles CBD",
         "slug": "huiles-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "46-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 4990,
+        "stock": 61,
+        "sku": "GG-HU-046-10",
+        "isDefault": true
+      },
+      {
+        "id": "46-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 12475,
+        "stock": 73,
+        "sku": "GG-HU-046-30",
+        "isDefault": false
+      },
+      {
+        "id": "46-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 19960,
+        "stock": 61,
+        "sku": "GG-HU-046-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 195
   },
   {
     "id": "47",
@@ -984,7 +2508,37 @@
         "name": "Cosmétiques CBD",
         "slug": "cosmetiques-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "47-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 7490,
+        "stock": 104,
+        "sku": "GG-CO-047-10",
+        "isDefault": true
+      },
+      {
+        "id": "47-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 18725,
+        "stock": 26,
+        "sku": "GG-CO-047-30",
+        "isDefault": false
+      },
+      {
+        "id": "47-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 29960,
+        "stock": 40,
+        "sku": "GG-CO-047-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 170
   },
   {
     "id": "48",
@@ -1005,7 +2559,37 @@
         "name": "Cosmétiques CBD",
         "slug": "cosmetiques-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "48-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 4490,
+        "stock": 94,
+        "sku": "GG-CO-048-10",
+        "isDefault": true
+      },
+      {
+        "id": "48-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 11225,
+        "stock": 14,
+        "sku": "GG-CO-048-30",
+        "isDefault": false
+      },
+      {
+        "id": "48-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 17960,
+        "stock": 79,
+        "sku": "GG-CO-048-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 187
   },
   {
     "id": "49",
@@ -1026,7 +2610,37 @@
         "name": "Huiles CBD",
         "slug": "huiles-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "49-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 3990,
+        "stock": 32,
+        "sku": "GG-HU-049-10",
+        "isDefault": true
+      },
+      {
+        "id": "49-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 9975,
+        "stock": 32,
+        "sku": "GG-HU-049-30",
+        "isDefault": false
+      },
+      {
+        "id": "49-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 15960,
+        "stock": 54,
+        "sku": "GG-HU-049-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 118
   },
   {
     "id": "50",
@@ -1047,7 +2661,37 @@
         "name": "Capsules CBD",
         "slug": "capsules-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "50-v1",
+        "weight": 30,
+        "unit": "caps",
+        "priceCents": 2990,
+        "stock": 96,
+        "sku": "GG-CA-050-30",
+        "isDefault": true
+      },
+      {
+        "id": "50-v2",
+        "weight": 60,
+        "unit": "caps",
+        "priceCents": 7475,
+        "stock": 11,
+        "sku": "GG-CA-050-60",
+        "isDefault": false
+      },
+      {
+        "id": "50-v3",
+        "weight": 90,
+        "unit": "caps",
+        "priceCents": 11960,
+        "stock": 89,
+        "sku": "GG-CA-050-90",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 196
   },
   {
     "id": "51",
@@ -1068,7 +2712,37 @@
         "name": "Capsules CBD",
         "slug": "capsules-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "51-v1",
+        "weight": 30,
+        "unit": "caps",
+        "priceCents": 4990,
+        "stock": 84,
+        "sku": "GG-CA-051-30",
+        "isDefault": true
+      },
+      {
+        "id": "51-v2",
+        "weight": 60,
+        "unit": "caps",
+        "priceCents": 12475,
+        "stock": 56,
+        "sku": "GG-CA-051-60",
+        "isDefault": false
+      },
+      {
+        "id": "51-v3",
+        "weight": 90,
+        "unit": "caps",
+        "priceCents": 19960,
+        "stock": 77,
+        "sku": "GG-CA-051-90",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 217
   },
   {
     "id": "52",
@@ -1089,7 +2763,37 @@
         "name": "Huiles CBD",
         "slug": "huiles-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "52-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 8990,
+        "stock": 62,
+        "sku": "GG-HU-052-10",
+        "isDefault": true
+      },
+      {
+        "id": "52-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 22475,
+        "stock": 39,
+        "sku": "GG-HU-052-30",
+        "isDefault": false
+      },
+      {
+        "id": "52-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 35960,
+        "stock": 47,
+        "sku": "GG-HU-052-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 148
   },
   {
     "id": "53",
@@ -1110,7 +2814,37 @@
         "name": "Huiles CBD",
         "slug": "huiles-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "53-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 6990,
+        "stock": 67,
+        "sku": "GG-HU-053-10",
+        "isDefault": true
+      },
+      {
+        "id": "53-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 17475,
+        "stock": 67,
+        "sku": "GG-HU-053-30",
+        "isDefault": false
+      },
+      {
+        "id": "53-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 27960,
+        "stock": 81,
+        "sku": "GG-HU-053-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 215
   },
   {
     "id": "54",
@@ -1131,7 +2865,37 @@
         "name": "Cosmétiques CBD",
         "slug": "cosmetiques-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "54-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 1490,
+        "stock": 33,
+        "sku": "GG-CO-054-10",
+        "isDefault": true
+      },
+      {
+        "id": "54-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 3725,
+        "stock": 83,
+        "sku": "GG-CO-054-30",
+        "isDefault": false
+      },
+      {
+        "id": "54-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 5960,
+        "stock": 11,
+        "sku": "GG-CO-054-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 127
   },
   {
     "id": "55",
@@ -1152,7 +2916,37 @@
         "name": "Vape CBD",
         "slug": "vape-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "55-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 4990,
+        "stock": 39,
+        "sku": "GG-VA-055-10",
+        "isDefault": true
+      },
+      {
+        "id": "55-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 12475,
+        "stock": 14,
+        "sku": "GG-VA-055-30",
+        "isDefault": false
+      },
+      {
+        "id": "55-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 19960,
+        "stock": 26,
+        "sku": "GG-VA-055-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 79
   },
   {
     "id": "56",
@@ -1173,7 +2967,37 @@
         "name": "Cosmétiques CBD",
         "slug": "cosmetiques-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "56-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 6490,
+        "stock": 40,
+        "sku": "GG-CO-056-10",
+        "isDefault": true
+      },
+      {
+        "id": "56-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 16225,
+        "stock": 16,
+        "sku": "GG-CO-056-30",
+        "isDefault": false
+      },
+      {
+        "id": "56-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 25960,
+        "stock": 44,
+        "sku": "GG-CO-056-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 100
   },
   {
     "id": "57",
@@ -1194,7 +3018,46 @@
         "name": "Fleurs CBD",
         "slug": "fleurs-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "57-v1",
+        "weight": 1,
+        "unit": "g",
+        "priceCents": 1990,
+        "stock": 47,
+        "sku": "GG-FL-057-1",
+        "isDefault": true
+      },
+      {
+        "id": "57-v2",
+        "weight": 3,
+        "unit": "g",
+        "priceCents": 4975,
+        "stock": 28,
+        "sku": "GG-FL-057-3",
+        "isDefault": false
+      },
+      {
+        "id": "57-v3",
+        "weight": 5,
+        "unit": "g",
+        "priceCents": 7960,
+        "stock": 27,
+        "sku": "GG-FL-057-5",
+        "isDefault": false
+      },
+      {
+        "id": "57-v4",
+        "weight": 10,
+        "unit": "g",
+        "priceCents": 11940,
+        "stock": 68,
+        "sku": "GG-FL-057-10",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 170
   },
   {
     "id": "58",
@@ -1215,7 +3078,37 @@
         "name": "Capsules CBD",
         "slug": "capsules-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "58-v1",
+        "weight": 30,
+        "unit": "caps",
+        "priceCents": 6990,
+        "stock": 97,
+        "sku": "GG-CA-058-30",
+        "isDefault": true
+      },
+      {
+        "id": "58-v2",
+        "weight": 60,
+        "unit": "caps",
+        "priceCents": 17475,
+        "stock": 79,
+        "sku": "GG-CA-058-60",
+        "isDefault": false
+      },
+      {
+        "id": "58-v3",
+        "weight": 90,
+        "unit": "caps",
+        "priceCents": 27960,
+        "stock": 23,
+        "sku": "GG-CA-058-90",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 199
   },
   {
     "id": "59",
@@ -1236,7 +3129,46 @@
         "name": "Fleurs CBD",
         "slug": "fleurs-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "59-v1",
+        "weight": 1,
+        "unit": "g",
+        "priceCents": 5990,
+        "stock": 79,
+        "sku": "GG-FL-059-1",
+        "isDefault": true
+      },
+      {
+        "id": "59-v2",
+        "weight": 3,
+        "unit": "g",
+        "priceCents": 14975,
+        "stock": 56,
+        "sku": "GG-FL-059-3",
+        "isDefault": false
+      },
+      {
+        "id": "59-v3",
+        "weight": 5,
+        "unit": "g",
+        "priceCents": 23960,
+        "stock": 62,
+        "sku": "GG-FL-059-5",
+        "isDefault": false
+      },
+      {
+        "id": "59-v4",
+        "weight": 10,
+        "unit": "g",
+        "priceCents": 35940,
+        "stock": 72,
+        "sku": "GG-FL-059-10",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 269
   },
   {
     "id": "60",
@@ -1257,7 +3189,37 @@
         "name": "Huiles CBD",
         "slug": "huiles-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "60-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 5990,
+        "stock": 50,
+        "sku": "GG-HU-060-10",
+        "isDefault": true
+      },
+      {
+        "id": "60-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 14975,
+        "stock": 64,
+        "sku": "GG-HU-060-30",
+        "isDefault": false
+      },
+      {
+        "id": "60-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 23960,
+        "stock": 80,
+        "sku": "GG-HU-060-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 194
   },
   {
     "id": "61",
@@ -1278,7 +3240,37 @@
         "name": "Huiles CBD",
         "slug": "huiles-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "61-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 2990,
+        "stock": 96,
+        "sku": "GG-HU-061-10",
+        "isDefault": true
+      },
+      {
+        "id": "61-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 7475,
+        "stock": 108,
+        "sku": "GG-HU-061-30",
+        "isDefault": false
+      },
+      {
+        "id": "61-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 11960,
+        "stock": 21,
+        "sku": "GG-HU-061-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 225
   },
   {
     "id": "62",
@@ -1299,7 +3291,37 @@
         "name": "Capsules CBD",
         "slug": "capsules-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "62-v1",
+        "weight": 30,
+        "unit": "caps",
+        "priceCents": 3990,
+        "stock": 86,
+        "sku": "GG-CA-062-30",
+        "isDefault": true
+      },
+      {
+        "id": "62-v2",
+        "weight": 60,
+        "unit": "caps",
+        "priceCents": 9975,
+        "stock": 35,
+        "sku": "GG-CA-062-60",
+        "isDefault": false
+      },
+      {
+        "id": "62-v3",
+        "weight": 90,
+        "unit": "caps",
+        "priceCents": 15960,
+        "stock": 86,
+        "sku": "GG-CA-062-90",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 207
   },
   {
     "id": "63",
@@ -1320,7 +3342,37 @@
         "name": "Huiles CBD",
         "slug": "huiles-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "63-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 4990,
+        "stock": 86,
+        "sku": "GG-HU-063-10",
+        "isDefault": true
+      },
+      {
+        "id": "63-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 12475,
+        "stock": 47,
+        "sku": "GG-HU-063-30",
+        "isDefault": false
+      },
+      {
+        "id": "63-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 19960,
+        "stock": 78,
+        "sku": "GG-HU-063-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 211
   },
   {
     "id": "64",
@@ -1341,7 +3393,37 @@
         "name": "Huiles CBD",
         "slug": "huiles-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "64-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 6990,
+        "stock": 77,
+        "sku": "GG-HU-064-10",
+        "isDefault": true
+      },
+      {
+        "id": "64-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 17475,
+        "stock": 40,
+        "sku": "GG-HU-064-30",
+        "isDefault": false
+      },
+      {
+        "id": "64-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 27960,
+        "stock": 45,
+        "sku": "GG-HU-064-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 162
   },
   {
     "id": "65",
@@ -1362,7 +3444,37 @@
         "name": "Cosmétiques CBD",
         "slug": "cosmetiques-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "65-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 1490,
+        "stock": 87,
+        "sku": "GG-CO-065-10",
+        "isDefault": true
+      },
+      {
+        "id": "65-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 3725,
+        "stock": 13,
+        "sku": "GG-CO-065-30",
+        "isDefault": false
+      },
+      {
+        "id": "65-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 5960,
+        "stock": 19,
+        "sku": "GG-CO-065-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 119
   },
   {
     "id": "66",
@@ -1383,7 +3495,37 @@
         "name": "Cosmétiques CBD",
         "slug": "cosmetiques-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "66-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 1490,
+        "stock": 62,
+        "sku": "GG-CO-066-10",
+        "isDefault": true
+      },
+      {
+        "id": "66-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 3725,
+        "stock": 34,
+        "sku": "GG-CO-066-30",
+        "isDefault": false
+      },
+      {
+        "id": "66-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 5960,
+        "stock": 42,
+        "sku": "GG-CO-066-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 138
   },
   {
     "id": "67",
@@ -1404,7 +3546,37 @@
         "name": "Huiles CBD",
         "slug": "huiles-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "67-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 5990,
+        "stock": 19,
+        "sku": "GG-HU-067-10",
+        "isDefault": true
+      },
+      {
+        "id": "67-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 14975,
+        "stock": 77,
+        "sku": "GG-HU-067-30",
+        "isDefault": false
+      },
+      {
+        "id": "67-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 23960,
+        "stock": 95,
+        "sku": "GG-HU-067-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 191
   },
   {
     "id": "68",
@@ -1425,7 +3597,37 @@
         "name": "Vape CBD",
         "slug": "vape-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "68-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 6990,
+        "stock": 60,
+        "sku": "GG-VA-068-10",
+        "isDefault": true
+      },
+      {
+        "id": "68-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 17475,
+        "stock": 14,
+        "sku": "GG-VA-068-30",
+        "isDefault": false
+      },
+      {
+        "id": "68-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 27960,
+        "stock": 107,
+        "sku": "GG-VA-068-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 181
   },
   {
     "id": "69",
@@ -1446,7 +3648,37 @@
         "name": "Cosmétiques CBD",
         "slug": "cosmetiques-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "69-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 7490,
+        "stock": 91,
+        "sku": "GG-CO-069-10",
+        "isDefault": true
+      },
+      {
+        "id": "69-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 18725,
+        "stock": 24,
+        "sku": "GG-CO-069-30",
+        "isDefault": false
+      },
+      {
+        "id": "69-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 29960,
+        "stock": 66,
+        "sku": "GG-CO-069-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 181
   },
   {
     "id": "70",
@@ -1467,7 +3699,37 @@
         "name": "Capsules CBD",
         "slug": "capsules-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "70-v1",
+        "weight": 30,
+        "unit": "caps",
+        "priceCents": 7990,
+        "stock": 39,
+        "sku": "GG-CA-070-30",
+        "isDefault": true
+      },
+      {
+        "id": "70-v2",
+        "weight": 60,
+        "unit": "caps",
+        "priceCents": 19975,
+        "stock": 72,
+        "sku": "GG-CA-070-60",
+        "isDefault": false
+      },
+      {
+        "id": "70-v3",
+        "weight": 90,
+        "unit": "caps",
+        "priceCents": 31960,
+        "stock": 56,
+        "sku": "GG-CA-070-90",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 167
   },
   {
     "id": "71",
@@ -1488,7 +3750,37 @@
         "name": "Vape CBD",
         "slug": "vape-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "71-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 3990,
+        "stock": 45,
+        "sku": "GG-VA-071-10",
+        "isDefault": true
+      },
+      {
+        "id": "71-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 9975,
+        "stock": 93,
+        "sku": "GG-VA-071-30",
+        "isDefault": false
+      },
+      {
+        "id": "71-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 15960,
+        "stock": 65,
+        "sku": "GG-VA-071-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 203
   },
   {
     "id": "72",
@@ -1509,7 +3801,37 @@
         "name": "Huiles CBD",
         "slug": "huiles-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "72-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 4990,
+        "stock": 58,
+        "sku": "GG-HU-072-10",
+        "isDefault": true
+      },
+      {
+        "id": "72-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 12475,
+        "stock": 74,
+        "sku": "GG-HU-072-30",
+        "isDefault": false
+      },
+      {
+        "id": "72-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 19960,
+        "stock": 36,
+        "sku": "GG-HU-072-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 168
   },
   {
     "id": "73",
@@ -1530,7 +3852,46 @@
         "name": "Fleurs CBD",
         "slug": "fleurs-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "73-v1",
+        "weight": 1,
+        "unit": "g",
+        "priceCents": 4990,
+        "stock": 90,
+        "sku": "GG-FL-073-1",
+        "isDefault": true
+      },
+      {
+        "id": "73-v2",
+        "weight": 3,
+        "unit": "g",
+        "priceCents": 12475,
+        "stock": 98,
+        "sku": "GG-FL-073-3",
+        "isDefault": false
+      },
+      {
+        "id": "73-v3",
+        "weight": 5,
+        "unit": "g",
+        "priceCents": 19960,
+        "stock": 94,
+        "sku": "GG-FL-073-5",
+        "isDefault": false
+      },
+      {
+        "id": "73-v4",
+        "weight": 10,
+        "unit": "g",
+        "priceCents": 29940,
+        "stock": 109,
+        "sku": "GG-FL-073-10",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 391
   },
   {
     "id": "74",
@@ -1551,7 +3912,37 @@
         "name": "Huiles CBD",
         "slug": "huiles-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "74-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 1990,
+        "stock": 20,
+        "sku": "GG-HU-074-10",
+        "isDefault": true
+      },
+      {
+        "id": "74-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 4975,
+        "stock": 52,
+        "sku": "GG-HU-074-30",
+        "isDefault": false
+      },
+      {
+        "id": "74-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 7960,
+        "stock": 52,
+        "sku": "GG-HU-074-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 124
   },
   {
     "id": "75",
@@ -1572,7 +3963,46 @@
         "name": "Fleurs CBD",
         "slug": "fleurs-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "75-v1",
+        "weight": 1,
+        "unit": "g",
+        "priceCents": 3990,
+        "stock": 74,
+        "sku": "GG-FL-075-1",
+        "isDefault": true
+      },
+      {
+        "id": "75-v2",
+        "weight": 3,
+        "unit": "g",
+        "priceCents": 9975,
+        "stock": 17,
+        "sku": "GG-FL-075-3",
+        "isDefault": false
+      },
+      {
+        "id": "75-v3",
+        "weight": 5,
+        "unit": "g",
+        "priceCents": 15960,
+        "stock": 92,
+        "sku": "GG-FL-075-5",
+        "isDefault": false
+      },
+      {
+        "id": "75-v4",
+        "weight": 10,
+        "unit": "g",
+        "priceCents": 23940,
+        "stock": 109,
+        "sku": "GG-FL-075-10",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 292
   },
   {
     "id": "76",
@@ -1593,7 +4023,37 @@
         "name": "Capsules CBD",
         "slug": "capsules-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "76-v1",
+        "weight": 30,
+        "unit": "caps",
+        "priceCents": 7990,
+        "stock": 33,
+        "sku": "GG-CA-076-30",
+        "isDefault": true
+      },
+      {
+        "id": "76-v2",
+        "weight": 60,
+        "unit": "caps",
+        "priceCents": 19975,
+        "stock": 93,
+        "sku": "GG-CA-076-60",
+        "isDefault": false
+      },
+      {
+        "id": "76-v3",
+        "weight": 90,
+        "unit": "caps",
+        "priceCents": 31960,
+        "stock": 71,
+        "sku": "GG-CA-076-90",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 197
   },
   {
     "id": "77",
@@ -1614,7 +4074,37 @@
         "name": "Capsules CBD",
         "slug": "capsules-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "77-v1",
+        "weight": 30,
+        "unit": "caps",
+        "priceCents": 5990,
+        "stock": 71,
+        "sku": "GG-CA-077-30",
+        "isDefault": true
+      },
+      {
+        "id": "77-v2",
+        "weight": 60,
+        "unit": "caps",
+        "priceCents": 14975,
+        "stock": 36,
+        "sku": "GG-CA-077-60",
+        "isDefault": false
+      },
+      {
+        "id": "77-v3",
+        "weight": 90,
+        "unit": "caps",
+        "priceCents": 23960,
+        "stock": 63,
+        "sku": "GG-CA-077-90",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 170
   },
   {
     "id": "78",
@@ -1635,7 +4125,37 @@
         "name": "Vape CBD",
         "slug": "vape-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "78-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 2990,
+        "stock": 76,
+        "sku": "GG-VA-078-10",
+        "isDefault": true
+      },
+      {
+        "id": "78-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 7475,
+        "stock": 50,
+        "sku": "GG-VA-078-30",
+        "isDefault": false
+      },
+      {
+        "id": "78-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 11960,
+        "stock": 40,
+        "sku": "GG-VA-078-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 166
   },
   {
     "id": "79",
@@ -1656,7 +4176,37 @@
         "name": "Capsules CBD",
         "slug": "capsules-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "79-v1",
+        "weight": 30,
+        "unit": "caps",
+        "priceCents": 4990,
+        "stock": 69,
+        "sku": "GG-CA-079-30",
+        "isDefault": true
+      },
+      {
+        "id": "79-v2",
+        "weight": 60,
+        "unit": "caps",
+        "priceCents": 12475,
+        "stock": 29,
+        "sku": "GG-CA-079-60",
+        "isDefault": false
+      },
+      {
+        "id": "79-v3",
+        "weight": 90,
+        "unit": "caps",
+        "priceCents": 19960,
+        "stock": 18,
+        "sku": "GG-CA-079-90",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 116
   },
   {
     "id": "80",
@@ -1677,7 +4227,37 @@
         "name": "Cosmétiques CBD",
         "slug": "cosmetiques-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "80-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 2490,
+        "stock": 49,
+        "sku": "GG-CO-080-10",
+        "isDefault": true
+      },
+      {
+        "id": "80-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 6225,
+        "stock": 36,
+        "sku": "GG-CO-080-30",
+        "isDefault": false
+      },
+      {
+        "id": "80-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 9960,
+        "stock": 61,
+        "sku": "GG-CO-080-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 146
   },
   {
     "id": "81",
@@ -1698,7 +4278,37 @@
         "name": "Cosmétiques CBD",
         "slug": "cosmetiques-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "81-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 4490,
+        "stock": 79,
+        "sku": "GG-CO-081-10",
+        "isDefault": true
+      },
+      {
+        "id": "81-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 11225,
+        "stock": 69,
+        "sku": "GG-CO-081-30",
+        "isDefault": false
+      },
+      {
+        "id": "81-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 17960,
+        "stock": 65,
+        "sku": "GG-CO-081-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 213
   },
   {
     "id": "82",
@@ -1719,7 +4329,46 @@
         "name": "Fleurs CBD",
         "slug": "fleurs-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "82-v1",
+        "weight": 1,
+        "unit": "g",
+        "priceCents": 3990,
+        "stock": 102,
+        "sku": "GG-FL-082-1",
+        "isDefault": true
+      },
+      {
+        "id": "82-v2",
+        "weight": 3,
+        "unit": "g",
+        "priceCents": 9975,
+        "stock": 78,
+        "sku": "GG-FL-082-3",
+        "isDefault": false
+      },
+      {
+        "id": "82-v3",
+        "weight": 5,
+        "unit": "g",
+        "priceCents": 15960,
+        "stock": 65,
+        "sku": "GG-FL-082-5",
+        "isDefault": false
+      },
+      {
+        "id": "82-v4",
+        "weight": 10,
+        "unit": "g",
+        "priceCents": 23940,
+        "stock": 18,
+        "sku": "GG-FL-082-10",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 263
   },
   {
     "id": "83",
@@ -1740,7 +4389,37 @@
         "name": "Vape CBD",
         "slug": "vape-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "83-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 8990,
+        "stock": 60,
+        "sku": "GG-VA-083-10",
+        "isDefault": true
+      },
+      {
+        "id": "83-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 22475,
+        "stock": 95,
+        "sku": "GG-VA-083-30",
+        "isDefault": false
+      },
+      {
+        "id": "83-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 35960,
+        "stock": 48,
+        "sku": "GG-VA-083-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 203
   },
   {
     "id": "84",
@@ -1761,7 +4440,46 @@
         "name": "Fleurs CBD",
         "slug": "fleurs-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "84-v1",
+        "weight": 1,
+        "unit": "g",
+        "priceCents": 3990,
+        "stock": 93,
+        "sku": "GG-FL-084-1",
+        "isDefault": true
+      },
+      {
+        "id": "84-v2",
+        "weight": 3,
+        "unit": "g",
+        "priceCents": 9975,
+        "stock": 48,
+        "sku": "GG-FL-084-3",
+        "isDefault": false
+      },
+      {
+        "id": "84-v3",
+        "weight": 5,
+        "unit": "g",
+        "priceCents": 15960,
+        "stock": 23,
+        "sku": "GG-FL-084-5",
+        "isDefault": false
+      },
+      {
+        "id": "84-v4",
+        "weight": 10,
+        "unit": "g",
+        "priceCents": 23940,
+        "stock": 47,
+        "sku": "GG-FL-084-10",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 211
   },
   {
     "id": "85",
@@ -1782,7 +4500,37 @@
         "name": "Vape CBD",
         "slug": "vape-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "85-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 7990,
+        "stock": 95,
+        "sku": "GG-VA-085-10",
+        "isDefault": true
+      },
+      {
+        "id": "85-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 19975,
+        "stock": 15,
+        "sku": "GG-VA-085-30",
+        "isDefault": false
+      },
+      {
+        "id": "85-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 31960,
+        "stock": 79,
+        "sku": "GG-VA-085-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 189
   },
   {
     "id": "86",
@@ -1803,7 +4551,37 @@
         "name": "Capsules CBD",
         "slug": "capsules-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "86-v1",
+        "weight": 30,
+        "unit": "caps",
+        "priceCents": 6990,
+        "stock": 22,
+        "sku": "GG-CA-086-30",
+        "isDefault": true
+      },
+      {
+        "id": "86-v2",
+        "weight": 60,
+        "unit": "caps",
+        "priceCents": 17475,
+        "stock": 100,
+        "sku": "GG-CA-086-60",
+        "isDefault": false
+      },
+      {
+        "id": "86-v3",
+        "weight": 90,
+        "unit": "caps",
+        "priceCents": 27960,
+        "stock": 89,
+        "sku": "GG-CA-086-90",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 211
   },
   {
     "id": "87",
@@ -1824,7 +4602,37 @@
         "name": "Huiles CBD",
         "slug": "huiles-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "87-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 1990,
+        "stock": 74,
+        "sku": "GG-HU-087-10",
+        "isDefault": true
+      },
+      {
+        "id": "87-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 4975,
+        "stock": 26,
+        "sku": "GG-HU-087-30",
+        "isDefault": false
+      },
+      {
+        "id": "87-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 7960,
+        "stock": 57,
+        "sku": "GG-HU-087-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 157
   },
   {
     "id": "88",
@@ -1845,7 +4653,46 @@
         "name": "Fleurs CBD",
         "slug": "fleurs-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "88-v1",
+        "weight": 1,
+        "unit": "g",
+        "priceCents": 6990,
+        "stock": 95,
+        "sku": "GG-FL-088-1",
+        "isDefault": true
+      },
+      {
+        "id": "88-v2",
+        "weight": 3,
+        "unit": "g",
+        "priceCents": 17475,
+        "stock": 61,
+        "sku": "GG-FL-088-3",
+        "isDefault": false
+      },
+      {
+        "id": "88-v3",
+        "weight": 5,
+        "unit": "g",
+        "priceCents": 27960,
+        "stock": 95,
+        "sku": "GG-FL-088-5",
+        "isDefault": false
+      },
+      {
+        "id": "88-v4",
+        "weight": 10,
+        "unit": "g",
+        "priceCents": 41940,
+        "stock": 49,
+        "sku": "GG-FL-088-10",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 300
   },
   {
     "id": "89",
@@ -1866,7 +4713,46 @@
         "name": "Fleurs CBD",
         "slug": "fleurs-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "89-v1",
+        "weight": 1,
+        "unit": "g",
+        "priceCents": 5990,
+        "stock": 67,
+        "sku": "GG-FL-089-1",
+        "isDefault": true
+      },
+      {
+        "id": "89-v2",
+        "weight": 3,
+        "unit": "g",
+        "priceCents": 14975,
+        "stock": 56,
+        "sku": "GG-FL-089-3",
+        "isDefault": false
+      },
+      {
+        "id": "89-v3",
+        "weight": 5,
+        "unit": "g",
+        "priceCents": 23960,
+        "stock": 81,
+        "sku": "GG-FL-089-5",
+        "isDefault": false
+      },
+      {
+        "id": "89-v4",
+        "weight": 10,
+        "unit": "g",
+        "priceCents": 35940,
+        "stock": 11,
+        "sku": "GG-FL-089-10",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 215
   },
   {
     "id": "90",
@@ -1887,7 +4773,37 @@
         "name": "Huiles CBD",
         "slug": "huiles-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "90-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 4990,
+        "stock": 45,
+        "sku": "GG-HU-090-10",
+        "isDefault": true
+      },
+      {
+        "id": "90-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 12475,
+        "stock": 99,
+        "sku": "GG-HU-090-30",
+        "isDefault": false
+      },
+      {
+        "id": "90-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 19960,
+        "stock": 33,
+        "sku": "GG-HU-090-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 177
   },
   {
     "id": "91",
@@ -1908,7 +4824,46 @@
         "name": "Fleurs CBD",
         "slug": "fleurs-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "91-v1",
+        "weight": 1,
+        "unit": "g",
+        "priceCents": 3990,
+        "stock": 93,
+        "sku": "GG-FL-091-1",
+        "isDefault": true
+      },
+      {
+        "id": "91-v2",
+        "weight": 3,
+        "unit": "g",
+        "priceCents": 9975,
+        "stock": 68,
+        "sku": "GG-FL-091-3",
+        "isDefault": false
+      },
+      {
+        "id": "91-v3",
+        "weight": 5,
+        "unit": "g",
+        "priceCents": 15960,
+        "stock": 99,
+        "sku": "GG-FL-091-5",
+        "isDefault": false
+      },
+      {
+        "id": "91-v4",
+        "weight": 10,
+        "unit": "g",
+        "priceCents": 23940,
+        "stock": 20,
+        "sku": "GG-FL-091-10",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 280
   },
   {
     "id": "92",
@@ -1929,7 +4884,37 @@
         "name": "Huiles CBD",
         "slug": "huiles-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "92-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 5990,
+        "stock": 40,
+        "sku": "GG-HU-092-10",
+        "isDefault": true
+      },
+      {
+        "id": "92-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 14975,
+        "stock": 62,
+        "sku": "GG-HU-092-30",
+        "isDefault": false
+      },
+      {
+        "id": "92-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 23960,
+        "stock": 78,
+        "sku": "GG-HU-092-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 180
   },
   {
     "id": "93",
@@ -1950,7 +4935,37 @@
         "name": "Capsules CBD",
         "slug": "capsules-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "93-v1",
+        "weight": 30,
+        "unit": "caps",
+        "priceCents": 6990,
+        "stock": 86,
+        "sku": "GG-CA-093-30",
+        "isDefault": true
+      },
+      {
+        "id": "93-v2",
+        "weight": 60,
+        "unit": "caps",
+        "priceCents": 17475,
+        "stock": 75,
+        "sku": "GG-CA-093-60",
+        "isDefault": false
+      },
+      {
+        "id": "93-v3",
+        "weight": 90,
+        "unit": "caps",
+        "priceCents": 27960,
+        "stock": 85,
+        "sku": "GG-CA-093-90",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 246
   },
   {
     "id": "94",
@@ -1971,7 +4986,37 @@
         "name": "Cosmétiques CBD",
         "slug": "cosmetiques-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "94-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 6490,
+        "stock": 31,
+        "sku": "GG-CO-094-10",
+        "isDefault": true
+      },
+      {
+        "id": "94-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 16225,
+        "stock": 11,
+        "sku": "GG-CO-094-30",
+        "isDefault": false
+      },
+      {
+        "id": "94-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 25960,
+        "stock": 77,
+        "sku": "GG-CO-094-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 119
   },
   {
     "id": "95",
@@ -1992,7 +5037,37 @@
         "name": "Cosmétiques CBD",
         "slug": "cosmetiques-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "95-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 5490,
+        "stock": 92,
+        "sku": "GG-CO-095-10",
+        "isDefault": true
+      },
+      {
+        "id": "95-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 13725,
+        "stock": 39,
+        "sku": "GG-CO-095-30",
+        "isDefault": false
+      },
+      {
+        "id": "95-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 21960,
+        "stock": 106,
+        "sku": "GG-CO-095-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 237
   },
   {
     "id": "96",
@@ -2013,7 +5088,37 @@
         "name": "Capsules CBD",
         "slug": "capsules-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "96-v1",
+        "weight": 30,
+        "unit": "caps",
+        "priceCents": 3990,
+        "stock": 71,
+        "sku": "GG-CA-096-30",
+        "isDefault": true
+      },
+      {
+        "id": "96-v2",
+        "weight": 60,
+        "unit": "caps",
+        "priceCents": 9975,
+        "stock": 43,
+        "sku": "GG-CA-096-60",
+        "isDefault": false
+      },
+      {
+        "id": "96-v3",
+        "weight": 90,
+        "unit": "caps",
+        "priceCents": 15960,
+        "stock": 27,
+        "sku": "GG-CA-096-90",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 141
   },
   {
     "id": "97",
@@ -2034,7 +5139,37 @@
         "name": "Huiles CBD",
         "slug": "huiles-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "97-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 8990,
+        "stock": 44,
+        "sku": "GG-HU-097-10",
+        "isDefault": true
+      },
+      {
+        "id": "97-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 22475,
+        "stock": 27,
+        "sku": "GG-HU-097-30",
+        "isDefault": false
+      },
+      {
+        "id": "97-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 35960,
+        "stock": 63,
+        "sku": "GG-HU-097-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 134
   },
   {
     "id": "98",
@@ -2055,7 +5190,37 @@
         "name": "Cosmétiques CBD",
         "slug": "cosmetiques-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "98-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 7490,
+        "stock": 39,
+        "sku": "GG-CO-098-10",
+        "isDefault": true
+      },
+      {
+        "id": "98-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 18725,
+        "stock": 39,
+        "sku": "GG-CO-098-30",
+        "isDefault": false
+      },
+      {
+        "id": "98-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 29960,
+        "stock": 26,
+        "sku": "GG-CO-098-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 104
   },
   {
     "id": "99",
@@ -2076,7 +5241,37 @@
         "name": "Huiles CBD",
         "slug": "huiles-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "99-v1",
+        "weight": 10,
+        "unit": "ml",
+        "priceCents": 6990,
+        "stock": 24,
+        "sku": "GG-HU-099-10",
+        "isDefault": true
+      },
+      {
+        "id": "99-v2",
+        "weight": 30,
+        "unit": "ml",
+        "priceCents": 17475,
+        "stock": 77,
+        "sku": "GG-HU-099-30",
+        "isDefault": false
+      },
+      {
+        "id": "99-v3",
+        "weight": 50,
+        "unit": "ml",
+        "priceCents": 27960,
+        "stock": 100,
+        "sku": "GG-HU-099-50",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 201
   },
   {
     "id": "100",
@@ -2097,6 +5292,36 @@
         "name": "Capsules CBD",
         "slug": "capsules-cbd"
       }
-    ]
+    ],
+    "variants": [
+      {
+        "id": "100-v1",
+        "weight": 30,
+        "unit": "caps",
+        "priceCents": 4990,
+        "stock": 67,
+        "sku": "GG-CA-100-30",
+        "isDefault": true
+      },
+      {
+        "id": "100-v2",
+        "weight": 60,
+        "unit": "caps",
+        "priceCents": 12475,
+        "stock": 32,
+        "sku": "GG-CA-100-60",
+        "isDefault": false
+      },
+      {
+        "id": "100-v3",
+        "weight": 90,
+        "unit": "caps",
+        "priceCents": 19960,
+        "stock": 76,
+        "sku": "GG-CA-100-90",
+        "isDefault": false
+      }
+    ],
+    "totalStock": 175
   }
 ]
