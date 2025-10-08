@@ -2,50 +2,56 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useAuth } from '@/contexts/AuthContext'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
   faUser, 
   faArrowLeft,
   faCheckCircle,
-  faApple,
-  faGoogle,
-  faFacebook
-} from '@fortawesome/free-brands-svg-icons'
+  faEnvelope,
+  faLock
+} from '@fortawesome/free-solid-svg-icons'
 import Image from 'next/image'
 
 export default function AuthPage() {
   const router = useRouter()
+  const { login, register, state } = useAuth()
   const [isLoginMode, setIsLoginMode] = useState(true)
-  const [isLoading, setIsLoading] = useState(false)
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    firstName: '',
+    lastName: '',
+    phone: ''
+  })
 
-  const handleAuth0Login = () => {
-    setIsLoading(true)
-    // Redirection vers Auth0
-    window.location.href = '/api/auth/login'
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    try {
+      if (isLoginMode) {
+        await login(formData.email, formData.password)
+        router.push('/account')
+      } else {
+        await register({
+          email: formData.email,
+          password: formData.password,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          phone: formData.phone
+        })
+        router.push('/account')
+      }
+    } catch (error) {
+      console.error('Erreur d\'authentification:', error)
+    }
   }
 
-  const handleAuth0Register = () => {
-    setIsLoading(true)
-    // Redirection vers Auth0 pour l'inscription (avec screen_hint=signup)
-    window.location.href = '/api/auth/signup'
-  }
-
-  const handleAppleLogin = () => {
-    setIsLoading(true)
-    // Redirection vers Auth0 avec connexion Apple
-    window.location.href = '/api/auth/login?connection=apple'
-  }
-
-  const handleGoogleLogin = () => {
-    setIsLoading(true)
-    // Redirection vers Auth0 avec connexion Google
-    window.location.href = '/api/auth/login?connection=google-oauth2'
-  }
-
-  const handleFacebookLogin = () => {
-    setIsLoading(true)
-    // Redirection vers Auth0 avec connexion Facebook
-    window.location.href = '/api/auth/login?connection=facebook'
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    })
   }
 
   return (

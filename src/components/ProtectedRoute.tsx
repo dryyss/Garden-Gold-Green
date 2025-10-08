@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useAuth0 } from '@/hooks/useAuth0'
+import { useAuth } from '@/contexts/AuthContext'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 
@@ -11,17 +11,17 @@ interface ProtectedRouteProps {
   redirectTo?: string
 }
 
-export function ProtectedRoute({ children, redirectTo = '/' }: ProtectedRouteProps) {
-  const { user, isAuthenticated } = useAuth0()
+export function ProtectedRoute({ children, redirectTo = '/auth' }: ProtectedRouteProps) {
+  const { state } = useAuth()
   const router = useRouter()
 
   useEffect(() => {
-    if (!authState.isLoading && !isAuthenticated) {
+    if (!state.isLoading && !state.isAuthenticated) {
       router.push(redirectTo)
     }
-  }, [isAuthenticated, authState.isLoading, router, redirectTo])
+  }, [state.isAuthenticated, state.isLoading, router, redirectTo])
 
-  if (authState.isLoading) {
+  if (state.isLoading) {
     return (
       <div className="bg-brand-black min-h-screen text-gray-300 pt-24 flex items-center justify-center">
         <div className="text-center">
@@ -33,17 +33,17 @@ export function ProtectedRoute({ children, redirectTo = '/' }: ProtectedRoutePro
     )
   }
 
-  if (!isAuthenticated) {
+  if (!state.isAuthenticated) {
     return (
       <div className="bg-brand-black min-h-screen text-gray-300 pt-24 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-white mb-4">Accès non autorisé</h1>
           <p className="text-gray-400 mb-6">Vous devez être connecté pour accéder à cette page.</p>
           <button
-            onClick={() => router.push('/')}
+            onClick={() => router.push('/auth')}
             className="btn-gold text-black font-bold py-3 px-8 rounded-full shadow-gold-glow"
           >
-            Retour à l'accueil
+            Se connecter
           </button>
         </div>
       </div>

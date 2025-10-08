@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
-import { getSession } from '@auth0/nextjs-auth0'
+import jwt from 'jsonwebtoken'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2024-12-18.acacia',
@@ -8,7 +8,20 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getSession()
+    // Vérifier l'authentification via JWT
+    let user: any = null
+    const authHeader = request.headers.get('authorization')
+    
+    if (authHeader?.startsWith('Bearer ')) {
+      const token = authHeader.substring(7)
+      try {
+        user = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret')
+      } catch (error) {
+        // Utilisateur non authentifié, on continue quand même
+        console.log('Token JWT invalide ou manquant')
+      }
+    }
+
     const { items, successUrl, cancelUrl } = await request.json()
 
     if (!items || items.length === 0) {
@@ -38,20 +51,22 @@ export async function POST(request: NextRequest) {
     }
 
     // Ajouter l'ID utilisateur si connecté
-    if (session?.user) {
-      metadata.userId = session.user.sub
-      metadata.userEmail = session.user.email
+    if (user) {
+      metadata.userId = user.userId
+      metadata.userEmail = user.email
     }
+
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXTAUTH_URL || 'http://localhost:3000'
 
     // Créer la session de paiement Stripe
     const checkoutSession = await stripe.checkout.sessions.create({
       mode: 'payment',
       payment_method_types: ['card'],
       line_items: lineItems,
-      success_url: successUrl || `${process.env.AUTH0_BASE_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: cancelUrl || `${process.env.AUTH0_BASE_URL}/checkout/cancel`,
+      success_url: successUrl || `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: cancelUrl || `${baseUrl}/checkout/cancel`,
       metadata,
-      customer_email: session?.user?.email || undefined,
+      customer_email: user?.email || undefined,
       allow_promotion_codes: true,
       billing_address_collection: 'required',
       shipping_address_collection: {
