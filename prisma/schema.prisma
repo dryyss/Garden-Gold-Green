@@ -56,16 +56,27 @@ model Category {
 }
 
 model Order {
-  id            String    @id @default(cuid())
-  user          User?     @relation(fields: [userId], references: [id])
-  userId        String?
-  totalCents    Int
-  currency      String    @default("EUR")
-  status        String    @default("pending") // paid, fulfilled, cancelled
-  items         OrderItem[]
-  shippingAddress Json?
-  paymentIntentId String?
-  createdAt     DateTime  @default(now())
+  id                      String    @id @default(cuid())
+  user                    User?     @relation(fields: [userId], references: [id])
+  userId                  String?
+  customerEmail           String
+  customerName            String
+  totalAmount             Float
+  currency                String    @default("EUR")
+  status                  String    @default("PENDING") // PENDING, PAID, PROCESSING, SHIPPED, DELIVERED, CANCELLED, FAILED
+  items                   Json      // Stored as JSON
+  orderItems              OrderItem[]
+  shippingAddress         Json
+  billingAddress          Json?
+  stripePaymentIntentId   String?   @unique
+  trackingNumber          String?
+  trackingUrl             String?
+  notes                   String?
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+  paidAt                  DateTime?
+  shippedAt               DateTime?
+  deliveredAt             DateTime?
 }
 
 model OrderItem {
