@@ -19,7 +19,7 @@ import {
   faSpinner
 } from '@fortawesome/free-solid-svg-icons'
 import { useCart } from '@/contexts/CartContext'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth0 } from '@/hooks/useAuth0'
 import { useNotifications } from '@/contexts/NotificationContext'
 import { StarRating } from '@/components/StarRating'
 import { ProductCard } from '@/components/ProductCard'

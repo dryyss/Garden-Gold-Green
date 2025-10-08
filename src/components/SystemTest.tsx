@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth0 } from '@/hooks/useAuth0'
 import { useCart } from '@/contexts/CartContext'
 import { useNotifications } from '@/contexts/NotificationContext'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -24,11 +24,11 @@ export function SystemTest() {
     try {
       // Test 1: Authentication
       try {
-        if (!authState.isAuthenticated) {
+        if (!isAuthenticated) {
           await login('test@example.com', 'password123')
           await new Promise(resolve => setTimeout(resolve, 500)) // Wait for state update
         }
-        results.auth = authState.isAuthenticated
+        results.auth = isAuthenticated
       } catch (error) {
         results.auth = false
       }
@@ -134,7 +134,7 @@ export function SystemTest() {
         <button
           onClick={async () => {
             try {
-              if (authState.isAuthenticated) {
+              if (isAuthenticated) {
                 await logout()
               } else {
                 await login('test@example.com', 'password123')
@@ -145,12 +145,12 @@ export function SystemTest() {
           }}
           className="bg-white/10 text-gray-300 hover:bg-white/20 font-bold py-2 px-4 rounded-full text-sm"
         >
-          {authState.isAuthenticated ? 'Déconnexion' : 'Connexion'}
+          {isAuthenticated ? 'Déconnexion' : 'Connexion'}
         </button>
       </div>
 
       <div className="mt-3 text-xs text-gray-500">
-        <p>État: {authState.isAuthenticated ? 'Connecté' : 'Déconnecté'}</p>
+        <p>État: {isAuthenticated ? 'Connecté' : 'Déconnecté'}</p>
         <p>Articles: {cartState.totalItems}</p>
       </div>
     </div>

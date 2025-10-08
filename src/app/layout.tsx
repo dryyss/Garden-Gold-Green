@@ -6,8 +6,8 @@ import { Footer } from "@/components/Footer";
 import { CookieConsent } from "@/components/CookieConsent";
 import { LegalBanner } from "@/components/LegalBanner";
 import { CartProvider } from "@/contexts/CartContext";
-import { AuthProvider } from "@/contexts/AuthContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
+import { Auth0Provider } from '@auth0/nextjs-auth0';
 import { CartSidebar } from "@/components/CartSidebar";
 import { SystemTest } from "@/components/SystemTest";
 import { AuthNotificationHandler } from "@/components/AuthNotificationHandler";
@@ -73,8 +73,8 @@ export default function RootLayout({
   return (
     <html lang="fr" className={`${inter.variable} ${montserrat.variable}`}>
       <body className="font-sans antialiased min-h-screen flex flex-col">
-        <NotificationProvider>
-          <AuthProvider>
+        <Auth0Provider>
+          <NotificationProvider>
             <CartProvider>
               <LegalBanner />
               <Header />
@@ -90,8 +90,8 @@ export default function RootLayout({
               <AuthNotificationHandler />
               {process.env.NODE_ENV === 'development' && <SystemTest />}
             </CartProvider>
-          </AuthProvider>
-        </NotificationProvider>
+          </NotificationProvider>
+        </Auth0Provider>
       </body>
     </html>
   );

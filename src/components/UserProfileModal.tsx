@@ -13,7 +13,7 @@ import {
   faSpinner,
   faSignOutAlt
 } from '@fortawesome/free-solid-svg-icons'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth0 } from '@/hooks/useAuth0'
 
 interface UserProfileModalProps {
   isOpen: boolean

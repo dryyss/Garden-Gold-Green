@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useCart } from '@/contexts/CartContext'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth0 } from '@/hooks/useAuth0'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
   faShoppingCart, 
@@ -325,7 +325,7 @@ export default function CartPage() {
 
               {/* Boutons d'action */}
               <div className="space-y-3">
-                {authState.isAuthenticated ? (
+                {isAuthenticated ? (
                   <Link
                     href="/checkout"
                     className="w-full btn-gold text-black font-semibold py-3 px-6 rounded-lg shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300 flex items-center justify-center"

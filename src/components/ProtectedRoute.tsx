@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth0 } from '@/hooks/useAuth0'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 
@@ -12,14 +12,14 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ children, redirectTo = '/' }: ProtectedRouteProps) {
-  const { state: authState } = useAuth()
+  const { user, isAuthenticated } = useAuth0()
   const router = useRouter()
 
   useEffect(() => {
-    if (!authState.isLoading && !authState.isAuthenticated) {
+    if (!authState.isLoading && !isAuthenticated) {
       router.push(redirectTo)
     }
-  }, [authState.isAuthenticated, authState.isLoading, router, redirectTo])
+  }, [isAuthenticated, authState.isLoading, router, redirectTo])
 
   if (authState.isLoading) {
     return (
@@ -33,7 +33,7 @@ export function ProtectedRoute({ children, redirectTo = '/' }: ProtectedRoutePro
     )
   }
 
-  if (!authState.isAuthenticated) {
+  if (!isAuthenticated) {
     return (
       <div className="bg-brand-black min-h-screen text-gray-300 pt-24 flex items-center justify-center">
         <div className="text-center">

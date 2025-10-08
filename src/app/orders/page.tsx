@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth0 } from '@/hooks/useAuth0'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
@@ -38,7 +38,7 @@ interface Order {
 }
 
 function OrdersContent() {
-  const { state: authState } = useAuth()
+  const { user, isAuthenticated } = useAuth0()
   const [orders, setOrders] = useState<Order[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')

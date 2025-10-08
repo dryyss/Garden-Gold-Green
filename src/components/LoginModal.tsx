@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth0 } from '@/hooks/useAuth0'
 
 interface LoginModalProps {
   isOpen: boolean
