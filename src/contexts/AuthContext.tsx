@@ -1,7 +1,6 @@
 'use client'
 
 import { createContext, useContext, useReducer, useEffect } from 'react'
-import { useUser as useAuth0User } from '@auth0/nextjs-auth0'
 
 interface User {
   id: string
@@ -129,47 +128,101 @@ const initialState: AuthState = {
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(authReducer, initialState)
-  const { user: auth0User, isLoading: auth0Loading } = useAuth0User()
 
-  // Synchroniser Auth0 avec notre état
+  // Vérifier le token au chargement
   useEffect(() => {
-    if (auth0Loading) {
-      dispatch({ type: 'SET_LOADING', payload: true })
-      return
-    }
+    const checkAuth = async () => {
+      const token = localStorage.getItem('token')
+      if (token) {
+        try {
+          dispatch({ type: 'SET_LOADING', payload: true })
+          const response = await fetch('/api/auth/me', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          })
 
-    if (auth0User) {
-      // Mapper l'utilisateur Auth0 vers notre format
-      const user: User = {
-        id: auth0User.sub || '',
-        email: auth0User.email || '',
-        firstName: auth0User.given_name || auth0User.name?.split(' ')[0] || '',
-        lastName: auth0User.family_name || auth0User.name?.split(' ').slice(1).join(' ') || '',
-        phone: auth0User.phone_number,
-        role: auth0User['https://gardengoldgreen.com/roles']?.includes('admin') ? 'admin' : 'customer',
-        address: auth0User['https://gardengoldgreen.com/address'],
-        createdAt: auth0User.created_at || new Date().toISOString(),
-        updatedAt: auth0User.updated_at || new Date().toISOString()
+          if (response.ok) {
+            const data = await response.json()
+            dispatch({ type: 'LOGIN_SUCCESS', payload: data.user })
+          } else {
+            localStorage.removeItem('token')
+            dispatch({ type: 'LOGOUT' })
+          }
+        } catch (error) {
+          console.error('Erreur de vérification auth:', error)
+          localStorage.removeItem('token')
+          dispatch({ type: 'LOGOUT' })
+        }
+      } else {
+        dispatch({ type: 'SET_LOADING', payload: false })
       }
-      dispatch({ type: 'LOGIN_SUCCESS', payload: user })
-    } else {
-      dispatch({ type: 'LOGOUT' })
     }
-  }, [auth0User, auth0Loading])
 
-  const login = async (_email: string, _password: string) => {
-    // Rediriger vers Auth0 - les paramètres ne sont plus utilisés
-    window.location.href = '/api/auth/login'
+    checkAuth()
+  }, [])
+
+  const login = async (email: string, password: string) => {
+    try {
+      dispatch({ type: 'LOGIN_START' })
+
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Erreur de connexion')
+      }
+
+      // Sauvegarder le token
+      localStorage.setItem('token', data.token)
+
+      dispatch({ type: 'LOGIN_SUCCESS', payload: data.user })
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Erreur de connexion'
+      dispatch({ type: 'LOGIN_FAILURE', payload: errorMessage })
+      throw error
+    }
   }
 
-  const register = async (_userData: RegisterData) => {
-    // Rediriger vers Auth0 signup
-    window.location.href = '/api/auth/signup'
+  const register = async (userData: RegisterData) => {
+    try {
+      dispatch({ type: 'REGISTER_START' })
+
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userData)
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Erreur d\'inscription')
+      }
+
+      // Sauvegarder le token
+      localStorage.setItem('token', data.token)
+
+      dispatch({ type: 'REGISTER_SUCCESS', payload: data.user })
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Erreur d\'inscription'
+      dispatch({ type: 'REGISTER_FAILURE', payload: errorMessage })
+      throw error
+    }
   }
 
   const logout = () => {
-    // Rediriger vers Auth0 logout
-    window.location.href = '/api/auth/logout'
+    localStorage.removeItem('token')
+    dispatch({ type: 'LOGOUT' })
   }
 
   const updateProfile = async (userData: Partial<User>) => {

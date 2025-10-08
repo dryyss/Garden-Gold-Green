@@ -91,49 +91,121 @@ export default function AuthPage() {
               </p>
             </div>
 
-            {/* Social Login Buttons */}
-            <div className="space-y-4 mb-8">
-              {/* Apple */}
-              <button
-                onClick={handleAppleLogin}
-                disabled={isLoading}
-                className="w-full bg-black text-white font-bold py-4 px-6 rounded-xl hover:bg-gray-800 transition-all duration-300 flex items-center justify-center gap-3 border border-gray-600"
-              >
-                <FontAwesomeIcon icon={faApple} className="text-xl" />
-                {isLoginMode ? 'Continuer avec Apple' : 'S\'inscrire avec Apple'}
-              </button>
+            {/* Formulaire de connexion/inscription */}
+            <form onSubmit={handleSubmit} className="space-y-4 mb-8">
+              {/* Email */}
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+                  Email
+                </label>
+                <div className="relative">
+                  <FontAwesomeIcon icon={faEnvelope} className="absolute left-4 top-4 text-gray-400" />
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    className="w-full bg-gray-800 text-white pl-12 pr-4 py-3 rounded-xl border border-gray-600 focus:border-brand-gold focus:outline-none transition-colors"
+                    placeholder="votre@email.com"
+                  />
+                </div>
+              </div>
 
-              {/* Google */}
-              <button
-                onClick={handleGoogleLogin}
-                disabled={isLoading}
-                className="w-full bg-white text-gray-800 font-bold py-4 px-6 rounded-xl hover:bg-gray-100 transition-all duration-300 flex items-center justify-center gap-3 border border-gray-300"
-              >
-                <FontAwesomeIcon icon={faGoogle} className="text-xl text-red-500" />
-                {isLoginMode ? 'Continuer avec Google' : 'S\'inscrire avec Google'}
-              </button>
+              {/* Prénom et Nom (inscription uniquement) */}
+              {!isLoginMode && (
+                <>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="firstName" className="block text-sm font-medium text-gray-300 mb-2">
+                        Prénom
+                      </label>
+                      <input
+                        type="text"
+                        id="firstName"
+                        name="firstName"
+                        value={formData.firstName}
+                        onChange={handleChange}
+                        required
+                        className="w-full bg-gray-800 text-white px-4 py-3 rounded-xl border border-gray-600 focus:border-brand-gold focus:outline-none transition-colors"
+                        placeholder="John"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="lastName" className="block text-sm font-medium text-gray-300 mb-2">
+                        Nom
+                      </label>
+                      <input
+                        type="text"
+                        id="lastName"
+                        name="lastName"
+                        value={formData.lastName}
+                        onChange={handleChange}
+                        required
+                        className="w-full bg-gray-800 text-white px-4 py-3 rounded-xl border border-gray-600 focus:border-brand-gold focus:outline-none transition-colors"
+                        placeholder="Doe"
+                      />
+                    </div>
+                  </div>
 
-              {/* Facebook */}
-              <button
-                onClick={handleFacebookLogin}
-                disabled={isLoading}
-                className="w-full bg-blue-600 text-white font-bold py-4 px-6 rounded-xl hover:bg-blue-700 transition-all duration-300 flex items-center justify-center gap-3"
-              >
-                <FontAwesomeIcon icon={faFacebook} className="text-xl" />
-                {isLoginMode ? 'Continuer avec Facebook' : 'S\'inscrire avec Facebook'}
-              </button>
+                  {/* Téléphone (optionnel) */}
+                  <div>
+                    <label htmlFor="phone" className="block text-sm font-medium text-gray-300 mb-2">
+                      Téléphone (optionnel)
+                    </label>
+                    <input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      className="w-full bg-gray-800 text-white px-4 py-3 rounded-xl border border-gray-600 focus:border-brand-gold focus:outline-none transition-colors"
+                      placeholder="+33 6 12 34 56 78"
+                    />
+                  </div>
+                </>
+              )}
 
-              {/* Auth0 */}
+              {/* Mot de passe */}
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
+                  Mot de passe
+                </label>
+                <div className="relative">
+                  <FontAwesomeIcon icon={faLock} className="absolute left-4 top-4 text-gray-400" />
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                    minLength={6}
+                    className="w-full bg-gray-800 text-white pl-12 pr-4 py-3 rounded-xl border border-gray-600 focus:border-brand-gold focus:outline-none transition-colors"
+                    placeholder="••••••••"
+                  />
+                </div>
+              </div>
+
+              {/* Message d'erreur */}
+              {state.error && (
+                <div className="bg-red-500/10 border border-red-500 text-red-500 px-4 py-3 rounded-xl">
+                  {state.error}
+                </div>
+              )}
+
+              {/* Bouton de soumission */}
               <button
-                onClick={isLoginMode ? handleAuth0Login : handleAuth0Register}
-                disabled={isLoading}
+                type="submit"
+                disabled={state.isLoading}
                 className={`w-full font-bold py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 ${
-                  isLoading
+                  state.isLoading
                     ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
                     : 'bg-brand-gold text-black hover:shadow-gold-glow hover:shadow-gold-glow-lg'
                 }`}
               >
-                {isLoading ? (
+                {state.isLoading ? (
                   <div className="flex items-center justify-center gap-2">
                     <div className="spinner"></div>
                     {isLoginMode ? 'Connexion...' : 'Création du compte...'}
@@ -141,11 +213,11 @@ export default function AuthPage() {
                 ) : (
                   <>
                     <FontAwesomeIcon icon={faUser} className="text-lg" />
-                    {isLoginMode ? 'Se connecter avec Auth0' : 'Créer un compte avec Auth0'}
+                    {isLoginMode ? 'Se connecter' : 'Créer un compte'}
                   </>
                 )}
               </button>
-            </div>
+            </form>
 
             {/* Switch Mode */}
             <div className="text-center mt-6">
