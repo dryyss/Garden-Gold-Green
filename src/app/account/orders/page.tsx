@@ -19,10 +19,10 @@ export default function OrdersPage() {
   const router = useRouter()
 
   useEffect(() => {
-    if (!authState.isAuthenticated) {
+    if (!isAuthenticated) {
       router.push('/')
     }
-  }, [authState.isAuthenticated, router])
+  }, [isAuthenticated, router])
 
   // Données de démonstration
   const mockOrders = [
@@ -85,7 +85,7 @@ export default function OrdersPage() {
     }
   }
 
-  if (!authState.isAuthenticated) {
+  if (!isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">

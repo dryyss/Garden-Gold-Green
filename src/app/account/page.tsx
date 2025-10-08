@@ -18,12 +18,12 @@ export default function AccountPage() {
   const router = useRouter()
 
   useEffect(() => {
-    if (!authState.isAuthenticated) {
+    if (!isAuthenticated) {
       router.push('/')
     }
-  }, [authState.isAuthenticated, router])
+  }, [isAuthenticated, router])
 
-  if (!authState.isAuthenticated) {
+  if (!isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -69,7 +69,7 @@ export default function AccountPage() {
             Mon Compte
           </h1>
           <p className="text-gray-400">
-            Bienvenue, {authState.user?.firstName || authState.user?.email}
+            Bienvenue, {user?.firstName || user?.email}
           </p>
         </div>
 
@@ -81,13 +81,13 @@ export default function AccountPage() {
             </div>
             <div className="flex-1">
               <h2 className="text-xl font-semibold text-white">
-                {authState.user?.firstName && authState.user?.lastName 
-                  ? `${authState.user.firstName} ${authState.user.lastName}` 
-                  : authState.user?.email || 'Utilisateur'}
+                {user?.firstName && user?.lastName 
+                  ? `${user.firstName} ${user.lastName}` 
+                  : user?.email || 'Utilisateur'}
               </h2>
-              <p className="text-gray-400">{authState.user?.email}</p>
+              <p className="text-gray-400">{user?.email}</p>
               <p className="text-sm text-brand-green">
-                {authState.user?.phone && `📞 ${authState.user.phone}`}
+                {user?.phone && `📞 ${user.phone}`}
               </p>
             </div>
             <button className="text-gray-400 hover:text-white transition-colors">

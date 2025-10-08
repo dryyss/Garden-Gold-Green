@@ -18,10 +18,10 @@ export default function FavoritesPage() {
   const router = useRouter()
 
   useEffect(() => {
-    if (!authState.isAuthenticated) {
+    if (!isAuthenticated) {
       router.push('/')
     }
-  }, [authState.isAuthenticated, router])
+  }, [isAuthenticated, router])
 
   // Données de démonstration
   const mockFavorites = [
@@ -53,7 +53,7 @@ export default function FavoritesPage() {
     console.log('Retirer des favoris:', productId)
   }
 
-  if (!authState.isAuthenticated) {
+  if (!isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">

@@ -33,26 +33,26 @@ export default function ProfilePage() {
   })
 
   useEffect(() => {
-    if (!authState.isAuthenticated) {
+    if (!isAuthenticated) {
       router.push('/')
       return
     }
 
-    if (authState.user) {
+    if (user) {
       setFormData({
-        firstName: authState.user.firstName || '',
-        lastName: authState.user.lastName || '',
-        email: authState.user.email || '',
-        phone: authState.user.phone || '',
+        firstName: user.firstName || '',
+        lastName: user.lastName || '',
+        email: user.email || '',
+        phone: user.phone || '',
         address: {
-          street: authState.user.address?.street || '',
-          city: authState.user.address?.city || '',
-          postalCode: authState.user.address?.postalCode || '',
-          country: authState.user.address?.country || 'France'
+          street: user.address?.street || '',
+          city: user.address?.city || '',
+          postalCode: user.address?.postalCode || '',
+          country: user.address?.country || 'France'
         }
       })
     }
-  }, [authState.isAuthenticated, authState.user, router])
+  }, [isAuthenticated, user, router])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -82,7 +82,7 @@ export default function ProfilePage() {
     }
   }
 
-  if (!authState.isAuthenticated) {
+  if (!isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">

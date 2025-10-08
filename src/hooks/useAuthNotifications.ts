@@ -5,34 +5,34 @@ import { useAuth0 } from '@/hooks/useAuth0'
 import { useNotifications } from '@/contexts/NotificationContext'
 
 export function useAuthNotifications() {
-  const { user, isAuthenticated } = useAuth0()
+  const { user, isAuthenticated, error, isLoading } = useAuth0()
   const { addNotification } = useNotifications()
 
   // Gérer les notifications d'authentification
   useEffect(() => {
-    if (authState.error) {
+    if (error) {
       addNotification({
         type: 'error',
         title: 'Erreur d\'authentification',
-        message: authState.error
+        message: error
       })
     }
-  }, [authState.error, addNotification])
+  }, [error, addNotification])
 
   // Gérer les notifications de succès
   useEffect(() => {
     if (isAuthenticated && user) {
       // Vérifier si c'est une nouvelle connexion (pas de chargement initial)
-      const isNewLogin = !authState.isLoading && user
+      const isNewLogin = !isLoading && user
       if (isNewLogin) {
         addNotification({
           type: 'success',
           title: 'Connexion réussie',
-          message: `Bienvenue ${user.firstName} !`
+          message: `Bienvenue ${user.given_name || user.name || 'utilisateur'} !`
         })
       }
     }
-  }, [isAuthenticated, user, authState.isLoading, addNotification])
+  }, [isAuthenticated, user, isLoading, addNotification])
 
   return {
     addAuthNotification: addNotification
