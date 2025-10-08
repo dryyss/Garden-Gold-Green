@@ -26,6 +26,7 @@ import { ProductRecommendations } from '@/components/ProductRecommendations'
 import { CartSaveModal } from '@/components/CartSaveModal'
 import { Breadcrumb } from '@/components/Breadcrumb'
 import { ImageWithLoading } from '@/components/ImageWithLoading'
+import { StripeCheckoutButton } from '@/components/StripeCheckoutButton'
 import productsData from '@/data/products.json'
 
 export default function CartPage() {
@@ -325,24 +326,10 @@ export default function CartPage() {
 
               {/* Boutons d'action */}
               <div className="space-y-3">
-                {authState.isAuthenticated ? (
-                  <Link
-                    href="/checkout"
-                    className="w-full btn-gold text-black font-semibold py-3 px-6 rounded-lg shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300 flex items-center justify-center"
-                  >
-                    <FontAwesomeIcon icon={faCreditCard} className="mr-2" />
-                    Commander maintenant
-                  </Link>
-                ) : (
-                  <Link
-                    href="/auth"
-                    className="w-full bg-brand-green text-white font-semibold py-3 px-6 rounded-lg hover:bg-brand-green/90 transition-colors flex items-center justify-center"
-                  >
-                    <FontAwesomeIcon icon={faUser} className="mr-2" />
-                    Se connecter pour commander
-                  </Link>
-                )}
+                {/* Stripe Checkout Button */}
+                <StripeCheckoutButton className="w-full" />
                 
+                {/* Lien pour continuer les achats */}
                 <Link
                   href="/products"
                   className="w-full bg-white/10 text-white font-semibold py-3 px-6 rounded-lg hover:bg-white/20 transition-colors flex items-center justify-center"

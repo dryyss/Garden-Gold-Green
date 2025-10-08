@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, useContext, useReducer, useEffect } from 'react'
-import { useUser } from '@auth0/nextjs-auth0'
+import { useUser as useAuth0User } from '@auth0/nextjs-auth0'
 
 interface User {
   id: string
@@ -129,7 +129,7 @@ const initialState: AuthState = {
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(authReducer, initialState)
-  const { user: auth0User, isLoading: auth0Loading } = useUser()
+  const { user: auth0User, isLoading: auth0Loading } = useAuth0User()
 
   // Synchroniser Auth0 avec notre état
   useEffect(() => {
