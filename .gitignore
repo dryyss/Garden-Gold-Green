@@ -131,7 +131,6 @@ temp/
 *.db
 *.sqlite
 *.sqlite3
-
 # Prisma
 /prisma/dev.db
 /prisma/dev.db-journal

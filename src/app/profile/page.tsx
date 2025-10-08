@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useAuth0 } from '@/hooks/useAuth0'
+import { useAuth } from '@/contexts/AuthContext'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
@@ -22,14 +22,14 @@ function ProfileContent() {
   const { state: authState, updateProfile } = useAuth()
   const [isEditing, setIsEditing] = useState(false)
   const [formData, setFormData] = useState({
-    firstName: user?.firstName || '',
-    lastName: user?.lastName || '',
-    email: user?.email || '',
-    phone: user?.phone || '',
-    address: user?.address || '',
-    city: user?.city || '',
-    zipCode: user?.zipCode || '',
-    country: user?.country || 'France'
+    firstName: authState.user?.firstName || '',
+    lastName: authState.user?.lastName || '',
+    email: authState.user?.email || '',
+    phone: authState.user?.phone || '',
+    address: authState.user?.address || '',
+    city: authState.user?.city || '',
+    zipCode: authState.user?.zipCode || '',
+    country: authState.user?.country || 'France'
   })
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -51,14 +51,14 @@ function ProfileContent() {
 
   const handleCancel = () => {
     setFormData({
-      firstName: user?.firstName || '',
-      lastName: user?.lastName || '',
-      email: user?.email || '',
-      phone: user?.phone || '',
-      address: user?.address || '',
-      city: user?.city || '',
-      zipCode: user?.zipCode || '',
-      country: user?.country || 'France'
+      firstName: authState.user?.firstName || '',
+      lastName: authState.user?.lastName || '',
+      email: authState.user?.email || '',
+      phone: authState.user?.phone || '',
+      address: authState.user?.address || '',
+      city: authState.user?.city || '',
+      zipCode: authState.user?.zipCode || '',
+      country: authState.user?.country || 'France'
     })
     setIsEditing(false)
   }
@@ -81,9 +81,9 @@ function ProfileContent() {
                   <FontAwesomeIcon icon={faUser} className="text-brand-gold text-2xl" />
                 </div>
                 <h2 className="text-xl font-bold text-white">
-                  {user?.firstName} {user?.lastName}
+                  {authState.user?.firstName} {authState.user?.lastName}
                 </h2>
-                <p className="text-gray-400">{user?.email}</p>
+                <p className="text-gray-400">{authState.user?.email}</p>
               </div>
 
               <nav className="space-y-2">
@@ -325,3 +325,6 @@ export default function ProfilePage() {
     </ProtectedRoute>
   )
 }
+
+
+

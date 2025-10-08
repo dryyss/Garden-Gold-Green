@@ -12,16 +12,16 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ children, redirectTo = '/' }: ProtectedRouteProps) {
-  const { user, isAuthenticated, isLoading } = useAuth0()
+  const { user, isAuthenticated } = useAuth0()
   const router = useRouter()
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
+    if (!authState.isLoading && !isAuthenticated) {
       router.push(redirectTo)
     }
-  }, [isAuthenticated, isLoading, router, redirectTo])
+  }, [isAuthenticated, authState.isLoading, router, redirectTo])
 
-  if (isLoading) {
+  if (authState.isLoading) {
     return (
       <div className="bg-brand-black min-h-screen text-gray-300 pt-24 flex items-center justify-center">
         <div className="text-center">

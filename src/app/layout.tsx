@@ -6,11 +6,12 @@ import { Footer } from "@/components/Footer";
 import { CookieConsent } from "@/components/CookieConsent";
 import { LegalBanner } from "@/components/LegalBanner";
 import { CartProvider } from "@/contexts/CartContext";
+import { AuthProvider } from "@/contexts/AuthContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
-import { Auth0Provider } from '@auth0/nextjs-auth0';
 import { CartSidebar } from "@/components/CartSidebar";
 import { SystemTest } from "@/components/SystemTest";
 import { AuthNotificationHandler } from "@/components/AuthNotificationHandler";
+import { Auth0Provider } from "@/providers/Auth0Provider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -75,21 +76,23 @@ export default function RootLayout({
       <body className="font-sans antialiased min-h-screen flex flex-col">
         <Auth0Provider>
           <NotificationProvider>
-            <CartProvider>
-              <LegalBanner />
-              <Header />
+            <AuthProvider>
+              <CartProvider>
+                <LegalBanner />
+                <Header />
 
-              <main className="flex-1">
-                {children}
-              </main>
+                <main className="flex-1">
+                  {children}
+                </main>
 
-              <Footer />
+                <Footer />
 
-              <CookieConsent />
-              <CartSidebar />
-              <AuthNotificationHandler />
-              {process.env.NODE_ENV === 'development' && <SystemTest />}
-            </CartProvider>
+                <CookieConsent />
+                <CartSidebar />
+                <AuthNotificationHandler />
+                {process.env.NODE_ENV === 'development' && <SystemTest />}
+              </CartProvider>
+            </AuthProvider>
           </NotificationProvider>
         </Auth0Provider>
       </body>

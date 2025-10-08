@@ -1,6 +1,7 @@
 'use client'
 
 import { createContext, useContext, useReducer, useEffect } from 'react'
+import { useUser } from '@auth0/nextjs-auth0'
 
 interface User {
   id: string
@@ -128,93 +129,47 @@ const initialState: AuthState = {
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(authReducer, initialState)
+  const { user: auth0User, isLoading: auth0Loading } = useUser()
 
-  // Charger l'utilisateur depuis localStorage au montage
+  // Synchroniser Auth0 avec notre état
   useEffect(() => {
-    const savedUser = localStorage.getItem('garden-gold-green-user')
-    if (savedUser) {
-      try {
-        const user = JSON.parse(savedUser)
-        dispatch({ type: 'LOGIN_SUCCESS', payload: user })
-      } catch (error) {
-        console.error('Erreur lors du chargement de l\'utilisateur:', error)
-        localStorage.removeItem('garden-gold-green-user')
-      }
+    if (auth0Loading) {
+      dispatch({ type: 'SET_LOADING', payload: true })
+      return
     }
-  }, [])
 
-  // Sauvegarder l'utilisateur dans localStorage
-  useEffect(() => {
-    if (state.user) {
-      localStorage.setItem('garden-gold-green-user', JSON.stringify(state.user))
+    if (auth0User) {
+      // Mapper l'utilisateur Auth0 vers notre format
+      const user: User = {
+        id: auth0User.sub || '',
+        email: auth0User.email || '',
+        firstName: auth0User.given_name || auth0User.name?.split(' ')[0] || '',
+        lastName: auth0User.family_name || auth0User.name?.split(' ').slice(1).join(' ') || '',
+        phone: auth0User.phone_number,
+        role: auth0User['https://gardengoldgreen.com/roles']?.includes('admin') ? 'admin' : 'customer',
+        address: auth0User['https://gardengoldgreen.com/address'],
+        createdAt: auth0User.created_at || new Date().toISOString(),
+        updatedAt: auth0User.updated_at || new Date().toISOString()
+      }
+      dispatch({ type: 'LOGIN_SUCCESS', payload: user })
     } else {
-      localStorage.removeItem('garden-gold-green-user')
+      dispatch({ type: 'LOGOUT' })
     }
-  }, [state.user])
+  }, [auth0User, auth0Loading])
 
-  const login = async (email: string, password: string) => {
-    dispatch({ type: 'LOGIN_START' })
-    
-    try {
-      // Simulation d'une API call - remplacer par votre vraie API
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      // Pour la démo, on accepte n'importe quel email/password
-      if (email && password) {
-        const isAdmin = email === 'admin@gardengoldgreen.com'
-        const user: User = {
-          id: '1',
-          email,
-          firstName: isAdmin ? 'Admin' : 'John',
-          lastName: isAdmin ? 'Garden' : 'Doe',
-          role: isAdmin ? 'admin' : 'customer',
-          phone: '+33 6 12 34 56 78',
-          address: {
-            street: '123 Rue de la Paix',
-            city: 'Paris',
-            postalCode: '75001',
-            country: 'France'
-          },
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        }
-        dispatch({ type: 'LOGIN_SUCCESS', payload: user })
-      } else {
-        throw new Error('Email et mot de passe requis')
-      }
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Erreur de connexion'
-      dispatch({ type: 'LOGIN_FAILURE', payload: errorMessage })
-    }
+  const login = async (_email: string, _password: string) => {
+    // Rediriger vers Auth0 - les paramètres ne sont plus utilisés
+    window.location.href = '/api/auth/login'
   }
 
-  const register = async (userData: RegisterData) => {
-    dispatch({ type: 'REGISTER_START' })
-    
-    try {
-      // Simulation d'une API call - remplacer par votre vraie API
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      const user: User = {
-        id: Date.now().toString(),
-        email: userData.email,
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        phone: userData.phone,
-        role: 'customer',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      }
-      
-      dispatch({ type: 'REGISTER_SUCCESS', payload: user })
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Erreur d\'inscription'
-      dispatch({ type: 'REGISTER_FAILURE', payload: errorMessage })
-    }
+  const register = async (_userData: RegisterData) => {
+    // Rediriger vers Auth0 signup
+    window.location.href = '/api/auth/signup'
   }
 
   const logout = () => {
-    dispatch({ type: 'LOGOUT' })
+    // Rediriger vers Auth0 logout
+    window.location.href = '/api/auth/logout'
   }
 
   const updateProfile = async (userData: Partial<User>) => {

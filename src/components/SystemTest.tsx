@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useAuth0 } from '@/hooks/useAuth0'
+import { useAuth } from '@/contexts/AuthContext'
 import { useCart } from '@/contexts/CartContext'
 import { useNotifications } from '@/contexts/NotificationContext'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -11,7 +11,7 @@ export function SystemTest() {
   const [isOpen, setIsOpen] = useState(false)
   const [testResults, setTestResults] = useState<Record<string, boolean>>({})
   const [isRunningTests, setIsRunningTests] = useState(false)
-  const { user, isAuthenticated, login } = useAuth0()
+  const { state: authState, login, logout } = useAuth()
   const { state: cartState, dispatch: cartDispatch } = useCart()
   const { addNotification } = useNotifications()
 
@@ -22,10 +22,13 @@ export function SystemTest() {
     const results: Record<string, boolean> = {}
 
     try {
-      // Test 1: Authentication (Auth0)
+      // Test 1: Authentication
       try {
-        // Auth0 authentication is handled through redirect, not direct login
-        results.auth = isAuthenticated
+        if (!authState.isAuthenticated) {
+          await login('test@example.com', 'password123')
+          await new Promise(resolve => setTimeout(resolve, 500)) // Wait for state update
+        }
+        results.auth = authState.isAuthenticated
       } catch (error) {
         results.auth = false
       }
@@ -131,12 +134,10 @@ export function SystemTest() {
         <button
           onClick={async () => {
             try {
-              if (isAuthenticated) {
-                // Auth0 logout redirects to logout URL
-                window.location.href = '/api/auth/logout'
+              if (authState.isAuthenticated) {
+                await logout()
               } else {
-                // Auth0 login redirects to Auth0 login page
-                login()
+                await login('test@example.com', 'password123')
               }
             } catch (error) {
               console.error('Auth error:', error)
@@ -144,14 +145,16 @@ export function SystemTest() {
           }}
           className="bg-white/10 text-gray-300 hover:bg-white/20 font-bold py-2 px-4 rounded-full text-sm"
         >
-          {isAuthenticated ? 'Déconnexion' : 'Connexion'}
+          {authState.isAuthenticated ? 'Déconnexion' : 'Connexion'}
         </button>
       </div>
 
       <div className="mt-3 text-xs text-gray-500">
-        <p>État: {isAuthenticated ? 'Connecté' : 'Déconnecté'}</p>
+        <p>État: {authState.isAuthenticated ? 'Connecté' : 'Déconnecté'}</p>
         <p>Articles: {cartState.totalItems}</p>
       </div>
     </div>
   )
 }
+
+

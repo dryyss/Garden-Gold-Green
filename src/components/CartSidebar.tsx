@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { useCart } from '@/contexts/CartContext'
-import { useAuth0 } from '@/hooks/useAuth0'
+import { useAuth } from '@/contexts/AuthContext'
 import Image from 'next/image'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -18,7 +18,7 @@ import { QuantitySelector } from './QuantitySelector'
 
 export function CartSidebar() {
   const { state, dispatch } = useCart()
-  const { isAuthenticated } = useAuth0()
+  const { state: authState } = useAuth()
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('fr-FR', {
@@ -161,7 +161,7 @@ export function CartSidebar() {
               
               {/* Actions */}
               <div className="space-y-3">
-                {isAuthenticated ? (
+                {authState.isAuthenticated ? (
                   <Link
                     href="/checkout"
                     onClick={() => dispatch({ type: 'CLOSE_CART' })}

@@ -26,26 +26,26 @@ export default function AuthPage() {
 
   const handleAuth0Register = () => {
     setIsLoading(true)
-    // Redirection vers Auth0 pour l'inscription (même route avec prompt=signup)
-    window.location.href = '/api/auth/login?prompt=signup'
+    // Redirection vers Auth0 pour l'inscription (avec screen_hint=signup)
+    window.location.href = '/api/auth/signup'
   }
 
   const handleAppleLogin = () => {
     setIsLoading(true)
-    // Redirection vers Apple Sign In
-    window.location.href = '/api/auth/apple'
+    // Redirection vers Auth0 avec connexion Apple
+    window.location.href = '/api/auth/login?connection=apple'
   }
 
   const handleGoogleLogin = () => {
     setIsLoading(true)
-    // Redirection vers Google Sign In
-    window.location.href = '/api/auth/google'
+    // Redirection vers Auth0 avec connexion Google
+    window.location.href = '/api/auth/login?connection=google-oauth2'
   }
 
   const handleFacebookLogin = () => {
     setIsLoading(true)
-    // Redirection vers Facebook Login
-    window.location.href = '/api/auth/facebook'
+    // Redirection vers Auth0 avec connexion Facebook
+    window.location.href = '/api/auth/login?connection=facebook'
   }
 
   return (

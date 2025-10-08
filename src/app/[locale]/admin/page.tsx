@@ -145,7 +145,7 @@ function AdminContent() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">Admin Dashboard</h1>
-          <p className="text-gray-400">Welcome back, {user?.firstName || 'Admin'}</p>
+          <p className="text-gray-400">Welcome back, {authState.user?.firstName || 'Admin'}</p>
         </div>
 
         {/* Navigation Tabs */}

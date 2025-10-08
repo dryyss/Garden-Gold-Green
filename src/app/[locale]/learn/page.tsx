@@ -377,3 +377,242 @@ export default function LearnPage() {
     </main>
   )
 }
+  const learningTopics = [
+    {
+      title: "Comprendre le CBD",
+      description: "Découvrez les bases du cannabidiol, ses bienfaits et son fonctionnement dans l'organisme.",
+      icon: faBook,
+      color: "text-brand-green",
+      bgColor: "bg-brand-green/20",
+      articles: 12
+    },
+    {
+      title: "Guide des Dosages",
+      description: "Apprenez à doser correctement le CBD selon vos besoins et votre expérience.",
+      icon: faGraduationCap,
+      color: "text-brand-gold",
+      bgColor: "bg-brand-gold/20",
+      articles: 8
+    },
+    {
+      title: "Conseils d'Experts",
+      description: "Des conseils pratiques de nos experts pour optimiser votre expérience CBD.",
+      icon: faLightbulb,
+      color: "text-brand-silver",
+      bgColor: "bg-brand-silver/20",
+      articles: 15
+    }
+  ]
+
+  const featuredArticles = [
+    {
+      title: "CBD vs THC : Les Différences Essentielles",
+      excerpt: "Comprendre les différences fondamentales entre ces deux cannabinoïdes majeurs.",
+      readTime: "5 min",
+      category: "Éducation",
+      image: "https://via.placeholder.com/400x250/00C853/FFFFFF?text=CBD+vs+THC"
+    },
+    {
+      title: "Comment Choisir Votre Première Huile CBD",
+      excerpt: "Un guide complet pour débuter avec le CBD en toute sécurité.",
+      readTime: "8 min",
+      category: "Débutant",
+      image: "https://via.placeholder.com/400x250/FFD700/000000?text=First+CBD+Oil"
+    },
+    {
+      title: "Les Méthodes d'Administration du CBD",
+      excerpt: "Sublingual, topique, ingestion : découvrez les différentes façons de consommer le CBD.",
+      readTime: "6 min",
+      category: "Guide",
+      image: "https://via.placeholder.com/400x250/C0C0C0/000000?text=CBD+Methods"
+    }
+  ]
+
+  return (
+    <div className="bg-brand-black min-h-screen text-gray-300 pt-24">
+      {/* Hero Section */}
+      <section className="py-20">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 gold-text-gradient">
+              Centre d'Apprentissage
+            </h1>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+              Explorez nos ressources éducatives pour mieux comprendre le CBD, 
+              ses bienfaits et comment l'intégrer dans votre routine bien-être.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Learning Topics */}
+      <section className="py-20 bg-[#111111]">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-white mb-4 gold-text-gradient">
+              Thèmes d'Apprentissage
+            </h2>
+            <p className="text-lg text-gray-400">Choisissez votre domaine d'intérêt</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {learningTopics.map((topic, index) => (
+              <div key={index} className="card-bg rounded-xl p-8 text-center group hover:shadow-gold-glow transition-all duration-300">
+                <div className={`w-16 h-16 rounded-full ${topic.bgColor} flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                  <FontAwesomeIcon icon={topic.icon} className={`${topic.color} text-2xl`} />
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-4">{topic.title}</h3>
+                <p className="text-gray-400 mb-6 leading-relaxed">{topic.description}</p>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-500">{topic.articles} articles</span>
+                  <Link 
+                    href={`/blog?category=${topic.title.toLowerCase().replace(/\s+/g, '-')}`}
+                    className={`${topic.color} hover:opacity-80 font-semibold flex items-center`}
+                  >
+                    Explorer
+                    <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Articles */}
+      <section className="py-20">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-white mb-4 gold-text-gradient">
+              Articles en Vedette
+            </h2>
+            <p className="text-lg text-gray-400">Nos contenus les plus populaires</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {featuredArticles.map((article, index) => (
+              <article key={index} className="card-bg rounded-xl overflow-hidden group hover:shadow-gold-glow transition-all duration-300">
+                <div className="relative h-48">
+                  <Image
+                    src={article.image}
+                    alt={article.title}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute top-4 left-4">
+                    <span className="bg-brand-green/20 text-brand-green px-3 py-1 rounded-full text-sm font-semibold">
+                      {article.category}
+                    </span>
+                  </div>
+                </div>
+                <div className="p-6">
+                  <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-brand-gold transition-colors">
+                    <Link href={`/blog/${article.title.toLowerCase().replace(/\s+/g, '-')}`}>
+                      {article.title}
+                    </Link>
+                  </h3>
+                  <p className="text-gray-400 mb-4 line-clamp-3">{article.excerpt}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-500">{article.readTime}</span>
+                    <Link
+                      href={`/blog/${article.title.toLowerCase().replace(/\s+/g, '-')}`}
+                      className="text-brand-gold hover:text-brand-gold/80 font-semibold flex items-center"
+                    >
+                      Lire
+                      <FontAwesomeIcon icon={faArrowRight} className="ml-1" />
+                    </Link>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Video Section */}
+      <section className="py-20 bg-[#111111]">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-white mb-4 gold-text-gradient">
+              Vidéos Éducatives
+            </h2>
+            <p className="text-lg text-gray-400">Apprenez en regardant nos experts</p>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="card-bg rounded-xl overflow-hidden group hover:shadow-gold-glow transition-all duration-300">
+              <div className="relative h-64">
+                <Image
+                  src="https://via.placeholder.com/600x300/00C853/FFFFFF?text=Video+Thumbnail"
+                  alt="Vidéo éducative CBD"
+                  fill
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                  <button className="w-16 h-16 rounded-full bg-brand-gold/80 hover:bg-brand-gold text-black flex items-center justify-center transition-colors">
+                    <FontAwesomeIcon icon={faPlayCircle} className="text-2xl" />
+                  </button>
+                </div>
+              </div>
+              <div className="p-6">
+                <h3 className="text-xl font-semibold text-white mb-2">Introduction au CBD</h3>
+                <p className="text-gray-400 mb-4">Découvrez les bases du cannabidiol en 10 minutes</p>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-500">10 min</span>
+                  <span className="text-brand-gold font-semibold">Gratuit</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="card-bg rounded-xl overflow-hidden group hover:shadow-gold-glow transition-all duration-300">
+              <div className="relative h-64">
+                <Image
+                  src="https://via.placeholder.com/600x300/FFD700/000000?text=Video+Thumbnail"
+                  alt="Vidéo éducative CBD"
+                  fill
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                  <button className="w-16 h-16 rounded-full bg-brand-gold/80 hover:bg-brand-gold text-black flex items-center justify-center transition-colors">
+                    <FontAwesomeIcon icon={faPlayCircle} className="text-2xl" />
+                  </button>
+                </div>
+              </div>
+              <div className="p-6">
+                <h3 className="text-xl font-semibold text-white mb-2">Guide des Dosages</h3>
+                <p className="text-gray-400 mb-4">Comment bien doser le CBD selon vos besoins</p>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-500">15 min</span>
+                  <span className="text-brand-gold font-semibold">Gratuit</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20">
+        <div className="container mx-auto px-6">
+          <div className="card-bg rounded-xl p-12 text-center border border-brand-gold/20">
+            <h2 className="text-4xl font-bold text-white mb-6 gold-text-gradient">
+              Prêt à Commencer Votre Voyage CBD ?
+            </h2>
+            <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
+              Maintenant que vous en savez plus sur le CBD, découvrez nos produits 
+              soigneusement sélectionnés pour vous accompagner.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/products" className="btn-gold text-black font-bold py-3 px-8 rounded-full shadow-gold-glow">
+                Voir nos produits
+              </Link>
+              <Link href="/blog" className="bg-transparent border-2 border-brand-green text-brand-green font-bold py-3 px-8 rounded-full hover:bg-brand-green hover:text-black transition-all duration-300">
+                Lire notre blog
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  )
+}

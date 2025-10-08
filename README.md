@@ -217,5 +217,4 @@ Pour toute question ou support :
 - **Issues** : [GitHub Issues](https://github.com/dryyss/Garden-Gold-Green/issues)
 
 ---
-
 **Garden Gold Green** - *Experience Nature's Finest Elixir* 🌿✨

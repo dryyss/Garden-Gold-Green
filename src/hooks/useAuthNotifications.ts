@@ -1,38 +1,39 @@
 'use client'
 
 import { useEffect } from 'react'
-import { useAuth0 } from '@/hooks/useAuth0'
+import { useAuth } from '@/contexts/AuthContext'
 import { useNotifications } from '@/contexts/NotificationContext'
 
 export function useAuthNotifications() {
-  const { user, isAuthenticated, error, isLoading } = useAuth0()
+  const { state: authState } = useAuth()
   const { addNotification } = useNotifications()
 
   // Gérer les notifications d'authentification
   useEffect(() => {
-    if (error) {
+    if (authState.error) {
       addNotification({
         type: 'error',
         title: 'Erreur d\'authentification',
-        message: error.message || String(error)
+        message: authState.error
       })
     }
-  }, [error, addNotification])
+  }, [authState.error, addNotification])
 
   // Gérer les notifications de succès
   useEffect(() => {
-    if (isAuthenticated && user) {
-      // Vérifier si c'est une nouvelle connexion (pas de chargement initial)
-      const isNewLogin = !isLoading && user
-      if (isNewLogin) {
+    if (authState.isAuthenticated && authState.user && !authState.isLoading) {
+      // Éviter les notifications au chargement initial
+      const hasShownWelcome = sessionStorage.getItem('welcomeShown')
+      if (!hasShownWelcome) {
         addNotification({
           type: 'success',
           title: 'Connexion réussie',
-          message: `Bienvenue ${user.given_name || user.name || 'utilisateur'} !`
+          message: `Bienvenue ${authState.user.firstName} !`
         })
+        sessionStorage.setItem('welcomeShown', 'true')
       }
     }
-  }, [isAuthenticated, user, isLoading, addNotification])
+  }, [authState.isAuthenticated, authState.user, authState.isLoading, addNotification])
 
   return {
     addAuthNotification: addNotification

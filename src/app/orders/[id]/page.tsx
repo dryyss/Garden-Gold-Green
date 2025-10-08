@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
-import { useAuth0 } from '@/hooks/useAuth0'
+import { useAuth } from '@/contexts/AuthContext'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
@@ -72,7 +72,7 @@ interface Order {
 
 function OrderDetailContent() {
   const params = useParams()
-  const { user, isAuthenticated } = useAuth0()
+  const { state: authState } = useAuth()
   const [order, setOrder] = useState<Order | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 

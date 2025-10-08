@@ -370,3 +370,181 @@ export default function ProductDetailPage() {
     </main>
   )
 }
+
+function getProduct(slug: string) {
+  return productsData.find(product => product.slug === slug)
+}
+
+function getRelatedProducts(currentProductId: string, categorySlug: string) {
+  return productsData
+    .filter(product => 
+      product.id !== currentProductId && 
+      product.published &&
+      product.categories.some(cat => cat.slug === categorySlug)
+    )
+    .slice(0, 4)
+}
+
+export async function generateMetadata({ params }: ProductPageProps) {
+  const { slug } = await params
+  const product = getProduct(slug)
+  
+  if (!product) {
+    return {
+      title: 'Produit non trouvé',
+    }
+  }
+
+  return {
+    title: product.title,
+    description: product.description,
+    openGraph: {
+      title: product.title,
+      description: product.description,
+      images: product.images.length > 0 ? [product.images[0]] : [],
+    },
+  }
+}
+
+export default async function ProductPage({ params }: ProductPageProps) {
+  const { slug } = await params
+  const product = getProduct(slug)
+  
+  if (!product) {
+    notFound()
+  }
+
+  const relatedProducts = product.categories.length > 0 
+    ? getRelatedProducts(product.id, product.categories[0].slug) 
+    : []
+
+  const formattedPrice = new Intl.NumberFormat('fr-FR', {
+    style: 'currency',
+    currency: product.currency,
+  }).format(product.priceCents / 100)
+
+  return (
+    <div className="bg-brand-black min-h-screen text-gray-300 pt-24">
+      <div className="container mx-auto px-6 py-8">
+        <Link href="/products" className="text-gray-400 hover:text-brand-gold transition-colors mb-8 flex items-center">
+          <FontAwesomeIcon icon={faArrowLeft} className="mr-2" /> Back to Shop
+        </Link>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          {/* Product Image Gallery */}
+          <div className="lg:col-span-1">
+            <div className="relative w-full h-96 rounded-xl overflow-hidden shadow-lg mb-6">
+              <Image 
+                src={product.images[0] || 'https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD+Product'} 
+                alt={product.title} 
+                fill 
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover"
+              />
+            </div>
+            {/* Small image thumbnails (if multiple images) */}
+            <div className="flex space-x-4 overflow-x-auto">
+              {product.images.map((img, index) => (
+                <div key={index} className="relative w-24 h-24 rounded-lg overflow-hidden cursor-pointer border-2 border-transparent hover:border-brand-gold transition-colors flex-shrink-0">
+                  <Image src={img} alt={`${product.title} thumbnail ${index + 1}`} fill className="object-cover" />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Product Details */}
+          <div className="lg:col-span-1">
+            <h1 className="text-4xl font-bold text-white mb-3">{product.title}</h1>
+            <p className="text-brand-green text-lg font-semibold mb-4">
+              {product.categories.map(cat => cat.name).join(', ')}
+            </p>
+            <div className="flex items-center mb-4">
+              <div className="text-brand-gold flex">
+                <FontAwesomeIcon icon={faStar} /><FontAwesomeIcon icon={faStar} /><FontAwesomeIcon icon={faStar} /><FontAwesomeIcon icon={faStar} /><FontAwesomeIcon icon={faStar} />
+              </div>
+              <span className="text-gray-400 ml-2">(120 Reviews)</span>
+            </div>
+
+            <p className="text-gray-300 text-2xl font-bold gold-text-gradient mb-6">{formattedPrice}</p>
+            
+            <p className="text-gray-400 mb-8 leading-relaxed">{product.description}</p>
+
+            {/* Quantity and Add to Cart */}
+            <div className="flex items-center space-x-4 mb-8">
+              <div className="flex items-center border border-gray-600 rounded-full px-3 py-1">
+                <button className="text-gray-300 hover:text-white px-2">-</button>
+                <span className="text-white text-lg font-semibold mx-2">1</span>
+                <button className="text-gray-300 hover:text-white px-2">+</button>
+              </div>
+              <button className="btn-gold text-black font-bold py-3 px-8 rounded-full shadow-gold-glow flex items-center">
+                <FontAwesomeIcon icon={faShoppingCart} className="mr-3" /> Add to Cart
+              </button>
+            </div>
+
+            {/* Key Features */}
+            <div className="card-bg p-6 rounded-xl">
+              <h3 className="text-xl font-semibold text-white mb-4">Why Choose Garden Gold Green?</h3>
+              <ul className="space-y-3 text-gray-400">
+                <li className="flex items-center">
+                  <FontAwesomeIcon icon={faCheckCircle} className="text-brand-green mr-3" /> 100% Organic & Natural
+                </li>
+                <li className="flex items-center">
+                  <FontAwesomeIcon icon={faFlaskVial} className="text-brand-green mr-3" /> Lab Tested for Purity
+                </li>
+                <li className="flex items-center">
+                  <FontAwesomeIcon icon={faShield} className="text-brand-green mr-3" /> Safe & Effective
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Related Products Section */}
+        {relatedProducts.length > 0 && (
+          <section className="mt-24">
+            <h2 className="text-3xl font-bold text-white text-center mb-12 gold-text-gradient">You Might Also Like</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {relatedProducts.map((relatedProduct) => (
+                <div key={relatedProduct.id} className="card-bg rounded-xl overflow-hidden group transform hover:-translate-y-2 transition-transform duration-300 shadow-lg hover:shadow-gold-glow">
+                  <Link href={`/products/${relatedProduct.slug}`} className="block h-72 overflow-hidden relative">
+                    <Image
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      src={relatedProduct.images[0] || 'https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD+Product'}
+                      alt={relatedProduct.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                    />
+                    {relatedProduct.cbdPercent && (
+                      <span className="absolute top-4 left-4 bg-brand-green text-white text-xs font-bold px-3 py-1 rounded-full">
+                        CBD {relatedProduct.cbdPercent}%
+                      </span>
+                    )}
+                  </Link>
+                  <div className="p-6">
+                    <h3 className="text-xl font-semibold text-white mb-2">
+                      <Link href={`/products/${relatedProduct.slug}`} className="hover:text-brand-gold transition-colors">
+                        {relatedProduct.title}
+                      </Link>
+                    </h3>
+                    <p className="text-gray-400 mb-4 line-clamp-2">{relatedProduct.description}</p>
+                    <div className="flex justify-between items-center">
+                      <span className="text-2xl font-bold gold-text-gradient">
+                        {new Intl.NumberFormat('fr-FR', {
+                          style: 'currency',
+                          currency: relatedProduct.currency,
+                        }).format(relatedProduct.priceCents / 100)}
+                      </span>
+                      <button className="btn-gold text-black font-bold py-2 px-5 rounded-full text-sm">
+                        Add to Cart
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
+    </div>
+  )
+}
