@@ -52,11 +52,15 @@ export function ImageWithLoading({
 
   // Image de fallback en cas d'erreur
   const fallbackSrc = '/logo.png'
+  
+  // Valider le src - utiliser fallback si vide ou invalide
+  const validSrc = src && src.trim() !== '' ? src : fallbackSrc
+  const shouldShowError = !src || src.trim() === ''
 
   return (
     <div className={`relative ${className}`}>
       {/* Loading spinner */}
-      {isLoading && (
+      {isLoading && !shouldShowError && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-800/50 z-10">
           <div className="flex flex-col items-center space-y-2">
             <FontAwesomeIcon 
@@ -70,14 +74,14 @@ export function ImageWithLoading({
 
       {/* Image principale */}
       <Image
-        src={hasError ? fallbackSrc : src}
+        src={hasError || shouldShowError ? fallbackSrc : validSrc}
         alt={alt}
         width={fill ? undefined : width}
         height={fill ? undefined : height}
         fill={fill}
         className={`transition-opacity duration-300 ${
-          isLoading ? 'opacity-0' : 'opacity-100'
-        } ${hasError ? 'grayscale' : ''}`}
+          isLoading && !shouldShowError ? 'opacity-0' : 'opacity-100'
+        } ${hasError || shouldShowError ? 'grayscale' : ''}`}
         priority={priority}
         quality={quality}
         sizes={sizes}
@@ -88,7 +92,7 @@ export function ImageWithLoading({
       />
 
       {/* Overlay d'erreur */}
-      {hasError && (
+      {(hasError || shouldShowError) && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-800/80 z-20">
           <div className="text-center text-gray-400">
             <div className="w-8 h-8 mx-auto mb-2 bg-gray-600 rounded flex items-center justify-center">
