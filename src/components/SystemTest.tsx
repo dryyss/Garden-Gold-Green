@@ -11,7 +11,7 @@ export function SystemTest() {
   const [isOpen, setIsOpen] = useState(false)
   const [testResults, setTestResults] = useState<Record<string, boolean>>({})
   const [isRunningTests, setIsRunningTests] = useState(false)
-  const { state: authState, login, logout } = useAuth()
+  const { user, isAuthenticated, login } = useAuth0()
   const { state: cartState, dispatch: cartDispatch } = useCart()
   const { addNotification } = useNotifications()
 
@@ -22,12 +22,9 @@ export function SystemTest() {
     const results: Record<string, boolean> = {}
 
     try {
-      // Test 1: Authentication
+      // Test 1: Authentication (Auth0)
       try {
-        if (!isAuthenticated) {
-          await login('test@example.com', 'password123')
-          await new Promise(resolve => setTimeout(resolve, 500)) // Wait for state update
-        }
+        // Auth0 authentication is handled through redirect, not direct login
         results.auth = isAuthenticated
       } catch (error) {
         results.auth = false
@@ -135,9 +132,11 @@ export function SystemTest() {
           onClick={async () => {
             try {
               if (isAuthenticated) {
-                await logout()
+                // Auth0 logout redirects to logout URL
+                window.location.href = '/api/auth/logout'
               } else {
-                await login('test@example.com', 'password123')
+                // Auth0 login redirects to Auth0 login page
+                login()
               }
             } catch (error) {
               console.error('Auth error:', error)
