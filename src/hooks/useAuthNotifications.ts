@@ -14,7 +14,7 @@ export function useAuthNotifications() {
       addNotification({
         type: 'error',
         title: 'Erreur d\'authentification',
-        message: error
+        message: error.message || String(error)
       })
     }
   }, [error, addNotification])
