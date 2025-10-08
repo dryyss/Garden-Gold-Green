@@ -4,7 +4,6 @@ import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CookieConsent } from "@/components/CookieConsent";
-import { LegalBanner } from "@/components/LegalBanner";
 import { CartProvider } from "@/contexts/CartContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
@@ -78,7 +77,6 @@ export default function RootLayout({
           <NotificationProvider>
             <AuthProvider>
               <CartProvider>
-                <LegalBanner />
                 <Header />
 
                 <main className="flex-1">
