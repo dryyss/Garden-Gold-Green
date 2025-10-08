@@ -27,7 +27,7 @@ import {
   faWhatsapp 
 } from '@fortawesome/free-brands-svg-icons'
 import { useCart } from '@/contexts/CartContext'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth0 } from '@/hooks/useAuth0'
 import { SearchModal } from './SearchModal'
 
 export function Header() {
@@ -36,7 +36,7 @@ export function Header() {
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const { state } = useCart()
-  const { state: authState, logout, isAdmin } = useAuth()
+  const { user, isAuthenticated, logout } = useAuth0()
 
   // Gérer le scroll pour réduire la barre jaune
   useEffect(() => {
@@ -178,24 +178,24 @@ export function Header() {
               </button>
           
           {/* User Menu */}
-          {authState.isAuthenticated ? (
+          {isAuthenticated ? (
             <div className="relative user-menu-container">
               <button 
                 onClick={() => setShowUserMenu(!showUserMenu)}
                 className="text-gray-300 hover:text-brand-gold transition-colors duration-300 flex items-center space-x-2 p-2"
               >
                 <FontAwesomeIcon icon={faUserCircle} className="icon-responsive-md" />
-                <span className="hidden lg:block text-sm">{authState.user?.firstName || authState.user?.email}</span>
+                <span className="hidden lg:block text-sm">{user?.firstName || user?.email}</span>
               </button>
               
               {showUserMenu && (
                 <div className="absolute right-0 mt-2 w-48 sm:w-56 bg-brand-black border border-white/10 rounded-lg shadow-lg z-50">
                   <div className="py-2">
                     <div className="px-4 py-2 border-b border-white/10">
-                      <p className="text-sm text-white font-medium">{authState.user?.firstName} {authState.user?.lastName}</p>
-                      <p className="text-xs text-gray-400">{authState.user?.email}</p>
+                      <p className="text-sm text-white font-medium">{user?.firstName} {user?.lastName}</p>
+                      <p className="text-xs text-gray-400">{user?.email}</p>
                     </div>
-                    {isAdmin() && (
+                    {user?.role === 'admin' && (
                       <Link
                         href="/admin"
                         className="block px-4 py-2 text-sm text-brand-gold hover:bg-white/10 hover:text-white transition-colors"
@@ -358,13 +358,13 @@ export function Header() {
             
             {/* Mobile User Actions */}
             <div className="border-t border-white/10 pt-4 mt-4">
-              {authState.isAuthenticated ? (
+              {isAuthenticated ? (
                 <div className="space-y-3">
                   <div className="flex items-center space-x-3 py-2">
                     <FontAwesomeIcon icon={faUserCircle} className="text-brand-gold" />
                     <div>
-                      <p className="text-white font-medium">{authState.user?.firstName} {authState.user?.lastName}</p>
-                      <p className="text-gray-400 text-sm">{authState.user?.email}</p>
+                      <p className="text-white font-medium">{user?.firstName} {user?.lastName}</p>
+                      <p className="text-gray-400 text-sm">{user?.email}</p>
                     </div>
                   </div>
                   

@@ -26,8 +26,8 @@ export default function AuthPage() {
 
   const handleAuth0Register = () => {
     setIsLoading(true)
-    // Redirection vers Auth0 pour l'inscription
-    window.location.href = '/api/auth/register'
+    // Redirection vers Auth0 pour l'inscription (même route avec prompt=signup)
+    window.location.href = '/api/auth/login?prompt=signup'
   }
 
   const handleAppleLogin = () => {
