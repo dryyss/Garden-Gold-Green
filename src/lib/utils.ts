@@ -39,3 +39,11 @@ export function getStockStatus(stock: number): { status: 'in-stock' | 'low-stock
   }
   return { status: 'in-stock', message: 'En stock' }
 }
+
+
+
+
+
+
+
+

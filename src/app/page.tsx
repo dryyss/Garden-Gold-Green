@@ -30,7 +30,7 @@ function transformProduct(product: any) { // eslint-disable-line @typescript-esl
     ...product,
     name: product.title,
     price: product.priceCents / 100, // Convertir les centimes en euros
-    image: product.images?.[0] || '/logo.png',
+    image: product.images?.[0] || '/logo2.png',
     category: product.categories?.[0]?.name || 'CBD Products',
     rating: 4.5, // Valeur par défaut
     reviewCount: Math.floor(Math.random() * 100) + 10, // Valeur aléatoire
@@ -67,7 +67,7 @@ export default function Home() {
           <div className="mb-8">
         <Image
               className="h-64 w-64" 
-              src="/logo.png" 
+              src="/logo2.png" 
               alt="3G - Garden Gold Green logo, metallic gold, emerald green, and shiny silver, on a dark background with light reflections"
               width={256}
               height={256}

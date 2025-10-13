@@ -21,7 +21,7 @@ export default function NotFound() {
           <div className="flex items-center justify-center mb-8">
             <Image
               className="h-16 w-16 mr-4"
-              src="/logo.png"
+              src="/logo2.png"
               alt="Garden Gold Green logo"
               width={64}
               height={64}

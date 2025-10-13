@@ -176,7 +176,7 @@ export default function LearnPage() {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full bg-white/5 border border-white/20 rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold transition-all duration-300"
               />
-          </div>
+            </div>
           
             {/* Category Filter */}
             <div className="lg:w-64">
@@ -191,8 +191,8 @@ export default function LearnPage() {
                   </option>
                 ))}
               </select>
-                </div>
-              </div>
+            </div>
+          </div>
 
           {/* Tags */}
           <div className="mt-4">

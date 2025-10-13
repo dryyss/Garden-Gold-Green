@@ -10,9 +10,17 @@ import {
   faFilter, 
   faTh, 
   faList,
-  faArrowLeft
+  faArrowLeft,
+  faXmark
 } from '@fortawesome/free-solid-svg-icons'
 import productsData from '@/data/products.json'
+
+// Type extension pour window
+declare global {
+  interface Window {
+    searchTimeout?: NodeJS.Timeout
+  }
+}
 
 // Transformer les données de l'ancienne structure vers la nouvelle
 function transformProduct(product: any) {
@@ -20,7 +28,7 @@ function transformProduct(product: any) {
     ...product,
     name: product.title,
     price: product.priceCents / 100, // Convertir les centimes en euros
-    image: product.images?.[0] || '/logo.png',
+    image: product.images?.[0] || '/logo2.png',
     category: product.categories?.[0]?.name || 'CBD Products',
     rating: 4.5, // Valeur par défaut
     reviewCount: Math.floor(Math.random() * 100) + 10, // Valeur aléatoire
@@ -154,6 +162,7 @@ export default function ProductsPage() {
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || '')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [showFilters, setShowFilters] = useState(false)
+  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false)
 
   useEffect(() => {
     setProductsData(getProducts(searchParams))
@@ -191,10 +200,26 @@ export default function ProductsPage() {
     window.history.pushState({}, '', `/products?${params.toString()}`)
   }
 
+  // Fonction pour gérer les filtres de catégorie
+  const handleCategoryFilter = (category: string) => {
+    const params = new URLSearchParams(searchParams)
+    if (category) {
+      params.set('category', category)
+    } else {
+      params.delete('category')
+    }
+    params.delete('page') // Reset à la page 1
+    window.history.pushState({}, '', `/products?${params.toString()}`)
+  }
+
   // Fonction pour gérer les filtres de prix
   const handlePriceFilter = (priceRange: string) => {
     const params = new URLSearchParams(searchParams)
+    if (priceRange) {
     params.set('price', priceRange)
+    } else {
+      params.delete('price')
+    }
     params.delete('page') // Reset à la page 1
     window.history.pushState({}, '', `/products?${params.toString()}`)
   }
@@ -202,7 +227,11 @@ export default function ProductsPage() {
   // Fonction pour gérer les filtres de concentration CBD
   const handleCbdFilter = (cbdRange: string) => {
     const params = new URLSearchParams(searchParams)
+    if (cbdRange) {
     params.set('cbd', cbdRange)
+    } else {
+      params.delete('cbd')
+    }
     params.delete('page') // Reset à la page 1
     window.history.pushState({}, '', `/products?${params.toString()}`)
   }
@@ -213,31 +242,31 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-brand-black pt-24">
-      {/* Header */}
-      <div className="bg-brand-black border-b border-white/10">
-        <div className="container mx-auto px-6 py-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-4xl font-bold text-white mb-2">
+    <div className="h-screen bg-brand-black flex flex-col pt-24">
+      {/* Header Fixe - Responsive */}
+      <div className="bg-brand-black border-b border-white/10 flex-shrink-0">
+        <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex-1">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2">
                 Notre Collection Premium
               </h1>
-              <p className="text-gray-400">
+              <p className="text-sm sm:text-base text-gray-400">
                 Découvrez notre sélection soigneusement choisie de produits CBD premium
               </p>
             </div>
             
-            <div className="flex items-center space-x-2">
-              <div className="bg-brand-green/20 text-brand-green px-3 py-1 rounded-full text-sm font-medium">
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="bg-brand-green/20 text-brand-green px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
                 {pagination.totalProducts} produits
               </div>
               {pagination.totalPages > 1 && (
-                <div className="bg-brand-gold/20 text-brand-gold px-3 py-1 rounded-full text-sm font-medium">
+                <div className="bg-brand-gold/20 text-brand-gold px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
                   Page {pagination.currentPage} sur {pagination.totalPages}
                 </div>
               )}
               {(searchParams.get('category') || searchParams.get('search') || searchParams.get('price') || searchParams.get('cbd')) && (
-                <div className="bg-blue-600/20 text-blue-400 px-3 py-1 rounded-full text-sm font-medium">
+                <div className="bg-blue-600/20 text-blue-400 px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
                   Filtres actifs
                 </div>
               )}
@@ -246,24 +275,41 @@ export default function ProductsPage() {
         </div>
       </div>
 
-      {/* Layout avec filtres fixes et produits scrollables */}
-      <div className="flex h-screen">
-        {/* Sidebar des filtres - Fixe */}
-        <div className="w-80 bg-brand-black border-r border-white/10 flex-shrink-0 overflow-y-auto">
-          <div className="p-6">
-            {/* Bouton pour fermer les filtres sur mobile */}
-            <div className="flex items-center justify-between mb-6 lg:hidden">
-              <h2 className="text-xl font-semibold text-white">Filtres</h2>
+      {/* Contenu principal avec layout fixe - Responsive */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* Filtres fixes - Responsive */}
+        <div className={`bg-brand-black border-r border-white/10 flex-shrink-0 overflow-y-auto ${
+          isMobileFiltersOpen 
+            ? 'fixed inset-y-0 right-0 z-50 w-full max-w-xs sm:max-w-sm lg:relative lg:inset-auto lg:w-80 lg:max-w-none' 
+            : 'hidden lg:block lg:w-80'
+        }`}>
+          {/* Overlay pour mobile */}
+          {isMobileFiltersOpen && (
+            <div 
+              className="fixed inset-0 bg-black/50 lg:hidden"
+              onClick={() => setIsMobileFiltersOpen(false)}
+            />
+          )}
+          
+          <div className="relative bg-brand-black h-full">
+            <div className="p-3 sm:p-6">
+              <div className="card-bg rounded-xl p-3 sm:p-6 space-y-3 sm:space-y-6">
+                {/* Header mobile avec bouton fermer */}
+                <div className="flex items-center justify-between lg:justify-start">
+                  <div className="flex items-center space-x-2">
+                    <FontAwesomeIcon icon={faFilter} className="text-brand-gold" />
+                    <h3 className="font-semibold text-white">Filtres</h3>
+                  </div>
               <button
-                onClick={() => setShowFilters(false)}
-                className="text-gray-400 hover:text-white transition-colors"
+                    onClick={() => setIsMobileFiltersOpen(false)}
+                    className="lg:hidden text-gray-400 hover:text-white p-2"
               >
-                <FontAwesomeIcon icon={faFilter} />
+                    <FontAwesomeIcon icon={faXmark} className="h-5 w-5" />
               </button>
             </div>
 
             {/* Recherche */}
-            <div className="mb-6">
+                <div>
               <label className="block text-sm font-medium text-white mb-2">
                 Rechercher des produits...
               </label>
@@ -275,26 +321,26 @@ export default function ProductsPage() {
                     setSearchTerm(e.target.value)
                     handleSearch(e.target.value)
                   }}
-                  className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 pr-10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold focus:border-transparent"
+                      className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 pr-10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold focus:border-transparent text-sm"
                   placeholder="Rechercher..."
                 />
                 <FontAwesomeIcon 
                   icon={faMagnifyingGlass} 
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4"
                 />
               </div>
             </div>
 
             {/* Catégories */}
-            <div className="mb-6">
-              <h3 className="text-lg font-semibold text-white mb-4">Catégories</h3>
+                <div>
+                  <h4 className="font-medium mb-3 text-white text-sm">Catégories</h4>
               <div className="space-y-2">
                 <button
                   onClick={() => handleCategoryFilter('')}
-                  className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
-                    selectedCategory === '' 
-                      ? 'bg-brand-gold text-black font-medium' 
-                      : 'text-gray-300 hover:bg-white/10'
+                      className={`w-full text-left px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors text-xs sm:text-sm ${
+                        !selectedCategory 
+                          ? 'bg-brand-gold/20 text-brand-gold border border-brand-gold' 
+                          : 'text-gray-300 hover:text-brand-gold hover:bg-white/5'
                   }`}
                 >
                   Toutes les catégories
@@ -303,10 +349,10 @@ export default function ProductsPage() {
                   <button
                     key={category.slug}
                     onClick={() => handleCategoryFilter(category.slug)}
-                    className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
+                        className={`w-full text-left px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors text-xs sm:text-sm ${
                       selectedCategory === category.slug 
-                        ? 'bg-brand-gold text-black font-medium' 
-                        : 'text-gray-300 hover:bg-white/10'
+                            ? 'bg-brand-gold/20 text-brand-gold border border-brand-gold' 
+                            : 'text-gray-300 hover:text-brand-gold hover:bg-white/5'
                     }`}
                   >
                     {category.name}
@@ -316,8 +362,8 @@ export default function ProductsPage() {
             </div>
 
             {/* Concentration CBD */}
-            <div className="mb-6">
-              <h3 className="text-lg font-semibold text-white mb-4">Concentration CBD</h3>
+                <div>
+                  <h4 className="font-medium mb-3 text-white text-sm">Concentration CBD</h4>
               <div className="space-y-2">
                 {[
                   { value: '', label: 'Toutes les concentrations' },
@@ -329,10 +375,10 @@ export default function ProductsPage() {
                   <button
                     key={option.value}
                     onClick={() => handleCbdFilter(option.value)}
-                    className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
+                        className={`w-full text-left px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors text-xs sm:text-sm ${
                       searchParams.get('cbd') === option.value 
-                        ? 'bg-brand-gold text-black font-medium' 
-                        : 'text-gray-300 hover:bg-white/10'
+                            ? 'bg-brand-gold/20 text-brand-gold border border-brand-gold' 
+                            : 'text-gray-300 hover:text-brand-gold hover:bg-white/5'
                     }`}
                   >
                     {option.label}
@@ -342,8 +388,8 @@ export default function ProductsPage() {
             </div>
 
             {/* Gamme de prix */}
-            <div className="mb-6">
-              <h3 className="text-lg font-semibold text-white mb-4">Gamme de prix</h3>
+                <div>
+                  <h4 className="font-medium mb-3 text-white text-sm">Gamme de prix</h4>
               <div className="space-y-2">
                 {[
                   { value: '', label: 'Tous les prix' },
@@ -355,10 +401,10 @@ export default function ProductsPage() {
                   <button
                     key={option.value}
                     onClick={() => handlePriceFilter(option.value)}
-                    className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
+                        className={`w-full text-left px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors text-xs sm:text-sm ${
                       searchParams.get('price') === option.value 
-                        ? 'bg-brand-gold text-black font-medium' 
-                        : 'text-gray-300 hover:bg-white/10'
+                            ? 'bg-brand-gold/20 text-brand-gold border border-brand-gold' 
+                            : 'text-gray-300 hover:text-brand-gold hover:bg-white/5'
                     }`}
                   >
                     {option.label}
@@ -370,169 +416,32 @@ export default function ProductsPage() {
             {/* Effacer les filtres */}
             <button
               onClick={clearFilters}
-              className="w-full bg-red-600 text-white font-medium py-3 px-4 rounded-lg hover:bg-red-700 transition-colors"
+                  className="w-full bg-red-600 text-white font-medium py-2 sm:py-3 px-3 sm:px-4 rounded-lg hover:bg-red-700 transition-colors text-xs sm:text-sm"
             >
               Effacer tous les filtres
             </button>
           </div>
         </div>
-
-        {/* Zone principale des produits - Scrollable */}
-        <div className="flex-1 overflow-y-auto">
-          <div className="p-6">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Sidebar Filters */}
-          <div className="lg:col-span-1">
-            <div className="card-bg rounded-xl p-6 space-y-6">
-              <div className="flex items-center space-x-2">
-                <FontAwesomeIcon icon={faFilter} className="text-brand-gold" />
-                <h3 className="font-semibold text-white">Filtres</h3>
-              </div>
-
-              {/* Categories */}
-              <div>
-                <h4 className="font-medium mb-3 text-white">Catégories</h4>
-                <div className="space-y-2">
-                  <Link
-                    href="/products"
-                    className={`block w-full text-left px-3 py-2 rounded-lg transition-colors ${
-                      !selectedCategory 
-                        ? 'bg-brand-gold/20 text-brand-gold border border-brand-gold' 
-                        : 'text-gray-300 hover:text-brand-gold hover:bg-white/5'
-                    }`}
-                  >
-                    Toutes les catégories
-                  </Link>
-                  {categories.map((category) => (
-                    <Link
-                      key={category.slug}
-                      href={`/products?category=${category.slug}`}
-                      className={`block w-full text-left px-3 py-2 rounded-lg transition-colors ${
-                        selectedCategory === category.slug
-                          ? 'bg-brand-gold/20 text-brand-gold border border-brand-gold' 
-                          : 'text-gray-300 hover:text-brand-gold hover:bg-white/5'
-                      }`}
-                    >
-                      {category.name}
-                    </Link>
-                  ))}
                 </div>
               </div>
 
-              {/* CBD Percentage */}
-              <div>
-                <h4 className="font-medium mb-3 text-white">Concentration CBD</h4>
-                <div className="space-y-2">
+        {/* Zone des produits scrollable - Responsive */}
+        <div className="flex-1 flex flex-col overflow-hidden">
+          {/* Barre d'outils fixe - Responsive */}
+          <div className="bg-brand-black border-b border-white/10 flex-shrink-0 p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              {/* Bouton filtres mobile */}
                   <button 
-                    onClick={() => handleCbdFilter('under-5')}
-                    className={`block w-full text-left px-3 py-2 rounded-lg transition-colors ${
-                      searchParams.get('cbd') === 'under-5'
-                        ? 'bg-brand-gold/20 text-brand-gold border border-brand-gold'
-                        : 'text-gray-300 hover:text-brand-gold hover:bg-white/5'
-                    }`}
-                  >
-                    5% et moins
+                onClick={() => setIsMobileFiltersOpen(true)}
+                className="lg:hidden flex items-center space-x-2 bg-brand-gold/20 text-brand-gold border border-brand-gold px-4 py-2 rounded-lg hover:bg-brand-gold/30 transition-colors"
+              >
+                <FontAwesomeIcon icon={faFilter} className="h-4 w-4" />
+                <span>Filtres</span>
                   </button>
-                  <button 
-                    onClick={() => handleCbdFilter('6-15')}
-                    className={`block w-full text-left px-3 py-2 rounded-lg transition-colors ${
-                      searchParams.get('cbd') === '6-15'
-                        ? 'bg-brand-gold/20 text-brand-gold border border-brand-gold'
-                        : 'text-gray-300 hover:text-brand-gold hover:bg-white/5'
-                    }`}
-                  >
-                    6% - 15%
-                  </button>
-                  <button 
-                    onClick={() => handleCbdFilter('16-25')}
-                    className={`block w-full text-left px-3 py-2 rounded-lg transition-colors ${
-                      searchParams.get('cbd') === '16-25'
-                        ? 'bg-brand-gold/20 text-brand-gold border border-brand-gold'
-                        : 'text-gray-300 hover:text-brand-gold hover:bg-white/5'
-                    }`}
-                  >
-                    16% - 25%
-                  </button>
-                  <button 
-                    onClick={() => handleCbdFilter('above-26')}
-                    className={`block w-full text-left px-3 py-2 rounded-lg transition-colors ${
-                      searchParams.get('cbd') === 'above-26'
-                        ? 'bg-brand-gold/20 text-brand-gold border border-brand-gold'
-                        : 'text-gray-300 hover:text-brand-gold hover:bg-white/5'
-                    }`}
-                  >
-                    26% et plus
-                  </button>
-                </div>
-              </div>
 
-              {/* Price Range */}
-              <div>
-                <h4 className="font-medium mb-3 text-white">Gamme de prix</h4>
-                <div className="space-y-2">
-                  <button 
-                    onClick={() => handlePriceFilter('under-20')}
-                    className={`block w-full text-left px-3 py-2 rounded-lg transition-colors ${
-                      searchParams.get('price') === 'under-20'
-                        ? 'bg-brand-gold/20 text-brand-gold border border-brand-gold'
-                        : 'text-gray-300 hover:text-brand-gold hover:bg-white/5'
-                    }`}
-                  >
-                    Moins de 20€
-                  </button>
-                  <button 
-                    onClick={() => handlePriceFilter('20-50')}
-                    className={`block w-full text-left px-3 py-2 rounded-lg transition-colors ${
-                      searchParams.get('price') === '20-50'
-                        ? 'bg-brand-gold/20 text-brand-gold border border-brand-gold'
-                        : 'text-gray-300 hover:text-brand-gold hover:bg-white/5'
-                    }`}
-                  >
-                    20€ - 50€
-                  </button>
-                  <button 
-                    onClick={() => handlePriceFilter('50-100')}
-                    className={`block w-full text-left px-3 py-2 rounded-lg transition-colors ${
-                      searchParams.get('price') === '50-100'
-                        ? 'bg-brand-gold/20 text-brand-gold border border-brand-gold'
-                        : 'text-gray-300 hover:text-brand-gold hover:bg-white/5'
-                    }`}
-                  >
-                    50€ - 100€
-                  </button>
-                  <button 
-                    onClick={() => handlePriceFilter('above-100')}
-                    className={`block w-full text-left px-3 py-2 rounded-lg transition-colors ${
-                      searchParams.get('price') === 'above-100'
-                        ? 'bg-brand-gold/20 text-brand-gold border border-brand-gold'
-                        : 'text-gray-300 hover:text-brand-gold hover:bg-white/5'
-                    }`}
-                  >
-                    Plus de 100€
-                  </button>
-                </div>
-              </div>
-
-              {/* Clear Filters */}
-              {(searchParams.get('category') || searchParams.get('search') || searchParams.get('price') || searchParams.get('cbd')) && (
-                <div className="pt-4 border-t border-white/10">
-                  <button
-                    onClick={clearFilters}
-                    className="w-full text-center px-3 py-2 bg-red-600/20 text-red-400 border border-red-600/30 rounded-lg hover:bg-red-600/30 transition-colors"
-                  >
-                    Effacer tous les filtres
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Products Grid */}
-          <div className="lg:col-span-3">
-            {/* Toolbar */}
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center space-x-4">
-                <div className="relative">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4 flex-1">
+                {/* Recherche mobile */}
+                <div className="relative flex-1">
                   <FontAwesomeIcon 
                     icon={faMagnifyingGlass} 
                     className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" 
@@ -540,11 +449,10 @@ export default function ProductsPage() {
                     <input
                       type="text"
                       placeholder="Rechercher des produits..."
-                      className="pl-10 pr-4 py-2 bg-white/5 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold focus:border-brand-gold"
+                    className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold focus:border-brand-gold text-sm"
                       value={searchTerm}
                       onChange={(e) => {
                         setSearchTerm(e.target.value)
-                        // Debounce la recherche
                         clearTimeout(window.searchTimeout)
                         window.searchTimeout = setTimeout(() => {
                           handleSearch(e.target.value)
@@ -553,8 +461,9 @@ export default function ProductsPage() {
                     />
                 </div>
                 
+                {/* Tri */}
                 <select
-                  className="px-3 py-2 bg-white/5 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-gold focus:border-brand-gold"
+                  className="px-3 py-2 bg-white/5 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-gold focus:border-brand-gold text-sm sm:w-auto w-full"
                   value={sortBy}
                   onChange={(e) => {
                     setSortBy(e.target.value)
@@ -569,19 +478,41 @@ export default function ProductsPage() {
                 </select>
               </div>
 
+              {/* Boutons de vue */}
               <div className="flex items-center space-x-2">
-                <button className="p-2 rounded-lg bg-brand-gold/20 text-brand-gold border border-brand-gold">
+                <button 
+                  onClick={() => setViewMode('grid')}
+                  className={`p-2 rounded-lg transition-colors ${
+                    viewMode === 'grid' 
+                      ? 'bg-brand-gold/20 text-brand-gold border border-brand-gold' 
+                      : 'text-gray-300 hover:text-brand-gold hover:bg-white/5'
+                  }`}
+                >
                   <FontAwesomeIcon icon={faTh} className="h-4 w-4" />
                 </button>
-                <button className="p-2 rounded-lg text-gray-300 hover:text-brand-gold hover:bg-white/5 transition-colors">
+                <button 
+                  onClick={() => setViewMode('list')}
+                  className={`p-2 rounded-lg transition-colors ${
+                    viewMode === 'list' 
+                      ? 'bg-brand-gold/20 text-brand-gold border border-brand-gold' 
+                      : 'text-gray-300 hover:text-brand-gold hover:bg-white/5'
+                  }`}
+                >
                   <FontAwesomeIcon icon={faList} className="h-4 w-4" />
                 </button>
               </div>
+              </div>
             </div>
 
-            {/* Products Grid */}
+          {/* Zone des produits scrollable - Responsive */}
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+            {/* Products Grid/List - Responsive */}
             {products.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+              <div className={`${
+                viewMode === 'grid' 
+                  ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8' 
+                  : 'space-y-4 sm:space-y-6'
+              }`}>
                 <Suspense fallback={<div className="text-white">Loading...</div>}>
                       {products.map((product) => (
                         <ProductCard
@@ -592,18 +523,18 @@ export default function ProductsPage() {
                 </Suspense>
               </div>
             ) : (
-              <div className="card-bg rounded-xl p-12 text-center">
+              <div className="card-bg rounded-xl p-8 sm:p-12 text-center">
                 <div className="space-y-4">
                   <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto">
                     <FontAwesomeIcon icon={faMagnifyingGlass} className="h-8 w-8 text-gray-400" />
                   </div>
                   <h3 className="text-lg font-semibold text-white">Aucun produit trouvé</h3>
-                  <p className="text-gray-400">
+                  <p className="text-gray-400 text-sm sm:text-base">
                     Essayez d'ajuster vos critères de recherche ou de supprimer certains filtres.
                   </p>
                   <Link 
                     href="/products"
-                    className="inline-flex items-center text-brand-gold hover:text-yellow-300 transition-colors"
+                    className="inline-flex items-center text-brand-gold hover:text-yellow-300 transition-colors text-sm sm:text-base"
                   >
                     <FontAwesomeIcon icon={faArrowLeft} className="h-4 w-4 mr-2" />
                     Voir tous les produits
@@ -611,25 +542,28 @@ export default function ProductsPage() {
                 </div>
               </div>
             )}
+          </div>
 
-            {/* Pagination */}
+          {/* Pagination Fixe - Responsive */}
             {pagination.totalPages > 1 && (
-              <div className="flex justify-center mt-12">
-                <div className="flex items-center space-x-2">
+            <div className="bg-brand-black border-t border-white/10 flex-shrink-0 p-4 sm:p-6">
+              <div className="flex justify-center">
+                <div className="flex items-center space-x-1 sm:space-x-2">
                   {/* Bouton Précédent */}
                   <Link
                     href={`/products?${new URLSearchParams({
                       ...Object.fromEntries(searchParams.entries()),
                       page: (pagination.currentPage - 1).toString()
                     }).toString()}`}
-                    className={`px-3 py-2 rounded-lg transition-colors ${
+                    className={`px-2 sm:px-3 py-2 rounded-lg transition-colors text-sm ${
                       pagination.hasPrevPage
                         ? 'bg-white/5 border border-white/20 text-white hover:bg-white/10'
                         : 'bg-gray-600/20 border border-gray-600/20 text-gray-500 cursor-not-allowed'
                     }`}
                     style={{ pointerEvents: pagination.hasPrevPage ? 'auto' : 'none' }}
                   >
-                    Précédent
+                    <span className="hidden sm:inline">Précédent</span>
+                    <span className="sm:hidden">‹</span>
                   </Link>
 
                   {/* Numéros de page */}
@@ -647,14 +581,14 @@ export default function ProductsPage() {
                             ...Object.fromEntries(searchParams.entries()),
                             page: '1'
                           }).toString()}`}
-                          className="px-3 py-2 bg-white/5 border border-white/20 rounded-lg text-white hover:bg-white/10 transition-colors"
+                          className="px-2 sm:px-3 py-2 bg-white/5 border border-white/20 rounded-lg text-white hover:bg-white/10 transition-colors text-sm"
                         >
                           1
                         </Link>
                       )
                       if (startPage > 2) {
                         pages.push(
-                          <span key="ellipsis1" className="px-2 text-gray-400">
+                          <span key="ellipsis1" className="px-1 sm:px-2 text-gray-400 text-sm">
                             ...
                           </span>
                         )
@@ -670,7 +604,7 @@ export default function ProductsPage() {
                             ...Object.fromEntries(searchParams.entries()),
                             page: i.toString()
                           }).toString()}`}
-                          className={`px-3 py-2 rounded-lg transition-colors ${
+                          className={`px-2 sm:px-3 py-2 rounded-lg transition-colors text-sm ${
                             i === pagination.currentPage
                               ? 'bg-brand-gold/20 border border-brand-gold text-brand-gold'
                               : 'bg-white/5 border border-white/20 text-white hover:bg-white/10'
@@ -685,7 +619,7 @@ export default function ProductsPage() {
                     if (endPage < pagination.totalPages) {
                       if (endPage < pagination.totalPages - 1) {
                         pages.push(
-                          <span key="ellipsis2" className="px-2 text-gray-400">
+                          <span key="ellipsis2" className="px-1 sm:px-2 text-gray-400 text-sm">
                             ...
                           </span>
                         )
@@ -697,7 +631,7 @@ export default function ProductsPage() {
                             ...Object.fromEntries(searchParams.entries()),
                             page: pagination.totalPages.toString()
                           }).toString()}`}
-                          className="px-3 py-2 bg-white/5 border border-white/20 rounded-lg text-white hover:bg-white/10 transition-colors"
+                          className="px-2 sm:px-3 py-2 bg-white/5 border border-white/20 rounded-lg text-white hover:bg-white/10 transition-colors text-sm"
                         >
                           {pagination.totalPages}
                         </Link>
@@ -713,19 +647,20 @@ export default function ProductsPage() {
                       ...Object.fromEntries(searchParams.entries()),
                       page: (pagination.currentPage + 1).toString()
                     }).toString()}`}
-                    className={`px-3 py-2 rounded-lg transition-colors ${
+                    className={`px-2 sm:px-3 py-2 rounded-lg transition-colors text-sm ${
                       pagination.hasNextPage
                         ? 'bg-white/5 border border-white/20 text-white hover:bg-white/10'
                         : 'bg-gray-600/20 border border-gray-600/20 text-gray-500 cursor-not-allowed'
                     }`}
                     style={{ pointerEvents: pagination.hasNextPage ? 'auto' : 'none' }}
                   >
-                    Suivant
+                    <span className="hidden sm:inline">Suivant</span>
+                    <span className="sm:hidden">›</span>
                   </Link>
+                </div>
                 </div>
               </div>
             )}
-          </div>
         </div>
       </div>
     </div>

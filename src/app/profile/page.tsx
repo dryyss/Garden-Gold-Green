@@ -1,330 +1,241 @@
 'use client'
 
-import React, { useState } from 'react'
-import { useAuth } from '@/contexts/AuthContext'
-import { ProtectedRoute } from '@/components/ProtectedRoute'
+import { useUser } from '@auth0/nextjs-auth0/client'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { 
-  faUser, 
-  faEnvelope, 
-  faPhone, 
-  faMapMarkerAlt,
-  faEdit,
-  faSave,
-  faTimes,
-  faCog,
-  faShoppingBag,
-  faHeart
-} from '@fortawesome/free-solid-svg-icons'
-import Link from 'next/link'
+import { faUser, faEnvelope, faPhone, faMapMarkerAlt, faEdit } from '@fortawesome/free-solid-svg-icons'
+import { ResponsiveContainer } from '@/components/ResponsiveContainer'
+import { ResponsiveCard } from '@/components/ResponsiveCard'
+import { ResponsiveButton } from '@/components/ResponsiveButton'
+import { ResponsiveInput } from '@/components/ResponsiveInput'
 
-function ProfileContent() {
-  const { state: authState, updateProfile } = useAuth()
+export default function ProfilePage() {
+  const { user, error, isLoading } = useUser()
+  const router = useRouter()
   const [isEditing, setIsEditing] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
   const [formData, setFormData] = useState({
-    firstName: authState.user?.firstName || '',
-    lastName: authState.user?.lastName || '',
-    email: authState.user?.email || '',
-    phone: authState.user?.phone || '',
-    address: authState.user?.address || '',
-    city: authState.user?.city || '',
-    zipCode: authState.user?.zipCode || '',
-    country: authState.user?.country || 'France'
+    name: '',
+    email: '',
+    phone: '',
+    address: {
+      street: '',
+      city: '',
+      postalCode: '',
+      country: 'France'
+    }
   })
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }))
-  }
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.push('/api/auth/login')
+      return
+    }
 
-  const handleSave = async () => {
-    try {
-      await updateProfile(formData)
-      setIsEditing(false)
-    } catch (error) {
-      console.error('Error updating profile:', error)
+    if (user) {
+      setFormData({
+        name: user.name || '',
+        email: user.email || '',
+        phone: user.user_metadata?.phone || '',
+        address: user.user_metadata?.address || {
+          street: '',
+          city: '',
+          postalCode: '',
+          country: 'France'
+        }
+      })
+    }
+  }, [user, isLoading, router])
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    if (name.startsWith('address.')) {
+      const field = name.split('.')[1]
+      setFormData(prev => ({
+        ...prev,
+        address: {
+          ...prev.address,
+          [field]: value
+        }
+      }))
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }))
     }
   }
 
-  const handleCancel = () => {
-    setFormData({
-      firstName: authState.user?.firstName || '',
-      lastName: authState.user?.lastName || '',
-      email: authState.user?.email || '',
-      phone: authState.user?.phone || '',
-      address: authState.user?.address || '',
-      city: authState.user?.city || '',
-      zipCode: authState.user?.zipCode || '',
-      country: authState.user?.country || 'France'
-    })
-    setIsEditing(false)
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSaving(true)
+
+    try {
+      const response = await fetch('/api/user/update', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          phone: formData.phone,
+          address: formData.address
+        }),
+      })
+
+      if (response.ok) {
+        setIsEditing(false)
+        // Afficher une notification de succès
+        alert('Profil mis à jour avec succès!')
+      } else {
+        alert('Erreur lors de la mise à jour du profil')
+      }
+    } catch (error) {
+      console.error('Error updating profile:', error)
+      alert('Erreur lors de la mise à jour du profil')
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-brand-black flex items-center justify-center pt-24">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-brand-gold mx-auto"></div>
+          <p className="text-white mt-4">Chargement...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!user) {
+    return null
   }
 
   return (
-    <main className="bg-brand-black min-h-screen pt-24">
-      <div className="container mx-auto px-6 py-16">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">Mon Profil</h1>
-          <p className="text-gray-400">Gérez vos informations personnelles et préférences</p>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Sidebar */}
-          <div className="lg:col-span-1">
-            <div className="card-bg rounded-xl p-6">
-              <div className="text-center mb-6">
-                <div className="w-20 h-20 bg-brand-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <FontAwesomeIcon icon={faUser} className="text-brand-gold text-2xl" />
-                </div>
-                <h2 className="text-xl font-bold text-white">
-                  {authState.user?.firstName} {authState.user?.lastName}
-                </h2>
-                <p className="text-gray-400">{authState.user?.email}</p>
-              </div>
-
-              <nav className="space-y-2">
-                <Link
-                  href="/profile"
-                  className="flex items-center gap-3 p-3 rounded-lg bg-brand-gold/10 text-brand-gold border border-brand-gold/20"
-                >
-                  <FontAwesomeIcon icon={faUser} />
-                  <span>Informations personnelles</span>
-                </Link>
-                <Link
-                  href="/orders"
-                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 text-gray-300 transition-colors"
-                >
-                  <FontAwesomeIcon icon={faShoppingBag} />
-                  <span>Mes commandes</span>
-                </Link>
-                <Link
-                  href="/favorites"
-                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 text-gray-300 transition-colors"
-                >
-                  <FontAwesomeIcon icon={faHeart} />
-                  <span>Mes favoris</span>
-                </Link>
-                <Link
-                  href="/settings"
-                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 text-gray-300 transition-colors"
-                >
-                  <FontAwesomeIcon icon={faCog} />
-                  <span>Paramètres</span>
-                </Link>
-              </nav>
-            </div>
+    <div className="min-h-screen bg-brand-black pt-24">
+      <ResponsiveContainer size="md" padding="lg">
+        <div className="max-w-2xl mx-auto">
+          {/* Header */}
+          <div className="mb-8 text-center sm:text-left">
+            <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Mon Profil</h1>
+            <p className="text-gray-400">Gérez vos informations personnelles</p>
           </div>
 
-          {/* Main Content */}
-          <div className="lg:col-span-2">
-            <div className="card-bg rounded-xl p-8">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-white">Informations personnelles</h2>
-                {!isEditing ? (
-                  <button
-                    onClick={() => setIsEditing(true)}
-                    className="btn-gold text-black font-semibold py-2 px-4 rounded-lg flex items-center gap-2"
+          {/* Profile Card */}
+          <ResponsiveCard variant="glass" padding="lg">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-semibold text-white">Informations personnelles</h2>
+              <ResponsiveButton
+                onClick={() => setIsEditing(!isEditing)}
+                variant="outline"
+                size="sm"
+              >
+                <FontAwesomeIcon icon={faEdit} className="icon-sm mr-2" />
+                {isEditing ? 'Annuler' : 'Modifier'}
+              </ResponsiveButton>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <ResponsiveInput
+                label="Nom complet"
+                icon={faUser}
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                disabled={true}
+              />
+
+              <ResponsiveInput
+                label="Email"
+                icon={faEnvelope}
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                disabled={true}
+              />
+
+              <ResponsiveInput
+                label="Téléphone"
+                icon={faPhone}
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                disabled={!isEditing}
+                placeholder="+33 6 00 00 00 00"
+              />
+
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-4">Adresse</h3>
+                <div className="space-y-4">
+                  <ResponsiveInput
+                    label="Rue"
+                    icon={faMapMarkerAlt}
+                    type="text"
+                    name="address.street"
+                    value={formData.address.street}
+                    onChange={handleChange}
+                    disabled={!isEditing}
+                  />
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <ResponsiveInput
+                      label="Ville"
+                      type="text"
+                      name="address.city"
+                      value={formData.address.city}
+                      onChange={handleChange}
+                      disabled={!isEditing}
+                    />
+                    <ResponsiveInput
+                      label="Code postal"
+                      type="text"
+                      name="address.postalCode"
+                      value={formData.address.postalCode}
+                      onChange={handleChange}
+                      disabled={!isEditing}
+                    />
+                    <ResponsiveInput
+                      label="Pays"
+                      type="text"
+                      name="address.country"
+                      value={formData.address.country}
+                      onChange={handleChange}
+                      disabled={!isEditing}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {isEditing && (
+                <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-4">
+                  <ResponsiveButton
+                    type="button"
+                    onClick={() => setIsEditing(false)}
+                    variant="ghost"
+                    fullWidth={false}
                   >
-                    <FontAwesomeIcon icon={faEdit} />
-                    Modifier
-                  </button>
-                ) : (
-                  <div className="flex gap-2">
-                    <button
-                      onClick={handleSave}
-                      className="bg-brand-green text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2"
-                    >
-                      <FontAwesomeIcon icon={faSave} />
-                      Sauvegarder
-                    </button>
-                    <button
-                      onClick={handleCancel}
-                      className="bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2"
-                    >
-                      <FontAwesomeIcon icon={faTimes} />
-                      Annuler
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              <div className="space-y-6">
-                {/* Personal Information */}
-                <div>
-                  <h3 className="text-lg font-semibold text-white mb-4">Informations de base</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-gray-300 text-sm font-medium mb-2">
-                        Prénom
-                      </label>
-                      <input
-                        type="text"
-                        name="firstName"
-                        value={formData.firstName}
-                        onChange={handleInputChange}
-                        disabled={!isEditing}
-                        className={`w-full bg-white/5 border rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold transition-all duration-300 ${
-                          isEditing ? 'border-white/20' : 'border-white/10 bg-white/5'
-                        }`}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gray-300 text-sm font-medium mb-2">
-                        Nom
-                      </label>
-                      <input
-                        type="text"
-                        name="lastName"
-                        value={formData.lastName}
-                        onChange={handleInputChange}
-                        disabled={!isEditing}
-                        className={`w-full bg-white/5 border rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold transition-all duration-300 ${
-                          isEditing ? 'border-white/20' : 'border-white/10 bg-white/5'
-                        }`}
-                      />
-                    </div>
-                  </div>
+                    Annuler
+                  </ResponsiveButton>
+                  <ResponsiveButton
+                    type="submit"
+                    disabled={isSaving}
+                    loading={isSaving}
+                    variant="primary"
+                    fullWidth={false}
+                  >
+                    Sauvegarder
+                  </ResponsiveButton>
                 </div>
-
-                {/* Contact Information */}
-                <div>
-                  <h3 className="text-lg font-semibold text-white mb-4">Informations de contact</h3>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-gray-300 text-sm font-medium mb-2">
-                        <FontAwesomeIcon icon={faEnvelope} className="mr-2" />
-                        Email
-                      </label>
-                      <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        disabled={!isEditing}
-                        className={`w-full bg-white/5 border rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold transition-all duration-300 ${
-                          isEditing ? 'border-white/20' : 'border-white/10 bg-white/5'
-                        }`}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gray-300 text-sm font-medium mb-2">
-                        <FontAwesomeIcon icon={faPhone} className="mr-2" />
-                        Téléphone
-                      </label>
-                      <input
-                        type="tel"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        disabled={!isEditing}
-                        className={`w-full bg-white/5 border rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold transition-all duration-300 ${
-                          isEditing ? 'border-white/20' : 'border-white/10 bg-white/5'
-                        }`}
-                        placeholder="+33 6 12 34 56 78"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Address Information */}
-                <div>
-                  <h3 className="text-lg font-semibold text-white mb-4">
-                    <FontAwesomeIcon icon={faMapMarkerAlt} className="mr-2" />
-                    Adresse
-                  </h3>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-gray-300 text-sm font-medium mb-2">
-                        Adresse
-                      </label>
-                      <input
-                        type="text"
-                        name="address"
-                        value={formData.address}
-                        onChange={handleInputChange}
-                        disabled={!isEditing}
-                        className={`w-full bg-white/5 border rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold transition-all duration-300 ${
-                          isEditing ? 'border-white/20' : 'border-white/10 bg-white/5'
-                        }`}
-                        placeholder="123 Rue de la Paix"
-                      />
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div>
-                        <label className="block text-gray-300 text-sm font-medium mb-2">
-                          Ville
-                        </label>
-                        <input
-                          type="text"
-                          name="city"
-                          value={formData.city}
-                          onChange={handleInputChange}
-                          disabled={!isEditing}
-                          className={`w-full bg-white/5 border rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold transition-all duration-300 ${
-                            isEditing ? 'border-white/20' : 'border-white/10 bg-white/5'
-                          }`}
-                          placeholder="Paris"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-gray-300 text-sm font-medium mb-2">
-                          Code postal
-                        </label>
-                        <input
-                          type="text"
-                          name="zipCode"
-                          value={formData.zipCode}
-                          onChange={handleInputChange}
-                          disabled={!isEditing}
-                          className={`w-full bg-white/5 border rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold transition-all duration-300 ${
-                            isEditing ? 'border-white/20' : 'border-white/10 bg-white/5'
-                          }`}
-                          placeholder="75001"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-gray-300 text-sm font-medium mb-2">
-                          Pays
-                        </label>
-                        <select
-                          name="country"
-                          value={formData.country}
-                          onChange={handleInputChange}
-                          disabled={!isEditing}
-                          className={`w-full bg-white/5 border rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-brand-gold transition-all duration-300 ${
-                            isEditing ? 'border-white/20' : 'border-white/10 bg-white/5'
-                          }`}
-                        >
-                          <option value="France">France</option>
-                          <option value="Belgique">Belgique</option>
-                          <option value="Suisse">Suisse</option>
-                          <option value="Canada">Canada</option>
-                          <option value="États-Unis">États-Unis</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+              )}
+            </form>
+          </ResponsiveCard>
         </div>
-      </div>
-    </main>
+      </ResponsiveContainer>
+    </div>
   )
 }
-
-export default function ProfilePage() {
-  return (
-    <ProtectedRoute>
-      <ProfileContent />
-    </ProtectedRoute>
-  )
-}
-
-
 

@@ -58,7 +58,7 @@ export default function Home() {
               <div className="h-72 overflow-hidden">
                 <Image 
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
-                  src="https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD+Oil+10%25" 
+                  src="/products/cbd-oil-10.svg" 
                   alt="Elegant glass dropper bottle with gold cap for CBD oil, on a dark, luxurious background with a subtle leaf shadow, product photography style"
                   width={400}
                   height={288}
@@ -75,7 +75,7 @@ export default function Home() {
                           title: '3G Gold Standard CBD Oil',
                           priceCents: 7999,
                           currency: 'EUR',
-                          image: 'https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD+Oil+10%25',
+                          image: '/products/cbd-oil-10.svg',
                           cbdPercent: 10,
                           slug: '3g-gold-standard-cbd-oil'
                         }}
@@ -88,7 +88,7 @@ export default function Home() {
               <div className="h-72 overflow-hidden">
                 <Image 
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
-                  src="https://via.placeholder.com/400x288/FFD700/000000?text=CBD+Cream+2%25" 
+                  src="/products/cbd-cream.svg" 
                   alt="Luxurious jar of CBD cream with gold and green labeling, sitting on a marble surface with a green plant in the background, high-end cosmetic photography"
                   width={400}
                   height={288}
@@ -105,7 +105,7 @@ export default function Home() {
                           title: 'Emerald Soothe CBD Balm',
                           priceCents: 5499,
                           currency: 'EUR',
-                          image: 'https://via.placeholder.com/400x288/FFD700/000000?text=CBD+Cream+2%25',
+                          image: '/products/cbd-cream.svg',
                           cbdPercent: 2,
                           slug: 'emerald-soothe-cbd-balm'
                         }}
@@ -118,7 +118,7 @@ export default function Home() {
               <div className="h-72 overflow-hidden">
                 <Image 
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
-                  src="https://via.placeholder.com/400x288/C0C0C0/000000?text=CBD+Gummies+25mg" 
+                  src="/products/cbd-gummies.svg" 
                   alt="Premium packaging for CBD gummies, dark box with gold foil lettering, showing a few colorful gummies next to it, lifestyle product shot"
                   width={400}
                   height={288}
@@ -135,7 +135,7 @@ export default function Home() {
                           title: 'Green Serenity Gummies',
                           priceCents: 4999,
                           currency: 'EUR',
-                          image: 'https://via.placeholder.com/400x288/C0C0C0/000000?text=CBD+Gummies+25mg',
+                          image: '/products/cbd-gummies.svg',
                           cbdPercent: 5,
                           slug: 'green-serenity-gummies'
                         }}

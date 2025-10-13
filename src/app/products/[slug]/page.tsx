@@ -26,6 +26,7 @@ import { ProductCard } from '@/components/ProductCard'
 import { Breadcrumb } from '@/components/Breadcrumb'
 import { ImageWithLoading, ProductImage } from '@/components/ImageWithLoading'
 import { VariantSelector } from '@/components/VariantSelector'
+import { ProductComments } from '@/components/ProductComments'
 import productsData from '@/data/products.json'
 
 interface Variant {
@@ -80,7 +81,7 @@ export default function ProductDetailPage() {
       name: product.title,
       price: product.priceCents / 100, // Convertir les centimes en euros
       originalPrice: product.originalPriceCents ? product.originalPriceCents / 100 : undefined,
-      images: product.images || [product.image || '/logo.png'],
+      images: product.images || [product.image || '/logo2.png'],
       category: product.categories?.[0]?.name || 'CBD Products',
       description: product.description,
       longDescription: product.longDescription || "Notre produit phare, l'huile CBD Gold Standard, offre un mélange puissant et à spectre complet de cannabinoïdes et de terpènes. Soigneusement extraite de chanvre biologique pour soutenir l'équilibre, la récupération et le bien-être général.",
@@ -118,7 +119,7 @@ export default function ProductDetailPage() {
       const transformedProduct = transformProduct(foundProduct)
       // Ajouter des images supplémentaires
       transformedProduct.images = [
-        foundProduct.images?.[0] || foundProduct.image || '/logo.png',
+        foundProduct.images?.[0] || foundProduct.image || '/logo2.png',
         'https://storage.googleapis.com/uxpilot-auth.appspot.com/6150e371c9-cf959decb319ba5f18c3.png',
         'https://storage.googleapis.com/uxpilot-auth.appspot.com/efac7e243f-ef87256518694e833470.png',
         'https://storage.googleapis.com/uxpilot-auth.appspot.com/f28d3694b1-28c8a8a3cb15af90b81e.png'
@@ -397,7 +398,7 @@ export default function ProductDetailPage() {
         <div className="container mx-auto px-6">
           <div className="border-b border-white/10 mb-8">
             <nav className="flex space-x-8">
-              {['description', 'usage', 'ingredients', 'lab-results'].map((tab) => (
+              {['description', 'usage', 'ingredients', 'lab-results', 'reviews'].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
@@ -476,6 +477,12 @@ export default function ProductDetailPage() {
                     </div>
                   </div>
                 </div>
+              </div>
+            )}
+
+            {activeTab === 'reviews' && (
+              <div>
+                <ProductComments productId={product.id} />
               </div>
             )}
           </div>

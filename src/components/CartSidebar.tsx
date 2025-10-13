@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import { useRouter } from 'next/navigation'
 import { useCart } from '@/contexts/CartContext'
 import { useAuth } from '@/contexts/AuthContext'
 import Image from 'next/image'
@@ -17,6 +18,7 @@ import {
 import { QuantitySelector } from './QuantitySelector'
 
 export function CartSidebar() {
+  const router = useRouter()
   const { state, dispatch } = useCart()
   const { state: authState } = useAuth()
 
@@ -39,9 +41,102 @@ export function CartSidebar() {
     dispatch({ type: 'CLEAR_CART' })
   }
 
-  const handleExpressCheckout = () => {
-    // Rediriger vers le checkout normal
-    window.location.href = '/checkout'
+  const handleExpressCheckout = async () => {
+    try {
+      console.log('========================================')
+      console.log('🛒 DÉBUT CHECKOUT')
+      console.log('========================================')
+      console.log('📦 État du panier:', {
+        items: state.items,
+        totalItems: state.totalItems,
+        totalPrice: state.totalPrice,
+        isOpen: state.isOpen
+      })
+      
+      // Préparer les items pour Stripe
+      const items = state.items.map(item => ({
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        image: item.image,
+        cbdPercent: item.cbdPercent,
+      }))
+
+      console.log('✅ Items préparés pour Stripe:', JSON.stringify(items, null, 2))
+      console.log('📊 Nombre d\'items:', items.length)
+
+      // Créer une session Stripe Checkout
+      console.log('========================================')
+      console.log('🔄 APPEL API /api/checkout')
+      console.log('========================================')
+      console.log('📤 Body envoyé:', JSON.stringify({ items }, null, 2))
+      
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ items }),
+      })
+
+      console.log('========================================')
+      console.log('📡 RÉPONSE API REÇUE')
+      console.log('========================================')
+      console.log('📊 Status:', response.status)
+      console.log('📊 Status Text:', response.statusText)
+      console.log('📊 Headers:', Object.fromEntries(response.headers.entries()))
+      
+      if (!response.ok) {
+        const errorText = await response.text()
+        console.error('========================================')
+        console.error('❌ ERREUR HTTP')
+        console.error('========================================')
+        console.error('Status:', response.status)
+        console.error('Texte:', errorText)
+        alert(`Erreur ${response.status}: ${errorText}`)
+        return
+      }
+
+      const data = await response.json()
+      console.log('========================================')
+      console.log('📄 DONNÉES JSON REÇUES')
+      console.log('========================================')
+      console.log('Données complètes:', JSON.stringify(data, null, 2))
+
+      if (data.error) {
+        console.error('========================================')
+        console.error('❌ ERREUR DANS LA RÉPONSE')
+        console.error('========================================')
+        console.error('Erreur:', data.error)
+        alert(`Erreur: ${data.error}`)
+        return
+      }
+
+      // Rediriger vers Stripe Checkout
+      if (data.url) {
+        console.log('========================================')
+        console.log('✅ REDIRECTION VERS STRIPE')
+        console.log('========================================')
+        console.log('URL:', data.url)
+        console.log('Session ID:', data.sessionId)
+        window.location.href = data.url
+      } else {
+        console.error('========================================')
+        console.error('❌ PAS D\'URL DE REDIRECTION')
+        console.error('========================================')
+        console.error('Données reçues:', data)
+        alert('Erreur: pas d\'URL de redirection')
+      }
+    } catch (error) {
+      console.error('========================================')
+      console.error('❌ EXCEPTION CAPTURÉE')
+      console.error('========================================')
+      console.error('Type:', typeof error)
+      console.error('Message:', error instanceof Error ? error.message : 'Erreur inconnue')
+      console.error('Stack:', error instanceof Error ? error.stack : 'Pas de stack')
+      console.error('Objet complet:', error)
+      alert(`Erreur: ${error instanceof Error ? error.message : 'Erreur inconnue'}`)
+    }
   }
 
   if (!state.isOpen) return null
@@ -55,7 +150,7 @@ export function CartSidebar() {
       />
       
       {/* Sidebar */}
-      <div className="absolute right-0 top-0 h-full w-full max-w-md bg-brand-black border-l border-brand-gold/20 shadow-2xl">
+      <div className="absolute right-0 top-0 h-full w-96 max-w-md bg-brand-black border-l border-brand-gold/20 shadow-2xl">
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-white/10">
@@ -134,8 +229,8 @@ export function CartSidebar() {
                     <div className="flex items-center justify-between mt-3">
                       <QuantitySelector
                         quantity={item.quantity}
-                        onUpdate={(quantity) => handleUpdateQuantity(item.id, quantity)}
-                        size="sm"
+                        onQuantityChange={(quantity: number) => handleUpdateQuantity(item.id, quantity)}
+                        className="text-sm"
                       />
                       
                       <p className="text-white font-bold text-sm">
@@ -161,35 +256,22 @@ export function CartSidebar() {
               
               {/* Actions */}
               <div className="space-y-3">
-                {authState.isAuthenticated ? (
-                  <Link
-                    href="/checkout"
-                    onClick={() => dispatch({ type: 'CLOSE_CART' })}
-                    className="btn-gold text-black font-bold py-3 px-6 rounded-full shadow-gold-glow w-full flex items-center justify-center"
-                  >
-                    <FontAwesomeIcon icon={faUser} className="mr-2" />
-                    Commander maintenant
-                    <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
-                  </Link>
-                ) : (
-                  <div className="space-y-2">
-                    <button
-                      onClick={handleExpressCheckout}
-                      className="btn-gold text-black font-bold py-3 px-6 rounded-full shadow-gold-glow w-full flex items-center justify-center"
-                    >
-                      <FontAwesomeIcon icon={faBolt} className="mr-2" />
-                      Achat Express
-                      <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
-                    </button>
-                    <Link
-                      href="/checkout"
-                      onClick={() => dispatch({ type: 'CLOSE_CART' })}
-                      className="bg-white/10 text-gray-300 hover:bg-white/20 font-bold py-3 px-6 rounded-full w-full flex items-center justify-center transition-colors"
-                    >
-                      <FontAwesomeIcon icon={faUser} className="mr-2" />
-                      Se connecter pour commander
+                <button
+                  onClick={handleExpressCheckout}
+                  className="btn-gold text-black font-bold py-3 px-6 rounded-full shadow-gold-glow w-full flex items-center justify-center"
+                >
+                  <FontAwesomeIcon icon={faBolt} className="mr-2" />
+                  Payer avec Stripe
+                  <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
+                </button>
+                
+                {!authState.isAuthenticated && (
+                  <p className="text-gray-400 text-xs text-center">
+                    Vous pouvez payer en tant qu'invité ou{' '}
+                    <Link href="/login" className="text-brand-gold hover:underline">
+                      vous connecter
                     </Link>
-                  </div>
+                  </p>
                 )}
                 
                 <button

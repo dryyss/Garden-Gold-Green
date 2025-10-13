@@ -42,32 +42,32 @@ export function ExpressCheckout({ onCheckout, disabled = false }: ExpressCheckou
   ]
 
   return (
-    <div className="space-y-4">
-      <div className="relative">
+                  <div className="space-y-4">
+                      <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <div className="w-full border-t border-white/20"></div>
-        </div>
+                      </div>
         <div className="relative flex justify-center text-sm">
           <span className="px-2 bg-brand-black text-gray-400">Ou payer avec</span>
-        </div>
-      </div>
+                    </div>
+                  </div>
 
       <div className="grid grid-cols-1 gap-3">
         {expressMethods.map((method) => (
-          <button
+                    <button
             key={method.id}
             onClick={() => onCheckout(method.id)}
             disabled={disabled}
             className={`flex items-center justify-center p-3 rounded-lg border transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed ${method.bgColor} ${method.borderColor} hover:border-opacity-40`}
           >
-            <FontAwesomeIcon 
+                          <FontAwesomeIcon 
               icon={method.icon} 
               className={`text-xl mr-3 ${method.color}`} 
             />
             <span className="font-semibold text-white">{method.name}</span>
-          </button>
-        ))}
-      </div>
+                    </button>
+                ))}
+              </div>
 
       <div className="text-center">
         <p className="text-xs text-gray-400">

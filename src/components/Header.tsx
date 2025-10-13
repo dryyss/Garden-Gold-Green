@@ -35,13 +35,18 @@ export function Header() {
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false)
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
-  const { state } = useCart()
-  const { state: authState, logout, isAdmin } = useAuth()
+  const [showFloatingCart, setShowFloatingCart] = useState(false)
+  const { state, dispatch } = useCart()
+  const { state: authState } = useAuth()
+  const user = authState.user
+  const isLoading = authState.loading
 
-  // Gérer le scroll pour réduire la barre jaune
+  // Gérer le scroll pour réduire la barre jaune et afficher le panier flottant
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50)
+      const scrollY = window.scrollY
+      setIsScrolled(scrollY > 50)
+      setShowFloatingCart(scrollY > 200) // Afficher le panier après 200px de scroll
     }
 
     window.addEventListener('scroll', handleScroll)
@@ -136,20 +141,24 @@ export function Header() {
         </div>
       </div>
 
-      {/* Main Navbar - Logo, Search, Actions */}
+      {/* Main Navbar - Logo, Navigation, Search, Actions */}
       <div className="bg-brand-black/95 backdrop-blur-sm border-b border-white/10">
         <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6">
           <div className="flex justify-between items-center gap-4">
-            {/* Logo */}
-            <Link href="/" className="flex items-center flex-shrink-0">
-              <Image 
-                className="h-14 w-14 sm:h-16 sm:w-16" 
-                src="/logo.png" 
-                alt="Garden Gold Green logo"
-                width={64}
-                height={64}
-              />
-              <span className="hidden sm:block text-white text-xl sm:text-2xl font-bold tracking-wider ml-3">
+            {/* Logo - Plus gros */}
+            <Link href="/" className="flex items-center flex-shrink-0 group">
+              <div className="relative">
+                <Image 
+                  className="h-20 w-20 sm:h-24 sm:w-24 drop-shadow-2xl group-hover:scale-105 transition-transform duration-300" 
+                  src="/logo.png" 
+                  alt="Garden Gold Green logo"
+                  width={96}
+                  height={96}
+                />
+                <div className="absolute -inset-2 bg-gradient-to-r from-brand-gold/30 to-brand-green/30 rounded-full blur-sm group-hover:blur-md transition-all duration-300"></div>
+                <div className="absolute -inset-2 bg-gradient-to-r from-brand-gold/15 to-brand-green/15 rounded-full blur-md group-hover:blur-lg transition-all duration-300"></div>
+              </div>
+              <span className="hidden sm:block text-white text-2xl sm:text-3xl font-bold tracking-wider ml-4 group-hover:text-brand-gold transition-colors duration-300 drop-shadow-lg">
                 GARDEN GOLD GREEN
               </span>
             </Link>
@@ -178,33 +187,23 @@ export function Header() {
               </button>
           
           {/* User Menu */}
-          {authState.isAuthenticated ? (
+          {user ? (
             <div className="relative user-menu-container">
               <button 
                 onClick={() => setShowUserMenu(!showUserMenu)}
                 className="text-gray-300 hover:text-brand-gold transition-colors duration-300 flex items-center space-x-2 p-2"
               >
                 <FontAwesomeIcon icon={faUserCircle} className="icon-responsive-md" />
-                <span className="hidden lg:block text-sm">{authState.user?.firstName || authState.user?.email}</span>
+                <span className="hidden lg:block text-sm">{user.name || user.email}</span>
               </button>
               
               {showUserMenu && (
                 <div className="absolute right-0 mt-2 w-48 sm:w-56 bg-brand-black border border-white/10 rounded-lg shadow-lg z-50">
                   <div className="py-2">
                     <div className="px-4 py-2 border-b border-white/10">
-                      <p className="text-sm text-white font-medium">{authState.user?.firstName} {authState.user?.lastName}</p>
-                      <p className="text-xs text-gray-400">{authState.user?.email}</p>
+                      <p className="text-sm text-white font-medium">{user.name}</p>
+                      <p className="text-xs text-gray-400">{user.email}</p>
                     </div>
-                    {isAdmin() && (
-                      <Link
-                        href="/admin"
-                        className="block px-4 py-2 text-sm text-brand-gold hover:bg-white/10 hover:text-white transition-colors"
-                        onClick={() => setShowUserMenu(false)}
-                      >
-                        <FontAwesomeIcon icon={faCog} className="icon-sm mr-2" />
-                        Dashboard Admin
-                      </Link>
-                    )}
                     <Link
                       href="/profile"
                       className="block px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
@@ -221,34 +220,32 @@ export function Header() {
                       <FontAwesomeIcon icon={faShoppingCart} className="icon-sm mr-2" />
                       Mes commandes
                     </Link>
-                    <button
-                      onClick={() => {
-                        logout()
-                        setShowUserMenu(false)
-                      }}
+                    <a
+                      href="/api/auth/logout"
                       className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
+                      onClick={() => setShowUserMenu(false)}
                     >
                       <FontAwesomeIcon icon={faSignOutAlt} className="icon-sm mr-2" />
                       Se déconnecter
-                    </button>
+                    </a>
                   </div>
                 </div>
               )}
             </div>
           ) : (
             <div className="flex items-center space-x-2">
-              <Link
-                href="/auth"
+              <a
+                href="/api/auth/login"
                 className="text-gray-300 hover:text-brand-gold transition-colors duration-300 px-3 py-2 text-sm font-medium"
               >
                 Connexion
-              </Link>
-              <Link
-                href="/auth"
+              </a>
+              <a
+                href="/api/auth/login?screen_hint=signup"
                 className="bg-brand-gold text-black font-semibold px-4 py-2 rounded-full text-sm hover:shadow-gold-glow transition-all duration-300"
               >
                 Inscription
-              </Link>
+              </a>
             </div>
           )}
 
@@ -316,6 +313,13 @@ export function Header() {
       {isMenuOpen && (
         <div className="lg:hidden bg-brand-black/95 backdrop-blur-sm border-t border-white/10">
           <div className="px-6 py-4 space-y-4">
+            {/* Titre du menu mobile */}
+            <div className="flex items-center justify-center pb-4 border-b border-white/10">
+              <span className="text-white text-lg font-bold tracking-wider drop-shadow-lg">
+                GARDEN GOLD GREEN
+              </span>
+            </div>
+            
             {/* Category Tabs - Mobile */}
             <div className="border-b border-white/10 pb-4 mb-4">
               <h3 className="text-brand-gold text-sm font-semibold mb-3 uppercase">Catégories</h3>
@@ -358,26 +362,15 @@ export function Header() {
             
             {/* Mobile User Actions */}
             <div className="border-t border-white/10 pt-4 mt-4">
-              {authState.isAuthenticated ? (
+              {user ? (
                 <div className="space-y-3">
                   <div className="flex items-center space-x-3 py-2">
                     <FontAwesomeIcon icon={faUserCircle} className="text-brand-gold" />
                     <div>
-                      <p className="text-white font-medium">{authState.user?.firstName} {authState.user?.lastName}</p>
-                      <p className="text-gray-400 text-sm">{authState.user?.email}</p>
+                      <p className="text-white font-medium">{user.name}</p>
+                      <p className="text-gray-400 text-sm">{user.email}</p>
                     </div>
                   </div>
-                  
-                  {isAdmin() && (
-                    <Link
-                      href="/admin"
-                      className="flex items-center space-x-3 text-brand-gold hover:text-white transition-colors py-2"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      <FontAwesomeIcon icon={faCog} />
-                      <span>Dashboard Admin</span>
-                    </Link>
-                  )}
                   
                   <Link
                     href="/profile"
@@ -397,35 +390,33 @@ export function Header() {
                     <span>Mes commandes</span>
                   </Link>
                   
-                  <button
-                    onClick={() => {
-                      logout()
-                      setIsMenuOpen(false)
-                    }}
+                  <a
+                    href="/api/auth/logout"
                     className="flex items-center space-x-3 text-gray-300 hover:text-white transition-colors py-2 w-full text-left"
+                    onClick={() => setIsMenuOpen(false)}
                   >
                     <FontAwesomeIcon icon={faSignOutAlt} />
                     <span>Se déconnecter</span>
-                  </button>
+                  </a>
                 </div>
               ) : (
                 <div className="space-y-3">
-                  <Link
-                    href="/auth"
+                  <a
+                    href="/api/auth/login"
                     className="flex items-center space-x-3 text-gray-300 hover:text-brand-gold transition-colors py-2"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <FontAwesomeIcon icon={faUser} />
                     <span>Connexion</span>
-                  </Link>
-                  <Link
-                    href="/auth"
+                  </a>
+                  <a
+                    href="/api/auth/login?screen_hint=signup"
                     className="flex items-center space-x-3 bg-brand-gold text-black font-semibold px-4 py-2 rounded-full hover:shadow-gold-glow transition-all duration-300"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <FontAwesomeIcon icon={faUser} />
                     <span>Inscription</span>
-                  </Link>
+                  </a>
                 </div>
               )}
             </div>
@@ -434,10 +425,27 @@ export function Header() {
       )}
 
       {/* Search Modal */}
-      <SearchModal
-        isOpen={isSearchModalOpen}
-        onClose={() => setIsSearchModalOpen(false)}
+      <SearchModal 
+        isOpen={isSearchModalOpen} 
+        onClose={() => setIsSearchModalOpen(false)} 
       />
+
+      {/* Panier flottant - apparaît quand on scrolle */}
+      {showFloatingCart && (
+        <div className="fixed top-4 right-4 z-50 animate-in slide-in-from-top-2 duration-300">
+          <button 
+            onClick={() => dispatch({ type: 'TOGGLE_CART' })}
+            className="relative bg-brand-black hover:bg-brand-black/90 text-white border border-brand-gold p-4 rounded-full shadow-2xl transition-all duration-300 hover:scale-110"
+          >
+            <FontAwesomeIcon icon={faCartShopping} className="text-xl text-brand-gold" />
+            {state.totalItems > 0 && (
+              <span className="absolute -top-1 -right-1 bg-brand-gold text-brand-black text-xs rounded-full h-6 w-6 flex items-center justify-center font-bold">
+                {state.totalItems}
+              </span>
+            )}
+          </button>
+        </div>
+      )}
     </header>
   )
 }

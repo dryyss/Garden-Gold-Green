@@ -35,6 +35,18 @@ export default function CartPage() {
   const authState = authContext?.state || { isAuthenticated: false }
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false)
   
+  // Vérifications de sécurité
+  if (!state || !state.items) {
+    return (
+      <div className="min-h-screen bg-brand-black pt-24 flex items-center justify-center">
+        <div className="text-center">
+          <div className="spinner mx-auto mb-4"></div>
+          <p className="text-gray-400">Chargement du panier...</p>
+        </div>
+      </div>
+    )
+  }
+  
   // Calculer le total
   const subtotal = state.items.reduce((total, item) => total + (item.price * item.quantity), 0)
   const shipping = subtotal > 100 ? 0 : 9.90
@@ -133,9 +145,8 @@ export default function CartPage() {
 
           {/* Produits recommandés */}
           <ProductRecommendations 
-            currentCartItems={state.items}
+            products={[]}
             title="Vous pourriez aussi aimer"
-            maxItems={4}
           />
         </div>
       </div>
@@ -343,9 +354,8 @@ export default function CartPage() {
 
         {/* Produits recommandés */}
         <ProductRecommendations 
-          currentCartItems={state.items}
+          products={[]}
           title="Vous pourriez aussi aimer"
-          maxItems={4}
         />
       </div>
 

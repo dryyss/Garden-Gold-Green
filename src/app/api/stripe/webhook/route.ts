@@ -3,7 +3,7 @@ import Stripe from 'stripe'
 import { PrismaClient } from '@prisma/client'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-12-18.acacia',
+  apiVersion: '2025-09-30.clover',
 })
 
 const prisma = new PrismaClient()
@@ -45,19 +45,19 @@ export async function POST(request: NextRequest) {
             data: {
               userId: userId || null,
               stripeSessionId: session.id,
-              stripePaymentIntentId: session.payment_intent as string,
-              total: session.amount_total! / 100, // Convertir en euros
+              paymentIntentId: session.payment_intent as string,
+              totalCents: session.amount_total!, // Garder en centimes
               status: 'paid',
               customerEmail: userEmail || '',
               customerName: session.customer_details?.name || '',
               customerPhone: session.customer_details?.phone || '',
-              shippingAddress: JSON.stringify(session.shipping_details?.address || {}),
+              shippingAddress: session.shipping?.address || {},
               items: {
                 create: cartItems.map((item: any) => ({
                   productId: item.id,
                   name: item.name,
                   quantity: item.quantity,
-                  price: item.price,
+                  priceCents: Math.round(item.price * 100), // Convertir en centimes
                 })),
               },
             },
@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
         try {
           const paymentIntentId = charge.payment_intent as string
           await prisma.order.updateMany({
-            where: { stripePaymentIntentId: paymentIntentId },
+            where: { paymentIntentId: paymentIntentId },
             data: { status: 'refunded' },
           })
         } catch (dbError) {

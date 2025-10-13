@@ -10,7 +10,7 @@
     "sku": "GG-OL-10",
     "stock": 50,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD+Oil+10%25"
+      "/products/cbd-oil-10.svg"
     ],
     "published": true,
     "categories": [
@@ -61,7 +61,7 @@
     "sku": "GG-OL-20",
     "stock": 30,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD+Oil+20%25"
+      "/products/cbd-oil-20.svg"
     ],
     "published": true,
     "categories": [
@@ -112,7 +112,7 @@
     "sku": "GG-CR-REL",
     "stock": 40,
     "images": [
-      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD+Cream+2%25"
+      "/products/cbd-cream.svg"
     ],
     "published": true,
     "categories": [
@@ -163,7 +163,7 @@
     "sku": "GG-GU-25",
     "stock": 75,
     "images": [
-      "https://via.placeholder.com/400x288/C0C0C0/000000?text=CBD+Gummies+25mg"
+      "/products/cbd-gummies.svg"
     ],
     "published": true,
     "categories": [
@@ -223,7 +223,7 @@
     "sku": "GG-CP-15",
     "stock": 60,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD+Capsules+15mg"
+      "/products/cbd-capsules.svg"
     ],
     "published": true,
     "categories": [
@@ -274,7 +274,7 @@
     "sku": "GG-VP-ST",
     "stock": 25,
     "images": [
-      "https://via.placeholder.com/400x288/FFD700/000000?text=Vape+Pen+Kit"
+      "/products/vape-pen.svg"
     ],
     "published": true,
     "categories": [
@@ -334,7 +334,7 @@
     "sku": "GG-MO-REL",
     "stock": 35,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Massage+Oil+8%25"
+      "/products/massage-oil.svg"
     ],
     "published": true,
     "categories": [
@@ -385,7 +385,7 @@
     "sku": "GG-SG-50",
     "stock": 45,
     "images": [
-      "https://via.placeholder.com/400x288/C0C0C0/000000?text=Sleep+Gummies+50mg"
+      "/products/sleep-gummies.svg"
     ],
     "published": true,
     "categories": [
@@ -445,7 +445,7 @@
     "sku": "GG-FS-AA",
     "stock": 20,
     "images": [
-      "https://via.placeholder.com/400x288/FFD700/000000?text=Face+Serum+3%25"
+      "/products/face-serum.svg"
     ],
     "published": true,
     "categories": [
@@ -496,7 +496,7 @@
     "sku": "GG-PT-SD",
     "stock": 80,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Pet+Treats+1%25"
+      "/products/pet-treats.svg"
     ],
     "published": true,
     "categories": [
@@ -556,7 +556,7 @@
     "sku": "GG-HU-011",
     "stock": 51,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Tincture%2010%25"
+      "/products/tincture.svg"
     ],
     "published": true,
     "categories": [
@@ -607,7 +607,7 @@
     "sku": "GG-VA-012",
     "stock": 35,
     "images": [
-      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Vape%20Juice%2020%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -658,7 +658,7 @@
     "sku": "GG-VA-013",
     "stock": 66,
     "images": [
-      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Vape%20Juice%2025%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -709,7 +709,7 @@
     "sku": "GG-HU-014",
     "stock": 21,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Sublingual%20Drops%2010%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -760,7 +760,7 @@
     "sku": "GG-CA-015",
     "stock": 20,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Tablets%2015%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -811,7 +811,7 @@
     "sku": "GG-HU-016",
     "stock": 109,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Broad%20Spectrum%20Oil%2030%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -862,7 +862,7 @@
     "sku": "GG-FL-017",
     "stock": 72,
     "images": [
-      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Gummies%208%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -922,7 +922,7 @@
     "sku": "GG-FL-018",
     "stock": 78,
     "images": [
-      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Coffee%203%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -982,7 +982,7 @@
     "sku": "GG-HU-019",
     "stock": 11,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Raw%20CBD%20Oil%201%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -1033,7 +1033,7 @@
     "sku": "GG-FL-020",
     "stock": 83,
     "images": [
-      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Cookies%203%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -1093,7 +1093,7 @@
     "sku": "GG-HU-021",
     "stock": 18,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Isolate%20Oil%208%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -1144,7 +1144,7 @@
     "sku": "GG-FL-022",
     "stock": 60,
     "images": [
-      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Cookies%202%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -1204,7 +1204,7 @@
     "sku": "GG-CA-023",
     "stock": 88,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Tablets%203%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -1255,7 +1255,7 @@
     "sku": "GG-HU-024",
     "stock": 103,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Isolate%20Oil%2015%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -1306,7 +1306,7 @@
     "sku": "GG-VA-025",
     "stock": 61,
     "images": [
-      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Cartridge%2020%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -1357,7 +1357,7 @@
     "sku": "GG-FL-026",
     "stock": 94,
     "images": [
-      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Protein%20Powder%201%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -1417,7 +1417,7 @@
     "sku": "GG-HU-027",
     "stock": 42,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Raw%20CBD%20Oil%201%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -1468,7 +1468,7 @@
     "sku": "GG-FL-028",
     "stock": 82,
     "images": [
-      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Coffee%2050%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -1528,7 +1528,7 @@
     "sku": "GG-VA-029",
     "stock": 59,
     "images": [
-      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Pods%203%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -1579,7 +1579,7 @@
     "sku": "GG-VA-030",
     "stock": 109,
     "images": [
-      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Pods%201%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -1630,7 +1630,7 @@
     "sku": "GG-CA-031",
     "stock": 22,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Pills%2025%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -1681,7 +1681,7 @@
     "sku": "GG-FL-032",
     "stock": 61,
     "images": [
-      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Energy%20Bar%208%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -1741,7 +1741,7 @@
     "sku": "GG-HU-033",
     "stock": 99,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Sublingual%20Drops%201%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -1792,7 +1792,7 @@
     "sku": "GG-CA-034",
     "stock": 54,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Capsules%2015%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -1843,7 +1843,7 @@
     "sku": "GG-CA-035",
     "stock": 31,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Tablets%203%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -1894,7 +1894,7 @@
     "sku": "GG-HU-036",
     "stock": 55,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Raw%20CBD%20Oil%2050%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -1945,7 +1945,7 @@
     "sku": "GG-FL-037",
     "stock": 53,
     "images": [
-      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Honey%201%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -2005,7 +2005,7 @@
     "sku": "GG-FL-038",
     "stock": 52,
     "images": [
-      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Chocolates%202%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -2065,7 +2065,7 @@
     "sku": "GG-CO-039",
     "stock": 106,
     "images": [
-      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Cream%2020%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -2116,7 +2116,7 @@
     "sku": "GG-CO-040",
     "stock": 51,
     "images": [
-      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Soap%208%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -2167,7 +2167,7 @@
     "sku": "GG-VA-041",
     "stock": 54,
     "images": [
-      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Cartridge%2015%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -2218,7 +2218,7 @@
     "sku": "GG-FL-042",
     "stock": 47,
     "images": [
-      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Protein%20Powder%2020%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -2278,7 +2278,7 @@
     "sku": "GG-FL-043",
     "stock": 96,
     "images": [
-      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Gummies%205%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -2338,7 +2338,7 @@
     "sku": "GG-FL-044",
     "stock": 109,
     "images": [
-      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Cookies%205%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -2398,7 +2398,7 @@
     "sku": "GG-CO-045",
     "stock": 67,
     "images": [
-      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Shampoo%2030%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -2449,7 +2449,7 @@
     "sku": "GG-HU-046",
     "stock": 13,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Oil%2050%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -2500,7 +2500,7 @@
     "sku": "GG-CO-047",
     "stock": 35,
     "images": [
-      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Cream%2015%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -2551,7 +2551,7 @@
     "sku": "GG-CO-048",
     "stock": 20,
     "images": [
-      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Cream%2030%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -2602,7 +2602,7 @@
     "sku": "GG-HU-049",
     "stock": 76,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Sublingual%20Drops%202%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -2653,7 +2653,7 @@
     "sku": "GG-CA-050",
     "stock": 107,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Softgels%2010%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -2704,7 +2704,7 @@
     "sku": "GG-CA-051",
     "stock": 109,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Gel%20Caps%208%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -2755,7 +2755,7 @@
     "sku": "GG-HU-052",
     "stock": 69,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Raw%20CBD%20Oil%208%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -2806,7 +2806,7 @@
     "sku": "GG-HU-053",
     "stock": 104,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Tincture%202%25"
+      "/products/tincture.svg"
     ],
     "published": true,
     "categories": [
@@ -2857,7 +2857,7 @@
     "sku": "GG-CO-054",
     "stock": 10,
     "images": [
-      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Shampoo%2030%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -2908,7 +2908,7 @@
     "sku": "GG-VA-055",
     "stock": 75,
     "images": [
-      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Wax%205%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -2959,7 +2959,7 @@
     "sku": "GG-CO-056",
     "stock": 75,
     "images": [
-      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Lip%20Balm%202%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -3010,7 +3010,7 @@
     "sku": "GG-FL-057",
     "stock": 54,
     "images": [
-      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Cookies%2015%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -3070,7 +3070,7 @@
     "sku": "GG-CA-058",
     "stock": 103,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Tablets%2015%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -3121,7 +3121,7 @@
     "sku": "GG-FL-059",
     "stock": 55,
     "images": [
-      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Honey%2050%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -3181,7 +3181,7 @@
     "sku": "GG-HU-060",
     "stock": 54,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Raw%20CBD%20Oil%203%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -3232,7 +3232,7 @@
     "sku": "GG-HU-061",
     "stock": 75,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Full%20Spectrum%20Oil%205%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -3283,7 +3283,7 @@
     "sku": "GG-CA-062",
     "stock": 23,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Capsules%205%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -3334,7 +3334,7 @@
     "sku": "GG-HU-063",
     "stock": 59,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Tincture%205%25"
+      "/products/tincture.svg"
     ],
     "published": true,
     "categories": [
@@ -3385,7 +3385,7 @@
     "sku": "GG-HU-064",
     "stock": 52,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Oil%2010%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -3436,7 +3436,7 @@
     "sku": "GG-CO-065",
     "stock": 60,
     "images": [
-      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Balm%208%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -3487,7 +3487,7 @@
     "sku": "GG-CO-066",
     "stock": 92,
     "images": [
-      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Balm%201%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -3538,7 +3538,7 @@
     "sku": "GG-HU-067",
     "stock": 35,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Full%20Spectrum%20Oil%208%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -3589,7 +3589,7 @@
     "sku": "GG-VA-068",
     "stock": 97,
     "images": [
-      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Disposable%20Pen%208%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -3640,7 +3640,7 @@
     "sku": "GG-CO-069",
     "stock": 58,
     "images": [
-      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Shampoo%201%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -3691,7 +3691,7 @@
     "sku": "GG-CA-070",
     "stock": 53,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Gel%20Caps%208%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -3742,7 +3742,7 @@
     "sku": "GG-VA-071",
     "stock": 32,
     "images": [
-      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Vape%20Juice%2010%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -3793,7 +3793,7 @@
     "sku": "GG-HU-072",
     "stock": 56,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Full%20Spectrum%20Oil%2025%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -3844,7 +3844,7 @@
     "sku": "GG-FL-073",
     "stock": 10,
     "images": [
-      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Cookies%2025%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -3904,7 +3904,7 @@
     "sku": "GG-HU-074",
     "stock": 47,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Full%20Spectrum%20Oil%203%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -3955,7 +3955,7 @@
     "sku": "GG-FL-075",
     "stock": 69,
     "images": [
-      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Honey%2020%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -4015,7 +4015,7 @@
     "sku": "GG-CA-076",
     "stock": 34,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Gel%20Caps%2050%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -4066,7 +4066,7 @@
     "sku": "GG-CA-077",
     "stock": 96,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Capsules%2050%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -4117,7 +4117,7 @@
     "sku": "GG-VA-078",
     "stock": 102,
     "images": [
-      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Wax%201%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -4168,7 +4168,7 @@
     "sku": "GG-CA-079",
     "stock": 50,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Pills%2050%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -4219,7 +4219,7 @@
     "sku": "GG-CO-080",
     "stock": 101,
     "images": [
-      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Serum%2025%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -4270,7 +4270,7 @@
     "sku": "GG-CO-081",
     "stock": 102,
     "images": [
-      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Face%20Mask%2025%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -4321,7 +4321,7 @@
     "sku": "GG-FL-082",
     "stock": 21,
     "images": [
-      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Chocolates%2010%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -4381,7 +4381,7 @@
     "sku": "GG-VA-083",
     "stock": 35,
     "images": [
-      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Pods%201%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -4432,7 +4432,7 @@
     "sku": "GG-FL-084",
     "stock": 20,
     "images": [
-      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Brownies%205%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -4492,7 +4492,7 @@
     "sku": "GG-VA-085",
     "stock": 22,
     "images": [
-      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Cartridge%201%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -4543,7 +4543,7 @@
     "sku": "GG-CA-086",
     "stock": 28,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Pills%2010%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -4594,7 +4594,7 @@
     "sku": "GG-HU-087",
     "stock": 95,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Tincture%202%25"
+      "/products/tincture.svg"
     ],
     "published": true,
     "categories": [
@@ -4645,7 +4645,7 @@
     "sku": "GG-FL-088",
     "stock": 89,
     "images": [
-      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Coffee%2030%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -4705,7 +4705,7 @@
     "sku": "GG-FL-089",
     "stock": 73,
     "images": [
-      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Tea%2050%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -4765,7 +4765,7 @@
     "sku": "GG-HU-090",
     "stock": 51,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Extract%201%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -4816,7 +4816,7 @@
     "sku": "GG-FL-091",
     "stock": 77,
     "images": [
-      "https://via.placeholder.com/400x288/C0C0C0/FFFFFF?text=CBD%20Chocolates%2020%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -4876,7 +4876,7 @@
     "sku": "GG-HU-092",
     "stock": 73,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Sublingual%20Drops%202%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -4927,7 +4927,7 @@
     "sku": "GG-CA-093",
     "stock": 103,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Tablets%2025%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -4978,7 +4978,7 @@
     "sku": "GG-CO-094",
     "stock": 16,
     "images": [
-      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Lotion%202%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -5029,7 +5029,7 @@
     "sku": "GG-CO-095",
     "stock": 62,
     "images": [
-      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Balm%2015%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -5080,7 +5080,7 @@
     "sku": "GG-CA-096",
     "stock": 11,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Tablets%203%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -5131,7 +5131,7 @@
     "sku": "GG-HU-097",
     "stock": 18,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=Isolate%20Oil%205%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -5182,7 +5182,7 @@
     "sku": "GG-CO-098",
     "stock": 41,
     "images": [
-      "https://via.placeholder.com/400x288/FFD700/000000?text=CBD%20Balm%2010%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -5233,7 +5233,7 @@
     "sku": "GG-HU-099",
     "stock": 30,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Tincture%2010%25"
+      "/products/tincture.svg"
     ],
     "published": true,
     "categories": [
@@ -5284,7 +5284,7 @@
     "sku": "GG-CA-100",
     "stock": 59,
     "images": [
-      "https://via.placeholder.com/400x288/00C853/FFFFFF?text=CBD%20Gel%20Caps%201%25"
+      "/products/default.svg"
     ],
     "published": true,
     "categories": [
@@ -5325,3 +5325,6 @@
     "totalStock": 175
   }
 ]
+
+
+

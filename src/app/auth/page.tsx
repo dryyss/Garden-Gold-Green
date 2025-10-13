@@ -12,6 +12,7 @@ import {
   faLock
 } from '@fortawesome/free-solid-svg-icons'
 import Image from 'next/image'
+import { loadStripe } from '@stripe/stripe-js'
 
 export default function AuthPage() {
   const router = useRouter()
@@ -25,6 +26,8 @@ export default function AuthPage() {
     phone: ''
   })
 
+  const stripePromise = loadStripe('your-publishable-key-from-stripe')
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
@@ -33,14 +36,31 @@ export default function AuthPage() {
         await login(formData.email, formData.password)
         router.push('/account')
       } else {
-        await register({
-          email: formData.email,
-          password: formData.password,
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          phone: formData.phone
+        const stripe = await stripePromise
+
+        // Call your backend to create the customer and subscription
+        const response = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password,
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            phone: formData.phone
+          })
         })
-        router.push('/account')
+
+        const data = await response.json()
+
+        if (response.ok) {
+          // Redirect to the checkout page
+          router.push(data.checkoutUrl)
+        } else {
+          console.error('Error registering:', data.message)
+        }
       }
     } catch (error) {
       console.error('Erreur d\'authentification:', error)

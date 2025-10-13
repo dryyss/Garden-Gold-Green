@@ -40,3 +40,8 @@ export function ResponsiveCard({
     </div>
   )
 }
+
+
+
+
+

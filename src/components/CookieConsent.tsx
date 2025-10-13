@@ -192,6 +192,9 @@ export function CookieConsent() {
                       className={`w-12 h-6 rounded-full flex items-center transition-colors ${
                         preferences.analytics ? 'bg-brand-gold' : 'bg-gray-600'
                       }`}
+                      aria-label={`Toggle analytics cookies ${preferences.analytics ? 'on' : 'off'}`}
+                      role="switch"
+                      aria-checked={preferences.analytics}
                     >
                       <div className={`w-4 h-4 bg-white rounded-full transition-transform ${
                         preferences.analytics ? 'translate-x-6' : 'translate-x-1'
@@ -217,6 +220,9 @@ export function CookieConsent() {
                       className={`w-12 h-6 rounded-full flex items-center transition-colors ${
                         preferences.marketing ? 'bg-brand-gold' : 'bg-gray-600'
                       }`}
+                      aria-label={`Toggle marketing cookies ${preferences.marketing ? 'on' : 'off'}`}
+                      role="switch"
+                      aria-checked={preferences.marketing}
                     >
                       <div className={`w-4 h-4 bg-white rounded-full transition-transform ${
                         preferences.marketing ? 'translate-x-6' : 'translate-x-1'

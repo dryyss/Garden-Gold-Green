@@ -174,3 +174,8 @@
 ---
 
 *Le site est maintenant entièrement responsive avec un thème Garden Gold Green cohérent et des icônes aux dimensions standardisées.*
+
+
+
+
+

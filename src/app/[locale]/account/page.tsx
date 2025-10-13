@@ -18,12 +18,12 @@ export default function AccountPage() {
   const router = useRouter()
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!authState.isAuthenticated) {
       router.push('/')
     }
-  }, [isAuthenticated, router])
+  }, [authState.isAuthenticated, router])
 
-  if (!isAuthenticated) {
+  if (!authState.isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">

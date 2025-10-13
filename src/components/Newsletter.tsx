@@ -172,3 +172,11 @@ export function Newsletter({ className = '', variant = 'default' }: NewsletterPr
     </div>
   )
 }
+
+
+
+
+
+
+
+

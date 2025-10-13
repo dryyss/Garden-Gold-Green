@@ -1,216 +1,110 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
-import { useAuth } from '@/contexts/AuthContext'
-import { ProtectedRoute } from '@/components/ProtectedRoute'
+import Image from 'next/image'
+import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
   faArrowLeft, 
-  faTruck, 
   faCheckCircle, 
-  faClock,
-  faDownload,
-  faPrint,
-  faMapMarkerAlt,
-  faPhone,
-  faEnvelope
+  faTruck, 
+  faUndo,
+  faCalendarAlt,
+  faBox
 } from '@fortawesome/free-solid-svg-icons'
-import Image from 'next/image'
-import Link from 'next/link'
+import { ReturnRequest } from '@/components/ReturnRequest'
 
 interface OrderItem {
   id: string
-  name: string
-  price: number
+  productName: string
   quantity: number
+  price: number
   image: string
-  description: string
+  orderDate: string
+  deliveryDate: string
+  canReturn: boolean
 }
 
 interface Order {
   id: string
-  orderNumber: string
-  date: string
-  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled'
+  status: string
   total: number
-  subtotal: number
-  tax: number
-  shipping: number
   items: OrderItem[]
-  shippingAddress: {
-    firstName: string
-    lastName: string
-    address: string
-    city: string
-    state: string
-    zipCode: string
-    country: string
-  }
-  billingAddress: {
-    firstName: string
-    lastName: string
-    address: string
-    city: string
-    state: string
-    zipCode: string
-    country: string
-  }
-  paymentMethod: {
-    type: string
-    last4: string
-    brand: string
-  }
-  trackingNumber?: string
-  estimatedDelivery?: string
-  trackingHistory?: Array<{
-    date: string
-    status: string
-    location: string
-  }>
+  orderDate: string
+  deliveryDate?: string
 }
 
-function OrderDetailContent() {
+export default function OrderDetailPage() {
   const params = useParams()
-  const { state: authState } = useAuth()
   const [order, setOrder] = useState<Order | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [showReturnForm, setShowReturnForm] = useState(false)
 
   useEffect(() => {
-    const loadOrder = async () => {
-      setIsLoading(true)
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      // Mock order data
+    fetchOrder()
+  }, [params.id])
+
+  const fetchOrder = async () => {
+    try {
+      // Simuler un appel API
       const mockOrder: Order = {
         id: params.id as string,
-        orderNumber: 'GGG-123456',
-        date: '2024-01-15',
         status: 'delivered',
         total: 89.97,
-        subtotal: 79.97,
-        tax: 6.40,
-        shipping: 0,
         items: [
           {
-            id: '1',
-            name: 'Gold Standard CBD Oil - 1000mg',
-            price: 49.99,
+            id: 'item-1',
+            productName: 'Huile CBD 10% - Premium',
             quantity: 1,
-            image: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/6150e371c9-cf959decb319ba5f18c3.png',
-            description: 'Premium full-spectrum CBD oil with 1000mg of CBD per bottle'
+            price: 49.99,
+            image: '/logo.png',
+            orderDate: '2024-01-15',
+            deliveryDate: '2024-01-18',
+            canReturn: true
           },
           {
-            id: '2',
-            name: 'Emerald Soothe Balm - 500mg',
-            price: 39.98,
+            id: 'item-2',
+            productName: 'Fleur CBD - Amnesia Haze',
             quantity: 2,
-            image: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/efac7e243f-ef87256518694e833470.png',
-            description: 'Topical CBD balm for targeted relief and soothing comfort'
+            price: 39.98,
+            image: '/logo.png',
+            orderDate: '2024-01-15',
+            deliveryDate: '2024-01-18',
+            canReturn: true
           }
         ],
-        shippingAddress: {
-          firstName: 'John',
-          lastName: 'Doe',
-          address: '123 Main Street',
-          city: 'New York',
-          state: 'NY',
-          zipCode: '10001',
-          country: 'United States'
-        },
-        billingAddress: {
-          firstName: 'John',
-          lastName: 'Doe',
-          address: '123 Main Street',
-          city: 'New York',
-          state: 'NY',
-          zipCode: '10001',
-          country: 'United States'
-        },
-        paymentMethod: {
-          type: 'card',
-          last4: '4242',
-          brand: 'Visa'
-        },
-        trackingNumber: '1Z999AA1234567890',
-        estimatedDelivery: '2024-01-18',
-        trackingHistory: [
-          {
-            date: '2024-01-15T10:00:00Z',
-            status: 'Order Placed',
-            location: 'Garden Gold Green Warehouse'
-          },
-          {
-            date: '2024-01-16T14:30:00Z',
-            status: 'Processing',
-            location: 'Garden Gold Green Warehouse'
-          },
-          {
-            date: '2024-01-17T09:15:00Z',
-            status: 'Shipped',
-            location: 'UPS Distribution Center'
-          },
-          {
-            date: '2024-01-18T16:45:00Z',
-            status: 'Delivered',
-            location: '123 Main Street, New York, NY 10001'
-          }
-        ]
+        orderDate: '2024-01-15',
+        deliveryDate: '2024-01-18'
       }
       
       setOrder(mockOrder)
+    } catch (error) {
+      console.error('Erreur lors du chargement de la commande:', error)
+    } finally {
       setIsLoading(false)
-    }
-
-    loadOrder()
-  }, [params.id])
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return 'text-yellow-400 bg-yellow-400/20'
-      case 'processing':
-        return 'text-blue-400 bg-blue-400/20'
-      case 'shipped':
-        return 'text-purple-400 bg-purple-400/20'
-      case 'delivered':
-        return 'text-green-400 bg-green-400/20'
-      case 'cancelled':
-        return 'text-red-400 bg-red-400/20'
-      default:
-        return 'text-gray-400 bg-gray-400/20'
     }
   }
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'pending':
-        return faClock
-      case 'processing':
-        return faClock
-      case 'shipped':
-        return faTruck
       case 'delivered':
-        return faCheckCircle
-      case 'cancelled':
-        return faClock
+        return <FontAwesomeIcon icon={faCheckCircle} className="text-brand-green" />
+      case 'shipped':
+        return <FontAwesomeIcon icon={faTruck} className="text-brand-gold" />
       default:
-        return faClock
+        return <FontAwesomeIcon icon={faBox} className="text-gray-400" />
     }
   }
 
   const getStatusText = (status: string) => {
     switch (status) {
+      case 'delivered':
+        return 'Livrée'
+      case 'shipped':
+        return 'Expédiée'
       case 'pending':
         return 'En attente'
-      case 'processing':
-        return 'En cours de traitement'
-      case 'shipped':
-        return 'Expédié'
-      case 'delivered':
-        return 'Livré'
-      case 'cancelled':
-        return 'Annulé'
       default:
         return status
     }
@@ -218,10 +112,10 @@ function OrderDetailContent() {
 
   if (isLoading) {
     return (
-      <div className="bg-brand-black min-h-screen flex items-center justify-center pt-24">
+      <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-center">
           <div className="spinner mx-auto mb-4"></div>
-          <p className="text-gray-400">Chargement des détails de la commande...</p>
+          <p className="text-gray-400">Chargement de la commande...</p>
         </div>
       </div>
     )
@@ -229,14 +123,10 @@ function OrderDetailContent() {
 
   if (!order) {
     return (
-      <div className="bg-brand-black min-h-screen flex items-center justify-center pt-24">
+      <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">Commande introuvable</h1>
-          <p className="text-gray-400 mb-8">La commande que vous recherchez n'existe pas.</p>
-          <Link
-            href="/orders"
-            className="btn-gold text-black font-semibold py-3 px-8 rounded-full shadow-gold-glow"
-          >
+          <h1 className="text-2xl font-bold text-white mb-4">Commande non trouvée</h1>
+          <Link href="/orders" className="btn-gold px-6 py-2 rounded-full">
             Retour aux commandes
           </Link>
         </div>
@@ -245,237 +135,167 @@ function OrderDetailContent() {
   }
 
   return (
-    <main className="bg-brand-black min-h-screen pt-24">
-      <div className="container mx-auto px-6 py-16">
+    <main className="min-h-screen bg-black pt-24">
+      <div className="container mx-auto px-6 py-8">
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <Link
-            href="/orders"
-            className="text-gray-400 hover:text-brand-gold transition-colors"
-          >
-            <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
-            Retour aux commandes
-          </Link>
-        </div>
-
-        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start mb-8">
-          <div>
-            <h1 className="text-4xl font-bold text-white mb-2">
-              Commande #{order.orderNumber}
-            </h1>
-            <p className="text-gray-400">
-              Passée le {new Date(order.date).toLocaleDateString('fr-FR', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-              })}
-            </p>
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center space-x-4">
+            <Link 
+              href="/orders"
+              className="text-gray-400 hover:text-white transition-colors"
+            >
+              <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
+              Retour aux commandes
+            </Link>
           </div>
-          <div className="flex items-center gap-4 mt-4 lg:mt-0">
-            <div className={`px-4 py-2 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}>
-              <FontAwesomeIcon icon={getStatusIcon(order.status)} className="mr-2" />
-              {getStatusText(order.status)}
-            </div>
-            <div className="text-right">
-              <p className="text-3xl font-bold gold-text-gradient">
-                {order.total.toFixed(2)} €
-              </p>
-            </div>
+          <div className="text-right">
+            <h1 className="text-3xl font-bold text-white">Commande #{order.id}</h1>
+            <p className="text-gray-400">
+              Passée le {new Date(order.orderDate).toLocaleDateString('fr-FR')}
+            </p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Order Items */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Items */}
-            <div className="card-bg rounded-xl p-6">
-              <h2 className="text-2xl font-bold text-white mb-6">Articles commandés</h2>
-              <div className="space-y-6">
+          {/* Informations de la commande */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Statut */}
+            <div className="bg-gray-800 rounded-lg p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold text-white">Statut de la commande</h2>
+                <div className="flex items-center space-x-2">
+                  {getStatusIcon(order.status)}
+                  <span className="text-white font-medium">
+                    {getStatusText(order.status)}
+                  </span>
+                </div>
+              </div>
+              
+              {order.deliveryDate && (
+                <div className="flex items-center text-gray-400">
+                  <FontAwesomeIcon icon={faCalendarAlt} className="mr-2" />
+                  <span>Livrée le {new Date(order.deliveryDate).toLocaleDateString('fr-FR')}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Articles */}
+            <div className="bg-gray-800 rounded-lg p-6">
+              <h2 className="text-xl font-semibold text-white mb-4">Articles commandés</h2>
+              <div className="space-y-4">
                 {order.items.map((item) => (
-                  <div key={item.id} className="flex items-center gap-6">
-                    <div className="w-20 h-20 rounded-lg overflow-hidden">
-                      <Image
-                        src={item.image}
-                        alt={item.name}
-                        width={80}
-                        height={80}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
+                  <div key={item.id} className="flex items-center space-x-4 p-4 bg-gray-700 rounded-lg">
+                    <Image
+                      src={item.image}
+                      alt={item.productName}
+                      width={60}
+                      height={60}
+                      className="object-cover rounded"
+                    />
                     <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-white mb-2">{item.name}</h3>
-                      <p className="text-gray-400 text-sm mb-2">{item.description}</p>
+                      <h3 className="font-semibold text-white">{item.productName}</h3>
                       <p className="text-gray-400">Quantité: {item.quantity}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-2xl font-bold gold-text-gradient">
-                        {(item.price * item.quantity).toFixed(2)} €
+                      <p className="font-semibold text-white">
+                        {(item.price * item.quantity).toFixed(2)}€
                       </p>
-                      <p className="text-gray-400 text-sm">
-                        {item.price.toFixed(2)} € chacun
-                      </p>
+                      {item.canReturn && (
+                        <span className="text-xs text-brand-green">
+                          Retour possible
+                        </span>
+                      )}
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Tracking History */}
-            {order.trackingHistory && (
-              <div className="card-bg rounded-xl p-6">
-                <h2 className="text-2xl font-bold text-white mb-6">Historique de suivi</h2>
-                <div className="space-y-4">
-                  {order.trackingHistory.map((event, index) => (
-                    <div key={index} className="flex items-start gap-4">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                        index === order.trackingHistory!.length - 1 
-                          ? 'bg-brand-green' 
-                          : 'bg-gray-600'
-                      }`}>
-                        <FontAwesomeIcon 
-                          icon={getStatusIcon(event.status.toLowerCase())} 
-                          className="text-white text-sm" 
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <h4 className="text-white font-medium">{event.status}</h4>
-                        <p className="text-gray-400 text-sm">{event.location}</p>
-                        <p className="text-gray-500 text-xs">
-                          {new Date(event.date).toLocaleString('fr-FR')}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
+            {/* Bouton de retour */}
+            {order.status === 'delivered' && order.items.some(item => item.canReturn) && (
+              <div className="bg-gray-800 rounded-lg p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold text-white mb-2">
+                      Demande de retour
+                    </h3>
+                    <p className="text-gray-400 text-sm">
+                      Vous avez 14 jours pour demander un retour après la livraison.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setShowReturnForm(true)}
+                    className="btn-outline-gold px-6 py-2 rounded-full flex items-center space-x-2"
+                  >
+                    <FontAwesomeIcon icon={faUndo} />
+                    <span>Demander un retour</span>
+                  </button>
                 </div>
               </div>
             )}
           </div>
 
-          {/* Order Summary & Details */}
+          {/* Résumé */}
           <div className="space-y-6">
-            {/* Order Summary */}
-            <div className="card-bg rounded-xl p-6">
-              <h2 className="text-2xl font-bold text-white mb-6">Résumé de la commande</h2>
+            <div className="bg-gray-800 rounded-lg p-6">
+              <h2 className="text-xl font-semibold text-white mb-4">Résumé</h2>
               <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Sous-total</span>
-                  <span className="text-white">{order.subtotal.toFixed(2)} €</span>
+                <div className="flex justify-between text-gray-400">
+                  <span>Sous-total</span>
+                  <span>{order.total.toFixed(2)}€</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Livraison</span>
-                  <span className={order.shipping === 0 ? 'text-brand-green' : 'text-white'}>
-                    {order.shipping === 0 ? 'Gratuite' : `${order.shipping.toFixed(2)} €`}
-                  </span>
+                <div className="flex justify-between text-gray-400">
+                  <span>Livraison</span>
+                  <span>Gratuite</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">TVA</span>
-                  <span className="text-white">{order.tax.toFixed(2)} €</span>
-                </div>
-                <div className="border-t border-white/10 pt-3">
-                  <div className="flex justify-between">
-                    <span className="text-xl font-semibold text-white">Total</span>
-                    <span className="text-2xl font-bold gold-text-gradient">
-                      {order.total.toFixed(2)} €
-                    </span>
-                  </div>
+                <hr className="border-gray-600" />
+                <div className="flex justify-between text-white font-semibold text-lg">
+                  <span>Total</span>
+                  <span>{order.total.toFixed(2)}€</span>
                 </div>
               </div>
             </div>
-
-            {/* Shipping Address */}
-            <div className="card-bg rounded-xl p-6">
-              <h2 className="text-2xl font-bold text-white mb-6">Adresse de livraison</h2>
-              <div className="space-y-2">
-                <p className="text-white">
-                  {order.shippingAddress.firstName} {order.shippingAddress.lastName}
-                </p>
-                <p className="text-gray-400">{order.shippingAddress.address}</p>
-                <p className="text-gray-400">
-                  {order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.zipCode}
-                </p>
-                <p className="text-gray-400">{order.shippingAddress.country}</p>
-              </div>
-            </div>
-
-            {/* Payment Method */}
-            <div className="card-bg rounded-xl p-6">
-              <h2 className="text-2xl font-bold text-white mb-6">Méthode de paiement</h2>
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-brand-gold rounded flex items-center justify-center">
-                  <FontAwesomeIcon icon={faCheckCircle} className="text-black text-sm" />
-                </div>
-                <div>
-                  <p className="text-white font-medium">
-                    {order.paymentMethod.brand} •••• {order.paymentMethod.last4}
-                  </p>
-                  <p className="text-gray-400 text-sm">Paiement effectué</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Tracking Info */}
-            {order.trackingNumber && (
-              <div className="card-bg rounded-xl p-6">
-                <h2 className="text-2xl font-bold text-white mb-6">Informations de suivi</h2>
-                <div className="space-y-4">
-                  <div>
-                    <p className="text-sm text-gray-400">Numéro de suivi</p>
-                    <p className="text-white font-mono text-lg">{order.trackingNumber}</p>
-                  </div>
-                  {order.estimatedDelivery && (
-                    <div>
-                      <p className="text-sm text-gray-400">Livraison estimée</p>
-                      <p className="text-white">
-                        {new Date(order.estimatedDelivery).toLocaleDateString('fr-FR')}
-                      </p>
-                    </div>
-                  )}
-                  <a
-                    href={`https://www.ups.com/track?tracknum=${order.trackingNumber}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-gold text-black font-semibold py-2 px-4 rounded-full shadow-gold-glow inline-flex items-center gap-2 w-full justify-center"
-                  >
-                    <FontAwesomeIcon icon={faTruck} />
-                    Suivre le colis
-                  </a>
-                </div>
-              </div>
-            )}
 
             {/* Actions */}
-            <div className="card-bg rounded-xl p-6">
-              <h2 className="text-2xl font-bold text-white mb-6">Actions</h2>
+            <div className="bg-gray-800 rounded-lg p-6">
+              <h3 className="text-lg font-semibold text-white mb-4">Actions</h3>
               <div className="space-y-3">
-                <button className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-white/20 text-white rounded-lg hover:bg-white/10 transition-colors">
-                  <FontAwesomeIcon icon={faDownload} />
+                <Link
+                  href="/"
+                  className="w-full btn-gold py-2 rounded-lg text-center block"
+                >
+                  Commander à nouveau
+                </Link>
+                <button className="w-full btn-outline-gold py-2 rounded-lg">
                   Télécharger la facture
                 </button>
-                <button className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-white/20 text-white rounded-lg hover:bg-white/10 transition-colors">
-                  <FontAwesomeIcon icon={faPrint} />
-                  Imprimer la commande
-                </button>
-                <Link
-                  href="/contact"
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-white/20 text-white rounded-lg hover:bg-white/10 transition-colors"
-                >
-                  <FontAwesomeIcon icon={faEnvelope} />
-                  Contacter le support
-                </Link>
               </div>
             </div>
           </div>
         </div>
+
+        {/* Formulaire de retour */}
+        {showReturnForm && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+            <div className="bg-gray-800 rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-white">Demande de retour</h2>
+                <button
+                  onClick={() => setShowReturnForm(false)}
+                  className="text-gray-400 hover:text-white text-xl"
+                >
+                  ×
+                </button>
+              </div>
+              <ReturnRequest 
+                orderId={order.id}
+                items={order.items}
+                onReturnRequested={() => setShowReturnForm(false)}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </main>
-  )
-}
-
-export default function OrderDetailPage() {
-  return (
-    <ProtectedRoute>
-      <OrderDetailContent />
-    </ProtectedRoute>
   )
 }

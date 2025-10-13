@@ -1,151 +1,198 @@
-# 🔐 Configuration Auth0 - Garden Gold Green
+# Configuration Auth0
 
-## 📋 Étapes de Configuration
+## 📋 Étapes d'installation
 
 ### 1. Créer un compte Auth0
+1. Allez sur [auth0.com](https://auth0.com) et créez un compte gratuit
+2. Créez une nouvelle application de type "Regular Web Application"
+3. Notez les informations suivantes :
+   - **Domain** (ex: dev-xxxxx.us.auth0.com)
+   - **Client ID**
+   - **Client Secret**
 
-1. Allez sur [auth0.com](https://auth0.com)
-2. Créez un compte gratuit
-3. Créez une nouvelle application **Regular Web Application**
-4. Notez le **Domain**, **Client ID** et **Client Secret**
+### 2. Configurer l'application Auth0
 
-### 2. Configurer les URLs de callback
-
-Dans votre application Auth0, configurez :
+Dans les paramètres de votre application Auth0 :
 
 **Allowed Callback URLs:**
 ```
-http://localhost:3000/api/auth/callback
-https://votredomaine.com/api/auth/callback
+http://localhost:3002/api/auth/callback
 ```
 
 **Allowed Logout URLs:**
 ```
-http://localhost:3000
-https://votredomaine.com
+http://localhost:3002
 ```
 
 **Allowed Web Origins:**
 ```
-http://localhost:3000
-https://votredomaine.com
+http://localhost:3002
 ```
 
-### 3. Activer les connexions sociales
+### 3. Configurer les variables d'environnement
 
-Dans Auth0 Dashboard > Authentication > Social :
+Créez un fichier `.env.local` à la racine du projet `garden-gold-green/` :
 
-#### Google
-1. Activez la connexion Google
-2. Obtenez vos credentials depuis [Google Cloud Console](https://console.cloud.google.com)
-3. Créez un projet OAuth 2.0
-4. Ajoutez les URLs de redirection Auth0
+```bash
+# Database
+DATABASE_URL="file:./dev.db"
 
-#### Facebook
-1. Activez la connexion Facebook
-2. Créez une app sur [Facebook Developers](https://developers.facebook.com)
-3. Obtenez l'App ID et App Secret
-4. Configurez les URLs de redirection
+# Auth0 Configuration
+AUTH0_SECRET='use [openssl rand -hex 32] to generate a 32 bytes value'
+AUTH0_BASE_URL='http://localhost:3002'
+AUTH0_ISSUER_BASE_URL='https://YOUR-AUTH0-DOMAIN.auth0.com'
+AUTH0_CLIENT_ID='YOUR-CLIENT-ID'
+AUTH0_CLIENT_SECRET='YOUR-CLIENT-SECRET'
 
-#### Apple
-1. Activez la connexion Apple
-2. Configurez Sign in with Apple depuis [Apple Developer](https://developer.apple.com)
-3. Créez un Service ID
-4. Configurez les URLs de callback
+# Stripe (optionnel pour le moment)
+STRIPE_PUBLISHABLE_KEY="your-stripe-publishable-key"
+STRIPE_SECRET_KEY="your-stripe-secret-key"
+STRIPE_WEBHOOK_SECRET="your-stripe-webhook-secret"
+```
 
-### 4. Configuration des rôles (optionnel)
+### 4. Générer le AUTH0_SECRET
 
-Pour gérer les admins, créez une Rule dans Auth0 :
+Sur Linux/Mac :
+```bash
+openssl rand -hex 32
+```
 
-```javascript
-function addRolesToUser(user, context, callback) {
-  const namespace = 'https://gardengoldgreen.com/roles';
-  const adminEmails = ['admin@gardengoldgreen.com'];
+Sur Windows PowerShell :
+```powershell
+-join ((48..57) + (65..90) + (97..122) | Get-Random -Count 32 | ForEach-Object {[char]$_})
+```
+
+### 5. Personnaliser la page de connexion Auth0 (Optionnel)
+
+Dans le dashboard Auth0, allez dans **Branding** > **Universal Login** :
+
+1. **Logo** : Uploadez le logo Garden Gold Green
+2. **Couleur primaire** : `#FFD700` (gold)
+3. **Couleur de fond** : `#0a0a0a` (black)
+
+## 🚀 Fonctionnalités implémentées
+
+### Routes API Auth0
+- ✅ `/api/auth/login` - Connexion utilisateur
+- ✅ `/api/auth/logout` - Déconnexion utilisateur
+- ✅ `/api/auth/callback` - Callback après authentification
+- ✅ `/api/auth/me` - Récupérer l'utilisateur connecté
+
+### Pages protégées
+- ✅ `/profile` - Page de profil utilisateur
+- ✅ `/orders` - Historique des commandes
+
+### Composants mis à jour
+- ✅ `Header` - Menu utilisateur avec Auth0
+- ✅ `UserProvider` - Context provider Auth0
+- ✅ Layout principal
+
+## 📱 Utilisation
+
+### Connexion
+```tsx
+<a href="/api/auth/login">Se connecter</a>
+```
+
+### Inscription
+```tsx
+<a href="/api/auth/login?screen_hint=signup">S'inscrire</a>
+```
+
+### Déconnexion
+```tsx
+<a href="/api/auth/logout">Se déconnecter</a>
+```
+
+### Récupérer l'utilisateur
+```tsx
+import { useUser } from '@auth0/nextjs-auth0/client'
+
+function Component() {
+  const { user, error, isLoading } = useUser()
   
-  if (adminEmails.includes(user.email)) {
-    context.idToken[namespace] = ['admin'];
-    context.accessToken[namespace] = ['admin'];
-  } else {
-    context.idToken[namespace] = ['customer'];
-    context.accessToken[namespace] = ['customer'];
-  }
+  if (isLoading) return <div>Chargement...</div>
+  if (error) return <div>Erreur: {error.message}</div>
   
-  callback(null, user, context);
+  return <div>Bonjour {user.name}</div>
 }
 ```
 
-### 5. Variables d'environnement
+## 🔐 Métadonnées utilisateur
 
-Mettez à jour votre `.env.local` :
+Les informations supplémentaires (téléphone, adresse) sont stockées dans `user_metadata` :
 
-```env
-# Auth0 Configuration
-AUTH0_SECRET="génère-un-secret-aléatoire-32-caractères-minimum"
-AUTH0_BASE_URL="http://localhost:3000"
-AUTH0_ISSUER_BASE_URL="https://votre-domain.auth0.com"
-AUTH0_CLIENT_ID="votre-client-id"
-AUTH0_CLIENT_SECRET="votre-client-secret"
+```typescript
+user.user_metadata = {
+  phone: "+33 6 00 00 00 00",
+  address: {
+    street: "123 rue Example",
+    city: "Paris",
+    postalCode: "75001",
+    country: "France"
+  }
+}
 ```
 
-**Pour générer AUTH0_SECRET :**
-```bash
-node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+## 🛠️ API de mise à jour du profil
+
+**Endpoint:** `POST /api/user/update`
+
+**Body:**
+```json
+{
+  "phone": "+33 6 00 00 00 00",
+  "address": {
+    "street": "123 rue Example",
+    "city": "Paris",
+    "postalCode": "75001",
+    "country": "France"
+  }
+}
 ```
 
-### 6. Tester l'authentification
+## 🎨 Personnalisation avancée
 
-1. Démarrez le serveur : `npm run dev`
-2. Allez sur `/auth`
-3. Testez la connexion avec :
-   - Email/Password
-   - Google
-   - Facebook  
-   - Apple
+### Ajouter des rôles utilisateur
 
-### 7. URLs importantes
+Dans Auth0 Dashboard :
+1. Créez des rôles (ex: "admin", "customer")
+2. Assignez les rôles aux utilisateurs
+3. Accédez aux rôles dans votre application :
 
-- **Login:** `/api/auth/login`
-- **Logout:** `/api/auth/logout`
-- **Callback:** `/api/auth/callback`
-- **User Profile:** `/api/auth/me`
+```tsx
+const { user } = useUser()
+const roles = user['https://your-namespace/roles']
+const isAdmin = roles?.includes('admin')
+```
 
-## 🔒 Sécurité
+### Ajouter des métadonnées personnalisées
 
-- ✅ AUTH0_SECRET doit être un secret fort (minimum 32 caractères)
-- ✅ Ne commitez jamais vos secrets dans Git
-- ✅ Utilisez des URLs HTTPS en production
-- ✅ Configurez les CORS correctement
-- ✅ Limitez les connexions sociales nécessaires
+1. Créez une action Auth0 (Actions > Flows > Login)
+2. Ajoutez des données personnalisées au token
 
-## 📱 Routes protégées
+## 🔄 Migration depuis l'ancien système
 
-Les routes suivantes nécessitent une authentification :
+L'ancien système `AuthContext` a été remplacé par Auth0. Les principales différences :
 
-- `/account/*` - Compte utilisateur
-- `/profile/*` - Profil
-- `/orders/*` - Commandes
-- `/favorites/*` - Favoris
-- `/admin/*` - Administration
+| Ancien système | Auth0 |
+|----------------|-------|
+| `useAuth()` | `useUser()` |
+| `authState.user` | `user` |
+| `authState.isAuthenticated` | `user !== undefined` |
+| `login()` | `href="/api/auth/login"` |
+| `logout()` | `href="/api/auth/logout"` |
+| `register()` | `href="/api/auth/login?screen_hint=signup"` |
 
-## 🚀 En production
+## 📚 Ressources
 
-1. Changez `AUTH0_BASE_URL` vers votre domaine de production
-2. Mettez à jour les Callback URLs dans Auth0
-3. Activez le HTTPS
-4. Configurez un domaine personnalisé Auth0 (optionnel)
-5. Activez MFA pour les admins
+- [Documentation Auth0 Next.js](https://auth0.com/docs/quickstart/webapp/nextjs)
+- [Auth0 SDK Reference](https://github.com/auth0/nextjs-auth0)
+- [Auth0 Dashboard](https://manage.auth0.com)
 
-## 🆘 Dépannage
+## ⚠️ Notes importantes
 
-### Erreur: "Callback URL mismatch"
-→ Vérifiez que les URLs de callback sont correctement configurées dans Auth0
-
-### Erreur: "Invalid state"
-→ Vérifiez que AUTH0_SECRET est correctement défini
-
-### L'utilisateur n'est pas redirigé après login
-→ Vérifiez AUTH0_BASE_URL et les Allowed Callback URLs
-
-### Les rôles ne fonctionnent pas
-→ Vérifiez que la Rule est bien activée dans Auth0 Dashboard
-
+1. **SECRET** : Ne partagez jamais votre `AUTH0_CLIENT_SECRET` ou `AUTH0_SECRET`
+2. **Production** : Mettez à jour `AUTH0_BASE_URL` en production
+3. **HTTPS** : Auth0 nécessite HTTPS en production
+4. **Domaine personnalisé** : Configurez un domaine personnalisé pour le branding

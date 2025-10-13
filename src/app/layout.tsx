@@ -5,11 +5,12 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CookieConsent } from "@/components/CookieConsent";
 import { CartProvider } from "@/contexts/CartContext";
-import { AuthProvider } from "@/contexts/AuthContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { CartSidebar } from "@/components/CartSidebar";
 import { SystemTest } from "@/components/SystemTest";
 import { AuthNotificationHandler } from "@/components/AuthNotificationHandler";
+import { PageLoader } from "@/components/PageLoader";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -72,24 +73,26 @@ export default function RootLayout({
   return (
     <html lang="fr" className={`${inter.variable} ${montserrat.variable}`}>
       <body className="font-sans antialiased min-h-screen flex flex-col">
-        <NotificationProvider>
-          <AuthProvider>
-            <CartProvider>
-              <Header />
+        <PageLoader minLoadingTime={2000} showOnce={false}>
+          <NotificationProvider>
+            <AuthProvider>
+              <CartProvider>
+                <Header />
 
-              <main className="flex-1">
-                {children}
-              </main>
+                <main className="flex-1">
+                  {children}
+                </main>
 
-              <Footer />
+                <Footer />
 
-              <CookieConsent />
-              <CartSidebar />
-              <AuthNotificationHandler />
-              {process.env.NODE_ENV === 'development' && <SystemTest />}
-            </CartProvider>
-          </AuthProvider>
-        </NotificationProvider>
+                <CookieConsent />
+                <CartSidebar />
+                <AuthNotificationHandler />
+                {process.env.NODE_ENV === 'development' && <SystemTest />}
+              </CartProvider>
+            </AuthProvider>
+          </NotificationProvider>
+        </PageLoader>
       </body>
     </html>
   );

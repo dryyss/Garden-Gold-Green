@@ -108,3 +108,11 @@ fs.writeFileSync(
 );
 
 console.log(`✅ Généré ${products.length} produits dans src/data/products.json`);
+
+
+
+
+
+
+
+

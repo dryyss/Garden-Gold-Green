@@ -11,32 +11,37 @@ datasource db {
 }
 
 model User {
-  id         String   @id @default(cuid())
-  email      String   @unique
-  name       String?
-  password   String?  // si credentials
-  role       String   @default("customer") // 'admin' possible
-  orders     Order[]
-  createdAt  DateTime @default(now())
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  password      String?   // si credentials
+  role          String    @default("customer") // 'admin' possible
+  orders        Order[]
+  comments      Comment[]
+  returns       ReturnRequest[]
+  subscriptions Subscription[]
+  createdAt     DateTime  @default(now())
 }
 
 model Product {
-  id           String   @id @default(cuid())
-  title        String
-  slug         String   @unique
-  description  String?
-  priceCents   Int
-  currency     String   @default("EUR")
-  cbdPercent   Float?
-  sku          String?
-  stock        Int      @default(0)
-  images       String   // JSON string of image URLs
-  categories   Category[] @relation("ProductCategories")
-  variants     ProductVariant[]
-  orderItems   OrderItem[]
-  published    Boolean  @default(true)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id                String             @id @default(cuid())
+  title             String
+  slug              String             @unique
+  description       String?
+  priceCents        Int
+  currency          String             @default("EUR")
+  cbdPercent        Float?
+  sku               String?
+  stock             Int                @default(0)
+  images            String             // JSON string of image URLs
+  categories        Category[]         @relation("ProductCategories")
+  variants          ProductVariant[]
+  orderItems        OrderItem[]
+  comments          Comment[]
+  subscriptionPlans SubscriptionPlan[] // Plans d'abonnement disponibles
+  published         Boolean            @default(true)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
 }
 
 model ProductVariant {
@@ -56,24 +61,110 @@ model Category {
 }
 
 model Order {
-  id            String    @id @default(cuid())
-  user          User?     @relation(fields: [userId], references: [id])
+  id            String         @id @default(cuid())
+  user          User?          @relation(fields: [userId], references: [id])
   userId        String?
   totalCents    Int
-  currency      String    @default("EUR")
-  status        String    @default("pending") // paid, fulfilled, cancelled
+  currency      String         @default("EUR")
+  status        String         @default("pending") // pending, paid, shipped, delivered, cancelled, refunded
   items         OrderItem[]
+  returns       ReturnRequest[]
   shippingAddress Json?
   paymentIntentId String?
-  createdAt     DateTime  @default(now())
+  stripeSessionId String?      @unique
+  customerEmail String?
+  customerName  String?
+  customerPhone String?
+  deliveredAt   DateTime?      // Date de livraison pour calculer les retours
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 }
 
 model OrderItem {
   id         String @id @default(cuid())
   productId  String
   product    Product @relation(fields: [productId], references: [id])
+  name       String
   priceCents Int
   quantity   Int
   order      Order @relation(fields: [orderId], references: [id])
   orderId    String
+  status     String @default("ordered") // ordered, shipped, delivered, return_requested, returned
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  rating    Int      // 1-5 étoiles
+  content   String
+  isVerified Boolean @default(false) // true si l'utilisateur a acheté le produit
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ReturnRequest {
+  id        String   @id @default(cuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  items     String   // JSON array des IDs des OrderItems
+  reason    String   // Motif du retour
+  type      String   // "refund" ou "exchange"
+  status    String   @default("pending") // pending, approved, rejected, completed
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Modèles pour les abonnements
+model SubscriptionPlan {
+  id            String    @id @default(cuid())
+  name          String    // "Pack Hebdomadaire", "Pack Mensuel", "Pack Annuel"
+  description   String?
+  interval      String    // "weekly", "monthly", "yearly"
+  intervalCount Int       @default(1) // Nombre d'intervalles (ex: 2 pour "tous les 2 mois")
+  priceCents    Int       // Prix par intervalle en centimes
+  discount      Float?    // Remise en pourcentage (ex: 10.0 pour 10%)
+  productId     String    // Produit concerné par l'abonnement
+  product       Product   @relation(fields: [productId], references: [id])
+  isActive      Boolean   @default(true)
+  stripePriceId String?   // ID du prix Stripe pour les abonnements
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  id                String            @id @default(cuid())
+  userId            String
+  user              User              @relation(fields: [userId], references: [id])
+  planId            String
+  plan              SubscriptionPlan  @relation(fields: [planId], references: [id])
+  status            String            @default("active") // active, paused, cancelled, expired
+  stripeSubscriptionId String?        @unique
+  currentPeriodStart DateTime         // Début de la période actuelle
+  currentPeriodEnd   DateTime         // Fin de la période actuelle
+  nextBillingDate    DateTime?        // Prochaine date de facturation
+  quantity          Int               @default(1) // Quantité d'unités
+  pausedAt          DateTime?         // Date de pause si applicable
+  cancelledAt       DateTime?         // Date d'annulation si applicable
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  deliveries        SubscriptionDelivery[]
+}
+
+model SubscriptionDelivery {
+  id             String       @id @default(cuid())
+  subscriptionId String
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id])
+  orderId        String?      // ID de la commande générée
+  scheduledDate  DateTime     // Date prévue de livraison
+  deliveredDate  DateTime?    // Date réelle de livraison
+  status         String       @default("scheduled") // scheduled, shipped, delivered, failed
+  trackingNumber String?      // Numéro de suivi
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 }
