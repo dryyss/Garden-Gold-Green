@@ -1,8 +1,9 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter, usePathname } from 'next/navigation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCreditCard, faSpinner } from '@fortawesome/free-solid-svg-icons'
+import { faCreditCard, faSpinner, faShoppingCart } from '@fortawesome/free-solid-svg-icons'
 import { useCart } from '@/contexts/CartContext'
 import { useNotifications } from '@/contexts/NotificationContext'
 
@@ -11,11 +12,16 @@ interface StripeCheckoutButtonProps {
 }
 
 export function StripeCheckoutButton({ className = '' }: StripeCheckoutButtonProps) {
-  const { state } = useCart()
+  const { state, dispatch } = useCart()
   const { addNotification } = useNotifications()
   const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
+  const pathname = usePathname()
+  
+  // Vérifier si on est sur la page panier
+  const isOnCartPage = pathname === '/cart'
 
-  const handleCheckout = async () => {
+  const handleButtonClick = () => {
     if (state.items.length === 0) {
       addNotification({
         type: 'error',
@@ -25,19 +31,28 @@ export function StripeCheckoutButton({ className = '' }: StripeCheckoutButtonPro
       return
     }
 
+    // Si on n'est pas sur la page panier, rediriger vers le panier
+    if (!isOnCartPage) {
+      dispatch({ type: 'TOGGLE_CART' })
+      return
+    }
+
+    // Si on est sur la page panier, faire le checkout
+    handleCheckout()
+  }
+
+  const handleCheckout = async () => {
     setIsLoading(true)
 
     try {
       // Créer la session Stripe
-      const response = await fetch('/api/stripe/create-checkout-session', {
+      const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           items: state.items,
-          successUrl: `${window.location.origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-          cancelUrl: `${window.location.origin}/checkout/cancel`,
         }),
       })
 
@@ -63,7 +78,7 @@ export function StripeCheckoutButton({ className = '' }: StripeCheckoutButtonPro
 
   return (
     <button
-      onClick={handleCheckout}
+      onClick={handleButtonClick}
       disabled={isLoading || state.items.length === 0}
       className={`btn-gold text-black font-bold py-4 px-8 rounded-xl flex items-center justify-center gap-3 shadow-gold-glow hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 ${className}`}
     >
@@ -74,11 +89,10 @@ export function StripeCheckoutButton({ className = '' }: StripeCheckoutButtonPro
         </>
       ) : (
         <>
-          <FontAwesomeIcon icon={faCreditCard} className="w-5 h-5" />
-          <span>Payer avec Stripe</span>
+          <FontAwesomeIcon icon={isOnCartPage ? faCreditCard : faShoppingCart} className="w-5 h-5" />
+          <span>{isOnCartPage ? 'Paiement' : 'Voir le panier'}</span>
         </>
       )}
     </button>
   )
 }
-

@@ -26,32 +26,28 @@ import { ProductRecommendations } from '@/components/ProductRecommendations'
 import { CartSaveModal } from '@/components/CartSaveModal'
 import { Breadcrumb } from '@/components/Breadcrumb'
 import { ImageWithLoading } from '@/components/ImageWithLoading'
-import { StripeCheckoutButton } from '@/components/StripeCheckoutButton'
+import { CartLoadingGuard } from '@/components/CartLoadingGuard'
+import { PaymentMethodSelector } from '@/components/PaymentMethodSelector'
 import productsData from '@/data/products.json'
 
 export default function CartPage() {
+  return (
+    <CartLoadingGuard>
+      <CartPageContent />
+    </CartLoadingGuard>
+  )
+}
+
+function CartPageContent() {
   const { state, dispatch } = useCart()
   const authContext = useAuth()
   const authState = authContext?.state || { isAuthenticated: false }
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false)
   
-  // Vérifications de sécurité
-  if (!state || !state.items) {
-    return (
-      <div className="min-h-screen bg-brand-black pt-24 flex items-center justify-center">
-        <div className="text-center">
-          <div className="spinner mx-auto mb-4"></div>
-          <p className="text-gray-400">Chargement du panier...</p>
-        </div>
-      </div>
-    )
-  }
-  
   // Calculer le total
   const subtotal = state.items.reduce((total, item) => total + (item.price * item.quantity), 0)
   const shipping = subtotal > 100 ? 0 : 9.90
-  const tax = subtotal * 0.2 // TVA 20%
-  const total = subtotal + shipping + tax
+  const total = subtotal + shipping
 
   const handleQuantityChange = (itemId: string, newQuantity: number) => {
     if (newQuantity <= 0) {
@@ -307,10 +303,6 @@ export default function CartPage() {
                     {shipping === 0 ? 'Gratuite' : `${shipping.toFixed(2)} €`}
                   </span>
                 </div>
-                <div className="flex justify-between text-gray-300">
-                  <span>TVA (20%)</span>
-                  <span>{tax.toFixed(2)} €</span>
-                </div>
                 <div className="border-t border-white/20 pt-3">
                   <div className="flex justify-between text-xl font-bold text-white">
                     <span>Total</span>
@@ -337,8 +329,16 @@ export default function CartPage() {
 
               {/* Boutons d'action */}
               <div className="space-y-3">
-                {/* Stripe Checkout Button */}
-                <StripeCheckoutButton className="w-full" />
+                {/* Payment Method Selector */}
+                <PaymentMethodSelector 
+                  onPaymentSuccess={() => {
+                    console.log('Paiement réussi')
+                    // Optionnel: rediriger vers une page de succès
+                  }}
+                  onPaymentError={(error) => {
+                    console.error('Erreur de paiement:', error)
+                  }}
+                />
                 
                 {/* Lien pour continuer les achats */}
                 <Link

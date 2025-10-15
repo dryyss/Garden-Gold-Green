@@ -17,18 +17,28 @@ export default function CheckoutSuccessPage() {
   const router = useRouter()
   const { dispatch } = useCart()
   const [isLoading, setIsLoading] = useState(true)
+  const [paymentMethod, setPaymentMethod] = useState('')
   const sessionId = searchParams.get('session_id')
+  const orderId = searchParams.get('order_id')
+  const paymentMethodParam = searchParams.get('payment_method')
 
   useEffect(() => {
-    if (sessionId) {
-      // Vider le panier après un paiement réussi
+    // Vérifier si c'est un paiement PayPal ou Stripe
+    if (orderId) {
+      setPaymentMethod('PayPal')
+      // Vider le panier après un paiement PayPal réussi
+      dispatch({ type: 'CLEAR_CART' })
+      setIsLoading(false)
+    } else if (sessionId) {
+      setPaymentMethod('Stripe')
+      // Vider le panier après un paiement Stripe réussi
       dispatch({ type: 'CLEAR_CART' })
       setIsLoading(false)
     } else {
-      // Pas de session ID, rediriger vers la page d'accueil
+      // Pas de session ID ou order ID, rediriger vers la page d'accueil
       router.push('/')
     }
-  }, [sessionId, dispatch, router])
+  }, [sessionId, orderId, dispatch, router])
 
   if (isLoading) {
     return (
@@ -92,12 +102,19 @@ export default function CheckoutSuccessPage() {
               </div>
             </div>
 
-            {/* Session ID (for reference) */}
-            {sessionId && (
+            {/* Order ID (for reference) */}
+            {(sessionId || orderId) && (
               <div className="mb-8">
                 <p className="text-gray-500 text-sm">
-                  Numéro de commande : <span className="text-gray-400 font-mono">{sessionId.slice(-12)}</span>
+                  Numéro de commande : <span className="text-gray-400 font-mono">
+                    {orderId ? orderId.slice(-12) : sessionId?.slice(-12)}
+                  </span>
                 </p>
+                {paymentMethod && (
+                  <p className="text-gray-500 text-sm mt-1">
+                    Méthode de paiement : <span className="text-brand-gold">{paymentMethod}</span>
+                  </p>
+                )}
               </div>
             )}
 

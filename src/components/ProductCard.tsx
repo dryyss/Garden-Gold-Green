@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faMinus, faCheck, faShoppingCart } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faMinus, faCheck, faShoppingCart, faEye } from '@fortawesome/free-solid-svg-icons'
 import { useCart } from '@/contexts/CartContext'
 import { useNotifications } from '@/contexts/NotificationContext'
 import { StarRating } from './StarRating'
@@ -71,7 +71,7 @@ export function ProductCard({ product, className = '' }: ProductCardProps) {
           payload: {
             id: product.id,
             name: product.name,
-            price: product.price,
+            price: product.price || (product.priceCents ? product.priceCents / 100 : 0),
             image: product.image,
             cbdPercent: product.cbdPercent,
             slug: product.slug
@@ -111,14 +111,16 @@ export function ProductCard({ product, className = '' }: ProductCardProps) {
 
   return (
     <div className={`card-bg rounded-xl overflow-hidden group transform hover:-translate-y-2 transition-transform duration-300 shadow-lg hover:shadow-gold-glow ${className}`}>
-      <div className="relative h-72 overflow-hidden">
-        <Image
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-          src={product.image}
-          alt={product.name}
-          width={400}
-          height={288}
-        />
+      <div className="relative h-56 md:h-64 overflow-hidden">
+        <Link href={`/products/${product.slug || product.id}`} className="block">
+          <Image
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 cursor-pointer"
+            src={product.image}
+            alt={product.name}
+            width={400}
+            height={288}
+          />
+        </Link>
         
         {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-2">
@@ -134,8 +136,8 @@ export function ProductCard({ product, className = '' }: ProductCardProps) {
           )}
         </div>
 
-        {/* Quick view button */}
-        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+        {/* Quick view button - visible on mobile, hover on desktop */}
+        <div className="absolute inset-0 bg-black/50 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
           <Link
             href={`/products/${product.slug || product.id}`}
             className="bg-white text-black font-semibold py-2 px-4 rounded-full hover:bg-brand-gold transition-colors"
@@ -145,7 +147,7 @@ export function ProductCard({ product, className = '' }: ProductCardProps) {
         </div>
       </div>
 
-      <div className="p-6">
+      <div className="p-4 md:p-5">
         <div className="flex items-center justify-between mb-2">
           <span className="text-brand-green text-sm font-semibold uppercase tracking-wide">
             {product.category}
@@ -153,7 +155,7 @@ export function ProductCard({ product, className = '' }: ProductCardProps) {
           <StarRating rating={product.rating} size="sm" />
         </div>
 
-        <h3 className="text-xl font-semibold text-white mb-2 line-clamp-2">
+        <h3 className="text-lg md:text-xl font-semibold text-white mb-2 line-clamp-2">
           {product.name}
         </h3>
 
@@ -172,22 +174,22 @@ export function ProductCard({ product, className = '' }: ProductCardProps) {
           </div>
         )}
 
-        <p className="text-gray-400 text-sm mb-4 line-clamp-2">
+        <p className="text-gray-400 text-xs md:text-sm mb-3 line-clamp-2">
           {product.description}
         </p>
 
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <span className="text-2xl font-bold gold-text-gradient">
+            <span className="text-lg md:text-xl font-bold gold-text-gradient">
               {product.price.toFixed(2)} €
             </span>
             {product.originalPrice && product.originalPrice > product.price && (
-              <span className="text-gray-500 line-through text-sm">
+              <span className="text-gray-500 line-through text-xs">
                 {product.originalPrice.toFixed(2)} €
               </span>
             )}
           </div>
-          <span className="text-gray-400 text-sm">
+          <span className="text-gray-400 text-xs">
             ({product.reviewCount} avis)
           </span>
         </div>
@@ -203,8 +205,8 @@ export function ProductCard({ product, className = '' }: ProductCardProps) {
         )}
 
         {/* Sélecteur de quantité */}
-        <div className="mb-3 flex items-center justify-center gap-3">
-          <span className="text-gray-400 text-sm">Quantité:</span>
+        <div className="mb-2 flex items-center justify-center gap-2">
+          <span className="text-gray-400 text-xs">Quantité:</span>
           <div className="flex items-center border border-white/20 rounded-lg">
             <button
               onClick={() => handleQuantityChange(-1)}
@@ -238,37 +240,49 @@ export function ProductCard({ product, className = '' }: ProductCardProps) {
           </div>
         </div>
 
-        {/* Bouton Ajouter au panier avec animation */}
-        <button
-          onClick={handleAddToCart}
-          disabled={!product.inStock || isAdding || isAdded}
-          className={`w-full font-bold py-3 px-5 rounded-full text-sm transition-all duration-300 flex items-center justify-center gap-2 ${
-            isAdded
-              ? 'bg-brand-green text-white shadow-green-glow'
-              : product.inStock
-              ? 'btn-gold text-black hover:shadow-gold-glow hover:scale-105'
-              : 'bg-gray-600 text-gray-400 cursor-not-allowed'
-          } ${isAdding ? 'opacity-75 cursor-not-allowed' : ''}`}
-        >
-          {isAdding ? (
-            <>
-              <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
-              <span>Ajout...</span>
-            </>
-          ) : isAdded ? (
-            <>
-              <FontAwesomeIcon icon={faCheck} className="w-4 h-4 animate-bounce" />
-              <span>Ajouté !</span>
-            </>
-          ) : product.inStock ? (
-            <>
-              <FontAwesomeIcon icon={faShoppingCart} className="w-4 h-4" />
-              <span>Ajouter au panier</span>
-            </>
-          ) : (
-            'Rupture de stock'
-          )}
-        </button>
+        {/* Boutons d'action */}
+        <div className="flex flex-col gap-1.5">
+          {/* Bouton Voir le produit - toujours visible sur mobile */}
+          <Link
+            href={`/products/${product.slug || product.id}`}
+            className="w-full font-bold py-1.5 px-3 rounded-full text-xs transition-all duration-300 flex items-center justify-center gap-2 border-2 border-brand-gold text-brand-gold hover:bg-brand-gold hover:text-black"
+          >
+            <FontAwesomeIcon icon={faEye} className="w-3 h-3" />
+            <span>Voir le produit</span>
+          </Link>
+          
+          {/* Bouton Ajouter au panier avec animation */}
+          <button
+            onClick={handleAddToCart}
+            disabled={!product.inStock || isAdding || isAdded}
+            className={`w-full font-bold py-2 px-4 rounded-full text-xs transition-all duration-300 flex items-center justify-center gap-2 ${
+              isAdded
+                ? 'bg-brand-green text-white shadow-green-glow'
+                : product.inStock
+                ? 'btn-gold text-black hover:shadow-gold-glow hover:scale-105'
+                : 'bg-gray-600 text-gray-400 cursor-not-allowed'
+            } ${isAdding ? 'opacity-75 cursor-not-allowed' : ''}`}
+          >
+            {isAdding ? (
+              <>
+                <div className="w-3 h-3 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+                <span>Ajout...</span>
+              </>
+            ) : isAdded ? (
+              <>
+                <FontAwesomeIcon icon={faCheck} className="w-3 h-3 animate-bounce" />
+                <span>Ajouté !</span>
+              </>
+            ) : product.inStock ? (
+              <>
+                <FontAwesomeIcon icon={faShoppingCart} className="w-3 h-3" />
+                <span>Ajouter au panier</span>
+              </>
+            ) : (
+              'Rupture de stock'
+            )}
+          </button>
+        </div>
       </div>
     </div>
   )

@@ -5,18 +5,9 @@ import { createContext, useContext, useReducer, useEffect } from 'react'
 interface User {
   id: string
   email: string
-  firstName: string
-  lastName: string
-  phone?: string
+  name: string
   role: 'customer' | 'admin'
-  address?: {
-    street: string
-    city: string
-    postalCode: string
-    country: string
-  }
   createdAt: string
-  updatedAt: string
 }
 
 interface AuthState {
@@ -51,9 +42,7 @@ const AuthContext = createContext<{
 interface RegisterData {
   email: string
   password: string
-  firstName: string
-  lastName: string
-  phone?: string
+  name: string
 }
 
 function authReducer(state: AuthState, action: AuthAction): AuthState {
@@ -132,10 +121,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Vérifier le token au chargement
   useEffect(() => {
     const checkAuth = async () => {
-      const token = localStorage.getItem('token')
-      if (token) {
+      const token = localStorage.getItem('auth_token')
+      const userData = localStorage.getItem('user')
+      
+      if (token && userData) {
         try {
           dispatch({ type: 'SET_LOADING', payload: true })
+          
+          // Vérifier la validité du token
           const response = await fetch('/api/auth/me', {
             headers: {
               'Authorization': `Bearer ${token}`
@@ -146,12 +139,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             const data = await response.json()
             dispatch({ type: 'LOGIN_SUCCESS', payload: data.user })
           } else {
-            localStorage.removeItem('token')
+            // Token invalide, nettoyer le localStorage
+            localStorage.removeItem('auth_token')
+            localStorage.removeItem('user')
             dispatch({ type: 'LOGOUT' })
           }
         } catch (error) {
           console.error('Erreur de vérification auth:', error)
-          localStorage.removeItem('token')
+          localStorage.removeItem('auth_token')
+          localStorage.removeItem('user')
           dispatch({ type: 'LOGOUT' })
         }
       } else {
@@ -180,8 +176,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         throw new Error(data.error || 'Erreur de connexion')
       }
 
-      // Sauvegarder le token
-      localStorage.setItem('token', data.token)
+      // Sauvegarder le token et les données utilisateur
+      localStorage.setItem('auth_token', data.token)
+      localStorage.setItem('user', JSON.stringify(data.user))
 
       dispatch({ type: 'LOGIN_SUCCESS', payload: data.user })
     } catch (error) {
@@ -209,8 +206,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         throw new Error(data.error || 'Erreur d\'inscription')
       }
 
-      // Sauvegarder le token
-      localStorage.setItem('token', data.token)
+      // Sauvegarder le token et les données utilisateur
+      localStorage.setItem('auth_token', data.token)
+      localStorage.setItem('user', JSON.stringify(data.user))
 
       dispatch({ type: 'REGISTER_SUCCESS', payload: data.user })
     } catch (error) {
@@ -221,7 +219,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const logout = () => {
-    localStorage.removeItem('token')
+    localStorage.removeItem('auth_token')
+    localStorage.removeItem('user')
     dispatch({ type: 'LOGOUT' })
   }
 

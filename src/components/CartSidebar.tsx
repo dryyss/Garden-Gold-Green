@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { useCart } from '@/contexts/CartContext'
 import { useAuth } from '@/contexts/AuthContext'
 import Image from 'next/image'
@@ -16,11 +16,25 @@ import {
   faUser
 } from '@fortawesome/free-solid-svg-icons'
 import { QuantitySelector } from './QuantitySelector'
+import { CartLoadingGuard } from './CartLoadingGuard'
+import { PaymentMethodSelector } from './PaymentMethodSelector'
 
 export function CartSidebar() {
+  return (
+    <CartLoadingGuard>
+      <CartSidebarContent />
+    </CartLoadingGuard>
+  )
+}
+
+function CartSidebarContent() {
   const router = useRouter()
+  const pathname = usePathname()
   const { state, dispatch } = useCart()
   const { state: authState } = useAuth()
+  
+  // Vérifier si on est sur la page panier
+  const isOnCartPage = pathname === '/cart'
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('fr-FR', {
@@ -42,6 +56,13 @@ export function CartSidebar() {
   }
 
   const handleExpressCheckout = async () => {
+    // Si on n'est pas sur la page panier, rediriger vers le panier
+    if (!isOnCartPage) {
+      dispatch({ type: 'CLOSE_CART' })
+      router.push('/cart')
+      return
+    }
+
     try {
       console.log('========================================')
       console.log('🛒 DÉBUT CHECKOUT')
@@ -256,14 +277,25 @@ export function CartSidebar() {
               
               {/* Actions */}
               <div className="space-y-3">
-                <button
-                  onClick={handleExpressCheckout}
-                  className="btn-gold text-black font-bold py-3 px-6 rounded-full shadow-gold-glow w-full flex items-center justify-center"
-                >
-                  <FontAwesomeIcon icon={faBolt} className="mr-2" />
-                  Payer avec Stripe
-                  <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
-                </button>
+                {isOnCartPage ? (
+                  <PaymentMethodSelector 
+                    onPaymentSuccess={() => {
+                      console.log('Paiement réussi')
+                    }}
+                    onPaymentError={(error) => {
+                      console.error('Erreur de paiement:', error)
+                    }}
+                  />
+                ) : (
+                  <button
+                    onClick={handleExpressCheckout}
+                    className="btn-gold text-black font-bold py-3 px-6 rounded-full shadow-gold-glow w-full flex items-center justify-center"
+                  >
+                    <FontAwesomeIcon icon={faShoppingCart} className="mr-2" />
+                    Voir le panier
+                    <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
+                  </button>
+                )}
                 
                 {!authState.isAuthenticated && (
                   <p className="text-gray-400 text-xs text-center">

@@ -14,6 +14,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import Image from 'next/image'
 import Link from 'next/link'
+import { PaymentMethodSelector } from '@/components/PaymentMethodSelector'
 
 interface CheckoutForm {
   email: string
@@ -120,9 +121,8 @@ export default function CheckoutPage() {
   }
 
   const subtotal = cartState.totalPrice
-  const tax = subtotal * 0.08
   const shipping = subtotal > 50 ? 0 : 9.99
-  const total = subtotal + tax + shipping
+  const total = subtotal + shipping
 
   if (cartState.items.length === 0) {
     return null
@@ -368,28 +368,17 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={isProcessing}
-                className={`w-full py-4 px-6 rounded-full font-bold text-lg transition-all duration-300 ${
-                  isProcessing
-                    ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                    : 'btn-gold text-black shadow-gold-glow hover:shadow-xl'
-                }`}
-              >
-                {isProcessing ? (
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="spinner"></div>
-                    Processing Payment...
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-center gap-2">
-                    <FontAwesomeIcon icon={faLock} />
-                    Complete Order - ${total.toFixed(2)}
-                  </div>
-                )}
-              </button>
+              {/* Payment Method Selector */}
+              <PaymentMethodSelector 
+                onPaymentSuccess={() => {
+                  console.log('Paiement réussi')
+                  // Rediriger vers la page de succès
+                  router.push('/checkout/success')
+                }}
+                onPaymentError={(error) => {
+                  console.error('Erreur de paiement:', error)
+                }}
+              />
             </form>
           </div>
 
@@ -433,10 +422,6 @@ export default function CheckoutPage() {
                   <span className={shipping === 0 ? 'text-brand-green' : 'text-white'}>
                     {shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}
                   </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Tax</span>
-                  <span className="text-white">${tax.toFixed(2)}</span>
                 </div>
                 <div className="border-t border-white/10 pt-3">
                   <div className="flex justify-between">

@@ -242,7 +242,7 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="h-screen bg-brand-black flex flex-col pt-24">
+    <div className="min-h-screen bg-brand-black flex flex-col pt-24">
       {/* Header Fixe - Responsive */}
       <div className="bg-brand-black border-b border-white/10 flex-shrink-0">
         <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8">
@@ -276,24 +276,25 @@ export default function ProductsPage() {
       </div>
 
       {/* Contenu principal avec layout fixe - Responsive */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex min-h-0">
+        {/* Overlay pour mobile - doit être en premier */}
+        {isMobileFiltersOpen && (
+          <div 
+            className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+            onClick={() => setIsMobileFiltersOpen(false)}
+          />
+        )}
+
         {/* Filtres fixes - Responsive */}
         <div className={`bg-brand-black border-r border-white/10 flex-shrink-0 overflow-y-auto ${
           isMobileFiltersOpen 
-            ? 'fixed inset-y-0 right-0 z-50 w-full max-w-xs sm:max-w-sm lg:relative lg:inset-auto lg:w-80 lg:max-w-none' 
+            ? 'fixed inset-y-0 right-0 z-50 w-80 max-w-[85vw] lg:relative lg:inset-auto lg:w-80 lg:max-w-none' 
             : 'hidden lg:block lg:w-80'
         }`}>
-          {/* Overlay pour mobile */}
-          {isMobileFiltersOpen && (
-            <div 
-              className="fixed inset-0 bg-black/50 lg:hidden"
-              onClick={() => setIsMobileFiltersOpen(false)}
-            />
-          )}
           
           <div className="relative bg-brand-black h-full">
-            <div className="p-3 sm:p-6">
-              <div className="card-bg rounded-xl p-3 sm:p-6 space-y-3 sm:space-y-6">
+            <div className="p-4 sm:p-6">
+              <div className="card-bg rounded-xl p-4 sm:p-6 space-y-4 sm:space-y-6">
                 {/* Header mobile avec bouton fermer */}
                 <div className="flex items-center justify-between lg:justify-start">
                   <div className="flex items-center space-x-2">
@@ -426,18 +427,18 @@ export default function ProductsPage() {
               </div>
 
         {/* Zone des produits scrollable - Responsive */}
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 flex flex-col min-h-0">
           {/* Barre d'outils fixe - Responsive */}
           <div className="bg-brand-black border-b border-white/10 flex-shrink-0 p-4 sm:p-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               {/* Bouton filtres mobile */}
-                  <button 
+              <button 
                 onClick={() => setIsMobileFiltersOpen(true)}
-                className="lg:hidden flex items-center space-x-2 bg-brand-gold/20 text-brand-gold border border-brand-gold px-4 py-2 rounded-lg hover:bg-brand-gold/30 transition-colors"
+                className="lg:hidden flex items-center space-x-2 bg-brand-gold text-black font-semibold px-4 py-2 rounded-lg hover:bg-yellow-400 transition-colors shadow-lg"
               >
                 <FontAwesomeIcon icon={faFilter} className="h-4 w-4" />
                 <span>Filtres</span>
-                  </button>
+              </button>
 
               <div className="flex flex-col sm:flex-row sm:items-center gap-4 flex-1">
                 {/* Recherche mobile */}
@@ -505,12 +506,14 @@ export default function ProductsPage() {
             </div>
 
           {/* Zone des produits scrollable - Responsive */}
-          <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+          <div className={`flex-1 overflow-y-auto p-4 sm:p-6 pb-20 transition-all duration-300 ${
+            isMobileFiltersOpen ? 'lg:ml-0' : ''
+          }`}>
             {/* Products Grid/List - Responsive */}
             {products.length > 0 ? (
               <div className={`${
                 viewMode === 'grid' 
-                  ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8' 
+                  ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6' 
                   : 'space-y-4 sm:space-y-6'
               }`}>
                 <Suspense fallback={<div className="text-white">Loading...</div>}>

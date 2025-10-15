@@ -29,6 +29,7 @@ import {
 import { useCart } from '@/contexts/CartContext'
 import { useAuth } from '@/contexts/AuthContext'
 import { SearchModal } from './SearchModal'
+import { AuthModal } from './AuthModal'
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -36,8 +37,10 @@ export function Header() {
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [showFloatingCart, setShowFloatingCart] = useState(false)
+  const [showAuthModal, setShowAuthModal] = useState(false)
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
   const { state, dispatch } = useCart()
-  const { state: authState } = useAuth()
+  const { state: authState, logout } = useAuth()
   const user = authState.user
   const isLoading = authState.loading
 
@@ -390,33 +393,41 @@ export function Header() {
                     <span>Mes commandes</span>
                   </Link>
                   
-                  <a
-                    href="/api/auth/logout"
-                    className="flex items-center space-x-3 text-gray-300 hover:text-white transition-colors py-2 w-full text-left"
-                    onClick={() => setIsMenuOpen(false)}
+                  <button
+                    onClick={() => {
+                      logout()
+                      setIsMenuOpen(false)
+                    }}
+                    className="flex items-center space-x-3 text-gray-300 hover:text-brand-gold transition-colors py-2 w-full text-left"
                   >
                     <FontAwesomeIcon icon={faSignOutAlt} />
                     <span>Se déconnecter</span>
-                  </a>
+                  </button>
                 </div>
               ) : (
                 <div className="space-y-3">
-                  <a
-                    href="/api/auth/login"
-                    className="flex items-center space-x-3 text-gray-300 hover:text-brand-gold transition-colors py-2"
-                    onClick={() => setIsMenuOpen(false)}
+                  <button
+                    onClick={() => {
+                      setAuthMode('login')
+                      setShowAuthModal(true)
+                      setIsMenuOpen(false)
+                    }}
+                    className="flex items-center space-x-3 text-gray-300 hover:text-brand-gold transition-colors py-2 w-full text-left"
                   >
                     <FontAwesomeIcon icon={faUser} />
                     <span>Connexion</span>
-                  </a>
-                  <a
-                    href="/api/auth/login?screen_hint=signup"
-                    className="flex items-center space-x-3 bg-brand-gold text-black font-semibold px-4 py-2 rounded-full hover:shadow-gold-glow transition-all duration-300"
-                    onClick={() => setIsMenuOpen(false)}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setAuthMode('register')
+                      setShowAuthModal(true)
+                      setIsMenuOpen(false)
+                    }}
+                    className="flex items-center space-x-3 bg-brand-gold text-black font-semibold px-4 py-2 rounded-full hover:shadow-gold-glow transition-all duration-300 w-full justify-center"
                   >
                     <FontAwesomeIcon icon={faUser} />
                     <span>Inscription</span>
-                  </a>
+                  </button>
                 </div>
               )}
             </div>
@@ -428,6 +439,13 @@ export function Header() {
       <SearchModal 
         isOpen={isSearchModalOpen} 
         onClose={() => setIsSearchModalOpen(false)} 
+      />
+
+      {/* Auth Modal */}
+      <AuthModal 
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        initialMode={authMode}
       />
 
       {/* Panier flottant - apparaît quand on scrolle */}

@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useReducer, useEffect } from 'react'
+import { createContext, useContext, useReducer, useEffect, useState } from 'react'
 
 interface CartItem {
   id: string
@@ -31,6 +31,7 @@ type CartAction =
 const CartContext = createContext<{
   state: CartState
   dispatch: React.Dispatch<CartAction>
+  isHydrated: boolean
 } | null>(null)
 
 function cartReducer(state: CartState, action: CartAction): CartState {
@@ -141,9 +142,13 @@ const initialState: CartState = {
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(cartReducer, initialState)
+  const [isHydrated, setIsHydrated] = useState(false)
 
   // Charger le panier depuis localStorage au montage
   useEffect(() => {
+    // Vérifier que nous sommes côté client
+    if (typeof window === 'undefined') return
+
     const savedCart = localStorage.getItem('garden-gold-green-cart')
     if (savedCart) {
       try {
@@ -153,15 +158,21 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         console.error('Erreur lors du chargement du panier:', error)
       }
     }
+    
+    // Marquer comme hydraté
+    setIsHydrated(true)
   }, [])
 
   // Sauvegarder le panier dans localStorage à chaque changement
+  // Seulement après l'hydratation pour éviter les conflits
   useEffect(() => {
+    if (!isHydrated || typeof window === 'undefined') return
+    
     localStorage.setItem('garden-gold-green-cart', JSON.stringify(state.items))
-  }, [state.items])
+  }, [state.items, isHydrated])
 
   return (
-    <CartContext.Provider value={{ state, dispatch }}>
+    <CartContext.Provider value={{ state, dispatch, isHydrated }}>
       {children}
     </CartContext.Provider>
   )

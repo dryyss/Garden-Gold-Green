@@ -22,6 +22,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { Newsletter } from '@/components/Newsletter'
 import { ProductCard } from '@/components/ProductCard'
+import { HeroLogo } from '@/components/HeroLogo'
 import productsData from '@/data/products.json'
 
 // Transformer les données de l'ancienne structure vers la nouvelle
@@ -65,13 +66,7 @@ export default function Home() {
         <div className="absolute inset-0 hero-overlay"></div>
         <div className="relative z-10 flex flex-col items-center px-4">
           <div className="mb-8">
-        <Image
-              className="h-64 w-64" 
-              src="/logo2.png" 
-              alt="3G - Garden Gold Green logo, metallic gold, emerald green, and shiny silver, on a dark background with light reflections"
-              width={256}
-              height={256}
-            />
+            <HeroLogo />
           </div>
           <h1 className="text-5xl md:text-7xl font-bold text-white mb-4 tracking-tight">
             Experience Nature&apos;s Finest Elixir
