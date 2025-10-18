@@ -17,7 +17,7 @@ import {
   faShare
 } from '@fortawesome/free-solid-svg-icons'
 import { useCart } from '@/contexts/CartContext'
-import { useAuth0 } from '@auth0/nextjs-auth0/client'
+import { useUser } from '@auth0/nextjs-auth0'
 import { StarRating } from '@/components/StarRating'
 import { ProductCard } from '@/components/ProductCard'
 import SubscriptionPlans from '@/components/SubscriptionPlans'
@@ -48,7 +48,7 @@ interface Product {
 export default function ProductDetailPage() {
   const params = useParams()
   const { dispatch } = useCart()
-  const { user } = useAuth0()
+  const { user } = useUser()
   const { 
     plans, 
     loadingPlans, 
@@ -114,31 +114,39 @@ export default function ProductDetailPage() {
   const transformProduct = (foundProduct: any): Product => {
     return {
       ...foundProduct,
-        images: [
-          foundProduct.image,
-          'https://storage.googleapis.com/uxpilot-auth.appspot.com/6150e371c9-cf959decb319ba5f18c3.png',
-          'https://storage.googleapis.com/uxpilot-auth.appspot.com/efac7e243f-ef87256518694e833470.png',
-          'https://storage.googleapis.com/uxpilot-auth.appspot.com/f28d3694b1-28c8a8a3cb15af90b81e.png'
-        ],
-        longDescription: "Our flagship product, the Gold Standard CBD Oil, offers a potent, full-spectrum blend of cannabinoids and terpenes. Meticulously extracted from organic hemp to support balance, recovery, and overall well-being. The Garden Gold Green Standard is more than just CBD; it's a holistic experience. Our full-spectrum oil contains a rich profile of beneficial cannabinoids, including CBD, CBG, and CBC, along with natural terpenes that work synergistically to enhance the therapeutic effects—a phenomenon known as the 'entourage effect.'",
-        features: [
-          '100% Organic & Non-GMO',
-          'Third-Party Lab Tested',
-          'Made in the USA',
-          'Full Spectrum CBD',
-          'CO2 Extracted',
-          'No THC'
-        ],
-        ingredients: [
-          'Full Spectrum CBD Oil',
-          'MCT Oil (Coconut)',
-          'Natural Terpenes',
-          'Organic Hemp Extract'
-        ],
-        usage: 'Take 1-2 drops under the tongue, hold for 30 seconds, then swallow. Start with a low dose and gradually increase as needed.',
-        labResults: 'Third-party lab tested for potency, purity, and safety. All results available upon request.',
-        relatedProducts: ['emerald-soothe-balm', 'green-serenity-gummies', 'silver-purity-vape']
-      })
+      images: [
+        foundProduct.image,
+        'https://storage.googleapis.com/uxpilot-auth.appspot.com/6150e371c9-cf959decb319ba5f18c3.png',
+        'https://storage.googleapis.com/uxpilot-auth.appspot.com/efac7e243f-ef87256518694e833470.png',
+        'https://storage.googleapis.com/uxpilot-auth.appspot.com/f28d3694b1-28c8a8a3cb15af90b81e.png'
+      ],
+      longDescription: "Our flagship product, the Gold Standard CBD Oil, offers a potent, full-spectrum blend of cannabinoids and terpenes. Meticulously extracted from organic hemp to support balance, recovery, and overall well-being. The Garden Gold Green Standard is more than just CBD; it's a holistic experience. Our full-spectrum oil contains a rich profile of beneficial cannabinoids, including CBD, CBG, and CBC, along with natural terpenes that work synergistically to enhance the therapeutic effects—a phenomenon known as the 'entourage effect.'",
+      features: [
+        '100% Organic & Non-GMO',
+        'Third-Party Lab Tested',
+        'Made in the USA',
+        'Full Spectrum CBD',
+        'CO2 Extracted',
+        'No THC'
+      ],
+      ingredients: [
+        'Full Spectrum CBD Oil',
+        'MCT Oil (Coconut)',
+        'Natural Terpenes',
+        'Organic Hemp Extract'
+      ],
+      usage: 'Take 1-2 drops under the tongue, hold for 30 seconds, then swallow. Start with a low dose and gradually increase as needed.',
+      labResults: 'Third-party lab tested for potency, purity, and safety. All results available upon request.',
+      relatedProducts: ['emerald-soothe-balm', 'green-serenity-gummies', 'silver-purity-vape']
+    }
+  }
+
+  useEffect(() => {
+    if (params.slug) {
+      const foundProduct = productsData.find(p => p.slug === params.slug)
+      if (foundProduct) {
+        setProduct(transformProduct(foundProduct))
+      }
     }
   }, [params.slug])
 

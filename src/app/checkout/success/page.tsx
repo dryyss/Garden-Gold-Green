@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -10,46 +9,51 @@ import {
   faShoppingBag,
   faSpinner
 } from '@fortawesome/free-solid-svg-icons'
-import { useCart } from '@/contexts/CartContext'
+import { usePaymentSuccess } from '@/hooks/usePaymentSuccess'
+import { CartDebugInfo } from '@/components/CartDebugInfo'
 
 export default function CheckoutSuccessPage() {
   const searchParams = useSearchParams()
   const router = useRouter()
-  const { dispatch } = useCart()
-  const [isLoading, setIsLoading] = useState(true)
-  const [paymentMethod, setPaymentMethod] = useState('')
   const sessionId = searchParams.get('session_id')
   const orderId = searchParams.get('order_id')
-  const paymentMethodParam = searchParams.get('payment_method')
+  const token = searchParams.get('token') // Paramètre PayPal
+  const payerId = searchParams.get('PayerID') // Paramètre PayPal
 
-  useEffect(() => {
-    // Vérifier si c'est un paiement PayPal ou Stripe
-    if (orderId) {
-      setPaymentMethod('PayPal')
-      // Vider le panier après un paiement PayPal réussi
-      dispatch({ type: 'CLEAR_CART' })
-      setIsLoading(false)
-    } else if (sessionId) {
-      setPaymentMethod('Stripe')
-      // Vider le panier après un paiement Stripe réussi
-      dispatch({ type: 'CLEAR_CART' })
-      setIsLoading(false)
-    } else {
-      // Pas de session ID ou order ID, rediriger vers la page d'accueil
-      router.push('/')
+  // Utiliser token comme orderId si c'est un paiement PayPal
+  const effectiveOrderId = orderId || token
+
+  const { isProcessing, displayOrderId, cartCleared } = usePaymentSuccess({
+    sessionId,
+    orderId: effectiveOrderId,
+    onSuccess: () => {
+      console.log('✅ Paiement traité avec succès, panier vidé')
+    },
+    onError: (error) => {
+      console.error('❌ Erreur lors du traitement du paiement:', error)
     }
-  }, [sessionId, orderId, dispatch, router])
+  })
 
-  if (isLoading) {
+  // Rediriger si pas de session ID ou order ID
+  if (!sessionId && !effectiveOrderId) {
+    router.push('/')
+    return null
+  }
+
+  if (isProcessing) {
     return (
       <div className="min-h-screen bg-brand-black flex items-center justify-center">
-        <FontAwesomeIcon icon={faSpinner} className="text-brand-gold text-4xl animate-spin" />
+        <div className="text-center">
+          <FontAwesomeIcon icon={faSpinner} className="text-brand-gold text-4xl animate-spin mb-4" />
+          <p className="text-white">Traitement de votre paiement...</p>
+        </div>
       </div>
     )
   }
 
   return (
     <div className="min-h-screen bg-brand-black pt-32 pb-16">
+      <CartDebugInfo />
       <div className="container mx-auto px-6">
         <div className="max-w-2xl mx-auto">
           <div className="card-bg rounded-2xl p-12 text-center">
@@ -64,8 +68,15 @@ export default function CheckoutSuccessPage() {
             </h1>
 
             {/* Description */}
-            <p className="text-gray-300 text-lg mb-8">
+            <p className="text-gray-300 text-lg mb-4">
               Merci pour votre commande. Vous recevrez un email de confirmation avec les détails de votre commande et les informations de livraison.
+              {displayOrderId && (
+                <>
+                  <br />
+                  <span className="text-brand-gold font-semibold text-sm">Numéro de commande : </span>
+                  <span className="text-white font-mono text-sm">{displayOrderId}</span>
+                </>
+              )}
             </p>
 
             {/* Order Details */}
@@ -102,21 +113,6 @@ export default function CheckoutSuccessPage() {
               </div>
             </div>
 
-            {/* Order ID (for reference) */}
-            {(sessionId || orderId) && (
-              <div className="mb-8">
-                <p className="text-gray-500 text-sm">
-                  Numéro de commande : <span className="text-gray-400 font-mono">
-                    {orderId ? orderId.slice(-12) : sessionId?.slice(-12)}
-                  </span>
-                </p>
-                {paymentMethod && (
-                  <p className="text-gray-500 text-sm mt-1">
-                    Méthode de paiement : <span className="text-brand-gold">{paymentMethod}</span>
-                  </p>
-                )}
-              </div>
-            )}
 
             {/* Actions */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -125,7 +121,7 @@ export default function CheckoutSuccessPage() {
                 className="btn-gold text-black font-bold py-3 px-8 rounded-full shadow-gold-glow inline-flex items-center justify-center"
               >
                 <FontAwesomeIcon icon={faHome} className="mr-2" />
-                Retour à l'accueil
+                Retour à l&apos;accueil
               </Link>
               <Link
                 href="/products"

@@ -1,14 +1,14 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useAuth0 } from '@auth0/nextjs-auth0/client';
+import { useUser } from '@auth0/nextjs-auth0';
 import { useSubscriptions } from '@/hooks/useSubscriptions';
 import SubscriptionManager from '@/components/SubscriptionManager';
-import LoadingSpinner from '@/components/LoadingSpinner';
-import Notification from '@/components/Notification';
+import { LoadingSpinner } from '@/components/LoadingSpinner';
+import { Notification } from '@/components/Notification';
 
 export default function SubscriptionsPage() {
-  const { user, isLoading: authLoading } = useAuth0();
+  const { user, isLoading: authLoading } = useUser();
   const {
     subscriptions,
     loadingSubscriptions,

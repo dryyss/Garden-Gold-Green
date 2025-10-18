@@ -36,44 +36,51 @@ interface Order {
   estimatedDelivery?: string
 }
 
-// Mock order data
-const mockOrders = [
-  {
-    id: 'ORD-001',
-    date: '2024-01-15',
-    status: 'delivered',
-    total: 134.98,
-    items: [
-      {
-        id: '1',
-        title: '3G Gold Standard CBD Oil',
-        price: 79.99,
-        quantity: 1,
-        image: '/products/cbd-oil-10.svg',
-        cbdPercent: 10
-      },
-      {
-        id: '2',
-        title: 'Emerald Soothe CBD Balm',
-        price: 54.99,
-        quantity: 1,
-        image: '/products/cbd-cream.svg',
-        cbdPercent: 2
-      }
-    ]
-  },
-  {
-    id: 'ORD-002',
-    date: '2024-01-10',
-    status: 'shipped',
-    total: 89.99,
-    items: [
-      {
-        id: '3',
-        title: 'Premium CBD Flower',
-        price: 89.99,
-        quantity: 1,
-        image: '/products/default.svg"bg-brand-black min-h-screen text-gray-300 pt-24">
+export default function OrdersPage() {
+  // Mock order data
+  const mockOrders = [
+    {
+      id: 'ORD-001',
+      date: '2024-01-15',
+      status: 'delivered',
+      total: 134.98,
+      items: [
+        {
+          id: '1',
+          title: '3G Gold Standard CBD Oil',
+          price: 79.99,
+          quantity: 1,
+          image: '/products/cbd-oil-10.svg',
+          cbdPercent: 10
+        },
+        {
+          id: '2',
+          title: 'Emerald Soothe CBD Balm',
+          price: 54.99,
+          quantity: 1,
+          image: '/products/cbd-cream.svg',
+          cbdPercent: 2
+        }
+      ]
+    },
+    {
+      id: 'ORD-002',
+      date: '2024-01-10',
+      status: 'shipped',
+      total: 89.99,
+      items: [
+        {
+          id: '3',
+          title: 'Premium CBD Flower',
+          price: 89.99,
+          quantity: 1,
+          image: '/products/default.svg'
+        }
+      ]
+    }
+  ]
+  return (
+    <div className="bg-brand-black min-h-screen text-gray-300 pt-24">
       <div className="container mx-auto px-6 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
@@ -203,13 +210,5 @@ const mockOrders = [
         </div>
       </div>
     </div>
-  )
-}
-
-export default function OrdersPage() {
-  return (
-    <ProtectedRoute>
-      <OrdersContent />
-    </ProtectedRoute>
   )
 }

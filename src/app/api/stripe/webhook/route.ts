@@ -51,7 +51,16 @@ export async function POST(request: NextRequest) {
               customerEmail: userEmail || '',
               customerName: session.customer_details?.name || '',
               customerPhone: session.customer_details?.phone || '',
-              shippingAddress: session.shipping?.address || {},
+              shippingAddress: {
+                firstName: session.customer_details?.name?.split(' ')[0] || '',
+                lastName: session.customer_details?.name?.split(' ').slice(1).join(' ') || '',
+                email: userEmail || '',
+                phone: session.customer_details?.phone || '',
+                address: session.shipping?.address?.line1 || '',
+                city: session.shipping?.address?.city || '',
+                postalCode: session.shipping?.address?.postal_code || '',
+                country: session.shipping?.address?.country || '',
+              },
               items: {
                 create: cartItems.map((item: any) => ({
                   productId: item.id,
@@ -62,11 +71,28 @@ export async function POST(request: NextRequest) {
               },
             },
             include: {
-              items: true,
+              items: {
+                include: {
+                  product: {
+                    select: {
+                      id: true,
+                      name: true,
+                      image: true,
+                    }
+                  }
+                }
+              },
             },
           })
 
           console.log('📦 Commande créée:', order.id)
+          console.log('📦 Détails commande:', {
+            id: order.id,
+            userId: order.userId,
+            totalCents: order.totalCents,
+            itemsCount: order.items.length,
+            customerEmail: order.customerEmail
+          })
 
           // TODO: Envoyer email de confirmation
           // await sendOrderConfirmationEmail(order)

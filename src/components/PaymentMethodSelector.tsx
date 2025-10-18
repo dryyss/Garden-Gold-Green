@@ -3,18 +3,13 @@
 import { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
-  faCreditCard, 
-  faPaypal, 
-  faApple, 
-  faGoogle,
-  faSpinner,
-  faCheck
+  faPaypal
 } from '@fortawesome/free-brands-svg-icons'
-import { faCreditCard as faCard } from '@fortawesome/free-solid-svg-icons'
+import { faCreditCard as faCard, faSpinner, faCheck } from '@fortawesome/free-solid-svg-icons'
 import { useCart } from '@/contexts/CartContext'
 import { useNotifications } from '@/contexts/NotificationContext'
 
-export type PaymentMethod = 'stripe' | 'paypal' | 'apple' | 'google'
+export type PaymentMethod = 'stripe' | 'paypal'
 
 interface PaymentMethodSelectorProps {
   className?: string
@@ -48,22 +43,6 @@ export function PaymentMethodSelector({
       description: 'Paiement sécurisé PayPal',
       color: 'bg-blue-500',
       textColor: 'text-white'
-    },
-    {
-      id: 'apple' as PaymentMethod,
-      name: 'Apple Pay',
-      icon: faApple,
-      description: 'Paiement rapide et sécurisé',
-      color: 'bg-black',
-      textColor: 'text-white'
-    },
-    {
-      id: 'google' as PaymentMethod,
-      name: 'Google Pay',
-      icon: faGoogle,
-      description: 'Paiement en un clic',
-      color: 'bg-gray-100',
-      textColor: 'text-gray-800'
     }
   ]
 
@@ -86,12 +65,6 @@ export function PaymentMethodSelector({
           break
         case 'paypal':
           await handlePayPalPayment()
-          break
-        case 'apple':
-          await handleApplePayPayment()
-          break
-        case 'google':
-          await handleGooglePayPayment()
           break
         default:
           throw new Error('Méthode de paiement non supportée')
@@ -150,50 +123,10 @@ export function PaymentMethodSelector({
     window.location.href = approvalUrl
   }
 
-  const handleApplePayPayment = async () => {
-    // Apple Pay sera géré via Stripe
-    const response = await fetch('/api/checkout', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        items: state.items,
-        paymentMethod: 'apple_pay'
-      }),
-    })
-
-    if (!response.ok) {
-      throw new Error('Erreur lors de la création de la session Apple Pay')
-    }
-
-    const { url } = await response.json()
-    window.location.href = url
-  }
-
-  const handleGooglePayPayment = async () => {
-    // Google Pay sera géré via Stripe
-    const response = await fetch('/api/checkout', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        items: state.items,
-        paymentMethod: 'google_pay'
-      }),
-    })
-
-    if (!response.ok) {
-      throw new Error('Erreur lors de la création de la session Google Pay')
-    }
-
-    const { url } = await response.json()
-    window.location.href = url
-  }
 
   return (
     <div className={`space-y-4 ${className}`}>
+      
       {/* Sélection de la méthode de paiement */}
       <div className="space-y-3">
         <h3 className="text-lg font-semibold text-white mb-4">Choisissez votre méthode de paiement</h3>

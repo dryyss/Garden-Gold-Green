@@ -9,6 +9,7 @@ import { NotificationProvider } from "@/contexts/NotificationContext";
 import { CartSidebar } from "@/components/CartSidebar";
 import { SystemTest } from "@/components/SystemTest";
 import { AuthNotificationHandler } from "@/components/AuthNotificationHandler";
+import { OrderNotificationHandler } from "@/components/OrderNotificationHandler";
 import { PageLoader } from "@/components/PageLoader";
 import { AuthProvider } from "@/contexts/AuthContext";
 
@@ -88,6 +89,7 @@ export default function RootLayout({
                 <CookieConsent />
                 <CartSidebar />
                 <AuthNotificationHandler />
+                <OrderNotificationHandler />
                 {process.env.NODE_ENV === 'development' && <SystemTest />}
               </CartProvider>
             </AuthProvider>

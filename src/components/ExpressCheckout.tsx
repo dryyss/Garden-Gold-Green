@@ -2,10 +2,7 @@
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
-  faPaypal, 
-  faApple, 
-  faGoogle,
-  faCreditCard
+  faPaypal
 } from '@fortawesome/free-brands-svg-icons'
 
 interface ExpressCheckoutProps {
@@ -22,22 +19,6 @@ export function ExpressCheckout({ onCheckout, disabled = false }: ExpressCheckou
       color: 'text-blue-500',
       bgColor: 'bg-blue-500/10',
       borderColor: 'border-blue-500/20'
-    },
-    {
-      id: 'apple',
-      name: 'Apple Pay',
-      icon: faApple,
-      color: 'text-gray-800',
-      bgColor: 'bg-gray-800/10',
-      borderColor: 'border-gray-800/20'
-    },
-    {
-      id: 'google',
-      name: 'Google Pay',
-      icon: faGoogle,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-600/10',
-      borderColor: 'border-blue-600/20'
     }
   ]
 

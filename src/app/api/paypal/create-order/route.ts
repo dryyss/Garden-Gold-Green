@@ -12,6 +12,10 @@ const paypalBaseUrl = paypalEnvironment === 'live'
 async function getPayPalAccessToken() {
   const auth = Buffer.from(`${paypalClientId}:${paypalClientSecret}`).toString('base64')
   
+  console.log('🔐 Tentative d\'authentification PayPal...')
+  console.log('🔗 URL:', `${paypalBaseUrl}/v1/oauth2/token`)
+  console.log('🔑 Auth header:', `Basic ${auth.substring(0, 20)}...`)
+  
   const response = await fetch(`${paypalBaseUrl}/v1/oauth2/token`, {
     method: 'POST',
     headers: {
@@ -21,24 +25,34 @@ async function getPayPalAccessToken() {
     body: 'grant_type=client_credentials',
   })
 
+  console.log('📥 Réponse auth PayPal:', response.status, response.statusText)
+
   if (!response.ok) {
-    throw new Error('Erreur lors de l\'obtention du token PayPal')
+    const errorText = await response.text()
+    console.error('❌ Erreur auth PayPal:', errorText)
+    throw new Error(`Erreur lors de l'obtention du token PayPal: ${response.status} ${response.statusText}`)
   }
 
   const data = await response.json()
+  console.log('✅ Token PayPal obtenu avec succès')
   return data.access_token
 }
 
 export async function POST(request: NextRequest) {
   try {
     console.log('🔄 Création commande PayPal...')
+    console.log('🔑 PayPal Client ID:', paypalClientId ? 'Configuré' : 'Manquant')
+    console.log('🔐 PayPal Client Secret:', paypalClientSecret ? 'Configuré' : 'Manquant')
+    console.log('🌍 PayPal Environment:', paypalEnvironment)
+    console.log('🔗 PayPal Base URL:', paypalBaseUrl)
     
     // Vérifier la configuration PayPal
     if (!paypalClientId || !paypalClientSecret) {
+      console.error('❌ Configuration PayPal manquante')
       return NextResponse.json(
         { 
           error: 'Configuration PayPal manquante',
-          details: 'Veuillez configurer PAYPAL_CLIENT_ID et PAYPAL_CLIENT_SECRET'
+          details: 'Veuillez configurer PAYPAL_CLIENT_ID et PAYPAL_CLIENT_SECRET dans .env.local'
         },
         { status: 500 }
       )
@@ -73,19 +87,7 @@ export async function POST(request: NextRequest) {
       category: 'PHYSICAL_GOODS'
     }))
 
-    // Ajouter les frais de livraison si nécessaire
-    if (shipping > 0) {
-      paypalItems.push({
-        name: 'Frais de livraison',
-        description: 'Livraison standard',
-        unit_amount: {
-          currency_code: 'EUR',
-          value: shipping.toFixed(2)
-        },
-        quantity: '1',
-        category: 'SHIPPING'
-      })
-    }
+    // Note: Les frais de livraison sont gérés dans le breakdown, pas comme un item séparé
 
     // Créer la commande PayPal
     const orderRequest = {
@@ -115,18 +117,20 @@ export async function POST(request: NextRequest) {
         brand_name: 'Garden Gold Green',
         landing_page: 'BILLING',
         user_action: 'PAY_NOW',
-        return_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/checkout/success`,
-        cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/cart`
+        return_url: 'http://localhost:3000/checkout/success',
+        cancel_url: 'http://localhost:3000/cart'
       }
     }
 
     console.log('📋 Commande PayPal:', JSON.stringify(orderRequest, null, 2))
 
     // Obtenir le token d'accès
+    console.log('🔑 Obtention du token PayPal...')
     const accessToken = await getPayPalAccessToken()
-    console.log('🔑 Token PayPal obtenu')
+    console.log('✅ Token PayPal obtenu:', accessToken ? 'Oui' : 'Non')
 
     // Créer la commande via l'API PayPal
+    console.log('📤 Envoi de la requête à PayPal...')
     const response = await fetch(`${paypalBaseUrl}/v2/checkout/orders`, {
       method: 'POST',
       headers: {
@@ -136,10 +140,19 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify(orderRequest),
     })
 
+    console.log('📥 Réponse PayPal reçue:', response.status, response.statusText)
+
     if (!response.ok) {
       const errorData = await response.text()
       console.error('❌ Erreur API PayPal:', errorData)
-      throw new Error(`Erreur PayPal: ${response.status} ${response.statusText}`)
+      return NextResponse.json(
+        { 
+          error: 'Erreur API PayPal',
+          details: errorData,
+          status: response.status
+        },
+        { status: 500 }
+      )
     }
 
     const order = await response.json()

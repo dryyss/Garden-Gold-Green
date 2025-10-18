@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useReducer, useEffect, useState } from 'react'
+import { createContext, useContext, useReducer, useEffect, useState, useRef } from 'react'
 
 interface CartItem {
   id: string
@@ -97,12 +97,17 @@ function cartReducer(state: CartState, action: CartAction): CartState {
     }
 
     case 'CLEAR_CART':
-      return {
+      console.log('🗑️ CLEAR_CART action received, clearing cart...')
+      console.log('📊 Cart before clear:', { items: state.items.length, totalItems: state.totalItems, totalPrice: state.totalPrice })
+      const clearedState = {
         ...state,
         items: [],
         totalItems: 0,
-        totalPrice: 0
+        totalPrice: 0,
+        isOpen: false
       }
+      console.log('✅ Cart cleared:', { items: clearedState.items.length, totalItems: clearedState.totalItems, totalPrice: clearedState.totalPrice })
+      return clearedState
 
     case 'TOGGLE_CART':
       return {
@@ -143,17 +148,62 @@ const initialState: CartState = {
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(cartReducer, initialState)
   const [isHydrated, setIsHydrated] = useState(false)
+  const expiryTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // Charger le panier depuis localStorage au montage
+  const CART_STORAGE_KEY = 'garden-gold-green-cart'
+  const CART_EXPIRY_HOURS = 72
+
+  function isExpired(updatedAtIso?: string | null): boolean {
+    if (!updatedAtIso) return false
+    const updatedAtMs = Date.parse(updatedAtIso)
+    if (Number.isNaN(updatedAtMs)) return false
+    const expiryMs = updatedAtMs + CART_EXPIRY_HOURS * 60 * 60 * 1000
+    return Date.now() > expiryMs
+  }
+
+  function scheduleExpiry(updatedAtIso?: string | null) {
+    if (expiryTimeoutRef.current) {
+      clearTimeout(expiryTimeoutRef.current)
+      expiryTimeoutRef.current = null
+    }
+    if (!updatedAtIso) return
+    const updatedAtMs = Date.parse(updatedAtIso)
+    if (Number.isNaN(updatedAtMs)) return
+    const targetMs = updatedAtMs + CART_EXPIRY_HOURS * 60 * 60 * 1000
+    const delay = Math.max(0, targetMs - Date.now())
+    if (delay === 0) return
+    expiryTimeoutRef.current = setTimeout(() => {
+      try {
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem(CART_STORAGE_KEY)
+        }
+      } catch {}
+      dispatch({ type: 'CLEAR_CART' })
+    }, delay)
+  }
+
+  // Charger le panier depuis localStorage au montage avec gestion d'expiration
   useEffect(() => {
     // Vérifier que nous sommes côté client
     if (typeof window === 'undefined') return
 
-    const savedCart = localStorage.getItem('garden-gold-green-cart')
-    if (savedCart) {
+    const raw = localStorage.getItem(CART_STORAGE_KEY)
+    if (raw) {
       try {
-        const cartItems = JSON.parse(savedCart)
-        dispatch({ type: 'LOAD_CART', payload: cartItems })
+        const parsed = JSON.parse(raw)
+        // Compatibilité: ancien format = tableau d'items, nouveau format = { items, updatedAt }
+        const items = Array.isArray(parsed) ? parsed : Array.isArray(parsed?.items) ? parsed.items : []
+        const updatedAt: string | undefined = Array.isArray(parsed) ? undefined : parsed?.updatedAt
+
+        if (updatedAt && isExpired(updatedAt)) {
+          // Expiré: purge
+          localStorage.removeItem(CART_STORAGE_KEY)
+          dispatch({ type: 'CLEAR_CART' })
+        } else {
+          dispatch({ type: 'LOAD_CART', payload: items })
+          // Programmer l'expiration si disponible
+          scheduleExpiry(updatedAt)
+        }
       } catch (error) {
         console.error('Erreur lors du chargement du panier:', error)
       }
@@ -163,12 +213,33 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setIsHydrated(true)
   }, [])
 
-  // Sauvegarder le panier dans localStorage à chaque changement
+  // Sauvegarder le panier dans localStorage à chaque changement, avec timestamp et purge si vide
   // Seulement après l'hydratation pour éviter les conflits
   useEffect(() => {
     if (!isHydrated || typeof window === 'undefined') return
     
-    localStorage.setItem('garden-gold-green-cart', JSON.stringify(state.items))
+    if (state.items.length === 0) {
+      // Panier vide: supprimer la clé pour éviter de garder un panier vide persistant
+      try {
+        localStorage.removeItem(CART_STORAGE_KEY)
+      } catch {}
+      // Annuler un éventuel timer d'expiration
+      if (expiryTimeoutRef.current) {
+        clearTimeout(expiryTimeoutRef.current)
+        expiryTimeoutRef.current = null
+      }
+      return
+    }
+
+    const payload = {
+      items: state.items,
+      updatedAt: new Date().toISOString()
+    }
+    try {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(payload))
+    } catch {}
+    // Reprogrammer l'expiration à chaque modification
+    scheduleExpiry(payload.updatedAt)
   }, [state.items, isHydrated])
 
   return (
