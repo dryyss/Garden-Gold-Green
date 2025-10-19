@@ -4,30 +4,37 @@ import { useEffect, useState } from 'react'
 import Image from 'next/image'
 
 interface CartFlyAnimationProps {
+  isActive: boolean
   productImage: string
-  startPosition: { x: number; y: number }
-  endPosition: { x: number; y: number }
+  productName: string
   onComplete: () => void
 }
 
 export function CartFlyAnimation({
+  isActive,
   productImage,
-  startPosition,
-  endPosition,
+  productName,
   onComplete,
 }: CartFlyAnimationProps) {
-  const [isAnimating, setIsAnimating] = useState(true)
+  const [isAnimating, setIsAnimating] = useState(false)
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsAnimating(false)
-      onComplete()
-    }, 800)
+    if (isActive) {
+      setIsAnimating(true)
+      const timer = setTimeout(() => {
+        setIsAnimating(false)
+        onComplete()
+      }, 800)
 
-    return () => clearTimeout(timer)
-  }, [onComplete])
+      return () => clearTimeout(timer)
+    }
+  }, [isActive, onComplete])
 
-  if (!isAnimating) return null
+  if (!isAnimating || typeof window === 'undefined' || !window.innerWidth || !window.innerHeight) return null
+
+  // Position fixe pour l'animation (centre de l'écran vers l'icône panier)
+  const startPosition = { x: window.innerWidth / 2 - 32, y: window.innerHeight / 2 - 32 }
+  const endPosition = { x: window.innerWidth - 100, y: 20 }
 
   const deltaX = endPosition.x - startPosition.x
   const deltaY = endPosition.y - startPosition.y
@@ -46,7 +53,7 @@ export function CartFlyAnimation({
       <div className="relative w-16 h-16 rounded-lg overflow-hidden shadow-2xl border-2 border-brand-gold animate-pulse">
         <Image
           src={productImage}
-          alt="Product flying to cart"
+          alt={`${productName} flying to cart`}
           fill
           className="object-cover"
         />

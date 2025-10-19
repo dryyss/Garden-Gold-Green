@@ -1,278 +1,360 @@
-'use client'
-
-import React from 'react'
+import Link from 'next/link'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { 
+  faArrowLeft, 
+  faTruck, 
+  faUndo, 
+  faShieldAlt, 
+  faClock,
+  faMapMarkerAlt,
+  faBox,
+  faCheckCircle,
+  faExclamationTriangle
+} from '@fortawesome/free-solid-svg-icons'
 
 export default function ShippingReturnsPage() {
   return (
-    <main className="bg-brand-black min-h-screen pt-24">
-      {/* Hero Section */}
-      <section className="relative py-24 overflow-hidden">
-        <div className="hero-bg absolute inset-0"></div>
-        <div className="hero-overlay absolute inset-0"></div>
-        <div className="relative container mx-auto px-6 text-center">
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-            Livraison & <span className="gold-text-gradient">Retours</span>
-          </h1>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            Informations détaillées sur nos politiques de livraison et de retour
-          </p>
+    <div className="bg-brand-black min-h-screen text-gray-300 pt-24">
+      {/* Back Button */}
+      <div className="container mx-auto px-6 py-8">
+        <Link 
+          href="/" 
+          className="text-gray-400 hover:text-brand-gold transition-colors flex items-center"
+        >
+          <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
+          Retour à l&apos;accueil
+        </Link>
+      </div>
+
+      {/* Header */}
+      <section className="py-12">
+        <div className="container mx-auto px-6">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="w-16 h-16 rounded-full bg-brand-gold/20 flex items-center justify-center mx-auto mb-6 border border-brand-gold">
+              <FontAwesomeIcon icon={faTruck} className="text-brand-gold text-2xl" />
+            </div>
+            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 gold-text-gradient">
+              Livraison & Retours
+            </h1>
+            <p className="text-xl text-gray-300">
+              Informations détaillées sur nos services de livraison et notre politique de retour
+            </p>
+          </div>
         </div>
       </section>
 
-      <div className="container mx-auto px-6 py-16">
-        <div className="max-w-4xl mx-auto space-y-12">
-          
-          {/* Livraison */}
-          <div className="card-bg rounded-xl p-8">
-            <h2 className="text-4xl font-bold text-white mb-8 text-center">
-              <span className="gold-text-gradient">Livraison</span>
+      {/* Shipping Section */}
+      <section className="py-16">
+        <div className="container mx-auto px-6">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-3xl font-bold text-white mb-12 text-center">
+              Options de Livraison
             </h2>
             
-            <div className="space-y-8">
-              <section>
-                <h3 className="text-2xl font-semibold text-white mb-4">Délais de Livraison</h3>
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="bg-white/5 rounded-lg p-6">
-                    <h4 className="text-lg font-semibold text-brand-gold mb-3">Livraison Standard</h4>
-                    <ul className="text-gray-300 space-y-2">
-                      <li>• Délai : 3-5 jours ouvrés</li>
-                      <li>• Coût : 4,99€</li>
-                      <li>• Gratuit dès 50€ d'achat</li>
-                      <li>• Suivi de colis inclus</li>
-                    </ul>
-                  </div>
-                  <div className="bg-white/5 rounded-lg p-6">
-                    <h4 className="text-lg font-semibold text-brand-gold mb-3">Livraison Express</h4>
-                    <ul className="text-gray-300 space-y-2">
-                      <li>• Délai : 1-2 jours ouvrés</li>
-                      <li>• Coût : 9,99€</li>
-                      <li>• Livraison avant 13h possible</li>
-                      <li>• Suivi en temps réel</li>
-                    </ul>
-                  </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+              <div className="card-bg rounded-2xl p-8 text-center border border-white/10">
+                <div className="w-16 h-16 bg-brand-gold/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <FontAwesomeIcon icon={faTruck} className="text-brand-gold text-2xl" />
                 </div>
-              </section>
+                <h3 className="text-xl font-bold text-white mb-4">Livraison Standard</h3>
+                <p className="text-gray-300 mb-4">
+                  Livraison en 3-5 jours ouvrés
+                </p>
+                <p className="text-brand-gold font-semibold">
+                  Gratuite dès 75€
+                </p>
+                <p className="text-sm text-gray-400 mt-2">
+                  Sinon 4,90€
+                </p>
+              </div>
 
-              <section>
-                <h3 className="text-2xl font-semibold text-white mb-4">Zones de Livraison</h3>
-                <div className="grid md:grid-cols-3 gap-4">
-                  <div className="bg-white/5 rounded-lg p-4 text-center">
-                    <h4 className="font-semibold text-brand-gold mb-2">France Métropolitaine</h4>
-                    <p className="text-gray-300 text-sm">Livraison standard et express</p>
-                  </div>
-                  <div className="bg-white/5 rounded-lg p-4 text-center">
-                    <h4 className="font-semibold text-brand-gold mb-2">DOM-TOM</h4>
-                    <p className="text-gray-300 text-sm">Livraison standard uniquement</p>
-                  </div>
-                  <div className="bg-white/5 rounded-lg p-4 text-center">
-                    <h4 className="font-semibold text-brand-gold mb-2">Union Européenne</h4>
-                    <p className="text-gray-300 text-sm">Sur demande, frais variables</p>
-                  </div>
+              <div className="card-bg rounded-2xl p-8 text-center border border-white/10">
+                <div className="w-16 h-16 bg-brand-gold/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <FontAwesomeIcon icon={faClock} className="text-brand-gold text-2xl" />
                 </div>
-              </section>
+                <h3 className="text-xl font-bold text-white mb-4">Livraison Express</h3>
+                <p className="text-gray-300 mb-4">
+                  Livraison en 1-2 jours ouvrés
+                </p>
+                <p className="text-brand-gold font-semibold">
+                  9,90€
+                </p>
+                <p className="text-sm text-gray-400 mt-2">
+                  Disponible partout en France
+                </p>
+              </div>
 
-              <section>
-                <h3 className="text-2xl font-semibold text-white mb-4">Processus de Livraison</h3>
-                <div className="space-y-4">
-                  <div className="flex items-start space-x-4">
-                    <div className="bg-brand-gold text-black rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm">1</div>
-                    <div>
-                      <h4 className="font-semibold text-white">Traitement de la commande</h4>
-                      <p className="text-gray-300">Votre commande est préparée sous 24h ouvrées</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-4">
-                    <div className="bg-brand-gold text-black rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm">2</div>
-                    <div>
-                      <h4 className="font-semibold text-white">Expédition</h4>
-                      <p className="text-gray-300">Vous recevez un email avec le numéro de suivi</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-4">
-                    <div className="bg-brand-gold text-black rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm">3</div>
-                    <div>
-                      <h4 className="font-semibold text-white">Livraison</h4>
-                      <p className="text-gray-300">Le colis est livré à l'adresse indiquée</p>
-                    </div>
-                  </div>
+              <div className="card-bg rounded-2xl p-8 text-center border border-white/10">
+                <div className="w-16 h-16 bg-brand-gold/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <FontAwesomeIcon icon={faMapMarkerAlt} className="text-brand-gold text-2xl" />
                 </div>
-              </section>
+                <h3 className="text-xl font-bold text-white mb-4">Point Relais</h3>
+                <p className="text-gray-300 mb-4">
+                  Retrait en point relais
+                </p>
+                <p className="text-brand-gold font-semibold">
+                  Gratuit dès 50€
+                </p>
+                <p className="text-sm text-gray-400 mt-2">
+                  Sinon 2,90€
+                </p>
+              </div>
+            </div>
 
-              <section>
-                <h3 className="text-2xl font-semibold text-white mb-4">Informations Importantes</h3>
-                <div className="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-6">
+            <div className="card-bg rounded-2xl p-8 mb-8">
+              <h3 className="text-2xl font-bold text-white mb-6 flex items-center">
+                <FontAwesomeIcon icon={faBox} className="mr-3 text-brand-gold" />
+                Informations de Livraison
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <h4 className="text-lg font-semibold text-white mb-4">Zones de Livraison</h4>
                   <ul className="text-gray-300 space-y-2">
-                    <li>• Vérifiez votre adresse de livraison avant validation</li>
-                    <li>• En cas d'absence, le colis sera déposé en point relais</li>
-                    <li>• Les délais peuvent être prolongés en période de forte activité</li>
-                    <li>• Les colis non réclamés sont retournés après 7 jours</li>
+                    <li>• France métropolitaine</li>
+                    <li>• Corse</li>
+                    <li>• Monaco</li>
+                    <li>• Andorre</li>
                   </ul>
                 </div>
-              </section>
+                <div>
+                  <h4 className="text-lg font-semibold text-white mb-4">Délais de Traitement</h4>
+                  <ul className="text-gray-300 space-y-2">
+                    <li>• Commandes avant 14h : expédiées le jour même</li>
+                    <li>• Commandes après 14h : expédiées le lendemain</li>
+                    <li>• Week-ends et jours fériés : non traités</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="card-bg rounded-2xl p-8 mb-8">
+              <h3 className="text-2xl font-bold text-white mb-6 flex items-center">
+                <FontAwesomeIcon icon={faShieldAlt} className="mr-3 text-brand-gold" />
+                Suivi et Sécurité
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <h4 className="text-lg font-semibold text-white mb-4">Suivi de Commande</h4>
+                  <ul className="text-gray-300 space-y-2">
+                    <li>• Numéro de suivi fourni par e-mail</li>
+                    <li>• Suivi en temps réel sur le site du transporteur</li>
+                    <li>• Notifications SMS optionnelles</li>
+                    <li>• Historique des commandes dans votre compte</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="text-lg font-semibold text-white mb-4">Emballage Sécurisé</h4>
+                  <ul className="text-gray-300 space-y-2">
+                    <li>• Emballage discret et neutre</li>
+                    <li>• Protection contre la casse</li>
+                    <li>• Respect de la température</li>
+                    <li>• Aucune mention CBD visible</li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
+        </div>
+      </section>
 
-          {/* Retours */}
-          <div className="card-bg rounded-xl p-8">
-            <h2 className="text-4xl font-bold text-white mb-8 text-center">
-              <span className="gold-text-gradient">Retours & Remboursements</span>
+      {/* Returns Section */}
+      <section className="py-16 bg-[#111111]">
+        <div className="container mx-auto px-6">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-3xl font-bold text-white mb-12 text-center">
+              Politique de Retour
+            </h2>
+
+            <div className="card-bg rounded-2xl p-8 mb-8">
+              <h3 className="text-2xl font-bold text-white mb-6 flex items-center">
+                <FontAwesomeIcon icon={faUndo} className="mr-3 text-brand-gold" />
+                Droit de Rétractation
+              </h3>
+              <div className="text-gray-300 leading-relaxed space-y-4">
+                <p>
+                  Conformément à la législation française, vous disposez d&apos;un délai de <strong>14 jours</strong> 
+                  pour exercer votre droit de rétractation à compter de la réception de votre commande.
+                </p>
+                <p>
+                  Ce délai vous permet de changer d&apos;avis sans avoir à justifier de motifs ni à payer de pénalités.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+              <div className="card-bg rounded-2xl p-8">
+                <h3 className="text-xl font-bold text-white mb-4 flex items-center">
+                  <FontAwesomeIcon icon={faCheckCircle} className="mr-3 text-brand-gold" />
+                  Conditions de Retour
+                </h3>
+                <ul className="text-gray-300 space-y-2">
+                  <li>• Produits non ouverts et dans leur emballage d&apos;origine</li>
+                  <li>• Étiquettes et emballages intacts</li>
+                  <li>• Aucun signe d&apos;utilisation</li>
+                  <li>• Retour dans les 14 jours suivant la réception</li>
+                  <li>• Formulaire de retour complété</li>
+                </ul>
+              </div>
+
+              <div className="card-bg rounded-2xl p-8">
+                <h3 className="text-xl font-bold text-white mb-4 flex items-center">
+                  <FontAwesomeIcon icon={faExclamationTriangle} className="mr-3 text-brand-gold" />
+                  Produits Exclus
+                </h3>
+                <ul className="text-gray-300 space-y-2">
+                  <li>• Produits personnalisés</li>
+                  <li>• Produits périssables</li>
+                  <li>• Produits ouverts pour des raisons d&apos;hygiène</li>
+                  <li>• Produits endommagés par le client</li>
+                  <li>• Produits non conformes aux conditions</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="card-bg rounded-2xl p-8 mb-8">
+              <h3 className="text-2xl font-bold text-white mb-6">
+                Procédure de Retour
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="text-center">
+                  <div className="w-12 h-12 bg-brand-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-brand-gold font-bold text-lg">1</span>
+                  </div>
+                  <h4 className="text-lg font-semibold text-white mb-2">Contactez-nous</h4>
+                  <p className="text-gray-300 text-sm">
+                    Envoyez-nous un e-mail à <a href="mailto:returns@gardengoldgreen.com" className="text-brand-gold hover:underline">returns@gardengoldgreen.com</a> avec votre numéro de commande
+                  </p>
+                </div>
+
+                <div className="text-center">
+                  <div className="w-12 h-12 bg-brand-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-brand-gold font-bold text-lg">2</span>
+                  </div>
+                  <h4 className="text-lg font-semibold text-white mb-2">Recevez l&apos;étiquette</h4>
+                  <p className="text-gray-300 text-sm">
+                    Nous vous envoyons une étiquette de retour prépayée et les instructions
+                  </p>
+                </div>
+
+                <div className="text-center">
+                  <div className="w-12 h-12 bg-brand-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-brand-gold font-bold text-lg">3</span>
+                  </div>
+                  <h4 className="text-lg font-semibold text-white mb-2">Remboursement</h4>
+                  <p className="text-gray-300 text-sm">
+                    Dès réception, nous procédons au remboursement sous 5 jours ouvrés
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="card-bg rounded-2xl p-8 mb-8">
+              <h3 className="text-2xl font-bold text-white mb-6">
+                Remboursement
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <h4 className="text-lg font-semibold text-white mb-4">Modalités</h4>
+                  <ul className="text-gray-300 space-y-2">
+                    <li>• Remboursement intégral du prix d&apos;achat</li>
+                    <li>• Frais de retour à notre charge</li>
+                    <li>• Remboursement sous 5 jours ouvrés</li>
+                    <li>• Même mode de paiement que la commande</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="text-lg font-semibold text-white mb-4">Délais</h4>
+                  <ul className="text-gray-300 space-y-2">
+                    <li>• Traitement : 2-3 jours ouvrés</li>
+                    <li>• Remboursement : 3-5 jours ouvrés</li>
+                    <li>• Notification par e-mail</li>
+                    <li>• Suivi dans votre compte client</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-16">
+        <div className="container mx-auto px-6">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl font-bold text-white mb-12 text-center">
+              Questions Fréquentes
             </h2>
             
-            <div className="space-y-8">
-              <section>
-                <h3 className="text-2xl font-semibold text-white mb-4">Droit de Rétractation</h3>
-                <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-6">
-                  <p className="text-gray-300 leading-relaxed">
-                    Conformément à la législation française, vous disposez d'un <strong className="text-white">délai de 14 jours</strong> 
-                    pour exercer votre droit de rétractation à compter de la réception des produits.
-                  </p>
-                </div>
-              </section>
-
-              <section>
-                <h3 className="text-2xl font-semibold text-white mb-4">Conditions de Retour</h3>
-                <div className="space-y-4">
-                  <div className="bg-white/5 rounded-lg p-6">
-                    <h4 className="text-lg font-semibold text-brand-gold mb-3">Produits Éligibles</h4>
-                    <ul className="text-gray-300 space-y-2">
-                      <li>✓ Produits non ouverts et dans leur emballage d'origine</li>
-                      <li>✓ Produits non utilisés</li>
-                      <li>✓ Produits non personnalisés</li>
-                      <li>✓ Produits non périssables</li>
-                    </ul>
-                  </div>
-                  
-                  <div className="bg-white/5 rounded-lg p-6">
-                    <h4 className="text-lg font-semibold text-brand-gold mb-3">Produits Non Éligibles</h4>
-                    <ul className="text-gray-300 space-y-2">
-                      <li>✗ Produits ouverts ou utilisés</li>
-                      <li>✗ Produits personnalisés</li>
-                      <li>✗ Produits périssables</li>
-                      <li>✗ Produits d'hygiène intime</li>
-                    </ul>
-                  </div>
-                </div>
-              </section>
-
-              <section>
-                <h3 className="text-2xl font-semibold text-white mb-4">Processus de Retour</h3>
-                <div className="space-y-4">
-                  <div className="flex items-start space-x-4">
-                    <div className="bg-brand-gold text-black rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm">1</div>
-                    <div>
-                      <h4 className="font-semibold text-white">Demande de retour</h4>
-                      <p className="text-gray-300">Contactez-nous à support@gardengoldgreen.com avec votre numéro de commande</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-4">
-                    <div className="bg-brand-gold text-black rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm">2</div>
-                    <div>
-                      <h4 className="font-semibold text-white">Autorisation de retour</h4>
-                      <p className="text-gray-300">Nous vous envoyons un numéro de retour et les instructions</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-4">
-                    <div className="bg-brand-gold text-black rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm">3</div>
-                    <div>
-                      <h4 className="font-semibold text-white">Expédition du retour</h4>
-                      <p className="text-gray-300">Envoyez le colis avec l'étiquette fournie</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-4">
-                    <div className="bg-brand-gold text-black rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm">4</div>
-                    <div>
-                      <h4 className="font-semibold text-white">Remboursement</h4>
-                      <p className="text-gray-300">Remboursement sous 5-7 jours ouvrés après réception</p>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              <section>
-                <h3 className="text-2xl font-semibold text-white mb-4">Frais de Retour</h3>
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-6">
-                    <h4 className="text-lg font-semibold text-green-400 mb-3">Retour Gratuit</h4>
-                    <ul className="text-gray-300 space-y-2">
-                      <li>• Produit défectueux</li>
-                      <li>• Erreur de notre part</li>
-                      <li>• Produit non conforme</li>
-                      <li>• Livraison endommagée</li>
-                    </ul>
-                  </div>
-                  <div className="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-6">
-                    <h4 className="text-lg font-semibold text-yellow-400 mb-3">Frais à Votre Charge</h4>
-                    <ul className="text-gray-300 space-y-2">
-                      <li>• Changement d'avis</li>
-                      <li>• Commande erronée par le client</li>
-                      <li>• Produit non éligible au retour</li>
-                    </ul>
-                  </div>
-                </div>
-              </section>
-
-              <section>
-                <h3 className="text-2xl font-semibold text-white mb-4">Remboursements</h3>
-                <div className="space-y-4">
-                  <p className="text-gray-300 leading-relaxed">
-                    Les remboursements sont effectués dans les <strong className="text-white">5 à 7 jours ouvrés</strong> 
-                    après réception et vérification du retour.
-                  </p>
-                  <div className="bg-white/5 rounded-lg p-6">
-                    <h4 className="text-lg font-semibold text-brand-gold mb-3">Modes de Remboursement</h4>
-                    <ul className="text-gray-300 space-y-2">
-                      <li>• Carte bancaire : Remboursement sur la carte utilisée</li>
-                      <li>• PayPal : Remboursement sur le compte PayPal</li>
-                      <li>• Virement : Remboursement sur le compte bancaire</li>
-                    </ul>
-                  </div>
-                </div>
-              </section>
-
-              <section>
-                <h3 className="text-2xl font-semibold text-white mb-4">Échanges</h3>
-                <p className="text-gray-300 leading-relaxed mb-4">
-                  Nous proposons également des échanges de produits. Le processus est similaire au retour, 
-                  mais vous recevrez le nouveau produit une fois l'ancien retourné et vérifié.
+            <div className="space-y-6">
+              <div className="card-bg rounded-2xl p-6">
+                <h3 className="text-lg font-semibold text-white mb-2">
+                  Puis-je modifier mon adresse de livraison ?
+                </h3>
+                <p className="text-gray-300">
+                  Oui, tant que votre commande n&apos;a pas été expédiée. Contactez-nous rapidement 
+                  à <a href="mailto:contact@gardengoldgreen.com" className="text-brand-gold hover:underline">contact@gardengoldgreen.com</a>.
                 </p>
-                <div className="bg-blue-900/20 border border-blue-500/30 rounded-lg p-6">
-                  <p className="text-gray-300">
-                    <strong className="text-white">Note :</strong> Les échanges sont possibles uniquement pour des produits 
-                    de valeur équivalente ou supérieure. La différence sera facturée ou remboursée selon le cas.
-                  </p>
-                </div>
-              </section>
+              </div>
+
+              <div className="card-bg rounded-2xl p-6">
+                <h3 className="text-lg font-semibold text-white mb-2">
+                  Que faire si mon colis est endommagé ?
+                </h3>
+                <p className="text-gray-300">
+                  Contactez-nous immédiatement avec des photos. Nous vous enverrons un produit de 
+                  remplacement ou procéderons au remboursement.
+                </p>
+              </div>
+
+              <div className="card-bg rounded-2xl p-6">
+                <h3 className="text-lg font-semibold text-white mb-2">
+                  Puis-je échanger un produit ?
+                </h3>
+                <p className="text-gray-300">
+                  Oui, dans les 14 jours suivant la réception. Le produit doit être dans son état 
+                  d&apos;origine. Les frais d&apos;échange sont à notre charge.
+                </p>
+              </div>
+
+              <div className="card-bg rounded-2xl p-6">
+                <h3 className="text-lg font-semibold text-white mb-2">
+                  Que se passe-t-il si je ne suis pas chez moi ?
+                </h3>
+                <p className="text-gray-300">
+                  Le transporteur laissera un avis de passage. Vous pourrez programmer une nouvelle 
+                  livraison ou récupérer votre colis au point relais le plus proche.
+                </p>
+              </div>
             </div>
           </div>
-
-          {/* Contact */}
-          <div className="card-bg rounded-xl p-8 text-center">
-            <h2 className="text-3xl font-bold text-white mb-6">
-              Besoin d'Aide ?
-            </h2>
-            <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
-              Notre équipe support est là pour vous accompagner dans vos démarches de livraison et de retour.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a 
-                href="/contact" 
-                className="btn-gold text-black font-semibold py-3 px-8 rounded-full shadow-gold-glow inline-flex items-center justify-center gap-2"
-              >
-                Contactez le Support
-              </a>
-              <a 
-                href="/faq"
-                className="border border-white/20 text-white font-semibold py-3 px-8 rounded-full hover:bg-white/10 transition-colors inline-flex items-center justify-center gap-2"
-              >
-                Consultez la FAQ
-              </a>
-            </div>
-          </div>
-
         </div>
-      </div>
-    </main>
+      </section>
+
+      {/* Contact Section */}
+      <section className="py-24 bg-gradient-to-r from-brand-gold/10 to-brand-green/10">
+        <div className="container mx-auto px-6 text-center">
+          <h2 className="text-4xl font-bold text-white mb-6">
+            Besoin d&apos;aide ?
+          </h2>
+          <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+            Notre équipe client est là pour vous accompagner dans toutes vos démarches.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a
+              href="/contact"
+              className="btn-gold text-black font-bold py-4 px-8 rounded-full shadow-gold-glow inline-flex items-center justify-center"
+            >
+              Nous Contacter
+            </a>
+            <a
+              href="mailto:contact@gardengoldgreen.com"
+              className="bg-white/10 text-white hover:bg-white/20 font-bold py-4 px-8 rounded-full inline-flex items-center justify-center transition-colors"
+            >
+              contact@gardengoldgreen.com
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
   )
 }
-
-

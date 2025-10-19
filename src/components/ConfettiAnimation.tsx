@@ -14,15 +14,23 @@ interface Confetti {
 }
 
 interface ConfettiAnimationProps {
-  position: { x: number; y: number }
+  isActive: boolean
   onComplete: () => void
 }
 
-export function ConfettiAnimation({ position, onComplete }: ConfettiAnimationProps) {
+export function ConfettiAnimation({ isActive, onComplete }: ConfettiAnimationProps) {
   const [confetti, setConfetti] = useState<Confetti[]>([])
   const colors = ['#FFD700', '#00C853', '#FFFFFF', '#FFC107']
 
   useEffect(() => {
+    if (!isActive || typeof window === 'undefined' || !window.innerWidth || !window.innerHeight) return
+
+    // Position fixe pour les confettis (centre de l'écran)
+    const position = { 
+      x: window.innerWidth / 2, 
+      y: window.innerHeight / 2 
+    }
+
     // Créer les confettis
     const newConfetti: Confetti[] = Array.from({ length: 30 }, (_, i) => ({
       id: i,
@@ -44,7 +52,7 @@ export function ConfettiAnimation({ position, onComplete }: ConfettiAnimationPro
     }, 1500)
 
     return () => clearTimeout(timer)
-  }, [position, onComplete])
+  }, [isActive, onComplete, colors])
 
   if (confetti.length === 0) return null
 
