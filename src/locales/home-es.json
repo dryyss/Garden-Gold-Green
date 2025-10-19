@@ -1,0 +1,135 @@
+{
+  "hero": {
+    "mainTitle": "Experimenta el Mejor Elixir de la Naturaleza",
+    "mainSubtitle": "Descubre nuestra colección premium de productos CBD, meticulosamente elaborados para brindarte equilibrio, serenidad y pureza incomparable.",
+    "ctaCollection": "Descubrir la Colección",
+    "ctaLearnMore": "Más Información",
+    "stats": {
+      "satisfiedCustomers": "Clientes Satisfechos",
+      "organic": "Orgánico",
+      "premiumProducts": "Productos Premium",
+      "customerSupport": "Soporte al Cliente"
+    }
+  },
+  "featuredProducts": {
+    "title": "Nuestra Selección Signature",
+    "subtitle": "Seleccionados por su pureza y potencia. Lo mejor de Garden Gold Green.",
+    "viewAll": "Ver Todos los Productos"
+  },
+  "benefits": {
+    "title": "¿Por Qué Elegir Garden Gold Green?",
+    "subtitle": "Ventajas que marcan la diferencia",
+    "qualityGuarantee": {
+      "title": "Garantía de Calidad",
+      "description": "Probados en laboratorio independiente para garantizar pureza y seguridad"
+    },
+    "fastDelivery": {
+      "title": "Entrega Rápida",
+      "description": "Envío en 24h y entrega gratuita desde 50€"
+    },
+    "support247": {
+      "title": "Soporte 24/7",
+      "description": "Nuestro equipo de expertos está aquí para acompañarte"
+    },
+    "certifications": {
+      "title": "Certificaciones",
+      "description": "Productos certificados orgánicos y respetuosos con el medio ambiente"
+    }
+  },
+  "bestSellers": {
+    "title": "Nuestros Más Vendidos",
+    "subtitle": "Los productos favoritos de nuestra comunidad"
+  },
+  "brandPromise": {
+    "title": "El Estándar Garden Gold Green",
+    "description": "Nos dedicamos a cultivar y ofrecer la experiencia CBD más pura. Nuestro proceso combina prácticas agrícolas orgánicas con tecnología de extracción de última generación, garantizando que cada gota sea potente, pura y libre de impurezas. La sabiduría de la naturaleza, perfeccionada por la ciencia.",
+    "organic": {
+      "title": "100% Orgánico",
+      "description": "Procedente de granjas de cáñamo cultivadas orgánicamente, sin OGM."
+    },
+    "labTested": {
+      "title": "Pureza Probada en Laboratorio",
+      "description": "Probado en laboratorio independiente para calidad, potencia y seguridad."
+    },
+    "ethical": {
+      "title": "Elaborado Éticamente",
+      "description": "Producción sostenible y libre de crueldad."
+    }
+  },
+  "howItWorks": {
+    "title": "Tu Camino hacia el Bienestar",
+    "subtitle": "Adopta una vida de equilibrio y bienestar en tres simples pasos.",
+    "step1": {
+      "title": "Descubre Tu Producto",
+      "description": "Explora nuestra selección curada y encuentra la solución CBD perfecta para tu estilo de vida y necesidades."
+    },
+    "step2": {
+      "title": "Incorpora Diariamente",
+      "description": "Integra fácilmente nuestro CBD premium en tu rutina diaria para un apoyo natural y constante."
+    },
+    "step3": {
+      "title": "Siente la Diferencia",
+      "description": "Experimenta una sensación mejorada de calma, equilibrio y bienestar general."
+    }
+  },
+  "testimonials": {
+    "title": "Voces de Nuestra Comunidad",
+    "subtitle": "Descubre cómo Garden Gold Green está marcando la diferencia.",
+    "verifiedBuyer": "Comprador Verificado",
+    "testimonial1": {
+      "name": "Jessica M.",
+      "comment": "El aceite Gold Standard ha sido un cambio de juego para mis niveles de estrés. La calidad se nota de inmediato. ¡Seré cliente de por vida!"
+    },
+    "testimonial2": {
+      "name": "David L.",
+      "comment": "Uso el Bálsamo Emerald Soothe después de mis entrenamientos, y el alivio es increíble. Huele genial y no es grasoso. Lo recomiendo mucho."
+    },
+    "testimonial3": {
+      "name": "Sarah K.",
+      "comment": "Las Gominolas Serenity son mi forma favorita de relajarme por la noche. Saben deliciosas y me ayudan a tener un sueño reparador."
+    }
+  },
+  "newProducts": {
+    "title": "Novedades",
+    "subtitle": "Descubre nuestras últimas creaciones"
+  },
+  "community": {
+    "title": "Únete a Nuestra Comunidad",
+    "subtitle": "Más de 10.000 miembros confían en nosotros",
+    "activeMembers": "Miembros activos",
+    "countriesServed": "Países atendidos",
+    "customerSatisfaction": "Satisfacción del cliente"
+  },
+  "welcomeOffer": {
+    "title": "Oferta de Bienvenida",
+    "subtitle": "Disfruta del 20% de descuento en tu primer pedido",
+    "code": "Código: WELCOME20",
+    "validOn": "Válido en todos los productos",
+    "freeShipping": "Envío gratuito",
+    "freeReturn": "Devolución gratuita",
+    "prioritySupport": "Soporte prioritario",
+    "cta": "Aprovechar la Oferta"
+  },
+  "faq": {
+    "title": "Preguntas Frecuentes",
+    "subtitle": "Todo lo que necesitas saber sobre nuestros productos CBD",
+    "viewAll": "Ver todas las preguntas frecuentes",
+    "q1": {
+      "question": "¿Son legales los productos CBD?",
+      "answer": "Sí, nuestros productos CBD son perfectamente legales en Francia. Contienen menos del 0,2% de THC, de acuerdo con las regulaciones europeas."
+    },
+    "q2": {
+      "question": "¿Cómo elijo la concentración correcta?",
+      "answer": "Comienza con una concentración baja (5-10%) si eres principiante, luego aumenta gradualmente según tus necesidades."
+    },
+    "q3": {
+      "question": "¿Cuáles son los plazos de entrega?",
+      "answer": "Enviamos en 24h y la entrega es gratuita desde 50€. Cuenta con 2-3 días laborables para la recepción."
+    },
+    "q4": {
+      "question": "¿Puedo devolver mis productos?",
+      "answer": "Sí, tienes 14 días para devolver tus productos sin abrir. Los gastos de devolución corren por nuestra cuenta."
+    }
+  }
+}
+
