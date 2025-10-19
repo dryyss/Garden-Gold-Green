@@ -28,8 +28,10 @@ import {
 } from '@fortawesome/free-brands-svg-icons'
 import { useCart } from '@/contexts/CartContext'
 import { useAuth } from '@/contexts/AuthContext'
+import { useTranslation } from '@/contexts/TranslationContext'
 import { SearchModal } from './SearchModal'
 import { AuthModal } from './AuthModal'
+import { LanguageSelector } from './LanguageSelector'
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -41,6 +43,7 @@ export function Header() {
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
   const { state, dispatch } = useCart()
   const { state: authState, logout } = useAuth()
+  const { t } = useTranslation()
   const user = authState.user
   const isLoading = authState.loading
 
@@ -72,24 +75,24 @@ export function Header() {
   }, [showUserMenu])
 
   const categoryTabs = [
-    { name: 'Promos -50%', href: '/products?category=promo', badge: 'HOT', color: 'text-red-500' },
-    { name: 'Fleurs CBD', href: '/products?category=fleurs-cbd' },
-    { name: 'Résines', href: '/products?category=resines' },
-    { name: 'Nos packs', href: '/products?category=packs' },
-    { name: 'E-liquides/Vap Pens', href: '/products?category=liquides' },
-    { name: 'Huiles CBD', href: '/products?category=huiles-cbd' },
-    { name: 'Accessoires', href: '/products?category=accessoires' },
-    { name: 'LIQUIDATIONS', href: '/products?category=liquidations', special: true },
+    { name: t('header.categories.promos'), href: '/products?category=promo', badge: 'HOT', color: 'text-red-500' },
+    { name: t('header.categories.flowers'), href: '/products?category=fleurs-cbd' },
+    { name: t('header.categories.resins'), href: '/products?category=resines' },
+    { name: t('header.categories.packs'), href: '/products?category=packs' },
+    { name: t('header.categories.liquids'), href: '/products?category=liquides' },
+    { name: t('header.categories.oils'), href: '/products?category=huiles-cbd' },
+    { name: t('header.categories.accessories'), href: '/products?category=accessoires' },
+    { name: t('header.categories.liquidations'), href: '/products?category=liquidations', special: true },
   ]
 
   const navigation = [
-    { name: 'Accueil', href: '/' },
-    { name: 'Boutique', href: '/products' },
-    { name: 'À propos', href: '/about' },
-    { name: 'Apprendre', href: '/learn' },
-    { name: 'Blog', href: '/blog' },
-    { name: 'Contact', href: '/contact' },
-    { name: 'FAQ', href: '/faq' },
+    { name: t('header.navigation.home'), href: '/' },
+    { name: t('header.navigation.shop'), href: '/products' },
+    { name: t('header.navigation.about'), href: '/about' },
+    { name: t('header.navigation.learn'), href: '/learn' },
+    { name: t('header.navigation.blog'), href: '/blog' },
+    { name: t('header.navigation.contact'), href: '/contact' },
+    { name: t('header.navigation.faq'), href: '/faq' },
   ]
 
   return (
@@ -102,11 +105,11 @@ export function Header() {
             <div className="flex items-center space-x-4 sm:space-x-6 mb-2 sm:mb-0">
               <a href="tel:+33778823840" className="flex items-center space-x-1 sm:space-x-2 text-white hover:text-brand-gold transition-colors">
                 <FontAwesomeIcon icon={faPhone} className="w-3 h-3" />
-                <span className="hidden sm:inline">+33 7 78 82 38 40</span>
+                <span className="hidden sm:inline">{t('header.phone')}</span>
               </a>
               <a href="mailto:contact@gardengoldgreen.com" className="flex items-center space-x-1 sm:space-x-2 text-white hover:text-brand-gold transition-colors">
                 <FontAwesomeIcon icon={faEnvelope} className="w-3 h-3" />
-                <span className="hidden md:inline">contact@gardengoldgreen.com</span>
+                <span className="hidden md:inline">{t('header.email')}</span>
               </a>
             </div>
 
@@ -114,11 +117,11 @@ export function Header() {
             <div className="flex items-center space-x-4 sm:space-x-6">
               <div className="flex items-center space-x-2 text-white">
                 <FontAwesomeIcon icon={faTruck} className="w-3 h-3 sm:w-4 sm:h-4 text-brand-gold" />
-                <span className="font-semibold">Livraison offerte à partir de 50€</span>
+                <span className="font-semibold">{t('header.freeShipping')}</span>
               </div>
               <div className="hidden lg:flex items-center space-x-2 text-white">
                 <FontAwesomeIcon icon={faPercent} className="w-3 h-3 sm:w-4 sm:h-4 text-brand-gold" />
-                <span className="font-semibold">10% offert dès 90€ 🎁</span>
+                <span className="font-semibold">{t('header.discount')}</span>
               </div>
             </div>
 
@@ -162,7 +165,7 @@ export function Header() {
                 <div className="absolute -inset-2 bg-gradient-to-r from-brand-gold/15 to-brand-green/15 rounded-full blur-md group-hover:blur-lg transition-all duration-300"></div>
               </div>
               <span className="hidden sm:block text-white text-2xl sm:text-3xl font-bold tracking-wider ml-4 group-hover:text-brand-gold transition-colors duration-300 drop-shadow-lg">
-                GARDEN GOLD GREEN
+                {t('header.title')}
               </span>
             </Link>
 
@@ -181,6 +184,9 @@ export function Header() {
 
             {/* Actions */}
             <div className="flex items-center space-x-2 sm:space-x-4">
+              {/* Language Selector */}
+              <LanguageSelector variant="header" />
+              
               {/* Search button */}
               <button 
                 onClick={() => setIsSearchModalOpen(true)}
@@ -213,7 +219,7 @@ export function Header() {
                       onClick={() => setShowUserMenu(false)}
                     >
                       <FontAwesomeIcon icon={faUser} className="icon-sm mr-2" />
-                      Mon profil
+                      {t('header.user.profile')}
                     </Link>
                     <Link
                       href="/orders"
@@ -221,7 +227,7 @@ export function Header() {
                       onClick={() => setShowUserMenu(false)}
                     >
                       <FontAwesomeIcon icon={faShoppingCart} className="icon-sm mr-2" />
-                      Mes commandes
+                      {t('header.user.orders')}
                     </Link>
                     <a
                       href="/api/auth/logout"
@@ -229,7 +235,7 @@ export function Header() {
                       onClick={() => setShowUserMenu(false)}
                     >
                       <FontAwesomeIcon icon={faSignOutAlt} className="icon-sm mr-2" />
-                      Se déconnecter
+                      {t('header.user.logout')}
                     </a>
                   </div>
                 </div>
@@ -241,13 +247,13 @@ export function Header() {
                 href="/api/auth/login"
                 className="text-gray-300 hover:text-brand-gold transition-colors duration-300 px-3 py-2 text-sm font-medium"
               >
-                Connexion
+                {t('header.user.login')}
               </a>
               <a
                 href="/api/auth/login?screen_hint=signup"
                 className="bg-brand-gold text-black font-semibold px-4 py-2 rounded-full text-sm hover:shadow-gold-glow transition-all duration-300"
               >
-                Inscription
+                {t('header.user.register')}
               </a>
             </div>
           )}
@@ -319,13 +325,13 @@ export function Header() {
             {/* Titre du menu mobile */}
             <div className="flex items-center justify-center pb-4 border-b border-white/10">
               <span className="text-white text-lg font-bold tracking-wider drop-shadow-lg">
-                GARDEN GOLD GREEN
+                {t('header.title')}
               </span>
             </div>
             
             {/* Category Tabs - Mobile */}
             <div className="border-b border-white/10 pb-4 mb-4">
-              <h3 className="text-brand-gold text-sm font-semibold mb-3 uppercase">Catégories</h3>
+              <h3 className="text-brand-gold text-sm font-semibold mb-3 uppercase">{t('header.categories.title')}</h3>
               <div className="space-y-2">
                 {categoryTabs.map((tab) => (
                   <Link
@@ -363,6 +369,11 @@ export function Header() {
               </Link>
             ))}
             
+            {/* Language Selector Mobile */}
+            <div className="border-t border-white/10 pt-4">
+              <LanguageSelector variant="mobile" />
+            </div>
+            
             {/* Mobile User Actions */}
             <div className="border-t border-white/10 pt-4 mt-4">
               {user ? (
@@ -381,7 +392,7 @@ export function Header() {
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <FontAwesomeIcon icon={faUser} />
-                    <span>Mon profil</span>
+                    <span>{t('header.user.profile')}</span>
                   </Link>
                   
                   <Link
@@ -390,7 +401,7 @@ export function Header() {
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <FontAwesomeIcon icon={faShoppingCart} />
-                    <span>Mes commandes</span>
+                    <span>{t('header.user.orders')}</span>
                   </Link>
                   
                   <button
@@ -401,7 +412,7 @@ export function Header() {
                     className="flex items-center space-x-3 text-gray-300 hover:text-brand-gold transition-colors py-2 w-full text-left"
                   >
                     <FontAwesomeIcon icon={faSignOutAlt} />
-                    <span>Se déconnecter</span>
+                    <span>{t('header.user.logout')}</span>
                   </button>
                 </div>
               ) : (
@@ -415,7 +426,7 @@ export function Header() {
                     className="flex items-center space-x-3 text-gray-300 hover:text-brand-gold transition-colors py-2 w-full text-left"
                   >
                     <FontAwesomeIcon icon={faUser} />
-                    <span>Connexion</span>
+                    <span>{t('header.user.login')}</span>
                   </button>
                   <button
                     onClick={() => {
@@ -426,7 +437,7 @@ export function Header() {
                     className="flex items-center space-x-3 bg-brand-gold text-black font-semibold px-4 py-2 rounded-full hover:shadow-gold-glow transition-all duration-300 w-full justify-center"
                   >
                     <FontAwesomeIcon icon={faUser} />
-                    <span>Inscription</span>
+                    <span>{t('header.user.register')}</span>
                   </button>
                 </div>
               )}

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash, faSpinner } from '@fortawesome/free-solid-svg-icons'
+import { useTranslation } from '@/contexts/TranslationContext'
 
 interface RegisterFormProps {
   onSuccess?: () => void
@@ -10,6 +11,7 @@ interface RegisterFormProps {
 }
 
 export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) {
+  const { t } = useTranslation()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -29,19 +31,19 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
 
     // Validation côté client
     if (formData.password !== formData.confirmPassword) {
-      setError('Les mots de passe ne correspondent pas')
+      setError(t('forms.errors.passwordMismatch'))
       setIsLoading(false)
       return
     }
 
     if (formData.password.length < 6) {
-      setError('Le mot de passe doit contenir au moins 6 caractères')
+      setError(t('forms.errors.passwordTooShort'))
       setIsLoading(false)
       return
     }
 
     if (!acceptTerms) {
-      setError('Vous devez accepter les conditions d\'utilisation')
+      setError(t('forms.errors.acceptTerms'))
       setIsLoading(false)
       return
     }
@@ -72,10 +74,10 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
         // Recharger la page pour mettre à jour l'état
         window.location.reload()
       } else {
-        setError(data.error || 'Erreur lors de l\'inscription')
+        setError(data.error || t('forms.errors.registrationError'))
       }
     } catch (error) {
-      setError('Erreur lors de l\'inscription')
+      setError(t('forms.errors.registrationError'))
     } finally {
       setIsLoading(false)
     }
@@ -92,8 +94,8 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
   return (
     <div className="w-full max-w-md mx-auto">
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-white mb-2">Inscription</h2>
-        <p className="text-gray-400">Créez votre compte Garden Gold Green</p>
+        <h2 className="text-3xl font-bold text-white mb-2">{t('auth.register.title')}</h2>
+        <p className="text-gray-400">{t('auth.register.subtitle')}</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -105,7 +107,7 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
 
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
-            Nom complet
+            {t('forms.labels.fullName')}
           </label>
           <input
             type="text"
@@ -115,13 +117,13 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
             onChange={handleInputChange}
             required
             className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold focus:border-transparent"
-            placeholder="Votre nom complet"
+            placeholder={t('forms.placeholders.fullName')}
           />
         </div>
 
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-            Email
+            {t('auth.register.email')}
           </label>
           <input
             type="email"
@@ -131,13 +133,13 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
             onChange={handleInputChange}
             required
             className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold focus:border-transparent"
-            placeholder="votre@email.com"
+            placeholder={t('forms.placeholders.email')}
           />
         </div>
 
         <div>
           <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
-            Mot de passe
+            {t('auth.register.password')}
           </label>
           <div className="relative">
             <input
@@ -148,7 +150,7 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
               onChange={handleInputChange}
               required
               className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold focus:border-transparent pr-12"
-              placeholder="Minimum 6 caractères"
+              placeholder={t('forms.placeholders.password')}
             />
             <button
               type="button"
@@ -162,7 +164,7 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
 
         <div>
           <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300 mb-2">
-            Confirmer le mot de passe
+            {t('auth.register.confirmPassword')}
           </label>
           <div className="relative">
             <input
@@ -173,7 +175,7 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
               onChange={handleInputChange}
               required
               className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold focus:border-transparent pr-12"
-              placeholder="Confirmez votre mot de passe"
+              placeholder={t('forms.placeholders.confirmPassword')}
             />
             <button
               type="button"
@@ -194,13 +196,13 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
             className="w-4 h-4 text-brand-gold bg-gray-700 border-gray-600 rounded focus:ring-brand-gold mt-1"
           />
           <label htmlFor="acceptTerms" className="ml-3 text-sm text-gray-300">
-            J'accepte les{' '}
+            {t('auth.register.agreeTerms')}{' '}
             <a href="/terms" className="text-brand-gold hover:text-yellow-400">
-              conditions d'utilisation
+              {t('footer.terms')}
             </a>{' '}
             et la{' '}
             <a href="/privacy" className="text-brand-gold hover:text-yellow-400">
-              politique de confidentialité
+              {t('footer.privacy')}
             </a>
           </label>
         </div>
@@ -213,22 +215,22 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
           {isLoading ? (
             <>
               <FontAwesomeIcon icon={faSpinner} className="animate-spin mr-2" />
-              Inscription...
+              {t('auth.register.signingUp')}
             </>
           ) : (
-            'Créer mon compte'
+            t('auth.register.signUp')
           )}
         </button>
       </form>
 
       <div className="mt-6 text-center">
         <p className="text-gray-400">
-          Déjà un compte ?{' '}
+          {t('auth.register.hasAccount')}{' '}
           <button
             onClick={onSwitchToLogin}
             className="text-brand-gold hover:text-yellow-400 font-semibold"
           >
-            Se connecter
+            {t('auth.register.signIn')}
           </button>
         </p>
       </div>

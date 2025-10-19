@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash, faSpinner } from '@fortawesome/free-solid-svg-icons'
+import { useTranslation } from '@/contexts/TranslationContext'
 
 interface LoginFormProps {
   onSuccess?: () => void
@@ -10,6 +11,7 @@ interface LoginFormProps {
 }
 
 export function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormProps) {
+  const { t } = useTranslation()
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -45,10 +47,10 @@ export function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormProps) {
         // Recharger la page pour mettre à jour l'état
         window.location.reload()
       } else {
-        setError(data.error || 'Erreur de connexion')
+        setError(data.error || t('forms.errors.connectionError'))
       }
     } catch (error) {
-      setError('Erreur de connexion')
+      setError(t('forms.errors.connectionError'))
     } finally {
       setIsLoading(false)
     }
@@ -65,8 +67,8 @@ export function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormProps) {
   return (
     <div className="w-full max-w-md mx-auto">
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-white mb-2">Connexion</h2>
-        <p className="text-gray-400">Connectez-vous à votre compte</p>
+        <h2 className="text-3xl font-bold text-white mb-2">{t('auth.login.title')}</h2>
+        <p className="text-gray-400">{t('auth.login.subtitle')}</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -78,7 +80,7 @@ export function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormProps) {
 
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-            Email
+            {t('auth.login.email')}
           </label>
           <input
             type="email"
@@ -88,13 +90,13 @@ export function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormProps) {
             onChange={handleInputChange}
             required
             className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold focus:border-transparent"
-            placeholder="votre@email.com"
+            placeholder={t('forms.placeholders.email')}
           />
         </div>
 
         <div>
           <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
-            Mot de passe
+            {t('auth.login.password')}
           </label>
           <div className="relative">
             <input
@@ -105,7 +107,7 @@ export function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormProps) {
               onChange={handleInputChange}
               required
               className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold focus:border-transparent pr-12"
-              placeholder="Votre mot de passe"
+              placeholder={t('forms.placeholders.password')}
             />
             <button
               type="button"
@@ -123,10 +125,10 @@ export function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormProps) {
               type="checkbox"
               className="w-4 h-4 text-brand-gold bg-gray-700 border-gray-600 rounded focus:ring-brand-gold"
             />
-            <span className="ml-2 text-sm text-gray-300">Se souvenir de moi</span>
+            <span className="ml-2 text-sm text-gray-300">{t('auth.login.rememberMe')}</span>
           </label>
           <a href="#" className="text-sm text-brand-gold hover:text-yellow-400">
-            Mot de passe oublié ?
+            {t('auth.login.forgotPassword')}
           </a>
         </div>
 
@@ -138,22 +140,22 @@ export function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormProps) {
           {isLoading ? (
             <>
               <FontAwesomeIcon icon={faSpinner} className="animate-spin mr-2" />
-              Connexion...
+              {t('auth.login.signingIn')}
             </>
           ) : (
-            'Se connecter'
+            t('auth.login.signIn')
           )}
         </button>
       </form>
 
       <div className="mt-6 text-center">
         <p className="text-gray-400">
-          Pas encore de compte ?{' '}
+          {t('auth.login.noAccount')}{' '}
           <button
             onClick={onSwitchToRegister}
             className="text-brand-gold hover:text-yellow-400 font-semibold"
           >
-            Créer un compte
+            {t('auth.login.signUp')}
           </button>
         </p>
       </div>

@@ -8,6 +8,7 @@ import {
   faSpinner,
   faExclamationTriangle
 } from '@fortawesome/free-solid-svg-icons'
+import { useTranslation } from '@/contexts/TranslationContext'
 
 interface NewsletterProps {
   className?: string
@@ -15,6 +16,7 @@ interface NewsletterProps {
 }
 
 export function Newsletter({ className = '', variant = 'default' }: NewsletterProps) {
+  const { t } = useTranslation()
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [message, setMessage] = useState('')
@@ -24,7 +26,7 @@ export function Newsletter({ className = '', variant = 'default' }: NewsletterPr
     
     if (!email) {
       setStatus('error')
-      setMessage('Veuillez entrer votre adresse email')
+      setMessage(t('forms.errors.required'))
       return
     }
 
@@ -40,15 +42,15 @@ export function Newsletter({ className = '', variant = 'default' }: NewsletterPr
       
       if (isSuccess) {
         setStatus('success')
-        setMessage('Merci ! Vous êtes maintenant abonné à notre newsletter.')
+        setMessage(t('newsletter.success'))
         setEmail('')
       } else {
         setStatus('error')
-        setMessage('Une erreur est survenue. Veuillez réessayer.')
+        setMessage(t('newsletter.error'))
       }
     } catch (error) {
       setStatus('error')
-      setMessage('Une erreur est survenue. Veuillez réessayer.')
+      setMessage(t('newsletter.error'))
     }
   }
 
@@ -99,7 +101,7 @@ export function Newsletter({ className = '', variant = 'default' }: NewsletterPr
           onClick={() => setStatus('idle')}
           className="text-brand-gold hover:text-brand-gold/80 font-semibold"
         >
-          S'abonner à nouveau
+          {t('newsletter.subscribeAgain')}
         </button>
       </div>
     )
@@ -109,10 +111,10 @@ export function Newsletter({ className = '', variant = 'default' }: NewsletterPr
     <div className={`card-bg rounded-xl border border-brand-gold/20 ${styles.container} ${className}`}>
       <div className="text-center mb-6">
         <h3 className={`font-bold text-white mb-2 ${styles.title} gold-text-gradient`}>
-          Restez informé
+          {t('newsletter.title')}
         </h3>
         <p className={`text-gray-300 ${styles.description}`}>
-          Recevez nos dernières actualités, conseils d'experts et offres exclusives
+          {t('newsletter.description')}
         </p>
       </div>
 
@@ -127,7 +129,7 @@ export function Newsletter({ className = '', variant = 'default' }: NewsletterPr
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Votre adresse email"
+              placeholder={t('newsletter.placeholder')}
               className={`w-full pl-10 pr-4 ${styles.input} bg-white/5 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold focus:border-brand-gold transition-all`}
               disabled={status === 'loading'}
             />
@@ -141,10 +143,10 @@ export function Newsletter({ className = '', variant = 'default' }: NewsletterPr
             {status === 'loading' ? (
               <>
                 <FontAwesomeIcon icon={faSpinner} className="animate-spin mr-2" />
-                Inscription...
+                {t('newsletter.subscribing')}
               </>
             ) : (
-              'S\'abonner'
+              t('newsletter.subscribe')
             )}
           </button>
         </div>

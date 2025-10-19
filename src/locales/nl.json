@@ -1,0 +1,403 @@
+{
+  "common": {
+    "loading": "Laden...",
+    "error": "Fout",
+    "success": "Succes",
+    "cancel": "Annuleren",
+    "confirm": "Bevestigen",
+    "save": "Opslaan",
+    "edit": "Bewerken",
+    "delete": "Verwijderen",
+    "close": "Sluiten",
+    "search": "Zoeken",
+    "filter": "Filteren",
+    "sort": "Sorteren",
+    "view": "Bekijken",
+    "add": "Toevoegen",
+    "remove": "Verwijderen",
+    "continue": "Doorgaan",
+    "back": "Terug",
+    "next": "Volgende",
+    "previous": "Vorige",
+    "submit": "Verzenden",
+    "yes": "Ja",
+    "no": "Nee"
+  },
+  "header": {
+    "title": "GARDEN GOLD GREEN",
+    "phone": "+33 7 78 82 38 40",
+    "email": "contact@gardengoldgreen.com",
+    "freeShipping": "Gratis verzending vanaf €50",
+    "discount": "10% korting vanaf €90 🎁",
+    "navigation": {
+      "home": "Home",
+      "shop": "Winkel",
+      "about": "Over ons",
+      "learn": "Leren",
+      "blog": "Blog",
+      "contact": "Contact",
+      "faq": "FAQ"
+    },
+    "categories": {
+      "title": "Categorieën",
+      "promos": "Promos -50%",
+      "flowers": "CBD Bloemen",
+      "resins": "Harsen",
+      "packs": "Onze Packs",
+      "liquids": "E-liquids/Vap Pens",
+      "oils": "CBD Oliën",
+      "accessories": "Accessoires",
+      "liquidations": "LIQUIDATIES"
+    },
+    "user": {
+      "login": "Inloggen",
+      "register": "Registreren",
+      "profile": "Mijn Profiel",
+      "orders": "Mijn Bestellingen",
+      "logout": "Uitloggen"
+    },
+    "cart": "Winkelwagen"
+  },
+  "footer": {
+    "description": "Garden Gold Green biedt een premium selectie van hoogwaardige CBD-producten, getest in het laboratorium en conform de Franse regelgeving.",
+    "quickLinks": "Snelle links",
+    "categories": "Categorieën",
+    "customerService": "Klantenservice",
+    "legal": "Juridisch",
+    "terms": "Algemene Voorwaarden",
+    "privacy": "Privacybeleid",
+    "shipping": "Verzending en Retourneren",
+    "newsletter": {
+      "title": "Nieuwsbrief",
+      "description": "Ontvang onze laatste aanbiedingen en nieuws",
+      "placeholder": "Uw e-mailadres",
+      "subscribe": "Inschrijven"
+    },
+    "social": "Volg ons",
+    "copyright": "© 2024 Garden Gold Green. Alle rechten voorbehouden.",
+    "paymentMethods": "Geaccepteerde betaalmethoden"
+  },
+  "home": {
+    "hero": {
+      "title": "Premium CBD Producten",
+      "subtitle": "Ontdek onze selectie van hoogwaardige CBD-producten",
+      "cta": "Ontdek onze producten"
+    },
+    "features": {
+      "quality": {
+        "title": "Premium Kwaliteit",
+        "description": "Al onze producten zijn getest in het laboratorium"
+      },
+      "shipping": {
+        "title": "Snelle Verzending",
+        "description": "Gratis verzending vanaf €50"
+      },
+      "support": {
+        "title": "Klantenservice",
+        "description": "Klantenservice beschikbaar 7 dagen per week"
+      }
+    }
+  },
+  "products": {
+    "title": "Onze Producten",
+    "filterBy": "Filteren op",
+    "sortBy": "Sorteren op",
+    "price": "Prijs",
+    "category": "Categorie",
+    "availability": "Beschikbaarheid",
+    "addToCart": "Toevoegen aan winkelwagen",
+    "adding": "Toevoegen...",
+    "added": "Toegevoegd!",
+    "viewDetails": "Details bekijken",
+    "outOfStock": "Uitverkocht",
+    "inStock": "Op voorraad",
+    "lowStock": "Nog maar {count} op voorraad!",
+    "stockCount": "{count} op voorraad",
+    "quantity": "Hoeveelheid",
+    "description": "Beschrijving",
+    "specifications": "Specificaties",
+    "reviews": "Beoordelingen",
+    "relatedProducts": "Gerelateerde producten",
+    "comments": {
+      "title": "Klantbeoordelingen",
+      "noComments": "Nog geen beoordelingen voor dit product",
+      "addComment": "Een beoordeling achterlaten",
+      "rating": "Beoordeling",
+      "comment": "Uw beoordeling",
+      "submit": "Beoordeling verzenden",
+      "submitting": "Verzenden...",
+      "loadError": "Fout bij het laden van reacties",
+      "submitError": "Fout bij het verzenden van reactie",
+      "basedOn": "Gebaseerd op {count} beoordelingen",
+      "beFirst": "Wees de eerste om een beoordeling achter te laten!",
+      "verifiedPurchase": "Geverifieerde aankoop"
+    }
+  },
+  "cart": {
+    "title": "Winkelwagen",
+    "empty": "Uw winkelwagen is leeg",
+    "loading": "Winkelwagen laden...",
+    "discoverProducts": "Ontdek onze premium CBD producten",
+    "viewProducts": "Bekijk producten",
+    "viewCart": "Bekijk winkelwagen",
+    "guestCheckout": "U kunt betalen als gast of",
+    "login": "inloggen",
+    "clearCart": "Winkelwagen legen",
+    "subtotal": "Subtotaal",
+    "shipping": "Verzending",
+    "total": "Totaal",
+    "checkout": "Afrekenen",
+    "continueShopping": "Verder winkelen",
+    "removeItem": "Item verwijderen",
+    "updateQuantity": "Hoeveelheid bijwerken",
+    "inCart": "in winkelwagen"
+  },
+  "checkout": {
+    "title": "Afrekenen",
+    "billing": "Facturering",
+    "shipping": "Verzending",
+    "payment": "Betaling",
+    "selectPaymentMethod": "Kies je betaalmethode",
+    "creditCard": "Creditcard",
+    "cardTypes": "Visa, Mastercard, American Express",
+    "paypalDescription": "Veilige PayPal betaling",
+    "orderSummary": "Bestellingsoverzicht",
+    "placeOrder": "Bestelling plaatsen",
+    "firstName": "Voornaam",
+    "lastName": "Achternaam",
+    "email": "E-mail",
+    "phone": "Telefoon",
+    "address": "Adres",
+    "city": "Stad",
+    "postalCode": "Postcode",
+    "country": "Land",
+    "paymentMethod": "Betaalmethode",
+    "cardNumber": "Kaartnummer",
+    "expiryDate": "Vervaldatum",
+    "cvv": "CVV",
+    "nameOnCard": "Naam op kaart"
+  },
+  "auth": {
+    "login": {
+      "title": "Inloggen",
+      "subtitle": "Log in op uw account",
+      "email": "E-mail",
+      "password": "Wachtwoord",
+      "rememberMe": "Onthoud mij",
+      "forgotPassword": "Wachtwoord vergeten?",
+      "noAccount": "Geen account?",
+      "signUp": "Account aanmaken",
+      "signIn": "Inloggen",
+      "signingIn": "Inloggen..."
+    },
+    "register": {
+      "title": "Registreren",
+      "subtitle": "Maak je Garden Gold Green account aan",
+      "firstName": "Voornaam",
+      "lastName": "Achternaam",
+      "email": "E-mail",
+      "password": "Wachtwoord",
+      "confirmPassword": "Wachtwoord bevestigen",
+      "agreeTerms": "Ik ga akkoord met de",
+      "hasAccount": "Al een account?",
+      "signIn": "Inloggen",
+      "signUp": "Mijn account aanmaken",
+      "signingUp": "Registreren..."
+    }
+  },
+  "profile": {
+    "title": "Mijn Profiel",
+    "personalInfo": "Persoonlijke informatie",
+    "orderHistory": "Bestelgeschiedenis",
+    "addresses": "Adressen",
+    "preferences": "Voorkeuren",
+    "updateProfile": "Profiel bijwerken",
+    "changePassword": "Wachtwoord wijzigen",
+    "firstName": "Voornaam",
+    "lastName": "Achternaam",
+    "email": "E-mail",
+    "phone": "Telefoon",
+    "address": "Adres",
+    "street": "Straat",
+    "city": "Stad",
+    "postalCode": "Postcode",
+    "country": "Land",
+    "shippingAddress": "Verzendadres",
+    "notProvided": "Niet opgegeven",
+    "accountActions": "Accountacties",
+    "orderHistory": "Bestelgeschiedenis",
+    "viewOrderHistory": "Bekijk al je vorige bestellingen",
+    "favorites": "Mijn favorieten",
+    "savedProducts": "Opgeslagen producten",
+    "logout": "Uitloggen",
+    "closeSession": "Sluit je sessie",
+    "countries": {
+      "france": "Frankrijk",
+      "belgium": "België",
+      "switzerland": "Zwitserland",
+      "germany": "Duitsland"
+    }
+  },
+  "orders": {
+    "title": "Mijn Bestellingen",
+    "orderNumber": "Bestelnummer",
+    "date": "Datum",
+    "status": "Status",
+    "total": "Totaal",
+    "viewOrder": "Bestelling bekijken",
+    "trackOrder": "Bestelling volgen",
+    "cancelOrder": "Bestelling annuleren",
+    "statuses": {
+      "pending": "In behandeling",
+      "processing": "Wordt verwerkt",
+      "shipped": "Verzonden",
+      "delivered": "Bezorgd",
+      "cancelled": "Geannuleerd"
+    }
+  },
+  "about": {
+    "title": "Over ons",
+    "mission": "Onze Missie",
+    "values": "Onze Waarden",
+    "team": "Ons Team",
+    "story": "Ons Verhaal"
+  },
+  "contact": {
+    "title": "Contact",
+    "getInTouch": "Neem contact op",
+    "form": {
+      "name": "Naam",
+      "email": "E-mail",
+      "subject": "Onderwerp",
+      "message": "Bericht",
+      "send": "Verzenden"
+    },
+    "info": {
+      "phone": "Telefoon",
+      "email": "E-mail",
+      "address": "Adres",
+      "hours": "Openingstijden"
+    }
+  },
+  "faq": {
+    "title": "FAQ",
+    "searchPlaceholder": "Zoek in FAQ"
+  },
+  "blog": {
+    "title": "Blog",
+    "readMore": "Lees meer",
+    "publishedOn": "Gepubliceerd op",
+    "author": "Auteur",
+    "tags": "Tags"
+  },
+  "notifications": {
+    "addedToCart": "Product toegevoegd aan winkelwagen",
+    "removedFromCart": "Product verwijderd uit winkelwagen",
+    "orderPlaced": "Bestelling succesvol geplaatst",
+    "profileUpdated": "Profiel bijgewerkt",
+    "error": "Er is een fout opgetreden"
+  },
+  "forms": {
+    "placeholders": {
+      "fullName": "Uw volledige naam",
+      "email": "uw@email.com",
+      "password": "Uw wachtwoord",
+      "confirmPassword": "Bevestig uw wachtwoord",
+      "firstName": "Voornaam",
+      "lastName": "Achternaam",
+      "address": "123 Hoofdstraat",
+      "city": "Amsterdam",
+      "search": "Zoeken...",
+      "searchArticles": "Zoek artikelen...",
+      "searchProducts": "Zoek producten...",
+      "searchOrders": "Zoek bestellingen...",
+      "searchCustomers": "Zoek klanten...",
+      "searchFAQs": "Zoek in FAQ...",
+      "newsletter": "Uw e-mailadres",
+      "contactMessage": "Vertel ons hoe we u kunnen helpen...",
+      "productComment": "Deel uw ervaring met dit product...",
+      "promoCode": "Voer uw promotiecode in",
+      "postalCode": "1012"
+    },
+    "labels": {
+      "fullName": "Volledige naam",
+      "email": "E-mail",
+      "password": "Wachtwoord",
+      "confirmPassword": "Bevestig wachtwoord",
+      "firstName": "Voornaam",
+      "lastName": "Achternaam",
+      "address": "Adres",
+      "city": "Stad",
+      "search": "Zoeken",
+      "newsletter": "Nieuwsbrief",
+      "contactMessage": "Bericht"
+    },
+    "errors": {
+      "passwordMismatch": "Wachtwoorden komen niet overeen",
+      "required": "Dit veld is verplicht",
+      "invalidEmail": "Ongeldig e-mailadres",
+      "passwordTooShort": "Wachtwoord moet minimaal 6 tekens bevatten",
+      "connectionError": "Verbindingsfout",
+      "acceptTerms": "Je moet de gebruiksvoorwaarden accepteren",
+      "registrationError": "Registratiefout"
+    }
+  },
+  "images": {
+    "alt": {
+      "logo": "Garden Gold Green logo",
+      "logoPremium": "Garden Gold Green - Premium CBD Logo",
+      "logo3G": "3G - Garden Gold Green logo, metallic gold, emerald green, and shiny silver, on a dark background with light reflections",
+      "cbdOil": "Elegant glass dropper bottle with gold cap for CBD oil, on a dark, luxurious background with a subtle leaf shadow, product photography style",
+      "cbdCream": "Luxurious jar of CBD cream with gold and green labeling, sitting on a marble surface with a green plant in the background, high-end cosmetic photography",
+      "cbdGummies": "Premium packaging for CBD gummies, dark box with gold foil lettering, showing a few colorful gummies next to it, lifestyle product shot",
+      "cannabisLeaf": "Close-up of a vibrant green cannabis leaf with glistening golden CBD oil dripping from the tip, dark background, macro photography, dramatic lighting",
+      "userAvatar": "Gebruikersavatar",
+      "loading": "Laden...",
+      "hempFields": "Hennepvelden in Colorado",
+      "labTesting": "Laboratoriumtestproces",
+      "educationalVideo": "CBD educatieve video"
+    }
+  },
+  "actions": {
+    "search": "Zoeken",
+    "addToCart": "Toevoegen aan winkelwagen",
+    "removeFromCart": "Verwijderen uit winkelwagen",
+    "addToFavorites": "Toevoegen aan favorieten",
+    "share": "Delen",
+    "decrease": "Verminderen",
+    "increase": "Verhogen",
+    "edit": "Bewerken",
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "close": "Sluiten",
+    "delete": "Verwijderen"
+  },
+  "sections": {
+    "youMightLike": "U vindt dit misschien ook leuk",
+    "searchResults": "Zoekresultaten",
+    "noResults": "Geen resultaten gevonden"
+  },
+  "newsletter": {
+    "title": "Blijf op de hoogte",
+    "description": "Ontvang onze laatste nieuws, expert tips en exclusieve aanbiedingen",
+    "placeholder": "Uw e-mailadres",
+    "subscribe": "Inschrijven",
+    "subscribing": "Inschrijven...",
+    "subscribeAgain": "Opnieuw inschrijven",
+    "success": "Bedankt! U bent nu ingeschreven voor onze nieuwsbrief.",
+    "error": "Er is een fout opgetreden. Probeer het opnieuw."
+  },
+  "systemTest": {
+    "title": "Systeemtest",
+    "authentication": "Authenticatie",
+    "cart": "Winkelwagen",
+    "notifications": "Meldingen"
+  },
+  "cookies": {
+    "title": "We gebruiken cookies",
+    "description": "We gebruiken cookies om uw ervaring te verbeteren, ons verkeer te analyseren en content te personaliseren. Door onze site te blijven gebruiken, accepteert u ons gebruik van cookies.",
+    "customize": "Aanpassen",
+    "rejectAll": "Alles weigeren",
+    "acceptAll": "Alles accepteren"
+  }
+}

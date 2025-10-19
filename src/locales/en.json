@@ -1,0 +1,403 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "close": "Close",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "view": "View",
+    "add": "Add",
+    "remove": "Remove",
+    "continue": "Continue",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "header": {
+    "title": "GARDEN GOLD GREEN",
+    "phone": "+33 7 78 82 38 40",
+    "email": "contact@gardengoldgreen.com",
+    "freeShipping": "Free shipping from €50",
+    "discount": "10% off from €90 🎁",
+    "navigation": {
+      "home": "Home",
+      "shop": "Shop",
+      "about": "About",
+      "learn": "Learn",
+      "blog": "Blog",
+      "contact": "Contact",
+      "faq": "FAQ"
+    },
+    "categories": {
+      "title": "Categories",
+      "promos": "Promos -50%",
+      "flowers": "CBD Flowers",
+      "resins": "Resins",
+      "packs": "Our Packs",
+      "liquids": "E-liquids/Vap Pens",
+      "oils": "CBD Oils",
+      "accessories": "Accessories",
+      "liquidations": "LIQUIDATIONS"
+    },
+    "user": {
+      "login": "Login",
+      "register": "Register",
+      "profile": "My Profile",
+      "orders": "My Orders",
+      "logout": "Logout"
+    },
+    "cart": "Cart"
+  },
+  "footer": {
+    "description": "Garden Gold Green offers a premium selection of high-quality CBD products, laboratory tested and compliant with French regulations.",
+    "quickLinks": "Quick Links",
+    "categories": "Categories",
+    "customerService": "Customer Service",
+    "legal": "Legal",
+    "terms": "Terms & Conditions",
+    "privacy": "Privacy Policy",
+    "shipping": "Shipping & Returns",
+    "newsletter": {
+      "title": "Newsletter",
+      "description": "Receive our latest offers and news",
+      "placeholder": "Your email address",
+      "subscribe": "Subscribe"
+    },
+    "social": "Follow us",
+    "copyright": "© 2024 Garden Gold Green. All rights reserved.",
+    "paymentMethods": "Accepted payment methods"
+  },
+  "home": {
+    "hero": {
+      "title": "Premium CBD Products",
+      "subtitle": "Discover our selection of high-quality CBD products",
+      "cta": "Discover our products"
+    },
+    "features": {
+      "quality": {
+        "title": "Premium Quality",
+        "description": "All our products are laboratory tested"
+      },
+      "shipping": {
+        "title": "Fast Shipping",
+        "description": "Free shipping from €50"
+      },
+      "support": {
+        "title": "Customer Support",
+        "description": "Customer service available 7 days a week"
+      }
+    }
+  },
+  "products": {
+    "title": "Our Products",
+    "filterBy": "Filter by",
+    "sortBy": "Sort by",
+    "price": "Price",
+    "category": "Category",
+    "availability": "Availability",
+    "addToCart": "Add to cart",
+    "adding": "Adding...",
+    "added": "Added!",
+    "viewDetails": "View details",
+    "outOfStock": "Out of stock",
+    "inStock": "In stock",
+    "lowStock": "Only {count} left in stock!",
+    "stockCount": "{count} in stock",
+    "quantity": "Quantity",
+    "description": "Description",
+    "specifications": "Specifications",
+    "reviews": "Reviews",
+    "relatedProducts": "Related products",
+    "comments": {
+      "title": "Customer Reviews",
+      "noComments": "No reviews for this product yet",
+      "addComment": "Leave a review",
+      "rating": "Rating",
+      "comment": "Your review",
+      "submit": "Submit review",
+      "submitting": "Submitting...",
+      "loadError": "Error loading comments",
+      "submitError": "Error submitting comment",
+      "basedOn": "Based on {count} reviews",
+      "beFirst": "Be the first to leave a review!",
+      "verifiedPurchase": "Verified purchase"
+    }
+  },
+  "cart": {
+    "title": "Cart",
+    "empty": "Your cart is empty",
+    "loading": "Loading cart...",
+    "discoverProducts": "Discover our premium CBD products",
+    "viewProducts": "View products",
+    "viewCart": "View cart",
+    "guestCheckout": "You can pay as a guest or",
+    "login": "login",
+    "clearCart": "Clear cart",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "total": "Total",
+    "checkout": "Checkout",
+    "continueShopping": "Continue shopping",
+    "removeItem": "Remove item",
+    "updateQuantity": "Update quantity",
+    "inCart": "in cart"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "billing": "Billing",
+    "shipping": "Shipping",
+    "payment": "Payment",
+    "selectPaymentMethod": "Choose your payment method",
+    "creditCard": "Credit Card",
+    "cardTypes": "Visa, Mastercard, American Express",
+    "paypalDescription": "Secure PayPal payment",
+    "orderSummary": "Order Summary",
+    "placeOrder": "Place Order",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "city": "City",
+    "postalCode": "Postal Code",
+    "country": "Country",
+    "paymentMethod": "Payment Method",
+    "cardNumber": "Card Number",
+    "expiryDate": "Expiry Date",
+    "cvv": "CVV",
+    "nameOnCard": "Name on Card"
+  },
+  "auth": {
+    "login": {
+      "title": "Login",
+      "subtitle": "Sign in to your account",
+      "email": "Email",
+      "password": "Password",
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot password?",
+      "noAccount": "No account?",
+      "signUp": "Create account",
+      "signIn": "Sign in",
+      "signingIn": "Signing in..."
+    },
+    "register": {
+      "title": "Register",
+      "subtitle": "Create your Garden Gold Green account",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "agreeTerms": "I agree to the",
+      "hasAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "signUp": "Create my account",
+      "signingUp": "Registering..."
+    }
+  },
+  "profile": {
+    "title": "My Profile",
+    "personalInfo": "Personal Information",
+    "orderHistory": "Order History",
+    "addresses": "Addresses",
+    "preferences": "Preferences",
+    "updateProfile": "Update Profile",
+    "changePassword": "Change Password",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "street": "Street",
+    "city": "City",
+    "postalCode": "Postal Code",
+    "country": "Country",
+    "shippingAddress": "Shipping Address",
+    "notProvided": "Not provided",
+    "accountActions": "Account Actions",
+    "orderHistory": "Order History",
+    "viewOrderHistory": "View all your past orders",
+    "favorites": "My Favorites",
+    "savedProducts": "Saved products",
+    "logout": "Logout",
+    "closeSession": "Close your session",
+    "countries": {
+      "france": "France",
+      "belgium": "Belgium",
+      "switzerland": "Switzerland",
+      "germany": "Germany"
+    }
+  },
+  "orders": {
+    "title": "My Orders",
+    "orderNumber": "Order Number",
+    "date": "Date",
+    "status": "Status",
+    "total": "Total",
+    "viewOrder": "View Order",
+    "trackOrder": "Track Order",
+    "cancelOrder": "Cancel Order",
+    "statuses": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "shipped": "Shipped",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled"
+    }
+  },
+  "about": {
+    "title": "About",
+    "mission": "Our Mission",
+    "values": "Our Values",
+    "team": "Our Team",
+    "story": "Our Story"
+  },
+  "contact": {
+    "title": "Contact",
+    "getInTouch": "Get in Touch",
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "subject": "Subject",
+      "message": "Message",
+      "send": "Send"
+    },
+    "info": {
+      "phone": "Phone",
+      "email": "Email",
+      "address": "Address",
+      "hours": "Opening Hours"
+    }
+  },
+  "faq": {
+    "title": "FAQ",
+    "searchPlaceholder": "Search FAQ"
+  },
+  "blog": {
+    "title": "Blog",
+    "readMore": "Read more",
+    "publishedOn": "Published on",
+    "author": "Author",
+    "tags": "Tags"
+  },
+  "notifications": {
+    "addedToCart": "Product added to cart",
+    "removedFromCart": "Product removed from cart",
+    "orderPlaced": "Order placed successfully",
+    "profileUpdated": "Profile updated",
+    "error": "An error occurred"
+  },
+  "forms": {
+    "placeholders": {
+      "fullName": "Your full name",
+      "email": "your@email.com",
+      "password": "Your password",
+      "confirmPassword": "Confirm your password",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "address": "123 Main Street",
+      "city": "New York",
+      "search": "Search...",
+      "searchArticles": "Search articles...",
+      "searchProducts": "Search products...",
+      "searchOrders": "Search orders...",
+      "searchCustomers": "Search customers...",
+      "searchFAQs": "Search FAQs...",
+      "newsletter": "Your email address",
+      "contactMessage": "Tell us how we can help you...",
+      "productComment": "Share your experience with this product...",
+      "promoCode": "Enter your promo code",
+      "postalCode": "12345"
+    },
+    "labels": {
+      "fullName": "Full name",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "address": "Address",
+      "city": "City",
+      "search": "Search",
+      "newsletter": "Newsletter",
+      "contactMessage": "Message"
+    },
+    "errors": {
+      "passwordMismatch": "Passwords do not match",
+      "required": "This field is required",
+      "invalidEmail": "Invalid email",
+      "passwordTooShort": "Password must be at least 6 characters",
+      "connectionError": "Connection error",
+      "acceptTerms": "You must accept the terms of use",
+      "registrationError": "Registration error"
+    }
+  },
+  "images": {
+    "alt": {
+      "logo": "Garden Gold Green logo",
+      "logoPremium": "Garden Gold Green - Premium CBD Logo",
+      "logo3G": "3G - Garden Gold Green logo, metallic gold, emerald green, and shiny silver, on a dark background with light reflections",
+      "cbdOil": "Elegant glass dropper bottle with gold cap for CBD oil, on a dark, luxurious background with a subtle leaf shadow, product photography style",
+      "cbdCream": "Luxurious jar of CBD cream with gold and green labeling, sitting on a marble surface with a green plant in the background, high-end cosmetic photography",
+      "cbdGummies": "Premium packaging for CBD gummies, dark box with gold foil lettering, showing a few colorful gummies next to it, lifestyle product shot",
+      "cannabisLeaf": "Close-up of a vibrant green cannabis leaf with glistening golden CBD oil dripping from the tip, dark background, macro photography, dramatic lighting",
+      "userAvatar": "User avatar",
+      "loading": "Loading...",
+      "hempFields": "Hemp fields in Colorado",
+      "labTesting": "Lab testing process",
+      "educationalVideo": "CBD educational video"
+    }
+  },
+  "actions": {
+    "search": "Search",
+    "addToCart": "Add to cart",
+    "removeFromCart": "Remove from cart",
+    "addToFavorites": "Add to favorites",
+    "share": "Share",
+    "decrease": "Decrease",
+    "increase": "Increase",
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "delete": "Delete"
+  },
+  "sections": {
+    "youMightLike": "You might also like",
+    "searchResults": "Search results",
+    "noResults": "No results found"
+  },
+  "newsletter": {
+    "title": "Stay informed",
+    "description": "Receive our latest news, expert tips and exclusive offers",
+    "placeholder": "Your email address",
+    "subscribe": "Subscribe",
+    "subscribing": "Subscribing...",
+    "subscribeAgain": "Subscribe again",
+    "success": "Thank you! You are now subscribed to our newsletter.",
+    "error": "An error occurred. Please try again."
+  },
+  "systemTest": {
+    "title": "System Test",
+    "authentication": "Authentication",
+    "cart": "Cart",
+    "notifications": "Notifications"
+  },
+  "cookies": {
+    "title": "We use cookies",
+    "description": "We use cookies to improve your experience, analyze our traffic and personalize content. By continuing to use our site, you accept our use of cookies.",
+    "customize": "Customize",
+    "rejectAll": "Reject all",
+    "acceptAll": "Accept all"
+  }
+}

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
-import { ProtectedRoute } from '@/components/ProtectedRoute'
+import { AdminGuard } from '@/components/AdminGuard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
   faChartLine, 
@@ -459,8 +459,8 @@ function AdminContent() {
 
 export default function AdminPage() {
   return (
-    <ProtectedRoute>
+    <AdminGuard>
       <AdminContent />
-    </ProtectedRoute>
+    </AdminGuard>
   )
 }

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faStar, faUser, faCalendar } from '@fortawesome/free-solid-svg-icons'
+import { useTranslation } from '@/contexts/TranslationContext'
 import { StarRating } from './StarRating'
 
 interface Comment {
@@ -21,6 +22,7 @@ interface ProductCommentsProps {
 }
 
 export function ProductComments({ productId }: ProductCommentsProps) {
+  const { t } = useTranslation()
   const [comments, setComments] = useState<Comment[]>([])
   const [newComment, setNewComment] = useState('')
   const [newRating, setNewRating] = useState(0)
@@ -39,7 +41,7 @@ export function ProductComments({ productId }: ProductCommentsProps) {
         setComments(data)
       }
     } catch (error) {
-      console.error('Erreur lors du chargement des commentaires:', error)
+      console.error(t('products.comments.loadError'), error)
     } finally {
       setIsLoading(false)
     }
@@ -96,7 +98,7 @@ export function ProductComments({ productId }: ProductCommentsProps) {
       {/* En-tête avec note moyenne */}
       <div className="mb-6">
         <h3 className="text-2xl font-bold text-white mb-2">
-          Avis clients ({comments.length})
+          {t('products.comments.title')} ({comments.length})
         </h3>
         {comments.length > 0 && (
           <div className="flex items-center space-x-4">
@@ -107,7 +109,7 @@ export function ProductComments({ productId }: ProductCommentsProps) {
               <StarRating rating={averageRating} size="lg" />
             </div>
             <span className="text-gray-400">
-              Basé sur {comments.length} avis
+              {t('products.comments.basedOn', { count: comments.length })}
             </span>
           </div>
         )}
@@ -116,12 +118,12 @@ export function ProductComments({ productId }: ProductCommentsProps) {
       {/* Formulaire d'ajout de commentaire */}
       <div className="bg-gray-800 rounded-lg p-6 mb-6">
         <h4 className="text-lg font-semibold text-white mb-4">
-          Laisser un avis
+          {t('products.comments.addComment')}
         </h4>
         <form onSubmit={handleSubmitComment}>
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              Note
+              {t('products.comments.rating')}
             </label>
             <StarRating 
               rating={newRating} 
@@ -132,12 +134,12 @@ export function ProductComments({ productId }: ProductCommentsProps) {
           
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              Votre avis
+              {t('products.comments.comment')}
             </label>
             <textarea
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
-              placeholder="Partagez votre expérience avec ce produit..."
+              placeholder={t('forms.placeholders.productComment')}
               className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold focus:border-transparent"
               rows={4}
               required
@@ -149,7 +151,7 @@ export function ProductComments({ productId }: ProductCommentsProps) {
             disabled={isSubmitting || !newComment.trim() || newRating === 0}
             className="btn-gold px-6 py-2 rounded-full font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? 'Envoi...' : 'Publier l\'avis'}
+            {isSubmitting ? t('products.comments.submitting') : t('products.comments.submit')}
           </button>
         </form>
       </div>
@@ -159,10 +161,10 @@ export function ProductComments({ productId }: ProductCommentsProps) {
         {comments.length === 0 ? (
           <div className="text-center py-8">
             <p className="text-gray-400 text-lg">
-              Aucun avis pour ce produit pour le moment.
+              {t('products.comments.noComments')}
             </p>
             <p className="text-gray-500 text-sm mt-2">
-              Soyez le premier à laisser votre avis !
+              {t('products.comments.beFirst')}
             </p>
           </div>
         ) : (
@@ -180,7 +182,7 @@ export function ProductComments({ productId }: ProductCommentsProps) {
                       </span>
                       {comment.verified && (
                         <span className="bg-brand-green text-white text-xs px-2 py-1 rounded-full">
-                          Achat vérifié
+                          {t('products.comments.verifiedPurchase')}
                         </span>
                       )}
                     </div>

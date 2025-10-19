@@ -14,6 +14,7 @@ import {
   faSignOutAlt
 } from '@fortawesome/free-solid-svg-icons'
 import { useAuth0 } from '@/hooks/useAuth0'
+import { useTranslation } from '@/contexts/TranslationContext'
 
 interface UserProfileModalProps {
   isOpen: boolean
@@ -21,6 +22,7 @@ interface UserProfileModalProps {
 }
 
 export function UserProfileModal({ isOpen, onClose }: UserProfileModalProps) {
+  const { t } = useTranslation()
   const [isEditing, setIsEditing] = useState(false)
   const [formData, setFormData] = useState({
     firstName: '',
@@ -99,13 +101,13 @@ export function UserProfileModal({ isOpen, onClose }: UserProfileModalProps) {
       <div className="relative bg-brand-black border border-white/10 rounded-2xl p-8 w-full max-w-2xl mx-4 shadow-2xl max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-white">Mon Profil</h2>
+          <h2 className="text-2xl font-bold text-white">{t('profile.title')}</h2>
           <div className="flex items-center space-x-2">
             {!isEditing ? (
               <button
                 onClick={() => setIsEditing(true)}
                 className="text-brand-gold hover:text-brand-green transition-colors p-2"
-                title="Modifier le profil"
+                title={t('actions.edit')}
               >
                 <FontAwesomeIcon icon={faEdit} className="text-lg" />
               </button>
@@ -115,7 +117,7 @@ export function UserProfileModal({ isOpen, onClose }: UserProfileModalProps) {
                   onClick={handleSave}
                   disabled={state.isLoading}
                   className="text-brand-green hover:text-green-300 transition-colors p-2 disabled:opacity-50"
-                  title="Sauvegarder"
+                  title={t('actions.save')}
                 >
                   {state.isLoading ? (
                     <FontAwesomeIcon icon={faSpinner} className="animate-spin text-lg" />
@@ -126,7 +128,7 @@ export function UserProfileModal({ isOpen, onClose }: UserProfileModalProps) {
                 <button
                   onClick={() => setIsEditing(false)}
                   className="text-gray-400 hover:text-white transition-colors p-2"
-                  title="Annuler"
+                  title={t('actions.cancel')}
                 >
                   <FontAwesomeIcon icon={faXmark} className="text-lg" />
                 </button>
@@ -135,7 +137,7 @@ export function UserProfileModal({ isOpen, onClose }: UserProfileModalProps) {
             <button
               onClick={onClose}
               className="text-gray-400 hover:text-white transition-colors p-2"
-              title="Fermer"
+              title={t('actions.close')}
             >
               <FontAwesomeIcon icon={faXmark} className="text-lg" />
             </button>
@@ -153,12 +155,12 @@ export function UserProfileModal({ isOpen, onClose }: UserProfileModalProps) {
         <div className="space-y-6">
           {/* Personal Information */}
           <div className="card-bg rounded-xl p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">Informations personnelles</h3>
+            <h3 className="text-lg font-semibold text-white mb-4">{t('profile.personalInfo')}</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-400 mb-2">
-                  Prénom
+                  {t('profile.firstName')}
                 </label>
                 {isEditing ? (
                   <div className="relative">
@@ -181,7 +183,7 @@ export function UserProfileModal({ isOpen, onClose }: UserProfileModalProps) {
               
               <div>
                 <label className="block text-sm font-medium text-gray-400 mb-2">
-                  Nom
+                  {t('profile.lastName')}
                 </label>
                 {isEditing ? (
                   <div className="relative">
@@ -205,7 +207,7 @@ export function UserProfileModal({ isOpen, onClose }: UserProfileModalProps) {
 
             <div className="mt-4">
               <label className="block text-sm font-medium text-gray-400 mb-2">
-                Email
+                {t('profile.email')}
               </label>
               {isEditing ? (
                 <div className="relative">
@@ -228,7 +230,7 @@ export function UserProfileModal({ isOpen, onClose }: UserProfileModalProps) {
 
             <div className="mt-4">
               <label className="block text-sm font-medium text-gray-400 mb-2">
-                Téléphone
+                {t('profile.phone')}
               </label>
               {isEditing ? (
                 <div className="relative">
@@ -245,19 +247,19 @@ export function UserProfileModal({ isOpen, onClose }: UserProfileModalProps) {
                   />
                 </div>
               ) : (
-                <p className="text-white">{state.user.phone || 'Non renseigné'}</p>
+                <p className="text-white">{state.user.phone || t('profile.notProvided')}</p>
               )}
             </div>
           </div>
 
           {/* Address Information */}
           <div className="card-bg rounded-xl p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">Adresse de livraison</h3>
+            <h3 className="text-lg font-semibold text-white mb-4">{t('profile.shippingAddress')}</h3>
             
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-400 mb-2">
-                  Adresse
+                  {t('profile.address')}
                 </label>
                 {isEditing ? (
                   <div className="relative">
@@ -267,7 +269,7 @@ export function UserProfileModal({ isOpen, onClose }: UserProfileModalProps) {
                       value={formData.address.street}
                       onChange={handleInputChange}
                       className="input-field w-full pl-12"
-                      placeholder="123 Rue de la Paix"
+                      placeholder={t('forms.placeholders.address')}
                     />
                     <FontAwesomeIcon 
                       icon={faMapMarkerAlt} 
@@ -275,14 +277,14 @@ export function UserProfileModal({ isOpen, onClose }: UserProfileModalProps) {
                     />
                   </div>
                 ) : (
-                  <p className="text-white">{state.user.address?.street || 'Non renseignée'}</p>
+                  <p className="text-white">{state.user.address?.street || t('profile.notProvided')}</p>
                 )}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-400 mb-2">
-                    Ville
+                    {t('profile.city')}
                   </label>
                   {isEditing ? (
                     <input
@@ -291,16 +293,16 @@ export function UserProfileModal({ isOpen, onClose }: UserProfileModalProps) {
                       value={formData.address.city}
                       onChange={handleInputChange}
                       className="input-field w-full"
-                      placeholder="Paris"
+                      placeholder={t('forms.placeholders.city')}
                     />
                   ) : (
-                    <p className="text-white">{state.user.address?.city || 'Non renseignée'}</p>
+                    <p className="text-white">{state.user.address?.city || t('profile.notProvided')}</p>
                   )}
                 </div>
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-400 mb-2">
-                    Code postal
+                    {t('profile.postalCode')}
                   </label>
                   {isEditing ? (
                     <input
@@ -309,16 +311,16 @@ export function UserProfileModal({ isOpen, onClose }: UserProfileModalProps) {
                       value={formData.address.postalCode}
                       onChange={handleInputChange}
                       className="input-field w-full"
-                      placeholder="75001"
+                      placeholder={t('forms.placeholders.postalCode')}
                     />
                   ) : (
-                    <p className="text-white">{state.user.address?.postalCode || 'Non renseigné'}</p>
+                    <p className="text-white">{state.user.address?.postalCode || t('profile.notProvided')}</p>
                   )}
                 </div>
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-400 mb-2">
-                    Pays
+                    {t('profile.country')}
                   </label>
                   {isEditing ? (
                     <select
@@ -327,13 +329,13 @@ export function UserProfileModal({ isOpen, onClose }: UserProfileModalProps) {
                       onChange={handleInputChange}
                       className="input-field w-full"
                     >
-                      <option value="France">France</option>
-                      <option value="Belgium">Belgique</option>
-                      <option value="Switzerland">Suisse</option>
-                      <option value="Germany">Allemagne</option>
+                      <option value="France">{t('profile.countries.france')}</option>
+                      <option value="Belgium">{t('profile.countries.belgium')}</option>
+                      <option value="Switzerland">{t('profile.countries.switzerland')}</option>
+                      <option value="Germany">{t('profile.countries.germany')}</option>
                     </select>
                   ) : (
-                    <p className="text-white">{state.user.address?.country || 'Non renseigné'}</p>
+                    <p className="text-white">{state.user.address?.country || t('profile.notProvided')}</p>
                   )}
                 </div>
               </div>
@@ -342,23 +344,23 @@ export function UserProfileModal({ isOpen, onClose }: UserProfileModalProps) {
 
           {/* Account Actions */}
           <div className="card-bg rounded-xl p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">Actions du compte</h3>
+            <h3 className="text-lg font-semibold text-white mb-4">{t('profile.accountActions')}</h3>
             
             <div className="space-y-3">
               <button
                 onClick={() => {/* TODO: Implémenter l'historique des commandes */}}
                 className="w-full text-left p-3 bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
               >
-                <p className="text-white font-medium">Historique des commandes</p>
-                <p className="text-gray-400 text-sm">Voir toutes vos commandes passées</p>
+                <p className="text-white font-medium">{t('profile.orderHistory')}</p>
+                <p className="text-gray-400 text-sm">{t('profile.viewOrderHistory')}</p>
               </button>
               
               <button
                 onClick={() => {/* TODO: Implémenter les favoris */}}
                 className="w-full text-left p-3 bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
               >
-                <p className="text-white font-medium">Mes favoris</p>
-                <p className="text-gray-400 text-sm">Produits sauvegardés</p>
+                <p className="text-white font-medium">{t('profile.favorites')}</p>
+                <p className="text-gray-400 text-sm">{t('profile.savedProducts')}</p>
               </button>
               
               <button
@@ -368,8 +370,8 @@ export function UserProfileModal({ isOpen, onClose }: UserProfileModalProps) {
                 <div className="flex items-center">
                   <FontAwesomeIcon icon={faSignOutAlt} className="text-red-400 mr-3" />
                   <div>
-                    <p className="text-red-400 font-medium">Se déconnecter</p>
-                    <p className="text-red-300 text-sm">Fermer votre session</p>
+                    <p className="text-red-400 font-medium">{t('profile.logout')}</p>
+                    <p className="text-red-300 text-sm">{t('profile.closeSession')}</p>
                   </div>
                 </div>
               </button>

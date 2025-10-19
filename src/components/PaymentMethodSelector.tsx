@@ -8,6 +8,7 @@ import {
 import { faCreditCard as faCard, faSpinner, faCheck } from '@fortawesome/free-solid-svg-icons'
 import { useCart } from '@/contexts/CartContext'
 import { useNotifications } from '@/contexts/NotificationContext'
+import { useTranslation } from '@/contexts/TranslationContext'
 
 export type PaymentMethod = 'stripe' | 'paypal'
 
@@ -22,6 +23,7 @@ export function PaymentMethodSelector({
   onPaymentSuccess,
   onPaymentError 
 }: PaymentMethodSelectorProps) {
+  const { t } = useTranslation()
   const { state } = useCart()
   const { addNotification } = useNotifications()
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>('stripe')
@@ -30,9 +32,9 @@ export function PaymentMethodSelector({
   const paymentMethods = [
     {
       id: 'stripe' as PaymentMethod,
-      name: 'Carte bancaire',
+      name: t('checkout.creditCard'),
       icon: faCard,
-      description: 'Visa, Mastercard, American Express',
+      description: t('checkout.cardTypes'),
       color: 'bg-blue-600',
       textColor: 'text-white'
     },
@@ -40,7 +42,7 @@ export function PaymentMethodSelector({
       id: 'paypal' as PaymentMethod,
       name: 'PayPal',
       icon: faPaypal,
-      description: 'Paiement sécurisé PayPal',
+      description: t('checkout.paypalDescription'),
       color: 'bg-blue-500',
       textColor: 'text-white'
     }
@@ -129,7 +131,7 @@ export function PaymentMethodSelector({
       
       {/* Sélection de la méthode de paiement */}
       <div className="space-y-3">
-        <h3 className="text-lg font-semibold text-white mb-4">Choisissez votre méthode de paiement</h3>
+        <h3 className="text-lg font-semibold text-white mb-4">{t('checkout.selectPaymentMethod')}</h3>
         {paymentMethods.map((method) => (
           <button
             key={method.id}

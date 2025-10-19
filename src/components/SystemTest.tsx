@@ -4,10 +4,12 @@ import { useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { useCart } from '@/contexts/CartContext'
 import { useNotifications } from '@/contexts/NotificationContext'
+import { useTranslation } from '@/contexts/TranslationContext'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCog, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons'
 
 export function SystemTest() {
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const [testResults, setTestResults] = useState<Record<string, boolean>>({})
   const [isRunningTests, setIsRunningTests] = useState(false)
@@ -73,7 +75,7 @@ export function SystemTest() {
       <button
         onClick={() => setIsOpen(true)}
         className="fixed bottom-4 right-4 bg-brand-gold text-black p-3 rounded-full shadow-lg hover:bg-brand-green transition-colors z-50"
-        title="Test du système"
+        title={t('systemTest.title')}
       >
         <FontAwesomeIcon icon={faCog} className="text-lg" />
       </button>
@@ -83,7 +85,7 @@ export function SystemTest() {
   return (
     <div className="fixed bottom-4 right-4 bg-brand-black border border-white/10 rounded-xl p-4 shadow-2xl z-50 w-80">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-bold text-white">Test du système</h3>
+        <h3 className="text-lg font-bold text-white">{t('systemTest.title')}</h3>
         <button
           onClick={() => setIsOpen(false)}
           className="text-gray-400 hover:text-white transition-colors"
@@ -94,7 +96,7 @@ export function SystemTest() {
 
       <div className="space-y-3 mb-4">
         <div className="flex items-center justify-between">
-          <span className="text-gray-300">Authentification</span>
+          <span className="text-gray-300">{t('systemTest.authentication')}</span>
           {testResults.auth ? (
             <FontAwesomeIcon icon={faCheck} className="text-green-400" />
           ) : (
@@ -103,7 +105,7 @@ export function SystemTest() {
         </div>
         
         <div className="flex items-center justify-between">
-          <span className="text-gray-300">Panier</span>
+          <span className="text-gray-300">{t('systemTest.cart')}</span>
           {testResults.cart ? (
             <FontAwesomeIcon icon={faCheck} className="text-green-400" />
           ) : (
@@ -112,7 +114,7 @@ export function SystemTest() {
         </div>
         
         <div className="flex items-center justify-between">
-          <span className="text-gray-300">Notifications</span>
+          <span className="text-gray-300">{t('systemTest.notifications')}</span>
           {testResults.notifications ? (
             <FontAwesomeIcon icon={faCheck} className="text-green-400" />
           ) : (

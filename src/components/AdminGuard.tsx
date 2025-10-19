@@ -1,8 +1,8 @@
 'use client'
 
-import { useAuth0 } from '@/hooks/useAuth0'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
+import { useAuth } from '@/contexts/AuthContext'
 
 interface AdminGuardProps {
   children: React.ReactNode

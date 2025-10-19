@@ -18,6 +18,7 @@ import {
 import { QuantitySelector } from './QuantitySelector'
 import { CartLoadingGuard } from './CartLoadingGuard'
 import { PaymentMethodSelector } from './PaymentMethodSelector'
+import { useTranslation } from '@/contexts/TranslationContext'
 
 export function CartSidebar() {
   return (
@@ -28,6 +29,7 @@ export function CartSidebar() {
 }
 
 function CartSidebarContent() {
+  const { t } = useTranslation()
   const router = useRouter()
   const pathname = usePathname()
   const { state, dispatch } = useCart()
@@ -194,14 +196,14 @@ function CartSidebarContent() {
                 <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4 border border-white/10">
                   <FontAwesomeIcon icon={faShoppingCart} className="h-8 w-8 text-gray-500" />
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-2">Votre panier est vide</h3>
-                <p className="text-gray-400 mb-6">Découvrez nos produits CBD premium</p>
+                <h3 className="text-xl font-semibold text-white mb-2">{t('cart.empty')}</h3>
+                <p className="text-gray-400 mb-6">{t('cart.discoverProducts')}</p>
                 <Link
                   href="/products"
                   onClick={() => dispatch({ type: 'CLOSE_CART' })}
                   className="btn-gold text-black font-bold py-2 px-6 rounded-full"
                 >
-                  Voir les produits
+                  {t('cart.viewProducts')}
                 </Link>
               </div>
             ) : (
@@ -269,7 +271,7 @@ function CartSidebarContent() {
             <div className="border-t border-white/10 p-6 space-y-4">
               {/* Total */}
               <div className="flex items-center justify-between">
-                <span className="text-lg font-semibold text-white">Total</span>
+                <span className="text-lg font-semibold text-white">{t('cart.total')}</span>
                 <span className="text-2xl font-bold gold-text-gradient">
                   {formatPrice(state.totalPrice)}
                 </span>
@@ -292,16 +294,16 @@ function CartSidebarContent() {
                     className="btn-gold text-black font-bold py-3 px-6 rounded-full shadow-gold-glow w-full flex items-center justify-center"
                   >
                     <FontAwesomeIcon icon={faShoppingCart} className="mr-2" />
-                    Voir le panier
+                    {t('cart.viewCart')}
                     <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
                   </button>
                 )}
                 
                 {!authState.isAuthenticated && (
                   <p className="text-gray-400 text-xs text-center">
-                    Vous pouvez payer en tant qu'invité ou{' '}
+                    {t('cart.guestCheckout')}{' '}
                     <Link href="/login" className="text-brand-gold hover:underline">
-                      vous connecter
+                      {t('cart.login')}
                     </Link>
                   </p>
                 )}
@@ -310,7 +312,7 @@ function CartSidebarContent() {
                   onClick={handleClearCart}
                   className="w-full text-gray-400 hover:text-red-400 transition-colors text-sm font-semibold py-2"
                 >
-                  Vider le panier
+                  {t('cart.clearCart')}
                 </button>
               </div>
             </div>

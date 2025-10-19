@@ -12,6 +12,7 @@ import { AuthNotificationHandler } from "@/components/AuthNotificationHandler";
 import { OrderNotificationHandler } from "@/components/OrderNotificationHandler";
 import { PageLoader } from "@/components/PageLoader";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { TranslationProvider } from "@/contexts/TranslationContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -75,25 +76,27 @@ export default function RootLayout({
     <html lang="fr" className={`${inter.variable} ${montserrat.variable}`}>
       <body className="font-sans antialiased min-h-screen flex flex-col">
         <PageLoader minLoadingTime={2000} showOnce={false}>
-          <NotificationProvider>
-            <AuthProvider>
-              <CartProvider>
-                <Header />
+          <TranslationProvider>
+            <NotificationProvider>
+              <AuthProvider>
+                <CartProvider>
+                  <Header />
 
-                <main className="flex-1">
-                  {children}
-                </main>
+                  <main className="flex-1">
+                    {children}
+                  </main>
 
-                <Footer />
+                  <Footer />
 
-                <CookieConsent />
-                <CartSidebar />
-                <AuthNotificationHandler />
-                <OrderNotificationHandler />
-                {process.env.NODE_ENV === 'development' && <SystemTest />}
-              </CartProvider>
-            </AuthProvider>
-          </NotificationProvider>
+                  <CookieConsent />
+                  <CartSidebar />
+                  <AuthNotificationHandler />
+                  <OrderNotificationHandler />
+                  {process.env.NODE_ENV === 'development' && <SystemTest />}
+                </CartProvider>
+              </AuthProvider>
+            </NotificationProvider>
+          </TranslationProvider>
         </PageLoader>
       </body>
     </html>

@@ -1,0 +1,403 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "save": "Guardar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "close": "Cerrar",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "sort": "Ordenar",
+    "view": "Ver",
+    "add": "Añadir",
+    "remove": "Quitar",
+    "continue": "Continuar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "submit": "Enviar",
+    "yes": "Sí",
+    "no": "No"
+  },
+  "header": {
+    "title": "GARDEN GOLD GREEN",
+    "phone": "+33 7 78 82 38 40",
+    "email": "contact@gardengoldgreen.com",
+    "freeShipping": "Envío gratis a partir de 50€",
+    "discount": "10% de descuento desde 90€ 🎁",
+    "navigation": {
+      "home": "Inicio",
+      "shop": "Tienda",
+      "about": "Acerca de",
+      "learn": "Aprender",
+      "blog": "Blog",
+      "contact": "Contacto",
+      "faq": "FAQ"
+    },
+    "categories": {
+      "title": "Categorías",
+      "promos": "Promos -50%",
+      "flowers": "Flores CBD",
+      "resins": "Resinas",
+      "packs": "Nuestros Packs",
+      "liquids": "E-líquidos/Vap Pens",
+      "oils": "Aceites CBD",
+      "accessories": "Accesorios",
+      "liquidations": "LIQUIDACIONES"
+    },
+    "user": {
+      "login": "Iniciar sesión",
+      "register": "Registrarse",
+      "profile": "Mi Perfil",
+      "orders": "Mis Pedidos",
+      "logout": "Cerrar sesión"
+    },
+    "cart": "Carrito"
+  },
+  "footer": {
+    "description": "Garden Gold Green ofrece una selección premium de productos CBD de alta calidad, probados en laboratorio y conformes con las regulaciones francesas.",
+    "quickLinks": "Enlaces rápidos",
+    "categories": "Categorías",
+    "customerService": "Servicio al cliente",
+    "legal": "Legal",
+    "terms": "Términos y Condiciones",
+    "privacy": "Política de Privacidad",
+    "shipping": "Envío y Devoluciones",
+    "newsletter": {
+      "title": "Newsletter",
+      "description": "Recibe nuestras últimas ofertas y novedades",
+      "placeholder": "Tu dirección de email",
+      "subscribe": "Suscribirse"
+    },
+    "social": "Síguenos",
+    "copyright": "© 2024 Garden Gold Green. Todos los derechos reservados.",
+    "paymentMethods": "Métodos de pago aceptados"
+  },
+  "home": {
+    "hero": {
+      "title": "Productos CBD Premium",
+      "subtitle": "Descubre nuestra selección de productos CBD de alta calidad",
+      "cta": "Descubre nuestros productos"
+    },
+    "features": {
+      "quality": {
+        "title": "Calidad Premium",
+        "description": "Todos nuestros productos están probados en laboratorio"
+      },
+      "shipping": {
+        "title": "Envío Rápido",
+        "description": "Envío gratis a partir de 50€"
+      },
+      "support": {
+        "title": "Soporte al Cliente",
+        "description": "Servicio al cliente disponible 7 días a la semana"
+      }
+    }
+  },
+  "products": {
+    "title": "Nuestros Productos",
+    "filterBy": "Filtrar por",
+    "sortBy": "Ordenar por",
+    "price": "Precio",
+    "category": "Categoría",
+    "availability": "Disponibilidad",
+    "addToCart": "Añadir al carrito",
+    "adding": "Añadiendo...",
+    "added": "¡Añadido!",
+    "viewDetails": "Ver detalles",
+    "outOfStock": "Agotado",
+    "inStock": "En stock",
+    "lowStock": "¡Solo quedan {count} en stock!",
+    "stockCount": "{count} en stock",
+    "quantity": "Cantidad",
+    "description": "Descripción",
+    "specifications": "Especificaciones",
+    "reviews": "Reseñas",
+    "relatedProducts": "Productos relacionados",
+    "comments": {
+      "title": "Reseñas de clientes",
+      "noComments": "Aún no hay reseñas para este producto",
+      "addComment": "Dejar una reseña",
+      "rating": "Calificación",
+      "comment": "Tu reseña",
+      "submit": "Publicar reseña",
+      "submitting": "Publicando...",
+      "loadError": "Error al cargar comentarios",
+      "submitError": "Error al publicar comentario",
+      "basedOn": "Basado en {count} reseñas",
+      "beFirst": "¡Sé el primero en dejar una reseña!",
+      "verifiedPurchase": "Compra verificada"
+    }
+  },
+  "cart": {
+    "title": "Carrito",
+    "empty": "Tu carrito está vacío",
+    "loading": "Cargando carrito...",
+    "discoverProducts": "Descubre nuestros productos CBD premium",
+    "viewProducts": "Ver productos",
+    "viewCart": "Ver carrito",
+    "guestCheckout": "Puedes pagar como invitado o",
+    "login": "iniciar sesión",
+    "clearCart": "Vaciar carrito",
+    "subtotal": "Subtotal",
+    "shipping": "Envío",
+    "total": "Total",
+    "checkout": "Finalizar compra",
+    "continueShopping": "Continuar comprando",
+    "removeItem": "Quitar artículo",
+    "updateQuantity": "Actualizar cantidad",
+    "inCart": "en el carrito"
+  },
+  "checkout": {
+    "title": "Finalizar compra",
+    "billing": "Facturación",
+    "shipping": "Envío",
+    "payment": "Pago",
+    "selectPaymentMethod": "Elige tu método de pago",
+    "creditCard": "Tarjeta de crédito",
+    "cardTypes": "Visa, Mastercard, American Express",
+    "paypalDescription": "Pago seguro con PayPal",
+    "orderSummary": "Resumen del pedido",
+    "placeOrder": "Realizar pedido",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "email": "Email",
+    "phone": "Teléfono",
+    "address": "Dirección",
+    "city": "Ciudad",
+    "postalCode": "Código postal",
+    "country": "País",
+    "paymentMethod": "Método de pago",
+    "cardNumber": "Número de tarjeta",
+    "expiryDate": "Fecha de vencimiento",
+    "cvv": "CVV",
+    "nameOnCard": "Nombre en la tarjeta"
+  },
+  "auth": {
+    "login": {
+      "title": "Iniciar sesión",
+      "subtitle": "Inicia sesión en tu cuenta",
+      "email": "Email",
+      "password": "Contraseña",
+      "rememberMe": "Recordarme",
+      "forgotPassword": "¿Olvidaste la contraseña?",
+      "noAccount": "¿No tienes cuenta?",
+      "signUp": "Crear cuenta",
+      "signIn": "Iniciar sesión",
+      "signingIn": "Iniciando sesión..."
+    },
+    "register": {
+      "title": "Registrarse",
+      "subtitle": "Crea tu cuenta Garden Gold Green",
+      "firstName": "Nombre",
+      "lastName": "Apellido",
+      "email": "Email",
+      "password": "Contraseña",
+      "confirmPassword": "Confirmar contraseña",
+      "agreeTerms": "Acepto los",
+      "hasAccount": "¿Ya tienes cuenta?",
+      "signIn": "Iniciar sesión",
+      "signUp": "Crear mi cuenta",
+      "signingUp": "Registrando..."
+    }
+  },
+  "profile": {
+    "title": "Mi Perfil",
+    "personalInfo": "Información personal",
+    "orderHistory": "Historial de pedidos",
+    "addresses": "Direcciones",
+    "preferences": "Preferencias",
+    "updateProfile": "Actualizar perfil",
+    "changePassword": "Cambiar contraseña",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "email": "Email",
+    "phone": "Teléfono",
+    "address": "Dirección",
+    "street": "Calle",
+    "city": "Ciudad",
+    "postalCode": "Código postal",
+    "country": "País",
+    "shippingAddress": "Dirección de envío",
+    "notProvided": "No proporcionado",
+    "accountActions": "Acciones de cuenta",
+    "orderHistory": "Historial de pedidos",
+    "viewOrderHistory": "Ver todos tus pedidos anteriores",
+    "favorites": "Mis favoritos",
+    "savedProducts": "Productos guardados",
+    "logout": "Cerrar sesión",
+    "closeSession": "Cerrar tu sesión",
+    "countries": {
+      "france": "Francia",
+      "belgium": "Bélgica",
+      "switzerland": "Suiza",
+      "germany": "Alemania"
+    }
+  },
+  "orders": {
+    "title": "Mis Pedidos",
+    "orderNumber": "Número de pedido",
+    "date": "Fecha",
+    "status": "Estado",
+    "total": "Total",
+    "viewOrder": "Ver pedido",
+    "trackOrder": "Seguir pedido",
+    "cancelOrder": "Cancelar pedido",
+    "statuses": {
+      "pending": "Pendiente",
+      "processing": "Procesando",
+      "shipped": "Enviado",
+      "delivered": "Entregado",
+      "cancelled": "Cancelado"
+    }
+  },
+  "about": {
+    "title": "Acerca de",
+    "mission": "Nuestra Misión",
+    "values": "Nuestros Valores",
+    "team": "Nuestro Equipo",
+    "story": "Nuestra Historia"
+  },
+  "contact": {
+    "title": "Contacto",
+    "getInTouch": "Ponte en contacto",
+    "form": {
+      "name": "Nombre",
+      "email": "Email",
+      "subject": "Asunto",
+      "message": "Mensaje",
+      "send": "Enviar"
+    },
+    "info": {
+      "phone": "Teléfono",
+      "email": "Email",
+      "address": "Dirección",
+      "hours": "Horario de atención"
+    }
+  },
+  "faq": {
+    "title": "FAQ",
+    "searchPlaceholder": "Buscar en FAQ"
+  },
+  "blog": {
+    "title": "Blog",
+    "readMore": "Leer más",
+    "publishedOn": "Publicado el",
+    "author": "Autor",
+    "tags": "Etiquetas"
+  },
+  "notifications": {
+    "addedToCart": "Producto añadido al carrito",
+    "removedFromCart": "Producto eliminado del carrito",
+    "orderPlaced": "Pedido realizado con éxito",
+    "profileUpdated": "Perfil actualizado",
+    "error": "Ocurrió un error"
+  },
+  "forms": {
+    "placeholders": {
+      "fullName": "Tu nombre completo",
+      "email": "tu@email.com",
+      "password": "Tu contraseña",
+      "confirmPassword": "Confirma tu contraseña",
+      "firstName": "Nombre",
+      "lastName": "Apellido",
+      "address": "123 Calle Principal",
+      "city": "Madrid",
+      "search": "Buscar...",
+      "searchArticles": "Buscar artículos...",
+      "searchProducts": "Buscar productos...",
+      "searchOrders": "Buscar pedidos...",
+      "searchCustomers": "Buscar clientes...",
+      "searchFAQs": "Buscar en FAQ...",
+      "newsletter": "Tu dirección de email",
+      "contactMessage": "Dinos cómo podemos ayudarte...",
+      "productComment": "Comparte tu experiencia con este producto...",
+      "promoCode": "Ingresa tu código promocional",
+      "postalCode": "28001"
+    },
+    "labels": {
+      "fullName": "Nombre completo",
+      "email": "Email",
+      "password": "Contraseña",
+      "confirmPassword": "Confirmar contraseña",
+      "firstName": "Nombre",
+      "lastName": "Apellido",
+      "address": "Dirección",
+      "city": "Ciudad",
+      "search": "Buscar",
+      "newsletter": "Newsletter",
+      "contactMessage": "Mensaje"
+    },
+    "errors": {
+      "passwordMismatch": "Las contraseñas no coinciden",
+      "required": "Este campo es requerido",
+      "invalidEmail": "Email inválido",
+      "passwordTooShort": "La contraseña debe tener al menos 6 caracteres",
+      "connectionError": "Error de conexión",
+      "acceptTerms": "Debes aceptar los términos de uso",
+      "registrationError": "Error de registro"
+    }
+  },
+  "images": {
+    "alt": {
+      "logo": "Garden Gold Green logo",
+      "logoPremium": "Garden Gold Green - Logo Premium CBD",
+      "logo3G": "3G - Garden Gold Green logo, metallic gold, emerald green, and shiny silver, on a dark background with light reflections",
+      "cbdOil": "Elegant glass dropper bottle with gold cap for CBD oil, on a dark, luxurious background with a subtle leaf shadow, product photography style",
+      "cbdCream": "Luxurious jar of CBD cream with gold and green labeling, sitting on a marble surface with a green plant in the background, high-end cosmetic photography",
+      "cbdGummies": "Premium packaging for CBD gummies, dark box with gold foil lettering, showing a few colorful gummies next to it, lifestyle product shot",
+      "cannabisLeaf": "Close-up of a vibrant green cannabis leaf with glistening golden CBD oil dripping from the tip, dark background, macro photography, dramatic lighting",
+      "userAvatar": "Avatar de usuario",
+      "loading": "Cargando...",
+      "hempFields": "Campos de cáñamo en Colorado",
+      "labTesting": "Proceso de pruebas de laboratorio",
+      "educationalVideo": "Vídeo educativo CBD"
+    }
+  },
+  "actions": {
+    "search": "Buscar",
+    "addToCart": "Añadir al carrito",
+    "removeFromCart": "Eliminar del carrito",
+    "addToFavorites": "Añadir a favoritos",
+    "share": "Compartir",
+    "decrease": "Disminuir",
+    "increase": "Aumentar",
+    "edit": "Editar",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "delete": "Eliminar"
+  },
+  "sections": {
+    "youMightLike": "También te podría gustar",
+    "searchResults": "Resultados de búsqueda",
+    "noResults": "No se encontraron resultados"
+  },
+  "newsletter": {
+    "title": "Mantente informado",
+    "description": "Recibe nuestras últimas noticias, consejos de expertos y ofertas exclusivas",
+    "placeholder": "Tu dirección de email",
+    "subscribe": "Suscribirse",
+    "subscribing": "Suscribiendo...",
+    "subscribeAgain": "Suscribirse de nuevo",
+    "success": "¡Gracias! Ahora estás suscrito a nuestro newsletter.",
+    "error": "Ocurrió un error. Por favor, inténtalo de nuevo."
+  },
+  "systemTest": {
+    "title": "Prueba del sistema",
+    "authentication": "Autenticación",
+    "cart": "Carrito",
+    "notifications": "Notificaciones"
+  },
+  "cookies": {
+    "title": "Utilizamos cookies",
+    "description": "Utilizamos cookies para mejorar tu experiencia, analizar nuestro tráfico y personalizar el contenido. Al continuar usando nuestro sitio, aceptas nuestro uso de cookies.",
+    "customize": "Personalizar",
+    "rejectAll": "Rechazar todo",
+    "acceptAll": "Aceptar todo"
+  }
+}

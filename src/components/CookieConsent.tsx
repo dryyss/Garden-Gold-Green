@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCookie, faTimes, faCog } from '@fortawesome/free-solid-svg-icons'
+import { useTranslation } from '@/contexts/TranslationContext'
 
 interface CookiePreferences {
   essential: boolean
@@ -11,6 +12,7 @@ interface CookiePreferences {
 }
 
 export function CookieConsent() {
+  const { t } = useTranslation()
   const [isVisible, setIsVisible] = useState(false)
   const [showPreferences, setShowPreferences] = useState(false)
   const [preferences, setPreferences] = useState<CookiePreferences>({
@@ -110,11 +112,10 @@ export function CookieConsent() {
                 </div>
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-white mb-1">
-                    Nous utilisons des cookies
+                    {t('cookies.title')}
                   </h3>
                   <p className="text-gray-300 text-sm">
-                    Nous utilisons des cookies pour améliorer votre expérience, analyser notre trafic et personnaliser le contenu. 
-                    En continuant à utiliser notre site, vous acceptez notre utilisation des cookies.
+                    {t('cookies.description')}
                   </p>
                 </div>
               </div>
@@ -125,19 +126,19 @@ export function CookieConsent() {
                   className="bg-white/10 text-white font-medium py-2 px-4 rounded-lg hover:bg-white/20 transition-colors flex items-center justify-center gap-2"
                 >
                   <FontAwesomeIcon icon={faCog} />
-                  Personnaliser
+                  {t('cookies.customize')}
                 </button>
                 <button
                   onClick={handleRejectAll}
                   className="bg-gray-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors"
                 >
-                  Refuser tout
+                  {t('cookies.rejectAll')}
                 </button>
                 <button
                   onClick={handleAcceptAll}
                   className="btn-gold text-black font-semibold py-2 px-6 rounded-lg shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300"
                 >
-                  Accepter tout
+                  {t('cookies.acceptAll')}
                 </button>
               </div>
             </div>

@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faMinus, faCheck, faShoppingCart, faEye } from '@fortawesome/free-solid-svg-icons'
 import { useCart } from '@/contexts/CartContext'
 import { useNotifications } from '@/contexts/NotificationContext'
+import { useTranslation } from '@/contexts/TranslationContext'
 import { StarRating } from './StarRating'
 
 interface Variant {
@@ -44,6 +45,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, className = '' }: ProductCardProps) {
+  const { t } = useTranslation()
   const [quantity, setQuantity] = useState(1)
   const [isAdding, setIsAdding] = useState(false)
   const [isAdded, setIsAdded] = useState(false)
@@ -163,13 +165,13 @@ export function ProductCard({ product, className = '' }: ProductCardProps) {
         {product.totalStock !== undefined && (
           <div className="mb-2">
             {product.totalStock === 0 ? (
-              <span className="text-xs text-red-500 font-semibold">Rupture de stock</span>
+              <span className="text-xs text-red-500 font-semibold">{t('products.outOfStock')}</span>
             ) : product.totalStock < 10 ? (
-              <span className="text-xs text-orange-500 font-semibold">Plus que {product.totalStock} en stock !</span>
+              <span className="text-xs text-orange-500 font-semibold">{t('products.lowStock', { count: product.totalStock })}</span>
             ) : product.totalStock < 30 ? (
-              <span className="text-xs text-yellow-500">{product.totalStock} en stock</span>
+              <span className="text-xs text-yellow-500">{t('products.stockCount', { count: product.totalStock })}</span>
             ) : (
-              <span className="text-xs text-green-500">En stock</span>
+              <span className="text-xs text-green-500">{t('products.inStock')}</span>
             )}
           </div>
         )}
@@ -199,20 +201,20 @@ export function ProductCard({ product, className = '' }: ProductCardProps) {
           <div className="mb-3 flex items-center justify-center">
             <div className="bg-brand-green/20 text-brand-green px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2">
               <FontAwesomeIcon icon={faShoppingCart} className="w-3 h-3" />
-              <span>{cartQuantity} dans le panier</span>
+              <span>{cartQuantity} {t('cart.inCart')}</span>
             </div>
           </div>
         )}
 
         {/* Sélecteur de quantité */}
         <div className="mb-2 flex items-center justify-center gap-2">
-          <span className="text-gray-400 text-xs">Quantité:</span>
+          <span className="text-gray-400 text-xs">{t('products.quantity')}:</span>
           <div className="flex items-center border border-white/20 rounded-lg">
             <button
               onClick={() => handleQuantityChange(-1)}
               disabled={quantity <= 1}
               className="p-2 text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              title="Diminuer"
+              title={t('actions.decrease')}
             >
               <FontAwesomeIcon icon={faMinus} className="w-3 h-3" />
             </button>
@@ -233,7 +235,7 @@ export function ProductCard({ product, className = '' }: ProductCardProps) {
               onClick={() => handleQuantityChange(1)}
               disabled={quantity >= 99}
               className="p-2 text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              title="Augmenter"
+              title={t('actions.increase')}
             >
               <FontAwesomeIcon icon={faPlus} className="w-3 h-3" />
             </button>
@@ -248,7 +250,7 @@ export function ProductCard({ product, className = '' }: ProductCardProps) {
             className="w-full font-bold py-1.5 px-3 rounded-full text-xs transition-all duration-300 flex items-center justify-center gap-2 border-2 border-brand-gold text-brand-gold hover:bg-brand-gold hover:text-black"
           >
             <FontAwesomeIcon icon={faEye} className="w-3 h-3" />
-            <span>Voir le produit</span>
+            <span>{t('products.viewDetails')}</span>
           </Link>
           
           {/* Bouton Ajouter au panier avec animation */}
@@ -266,20 +268,20 @@ export function ProductCard({ product, className = '' }: ProductCardProps) {
             {isAdding ? (
               <>
                 <div className="w-3 h-3 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
-                <span>Ajout...</span>
+                <span>{t('products.adding')}</span>
               </>
             ) : isAdded ? (
               <>
                 <FontAwesomeIcon icon={faCheck} className="w-3 h-3 animate-bounce" />
-                <span>Ajouté !</span>
+                <span>{t('products.added')}</span>
               </>
             ) : product.inStock ? (
               <>
                 <FontAwesomeIcon icon={faShoppingCart} className="w-3 h-3" />
-                <span>Ajouter au panier</span>
+                <span>{t('products.addToCart')}</span>
               </>
             ) : (
-              'Rupture de stock'
+              t('products.outOfStock')
             )}
           </button>
         </div>

@@ -1,7 +1,13 @@
+'use client'
+
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTranslation } from '@/contexts/TranslationContext'
+import { LanguageSelector } from './LanguageSelector'
 
 export function Footer() {
+  const { t } = useTranslation()
+  
   return (
     <footer className="bg-black py-16">
       <div className="container mx-auto px-6">
@@ -15,9 +21,9 @@ export function Footer() {
                 width={48}
                 height={48}
               />
-              <span className="text-white text-lg font-bold">GARDEN GOLD GREEN</span>
+              <span className="text-white text-lg font-bold">{t('header.title')}</span>
             </div>
-            <p className="text-gray-400 text-sm">Nature's finest elixir, delivered.</p>
+            <p className="text-gray-400 text-sm">{t('footer.description')}</p>
             <div className="flex space-x-4 mt-6">
               <span className="text-gray-400 hover:text-brand-gold cursor-pointer">
                 <i className="fa-brands fa-instagram text-xl"></i>
@@ -31,78 +37,81 @@ export function Footer() {
             </div>
           </div>
           <div>
-            <h5 className="font-semibold text-white mb-4">Shop</h5>
+            <h5 className="font-semibold text-white mb-4">{t('footer.categories')}</h5>
             <ul className="space-y-2">
               <li>
-                <Link href="/products" className="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">
-                  CBD Oils
+                <Link href="/products?category=huiles-cbd" className="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">
+                  {t('header.categories.oils')}
+                </Link>
+              </li>
+              <li>
+                <Link href="/products?category=fleurs-cbd" className="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">
+                  {t('header.categories.flowers')}
+                </Link>
+              </li>
+              <li>
+                <Link href="/products?category=resines" className="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">
+                  {t('header.categories.resins')}
                 </Link>
               </li>
               <li>
                 <Link href="/products" className="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">
-                  Topicals
-                </Link>
-              </li>
-              <li>
-                <Link href="/products" className="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">
-                  Gummies
-                </Link>
-              </li>
-              <li>
-                <Link href="/products" className="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">
-                  All Products
+                  {t('products.title')}
                 </Link>
               </li>
             </ul>
           </div>
           <div>
-            <h5 className="font-semibold text-white mb-4">Company</h5>
+            <h5 className="font-semibold text-white mb-4">{t('footer.quickLinks')}</h5>
             <ul className="space-y-2">
               <li>
                 <Link href="/about" className="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">
-                  About Us
+                  {t('header.navigation.about')}
                 </Link>
               </li>
               <li>
                 <Link href="/contact" className="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">
-                  Contact
+                  {t('header.navigation.contact')}
                 </Link>
               </li>
               <li>
                 <Link href="/faq" className="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">
-                  FAQ
+                  {t('header.navigation.faq')}
                 </Link>
               </li>
               <li>
                 <Link href="/blog" className="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">
-                  Blog
+                  {t('header.navigation.blog')}
                 </Link>
               </li>
             </ul>
           </div>
           <div>
-            <h5 className="font-semibold text-white mb-4">Legal</h5>
+            <h5 className="font-semibold text-white mb-4">{t('footer.legal')}</h5>
             <ul className="space-y-2">
               <li>
                 <Link href="/terms" className="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">
-                  Terms & Conditions
+                  {t('footer.terms')}
                 </Link>
               </li>
               <li>
                 <Link href="/privacy" className="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">
-                  Privacy Policy
+                  {t('footer.privacy')}
                 </Link>
               </li>
               <li>
-                <span className="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">
-                  Shipping & Returns
-                </span>
+                <Link href="/shipping-returns" className="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">
+                  {t('footer.shipping')}
+                </Link>
               </li>
             </ul>
+            <div className="mt-6">
+              <LanguageSelector variant="footer" />
+            </div>
           </div>
         </div>
         <div className="mt-16 pt-8 border-t border-white/10 text-center text-gray-500 text-sm">
-          <p>&copy; 2025 Garden Gold Green. All Rights Reserved.</p>
+          <p>{t('footer.copyright')}</p>
         </div>
       </div>
     </footer>

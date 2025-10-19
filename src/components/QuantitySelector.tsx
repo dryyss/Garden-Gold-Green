@@ -2,6 +2,7 @@
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons'
+import { useTranslation } from '@/contexts/TranslationContext'
 
 interface QuantitySelectorProps {
   quantity: number
@@ -18,6 +19,7 @@ export function QuantitySelector({
   max = 99,
   className = ''
 }: QuantitySelectorProps) {
+  const { t } = useTranslation()
   const handleIncrement = () => {
     if (quantity < max) {
       onQuantityChange(quantity + 1)
@@ -43,7 +45,7 @@ export function QuantitySelector({
         onClick={handleDecrement}
         disabled={quantity <= min}
         className="p-2 text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        title="Diminuer la quantité"
+        title={t('actions.decrease')}
       >
         <FontAwesomeIcon icon={faMinus} className="text-sm" />
       </button>
@@ -61,7 +63,7 @@ export function QuantitySelector({
         onClick={handleIncrement}
         disabled={quantity >= max}
         className="p-2 text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        title="Augmenter la quantité"
+        title={t('actions.increase')}
       >
         <FontAwesomeIcon icon={faPlus} className="text-sm" />
       </button>

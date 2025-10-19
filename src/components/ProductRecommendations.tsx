@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faStar } from '@fortawesome/free-solid-svg-icons'
 import { AddToCartButton } from './AddToCartButton'
+import { useTranslation } from '@/contexts/TranslationContext'
 
 interface Product {
   id: string
@@ -28,8 +29,9 @@ interface ProductRecommendationsProps {
 
 export function ProductRecommendations({ 
   products, 
-  title = "Produits recommandés" 
+  title 
 }: ProductRecommendationsProps) {
+  const { t } = useTranslation()
   if (products.length === 0) {
     return null
   }
@@ -37,7 +39,7 @@ export function ProductRecommendations({
   return (
     <section className="mt-12">
       <h2 className="text-2xl font-bold text-white mb-6 gold-text-gradient">
-        {title}
+        {title || t('sections.youMightLike')}
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
