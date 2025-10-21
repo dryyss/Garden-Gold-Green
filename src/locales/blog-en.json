@@ -1,0 +1,39 @@
+{
+  "hero": {
+    "title": "CBD Blog",
+    "subtitle": "Discover our latest articles on CBD, wellness and natural health",
+    "searchPlaceholder": "Search for an article...",
+    "searchButton": "Search"
+  },
+  "categories": {
+    "all": "All articles",
+    "education": "Education",
+    "products": "Products",
+    "wellness": "Wellness",
+    "research": "Research",
+    "lifestyle": "Lifestyle"
+  },
+  "filters": {
+    "sortBy": "Sort by",
+    "newest": "Newest",
+    "oldest": "Oldest",
+    "mostRead": "Most read",
+    "category": "Category",
+    "author": "Author"
+  },
+  "articles": {
+    "readMore": "Read more",
+    "readTime": "min read",
+    "publishedOn": "Published on",
+    "by": "by",
+    "featured": "Featured article",
+    "noArticles": "No articles found",
+    "loadMore": "Load more articles"
+  },
+  "cta": {
+    "title": "Stay informed",
+    "subtitle": "Receive our latest articles directly in your inbox",
+    "subscribe": "Subscribe",
+    "emailPlaceholder": "Your email address"
+  }
+}

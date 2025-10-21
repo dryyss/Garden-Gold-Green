@@ -1,0 +1,39 @@
+{
+  "hero": {
+    "title": "CBD Blog",
+    "subtitle": "Ontdek onze nieuwste artikelen over CBD, welzijn en natuurlijke gezondheid",
+    "searchPlaceholder": "Zoek naar een artikel...",
+    "searchButton": "Zoeken"
+  },
+  "categories": {
+    "all": "Alle artikelen",
+    "education": "Onderwijs",
+    "products": "Producten",
+    "wellness": "Welzijn",
+    "research": "Onderzoek",
+    "lifestyle": "Levensstijl"
+  },
+  "filters": {
+    "sortBy": "Sorteren op",
+    "newest": "Nieuwste",
+    "oldest": "Oudste",
+    "mostRead": "Meest gelezen",
+    "category": "Categorie",
+    "author": "Auteur"
+  },
+  "articles": {
+    "readMore": "Lees meer",
+    "readTime": "min lezen",
+    "publishedOn": "Gepubliceerd op",
+    "by": "door",
+    "featured": "Uitgelicht artikel",
+    "noArticles": "Geen artikelen gevonden",
+    "loadMore": "Meer artikelen laden"
+  },
+  "cta": {
+    "title": "Blijf op de hoogte",
+    "subtitle": "Ontvang onze nieuwste artikelen direct in je inbox",
+    "subscribe": "Abonneren",
+    "emailPlaceholder": "Je e-mailadres"
+  }
+}

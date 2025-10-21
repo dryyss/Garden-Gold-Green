@@ -75,6 +75,8 @@ export default function RootLayout({
   return (
     <html lang="fr" className={`${inter.variable} ${montserrat.variable}`}>
       <body className="bg-brand-black watermark font-sans antialiased min-h-screen flex flex-col">
+        {/* Filigrane global */}
+        <div aria-hidden className="watermark-overlay" />
         <PageLoader minLoadingTime={2000} showOnce={false}>
           <TranslationProvider>
             <NotificationProvider>

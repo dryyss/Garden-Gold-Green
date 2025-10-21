@@ -81,7 +81,137 @@
     "hero": {
       "title": "Premium CBD Products",
       "subtitle": "Discover our selection of high-quality CBD products",
-      "cta": "Discover our products"
+      "mainTitle": "Nature's Finest Elixir",
+      "mainSubtitle": "Discover our premium CBD product collection, meticulously crafted to bring you balance, serenity, and unmatched purity.",
+      "cta": "Discover our products",
+      "ctaCollection": "Discover the Collection",
+      "ctaLearnMore": "Learn More",
+      "stats": {
+        "satisfiedCustomers": "Satisfied Customers",
+        "organic": "Organic",
+        "premiumProducts": "Premium Products",
+        "customerSupport": "Customer Support"
+      }
+    },
+    "featuredProducts": {
+      "title": "Our Signature Selection",
+      "subtitle": "Selected for their purity and potency. The best of Garden Gold Green.",
+      "viewAll": "View All Products"
+    },
+    "benefits": {
+      "title": "Why Choose Garden Gold Green?",
+      "subtitle": "Benefits that make the difference",
+      "qualityGuarantee": {
+        "title": "Quality Guarantee",
+        "description": "Third-party lab tested to ensure purity and safety"
+      },
+      "fastDelivery": {
+        "title": "Fast Delivery",
+        "description": "24h shipping and free delivery from €50"
+      },
+      "support247": {
+        "title": "24/7 Support",
+        "description": "Our expert team is here to support you"
+      },
+      "certifications": {
+        "title": "Certifications",
+        "description": "Organic and environmentally friendly certified products"
+      }
+    },
+    "bestSellers": {
+      "title": "Our Best-Sellers",
+      "subtitle": "Our community's favorite products"
+    },
+    "brandPromise": {
+      "title": "The Garden Gold Green Standard",
+      "description": "We are committed to cultivating and delivering the purest CBD experience. Our process combines organic farming practices with cutting-edge extraction technology, ensuring every drop is powerful, pure, and free from impurities. Nature's wisdom, perfected by science.",
+      "organic": {
+        "title": "100% Organic",
+        "description": "From organically grown, non-GMO hemp farms."
+      },
+      "labTested": {
+        "title": "Lab-Tested Purity",
+        "description": "Third-party tested for quality, potency, and safety."
+      },
+      "ethical": {
+        "title": "Ethically Crafted",
+        "description": "Sustainable and cruelty-free production."
+      }
+    },
+    "howItWorks": {
+      "title": "Your Path to Wellness",
+      "subtitle": "Embrace a life of balance and well-being in three simple steps.",
+      "step1": {
+        "title": "Discover Your Product",
+        "description": "Explore our curated selection and find the perfect CBD solution for your lifestyle and needs."
+      },
+      "step2": {
+        "title": "Integrate Daily",
+        "description": "Easily integrate our premium CBD into your daily routine for consistent, natural support."
+      },
+      "step3": {
+        "title": "Feel the Difference",
+        "description": "Experience enhanced feelings of calm, balance, and overall well-being."
+      }
+    },
+    "testimonials": {
+      "title": "Voices of Our Community",
+      "subtitle": "Discover how Garden Gold Green makes a difference.",
+      "verifiedBuyer": "Verified Buyer",
+      "testimonial1": {
+        "name": "Jessica M.",
+        "comment": "The Gold Standard oil has been a game-changer for my stress levels. The quality is immediately noticeable. I'll be a customer for life!"
+      },
+      "testimonial2": {
+        "name": "David L.",
+        "comment": "I use the Emerald Soothe Balm after my workouts, and the relief is incredible. It smells great and isn't greasy. I highly recommend it."
+      },
+      "testimonial3": {
+        "name": "Sarah K.",
+        "comment": "The Serenity Gummies are my favorite way to unwind in the evening. They're delicious and help me get a restful night's sleep."
+      }
+    },
+    "newProducts": {
+      "title": "New Products",
+      "subtitle": "Discover our latest creations"
+    },
+    "community": {
+      "title": "Join Our Community",
+      "subtitle": "Over 10,000 members trust us",
+      "activeMembers": "Active members",
+      "countriesServed": "Countries served",
+      "customerSatisfaction": "Customer satisfaction"
+    },
+    "welcomeOffer": {
+      "title": "Welcome Offer",
+      "subtitle": "Enjoy 20% off your first order",
+      "code": "Code: WELCOME20",
+      "validOn": "Valid on all products",
+      "freeShipping": "Free shipping",
+      "freeReturn": "Free return",
+      "prioritySupport": "Priority support",
+      "cta": "Take Advantage of the Offer"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "subtitle": "Everything you need to know about our CBD products",
+      "viewAll": "View all frequently asked questions",
+      "q1": {
+        "question": "Are CBD products legal?",
+        "answer": "Yes, our CBD products are perfectly legal in France. They contain less than 0.2% THC, in accordance with European regulations."
+      },
+      "q2": {
+        "question": "How to choose the right concentration?",
+        "answer": "Start with a low concentration (5-10%) if you're a beginner, then gradually increase according to your needs."
+      },
+      "q3": {
+        "question": "What are the delivery times?",
+        "answer": "We ship within 24h and delivery is free from €50 purchase. Allow 2-3 business days for receipt."
+      },
+      "q4": {
+        "question": "Can I return my products?",
+        "answer": "Yes, you have 14 days to return your unopened products. Return costs are on us."
+      }
     },
     "features": {
       "quality": {
@@ -96,6 +226,45 @@
         "title": "Customer Support",
         "description": "Customer service available 7 days a week"
       }
+    }
+  },
+  "blog": {
+    "hero": {
+      "title": "CBD Blog",
+      "subtitle": "Discover our latest articles on CBD, wellness and natural health",
+      "searchPlaceholder": "Search for an article...",
+      "searchButton": "Search"
+    },
+    "categories": {
+      "all": "All articles",
+      "education": "Education",
+      "products": "Products",
+      "wellness": "Wellness",
+      "research": "Research",
+      "lifestyle": "Lifestyle"
+    },
+    "filters": {
+      "sortBy": "Sort by",
+      "newest": "Newest",
+      "oldest": "Oldest",
+      "mostRead": "Most read",
+      "category": "Category",
+      "author": "Author"
+    },
+    "articles": {
+      "readMore": "Read more",
+      "readTime": "min read",
+      "publishedOn": "Published on",
+      "by": "by",
+      "featured": "Featured article",
+      "noArticles": "No articles found",
+      "loadMore": "Load more articles"
+    },
+    "cta": {
+      "title": "Stay informed",
+      "subtitle": "Receive our latest articles directly in your inbox",
+      "subscribe": "Subscribe",
+      "emailPlaceholder": "Your email address"
     }
   },
   "products": {

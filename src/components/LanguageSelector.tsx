@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGlobe, faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation, useLanguage, useSetLanguage, SupportedLanguage } from '@/contexts/TranslationContext'
@@ -42,30 +42,30 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     switch (variant) {
       case 'header':
         return {
-          container: 'relative',
-          button: 'flex items-center space-x-2 text-gray-300 hover:text-brand-gold transition-colors duration-300 p-2',
-          dropdown: 'absolute right-0 mt-2 w-48 bg-brand-black border border-white/10 rounded-lg shadow-lg z-50',
-          item: 'flex items-center space-x-3 px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors cursor-pointer'
+          container: 'inline-block align-middle',
+          button: 'inline-flex items-center justify-center gap-2 text-gray-300 hover:text-brand-gold transition-colors duration-300 p-2 whitespace-nowrap min-w-[40px]',
+          dropdown: 'w-48 bg-brand-black border border-white/10 rounded-lg shadow-xl z-[1000] ring-1 ring-brand-gold/20 origin-top-right',
+          item: 'flex items-center gap-3 px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors cursor-pointer'
         }
       case 'footer':
         return {
-          container: 'relative',
-          button: 'flex items-center space-x-2 text-gray-400 hover:text-brand-gold transition-colors duration-300 p-2',
-          dropdown: 'absolute bottom-full mb-2 right-0 w-48 bg-brand-black border border-white/10 rounded-lg shadow-lg z-50',
-          item: 'flex items-center space-x-3 px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors cursor-pointer'
+          container: 'inline-block align-middle',
+          button: 'inline-flex items-center justify-center gap-2 text-gray-400 hover:text-brand-gold transition-colors duration-300 p-2 whitespace-nowrap min-w-[40px]',
+          dropdown: 'w-48 bg-brand-black border border-white/10 rounded-lg shadow-xl z-[1000] ring-1 ring-brand-gold/20 origin-bottom-right',
+          item: 'flex items-center gap-3 px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors cursor-pointer'
         }
       case 'mobile':
         return {
-          container: 'relative',
+          container: '',
           button: 'flex items-center space-x-3 text-gray-300 hover:text-brand-gold transition-colors py-2 w-full text-left',
-          dropdown: 'absolute top-full left-0 mt-2 w-full bg-brand-black border border-white/10 rounded-lg shadow-lg z-50',
+          dropdown: 'w-full bg-brand-black border border-white/10 rounded-lg shadow-xl z-[1000] ring-1 ring-brand-gold/20',
           item: 'flex items-center space-x-3 px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors cursor-pointer'
         }
       default:
         return {
-          container: 'relative',
+          container: '',
           button: 'flex items-center space-x-2 text-gray-300 hover:text-brand-gold transition-colors duration-300 p-2',
-          dropdown: 'absolute right-0 mt-2 w-48 bg-brand-black border border-white/10 rounded-lg shadow-lg z-50',
+          dropdown: 'w-48 bg-brand-black border border-white/10 rounded-lg shadow-xl z-[1000] ring-1 ring-brand-gold/20',
           item: 'flex items-center space-x-3 px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors cursor-pointer'
         }
     }
@@ -73,8 +73,34 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
 
   const styles = getStyles()
 
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  // Fermer au clic extérieur ou touche Échap
+  useEffect(() => {
+    if (!isOpen) return
+
+    const handleClickOutside = (event: MouseEvent | PointerEvent) => {
+      if (!containerRef.current) return
+      const target = event.target as Node
+      if (!containerRef.current.contains(target)) {
+        setIsOpen(false)
+      }
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsOpen(false)
+    }
+
+    document.addEventListener('pointerdown', handleClickOutside)
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('pointerdown', handleClickOutside)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isOpen])
+
   return (
-    <div className={`${styles.container} ${className}`}>
+    <div ref={containerRef} className={`${styles.container} ${className}`}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={styles.button}
@@ -89,35 +115,23 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
       </button>
 
       {isOpen && (
-        <>
-          {/* Overlay pour fermer le dropdown */}
-          <div 
-            className="fixed inset-0 z-40" 
-            onClick={() => setIsOpen(false)}
-          />
-          
-          {/* Dropdown */}
-          <div className={styles.dropdown}>
-            <div className="py-2">
-              {languages.map((lang) => (
-                <div
-                  key={lang.code}
-                  onClick={() => handleLanguageChange(lang.code)}
-                  className={`
-                    ${styles.item}
-                    ${lang.code === currentLanguage ? 'bg-white/5 text-brand-gold' : ''}
-                  `}
-                >
-                  <span className="text-lg">{lang.flag}</span>
-                  <span className="font-medium">{lang.name}</span>
-                  {lang.code === currentLanguage && (
-                    <span className="ml-auto text-brand-gold">✓</span>
-                  )}
-                </div>
-              ))}
-            </div>
+        <div className={`${styles.dropdown} absolute right-0 top-full translate-y-2`} role="menu" aria-label={t('common.language')}>
+          <div className="py-2">
+            {languages.map((lang) => (
+              <div
+                key={lang.code}
+                onClick={() => handleLanguageChange(lang.code)}
+                className={`${styles.item} ${lang.code === currentLanguage ? 'bg-white/5 text-brand-gold' : ''}`}
+              >
+                <span className="text-lg">{lang.flag}</span>
+                <span className="font-medium">{lang.name}</span>
+                {lang.code === currentLanguage && (
+                  <span className="ml-auto text-brand-gold">✓</span>
+                )}
+              </div>
+            ))}
           </div>
-        </>
+        </div>
       )}
     </div>
   )

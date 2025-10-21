@@ -19,7 +19,7 @@ import {
   faMapMarkerAlt
 } from '@fortawesome/free-solid-svg-icons'
 import { ReturnRequest } from '@/components/ReturnRequest'
-import { useUser } from '@auth0/nextjs-auth0/client'
+// import { useUser } from '@auth0/nextjs-auth0/client' // Temporairement commenté
 
 interface OrderItem {
   id: string
@@ -63,7 +63,9 @@ interface Order {
 export default function OrderDetailPage() {
   const params = useParams()
   const router = useRouter()
-  const { user, isLoading: authLoading } = useUser()
+  // const { user, isLoading: authLoading } = useUser() // Temporairement commenté
+  const user = null // Placeholder temporaire
+  const authLoading = false // Placeholder temporaire
   const [order, setOrder] = useState<Order | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -401,5 +403,4 @@ export default function OrderDetailPage() {
       </div>
     </main>
   )
-}
 }

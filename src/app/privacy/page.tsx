@@ -36,7 +36,7 @@ export default function PrivacyPage() {
       {/* Content */}
       <section className="pb-20">
         <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto prose prose-invert prose-lg max-w-none">
+          <div className="max-w-4xl mx-auto prose prose-invert prose-lg">
             <div className="card-bg rounded-xl p-8 mb-8">
               <h2 className="text-2xl font-bold text-white mb-4 gold-text-gradient flex items-center">
                 <FontAwesomeIcon icon={faLock} className="mr-3" />

@@ -81,7 +81,137 @@
     "hero": {
       "title": "Premium CBD Producten",
       "subtitle": "Ontdek onze selectie van hoogwaardige CBD-producten",
-      "cta": "Ontdek onze producten"
+      "mainTitle": "De Fijnste Elixir van de Natuur",
+      "mainSubtitle": "Ontdek onze premium CBD-productcollectie, zorgvuldig vervaardigd om je balans, sereniteit en ongeëvenaarde zuiverheid te brengen.",
+      "cta": "Ontdek onze producten",
+      "ctaCollection": "Ontdek de Collectie",
+      "ctaLearnMore": "Meer Weten",
+      "stats": {
+        "satisfiedCustomers": "Tevreden Klanten",
+        "organic": "Biologisch",
+        "premiumProducts": "Premium Producten",
+        "customerSupport": "Klantenservice"
+      }
+    },
+    "featuredProducts": {
+      "title": "Onze Signature Selectie",
+      "subtitle": "Geselecteerd op zuiverheid en kracht. Het beste van Garden Gold Green.",
+      "viewAll": "Bekijk Alle Producten"
+    },
+    "benefits": {
+      "title": "Waarom Garden Gold Green Kiezen?",
+      "subtitle": "Voordelen die het verschil maken",
+      "qualityGuarantee": {
+        "title": "Kwaliteitsgarantie",
+        "description": "Getest door derde partijen om zuiverheid en veiligheid te garanderen"
+      },
+      "fastDelivery": {
+        "title": "Snelle Levering",
+        "description": "24u verzending en gratis levering vanaf €50"
+      },
+      "support247": {
+        "title": "24/7 Ondersteuning",
+        "description": "Ons expertteam staat klaar om je te ondersteunen"
+      },
+      "certifications": {
+        "title": "Certificeringen",
+        "description": "Biologische en milieuvriendelijke gecertificeerde producten"
+      }
+    },
+    "bestSellers": {
+      "title": "Onze Bestverkochte Producten",
+      "subtitle": "De favoriete producten van onze gemeenschap"
+    },
+    "brandPromise": {
+      "title": "De Garden Gold Green Standaard",
+      "description": "We zijn toegewijd aan het kweken en leveren van de puurste CBD-ervaring. Ons proces combineert biologische landbouwpraktijken met geavanceerde extractietechnologie, waardoor elke druppel krachtig, puur en vrij van onzuiverheden is. De wijsheid van de natuur, geperfectioneerd door wetenschap.",
+      "organic": {
+        "title": "100% Biologisch",
+        "description": "Van biologisch geteelde, GMO-vrije hennepboerderijen."
+      },
+      "labTested": {
+        "title": "Laboratoriumgeteste Zuiverheid",
+        "description": "Getest door derde partijen voor kwaliteit, kracht en veiligheid."
+      },
+      "ethical": {
+        "title": "Ethisch Vervaardigd",
+        "description": "Duurzame en diervriendelijke productie."
+      }
+    },
+    "howItWorks": {
+      "title": "Jouw Pad naar Welzijn",
+      "subtitle": "Omarm een leven van balans en welzijn in drie eenvoudige stappen.",
+      "step1": {
+        "title": "Ontdek Jouw Product",
+        "description": "Verken onze zorgvuldig samengestelde selectie en vind de perfecte CBD-oplossing voor jouw levensstijl en behoeften."
+      },
+      "step2": {
+        "title": "Integreer Dagelijks",
+        "description": "Integreer gemakkelijk onze premium CBD in je dagelijkse routine voor consistente, natuurlijke ondersteuning."
+      },
+      "step3": {
+        "title": "Voel het Verschil",
+        "description": "Ervaar verbeterde gevoelens van kalmte, balans en algemeen welzijn."
+      }
+    },
+    "testimonials": {
+      "title": "Stemmen van Onze Gemeenschap",
+      "subtitle": "Ontdek hoe Garden Gold Green het verschil maakt.",
+      "verifiedBuyer": "Geverifieerde Koper",
+      "testimonial1": {
+        "name": "Jessica M.",
+        "comment": "De Gold Standard olie is een game-changer geweest voor mijn stressniveaus. De kwaliteit is onmiddellijk merkbaar. Ik zal een klant voor het leven zijn!"
+      },
+      "testimonial2": {
+        "name": "David L.",
+        "comment": "Ik gebruik de Emerald Soothe Balsem na mijn trainingen, en de verlichting is ongelooflijk. Het ruikt geweldig en is niet vettig. Ik beveel het ten zeerste aan."
+      },
+      "testimonial3": {
+        "name": "Sarah K.",
+        "comment": "De Serenity Gummies zijn mijn favoriete manier om 's avonds te ontspannen. Ze zijn heerlijk en helpen me een rustgevende nachtrust te krijgen."
+      }
+    },
+    "newProducts": {
+      "title": "Nieuwe Producten",
+      "subtitle": "Ontdek onze nieuwste creaties"
+    },
+    "community": {
+      "title": "Word Lid van Onze Gemeenschap",
+      "subtitle": "Meer dan 10.000 leden vertrouwen ons",
+      "activeMembers": "Actieve leden",
+      "countriesServed": "Bediene landen",
+      "customerSatisfaction": "Klanttevredenheid"
+    },
+    "welcomeOffer": {
+      "title": "Welkomstaanbieding",
+      "subtitle": "Geniet van 20% korting op je eerste bestelling",
+      "code": "Code: WELCOME20",
+      "validOn": "Geldig op alle producten",
+      "freeShipping": "Gratis verzending",
+      "freeReturn": "Gratis retour",
+      "prioritySupport": "Prioritaire ondersteuning",
+      "cta": "Profiteer van de Aanbieding"
+    },
+    "faq": {
+      "title": "Veelgestelde Vragen",
+      "subtitle": "Alles wat je moet weten over onze CBD-producten",
+      "viewAll": "Bekijk alle veelgestelde vragen",
+      "q1": {
+        "question": "Zijn CBD-producten legaal?",
+        "answer": "Ja, onze CBD-producten zijn volledig legaal in Frankrijk. Ze bevatten minder dan 0,2% THC, in overeenstemming met Europese regelgeving."
+      },
+      "q2": {
+        "question": "Hoe kies ik de juiste concentratie?",
+        "answer": "Begin met een lage concentratie (5-10%) als je een beginner bent, verhoog dan geleidelijk volgens je behoeften."
+      },
+      "q3": {
+        "question": "Wat zijn de levertijden?",
+        "answer": "We verzenden binnen 24u en levering is gratis vanaf €50 aankoop. Reken op 2-3 werkdagen voor ontvangst."
+      },
+      "q4": {
+        "question": "Kan ik mijn producten retourneren?",
+        "answer": "Ja, je hebt 14 dagen om je ongeopende producten te retourneren. Retourkosten zijn voor onze rekening."
+      }
     },
     "features": {
       "quality": {
@@ -96,6 +226,45 @@
         "title": "Klantenservice",
         "description": "Klantenservice beschikbaar 7 dagen per week"
       }
+    }
+  },
+  "blog": {
+    "hero": {
+      "title": "CBD Blog",
+      "subtitle": "Ontdek onze nieuwste artikelen over CBD, welzijn en natuurlijke gezondheid",
+      "searchPlaceholder": "Zoek naar een artikel...",
+      "searchButton": "Zoeken"
+    },
+    "categories": {
+      "all": "Alle artikelen",
+      "education": "Onderwijs",
+      "products": "Producten",
+      "wellness": "Welzijn",
+      "research": "Onderzoek",
+      "lifestyle": "Levensstijl"
+    },
+    "filters": {
+      "sortBy": "Sorteren op",
+      "newest": "Nieuwste",
+      "oldest": "Oudste",
+      "mostRead": "Meest gelezen",
+      "category": "Categorie",
+      "author": "Auteur"
+    },
+    "articles": {
+      "readMore": "Lees meer",
+      "readTime": "min lezen",
+      "publishedOn": "Gepubliceerd op",
+      "by": "door",
+      "featured": "Uitgelicht artikel",
+      "noArticles": "Geen artikelen gevonden",
+      "loadMore": "Meer artikelen laden"
+    },
+    "cta": {
+      "title": "Blijf op de hoogte",
+      "subtitle": "Ontvang onze nieuwste artikelen direct in je inbox",
+      "subscribe": "Abonneren",
+      "emailPlaceholder": "Je e-mailadres"
     }
   },
   "products": {

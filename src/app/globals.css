@@ -58,6 +58,14 @@ body.bg-brand-black::before,
   z-index: 0;
 }
 
+/* Overlay filigrane global fixe (au-dessus du fond, sous le contenu) */
+.watermark-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1; /* au-dessus du body background, en dessous des contenus (qui sont >= auto) */
+}
+
 .bg-brand-gold { background-color: var(--brand-gold); }
 .bg-brand-green { background-color: var(--brand-green); }
 .bg-brand-silver { background-color: var(--brand-silver); }

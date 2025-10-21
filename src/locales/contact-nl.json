@@ -1,0 +1,99 @@
+{
+  "hero": {
+    "title": "Neem contact op",
+    "subtitle": "We zijn er om te helpen. Aarzel niet om contact met ons op te nemen voor vragen.",
+    "description": "Ons CBD-expertteam is beschikbaar om al je vragen te beantwoorden en je te ondersteunen in je welzijnsreis."
+  },
+  "form": {
+    "title": "Stuur ons een bericht",
+    "subtitle": "Vul het onderstaande formulier in en we nemen zo snel mogelijk contact met je op.",
+    "fields": {
+      "name": "Volledige naam",
+      "email": "E-mailadres",
+      "phone": "Telefoon (optioneel)",
+      "subject": "Onderwerp",
+      "message": "Je bericht",
+      "namePlaceholder": "Je volledige naam",
+      "emailPlaceholder": "jouw@email.com",
+      "phonePlaceholder": "+33 6 12 34 56 78",
+      "subjectPlaceholder": "Kies een onderwerp",
+      "messagePlaceholder": "Beschrijf je vraag of verzoek in detail..."
+    },
+    "subjects": {
+      "general": "Algemene vraag",
+      "product": "Productvraag",
+      "order": "Bestelling",
+      "shipping": "Verzending",
+      "return": "Retour",
+      "technical": "Technische ondersteuning",
+      "partnership": "Partnerschap",
+      "other": "Anders"
+    },
+    "validation": {
+      "nameRequired": "Naam is verplicht",
+      "emailRequired": "E-mail is verplicht",
+      "emailInvalid": "Voer een geldig e-mailadres in",
+      "subjectRequired": "Onderwerp is verplicht",
+      "messageRequired": "Bericht is verplicht",
+      "messageMinLength": "Bericht moet minimaal 10 tekens bevatten"
+    },
+    "submit": "Bericht verzenden",
+    "submitting": "Verzenden...",
+    "success": {
+      "title": "Bericht succesvol verzonden!",
+      "message": "Bedankt voor je bericht. We nemen zo snel mogelijk contact met je op.",
+      "button": "Nog een bericht verzenden"
+    },
+    "error": {
+      "title": "Fout bij verzenden",
+      "message": "Er is een fout opgetreden. Probeer opnieuw of neem direct contact met ons op.",
+      "button": "Opnieuw proberen"
+    }
+  },
+  "info": {
+    "title": "Contactinformatie",
+    "subtitle": "Meerdere manieren om ons te bereiken",
+    "phone": {
+      "title": "Telefoon",
+      "number": "+33 7 78 82 38 40",
+      "hours": "Ma-Vr: 9u-18u"
+    },
+    "email": {
+      "title": "E-mail",
+      "address": "contact@gardengoldgreen.com",
+      "response": "Reactie binnen 24u"
+    },
+    "address": {
+      "title": "Adres",
+      "street": "123 CBD Straat",
+      "city": "75001 Parijs, Frankrijk"
+    },
+    "social": {
+      "title": "Sociale media",
+      "follow": "Volg ons voor het laatste nieuws"
+    }
+  },
+  "faq": {
+    "title": "Veelgestelde vragen",
+    "subtitle": "Vind snel antwoorden op je vragen",
+    "items": [
+      {
+        "question": "Wat zijn jullie levertijden?",
+        "answer": "We verzenden binnen 24u en levering is gratis vanaf €50. Reken op 2-3 werkdagen voor ontvangst."
+      },
+      {
+        "question": "Kan ik mijn producten retourneren?",
+        "answer": "Ja, je hebt 14 dagen om je ongeopende producten te retourneren. Retourkosten zijn voor onze rekening."
+      },
+      {
+        "question": "Zijn jullie producten legaal?",
+        "answer": "Ja, al onze CBD-producten zijn volledig legaal in Frankrijk met minder dan 0,2% THC."
+      },
+      {
+        "question": "Hoe kies ik de juiste concentratie?",
+        "answer": "Begin met een lage concentratie (5-10%) als je een beginner bent, verhoog dan geleidelijk volgens je behoeften."
+      }
+    ],
+    "viewAll": "Bekijk alle veelgestelde vragen"
+  }
+}

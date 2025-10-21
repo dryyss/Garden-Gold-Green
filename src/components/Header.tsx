@@ -44,7 +44,7 @@ export function Header() {
   const { state: authState, logout } = useAuth()
   const { t } = useTranslation()
   const user = authState.user
-  const isLoading = authState.isLoading
+  // const isLoading = authState.isLoading
 
   // Gérer le scroll pour réduire la barre jaune et afficher le panier flottant
   useEffect(() => {

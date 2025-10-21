@@ -1,0 +1,39 @@
+{
+  "hero": {
+    "title": "Blog CBD",
+    "subtitle": "Descubre nuestros últimos artículos sobre CBD, bienestar y salud natural",
+    "searchPlaceholder": "Buscar un artículo...",
+    "searchButton": "Buscar"
+  },
+  "categories": {
+    "all": "Todos los artículos",
+    "education": "Educación",
+    "products": "Productos",
+    "wellness": "Bienestar",
+    "research": "Investigación",
+    "lifestyle": "Estilo de vida"
+  },
+  "filters": {
+    "sortBy": "Ordenar por",
+    "newest": "Más reciente",
+    "oldest": "Más antiguo",
+    "mostRead": "Más leído",
+    "category": "Categoría",
+    "author": "Autor"
+  },
+  "articles": {
+    "readMore": "Leer más",
+    "readTime": "min de lectura",
+    "publishedOn": "Publicado el",
+    "by": "por",
+    "featured": "Artículo destacado",
+    "noArticles": "No se encontraron artículos",
+    "loadMore": "Cargar más artículos"
+  },
+  "cta": {
+    "title": "Mantente informado",
+    "subtitle": "Recibe nuestros últimos artículos directamente en tu bandeja de entrada",
+    "subscribe": "Suscribirse",
+    "emailPlaceholder": "Tu dirección de correo"
+  }
+}

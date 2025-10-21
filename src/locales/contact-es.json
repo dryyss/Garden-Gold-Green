@@ -1,0 +1,99 @@
+{
+  "hero": {
+    "title": "Contáctanos",
+    "subtitle": "Estamos aquí para ayudarte. No dudes en contactarnos para cualquier pregunta.",
+    "description": "Nuestro equipo de expertos en CBD está disponible para responder todas tus preguntas y apoyarte en tu viaje de bienestar."
+  },
+  "form": {
+    "title": "Envíanos un mensaje",
+    "subtitle": "Completa el formulario a continuación y te responderemos lo antes posible.",
+    "fields": {
+      "name": "Nombre completo",
+      "email": "Dirección de correo",
+      "phone": "Teléfono (opcional)",
+      "subject": "Asunto",
+      "message": "Tu mensaje",
+      "namePlaceholder": "Tu nombre completo",
+      "emailPlaceholder": "tu@email.com",
+      "phonePlaceholder": "+33 6 12 34 56 78",
+      "subjectPlaceholder": "Elige un asunto",
+      "messagePlaceholder": "Describe tu pregunta o solicitud en detalle..."
+    },
+    "subjects": {
+      "general": "Pregunta general",
+      "product": "Pregunta sobre producto",
+      "order": "Pedido",
+      "shipping": "Envío",
+      "return": "Devolución",
+      "technical": "Soporte técnico",
+      "partnership": "Asociación",
+      "other": "Otro"
+    },
+    "validation": {
+      "nameRequired": "El nombre es requerido",
+      "emailRequired": "El email es requerido",
+      "emailInvalid": "Por favor ingresa una dirección de email válida",
+      "subjectRequired": "El asunto es requerido",
+      "messageRequired": "El mensaje es requerido",
+      "messageMinLength": "El mensaje debe tener al menos 10 caracteres"
+    },
+    "submit": "Enviar mensaje",
+    "submitting": "Enviando...",
+    "success": {
+      "title": "¡Mensaje enviado con éxito!",
+      "message": "Gracias por tu mensaje. Te responderemos lo antes posible.",
+      "button": "Enviar otro mensaje"
+    },
+    "error": {
+      "title": "Error al enviar",
+      "message": "Ocurrió un error. Por favor intenta de nuevo o contáctanos directamente.",
+      "button": "Intentar de nuevo"
+    }
+  },
+  "info": {
+    "title": "Información de contacto",
+    "subtitle": "Múltiples formas de contactarnos",
+    "phone": {
+      "title": "Teléfono",
+      "number": "+33 7 78 82 38 40",
+      "hours": "Lun-Vie: 9h-18h"
+    },
+    "email": {
+      "title": "Email",
+      "address": "contact@gardengoldgreen.com",
+      "response": "Respuesta en 24h"
+    },
+    "address": {
+      "title": "Dirección",
+      "street": "123 Calle del CBD",
+      "city": "75001 París, Francia"
+    },
+    "social": {
+      "title": "Redes sociales",
+      "follow": "Síguenos para las últimas noticias"
+    }
+  },
+  "faq": {
+    "title": "Preguntas frecuentes",
+    "subtitle": "Encuentra rápidamente las respuestas a tus preguntas",
+    "items": [
+      {
+        "question": "¿Cuáles son sus tiempos de entrega?",
+        "answer": "Enviamos en 24h y la entrega es gratuita desde 50€. Cuenta con 2-3 días hábiles para la recepción."
+      },
+      {
+        "question": "¿Puedo devolver mis productos?",
+        "answer": "Sí, tienes 14 días para devolver tus productos sin abrir. Los costos de devolución corren por nuestra cuenta."
+      },
+      {
+        "question": "¿Sus productos son legales?",
+        "answer": "Sí, todos nuestros productos CBD son perfectamente legales en Francia con menos del 0,2% de THC."
+      },
+      {
+        "question": "¿Cómo elegir la concentración correcta?",
+        "answer": "Comienza con una concentración baja (5-10%) si eres principiante, luego aumenta según tus necesidades."
+      }
+    ],
+    "viewAll": "Ver todas las preguntas frecuentes"
+  }
+}

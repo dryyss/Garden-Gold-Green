@@ -27,17 +27,6 @@ import { ProductCard } from '@/components/ProductCard'
 import { HeroLogo } from '@/components/HeroLogo'
 import { useTranslation } from '@/contexts/TranslationContext'
 import productsData from '@/data/products.json'
-import homeTranslationsFr from '@/locales/home-fr.json'
-import homeTranslationsEn from '@/locales/home-en.json'
-import homeTranslationsEs from '@/locales/home-es.json'
-import homeTranslationsNl from '@/locales/home-nl.json'
-
-const homeTranslations: Record<string, typeof homeTranslationsFr> = {
-  fr: homeTranslationsFr,
-  en: homeTranslationsEn,
-  es: homeTranslationsEs,
-  nl: homeTranslationsNl,
-}
 
 // Transformer les données de l'ancienne structure vers la nouvelle
 function transformProduct(product: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -57,8 +46,7 @@ function transformProduct(product: any) { // eslint-disable-line @typescript-esl
 }
 
 export default function HomePage() {
-  const { language } = useTranslation()
-  const ht = homeTranslations[language] || homeTranslations.fr
+  const { t } = useTranslation()
 
   // Récupérer les produits les plus populaires
   const featuredProducts = productsData
@@ -87,18 +75,18 @@ export default function HomePage() {
             <HeroLogo />
           </div>
           <h1 className="text-5xl md:text-7xl font-bold text-white mb-4 tracking-tight">
-            {ht.hero.mainTitle}
+            {t('home.hero.mainTitle')}
           </h1>
           <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-8">
-            {ht.hero.mainSubtitle}
+            {t('home.hero.mainSubtitle')}
           </p>
           <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
             <Link href="/products" className="btn-gold text-black font-semibold py-3 px-8 rounded-full shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300 flex items-center justify-center">
-              {ht.hero.ctaCollection}
+              {t('home.hero.ctaCollection')}
               <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
             </Link>
             <Link href="/learn" className="bg-transparent border-2 border-brand-green text-brand-green font-semibold py-3 px-8 rounded-full hover:bg-brand-green hover:text-black transition-all duration-300 flex items-center justify-center">
-              {ht.hero.ctaLearnMore}
+              {t('home.hero.ctaLearnMore')}
               <FontAwesomeIcon icon={faPlay} className="ml-2" />
             </Link>
           </div>
@@ -107,19 +95,19 @@ export default function HomePage() {
           <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
             <div className="text-center">
               <div className="text-3xl font-bold text-brand-gold mb-1">10K+</div>
-              <div className="text-sm text-gray-400">{ht.hero.stats.satisfiedCustomers}</div>
+              <div className="text-sm text-gray-400">{t('home.hero.stats.satisfiedCustomers')}</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold text-brand-green mb-1">100%</div>
-              <div className="text-sm text-gray-400">{ht.hero.stats.organic}</div>
+              <div className="text-sm text-gray-400">{t('home.hero.stats.organic')}</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold text-brand-gold mb-1">50+</div>
-              <div className="text-sm text-gray-400">{ht.hero.stats.premiumProducts}</div>
+              <div className="text-sm text-gray-400">{t('home.hero.stats.premiumProducts')}</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold text-brand-green mb-1">24/7</div>
-              <div className="text-sm text-gray-400">{ht.hero.stats.customerSupport}</div>
+              <div className="text-sm text-gray-400">{t('home.hero.stats.customerSupport')}</div>
             </div>
           </div>
         </div>
@@ -129,8 +117,8 @@ export default function HomePage() {
       <section className="py-24 bg-brand-black">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-2 gold-text-gradient">{ht.featuredProducts.title}</h2>
-            <p className="text-lg text-gray-400">{ht.featuredProducts.subtitle}</p>
+            <h2 className="text-4xl font-bold mb-2 gold-text-gradient">{t('home.featuredProducts.title')}</h2>
+            <p className="text-lg text-gray-400">{t('home.featuredProducts.subtitle')}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {featuredProducts.map((product) => (
@@ -139,7 +127,7 @@ export default function HomePage() {
           </div>
           <div className="text-center mt-12">
             <Link href="/products" className="btn-gold text-black font-semibold py-3 px-8 rounded-full shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300 inline-flex items-center">
-              {ht.featuredProducts.viewAll}
+              {t('home.featuredProducts.viewAll')}
               <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
             </Link>
           </div>
@@ -150,37 +138,37 @@ export default function HomePage() {
       <section className="py-24 bg-[#111111]">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-2 gold-text-gradient">{ht.benefits.title}</h2>
-            <p className="text-lg text-gray-400">{ht.benefits.subtitle}</p>
+            <h2 className="text-4xl font-bold mb-2 gold-text-gradient">{t('home.benefits.title')}</h2>
+            <p className="text-lg text-gray-400">{t('home.benefits.subtitle')}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="text-center group">
               <div className="w-20 h-20 bg-brand-gold/20 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-brand-gold/30 transition-colors">
                 <FontAwesomeIcon icon={faShield} className="text-brand-gold text-2xl" />
               </div>
-              <h3 className="text-xl font-semibold text-white mb-3">{ht.benefits.qualityGuarantee.title}</h3>
-              <p className="text-gray-400">{ht.benefits.qualityGuarantee.description}</p>
+              <h3 className="text-xl font-semibold text-white mb-3">{t('home.benefits.qualityGuarantee.title')}</h3>
+              <p className="text-gray-400">{t('home.benefits.qualityGuarantee.description')}</p>
             </div>
             <div className="text-center group">
               <div className="w-20 h-20 bg-brand-green/20 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-brand-green/30 transition-colors">
                 <FontAwesomeIcon icon={faTruck} className="text-brand-green text-2xl" />
               </div>
-              <h3 className="text-xl font-semibold text-white mb-3">{ht.benefits.fastDelivery.title}</h3>
-              <p className="text-gray-400">{ht.benefits.fastDelivery.description}</p>
+              <h3 className="text-xl font-semibold text-white mb-3">{t('home.benefits.fastDelivery.title')}</h3>
+              <p className="text-gray-400">{t('home.benefits.fastDelivery.description')}</p>
             </div>
             <div className="text-center group">
               <div className="w-20 h-20 bg-brand-gold/20 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-brand-gold/30 transition-colors">
                 <FontAwesomeIcon icon={faHeadset} className="text-brand-gold text-2xl" />
               </div>
-              <h3 className="text-xl font-semibold text-white mb-3">{ht.benefits.support247.title}</h3>
-              <p className="text-gray-400">{ht.benefits.support247.description}</p>
+              <h3 className="text-xl font-semibold text-white mb-3">{t('home.benefits.support247.title')}</h3>
+              <p className="text-gray-400">{t('home.benefits.support247.description')}</p>
             </div>
             <div className="text-center group">
               <div className="w-20 h-20 bg-brand-green/20 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-brand-green/30 transition-colors">
                 <FontAwesomeIcon icon={faAward} className="text-brand-green text-2xl" />
               </div>
-              <h3 className="text-xl font-semibold text-white mb-3">{ht.benefits.certifications.title}</h3>
-              <p className="text-gray-400">{ht.benefits.certifications.description}</p>
+              <h3 className="text-xl font-semibold text-white mb-3">{t('home.benefits.certifications.title')}</h3>
+              <p className="text-gray-400">{t('home.benefits.certifications.description')}</p>
             </div>
           </div>
         </div>
@@ -190,8 +178,8 @@ export default function HomePage() {
       <section className="py-24 bg-brand-black">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-2 gold-text-gradient">{ht.bestSellers.title}</h2>
-            <p className="text-lg text-gray-400">{ht.bestSellers.subtitle}</p>
+            <h2 className="text-4xl font-bold mb-2 gold-text-gradient">{t('home.bestSellers.title')}</h2>
+            <p className="text-lg text-gray-400">{t('home.bestSellers.subtitle')}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {bestSellers.map((product) => (
@@ -215,16 +203,16 @@ export default function HomePage() {
                   />
             </div>
             <div className="lg:w-1/2 w-full">
-              <h2 className="text-4xl font-bold mb-6 gold-text-gradient">{ht.brandPromise.title}</h2>
-              <p className="text-gray-300 mb-8 text-lg">{ht.brandPromise.description}</p>
+              <h2 className="text-4xl font-bold mb-6 gold-text-gradient">{t('home.brandPromise.title')}</h2>
+              <p className="text-gray-300 mb-8 text-lg">{t('home.brandPromise.description')}</p>
               <div className="space-y-6">
                 <div className="flex items-start">
                   <div className="flex-shrink-0 h-10 w-10 rounded-full bg-brand-green/10 flex items-center justify-center mr-4 border border-brand-green">
                     <FontAwesomeIcon icon={faLeaf} className="text-brand-green text-xl" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-white text-lg">{ht.brandPromise.organic.title}</h4>
-                    <p className="text-gray-400">{ht.brandPromise.organic.description}</p>
+                    <h4 className="font-semibold text-white text-lg">{t('home.brandPromise.organic.title')}</h4>
+                    <p className="text-gray-400">{t('home.brandPromise.organic.description')}</p>
                   </div>
                 </div>
                 <div className="flex items-start">
@@ -232,8 +220,8 @@ export default function HomePage() {
                     <FontAwesomeIcon icon={faFlaskVial} className="text-brand-green text-xl" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-white text-lg">{ht.brandPromise.labTested.title}</h4>
-                    <p className="text-gray-400">{ht.brandPromise.labTested.description}</p>
+                    <h4 className="font-semibold text-white text-lg">{t('home.brandPromise.labTested.title')}</h4>
+                    <p className="text-gray-400">{t('home.brandPromise.labTested.description')}</p>
                   </div>
                 </div>
                 <div className="flex items-start">
@@ -241,8 +229,8 @@ export default function HomePage() {
                     <FontAwesomeIcon icon={faHandHoldingHeart} className="text-brand-green text-xl" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-white text-lg">{ht.brandPromise.ethical.title}</h4>
-                    <p className="text-gray-400">{ht.brandPromise.ethical.description}</p>
+                    <h4 className="font-semibold text-white text-lg">{t('home.brandPromise.ethical.title')}</h4>
+                    <p className="text-gray-400">{t('home.brandPromise.ethical.description')}</p>
                   </div>
                 </div>
               </div>
@@ -254,8 +242,8 @@ export default function HomePage() {
       {/* How It Works Section */}
       <section className="py-24 bg-brand-black">
         <div className="container mx-auto px-6 text-center">
-          <h2 className="text-4xl font-bold mb-4 gold-text-gradient">{ht.howItWorks.title}</h2>
-          <p className="text-lg text-gray-400 mb-16 max-w-2xl mx-auto">{ht.howItWorks.subtitle}</p>
+          <h2 className="text-4xl font-bold mb-4 gold-text-gradient">{t('home.howItWorks.title')}</h2>
+          <p className="text-lg text-gray-400 mb-16 max-w-2xl mx-auto">{t('home.howItWorks.subtitle')}</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
             <div className="absolute top-1/2 left-0 w-full h-px bg-white/10 hidden md:block" style={{transform: 'translateY(-50%)'}}></div>
             <div className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-brand-gold to-transparent hidden md:block" style={{transform: 'translateY(-50%)'}}></div>
@@ -264,22 +252,22 @@ export default function HomePage() {
               <div className="w-20 h-20 rounded-full flex items-center justify-center bg-brand-black border-2 border-brand-gold mb-6 shadow-gold-glow">
                 <span className="text-3xl font-bold gold-text-gradient">1</span>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">{ht.howItWorks.step1.title}</h3>
-              <p className="text-gray-400">{ht.howItWorks.step1.description}</p>
+              <h3 className="text-xl font-semibold text-white mb-2">{t('home.howItWorks.step1.title')}</h3>
+              <p className="text-gray-400">{t('home.howItWorks.step1.description')}</p>
             </div>
             <div className="relative z-10 flex flex-col items-center">
               <div className="w-20 h-20 rounded-full flex items-center justify-center bg-brand-black border-2 border-brand-gold mb-6 shadow-gold-glow">
                 <span className="text-3xl font-bold gold-text-gradient">2</span>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">{ht.howItWorks.step2.title}</h3>
-              <p className="text-gray-400">{ht.howItWorks.step2.description}</p>
+              <h3 className="text-xl font-semibold text-white mb-2">{t('home.howItWorks.step2.title')}</h3>
+              <p className="text-gray-400">{t('home.howItWorks.step2.description')}</p>
             </div>
             <div className="relative z-10 flex flex-col items-center">
               <div className="w-20 h-20 rounded-full flex items-center justify-center bg-brand-black border-2 border-brand-gold mb-6 shadow-gold-glow">
                 <span className="text-3xl font-bold gold-text-gradient">3</span>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">{ht.howItWorks.step3.title}</h3>
-              <p className="text-gray-400">{ht.howItWorks.step3.description}</p>
+              <h3 className="text-xl font-semibold text-white mb-2">{t('home.howItWorks.step3.title')}</h3>
+              <p className="text-gray-400">{t('home.howItWorks.step3.description')}</p>
             </div>
           </div>
         </div>
@@ -289,8 +277,8 @@ export default function HomePage() {
       <section className="py-24 bg-[#111111]">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-2 gold-text-gradient">{ht.testimonials.title}</h2>
-            <p className="text-lg text-gray-400">{ht.testimonials.subtitle}</p>
+            <h2 className="text-4xl font-bold mb-2 gold-text-gradient">{t('home.testimonials.title')}</h2>
+            <p className="text-lg text-gray-400">{t('home.testimonials.subtitle')}</p>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="card-bg p-8 rounded-xl">
@@ -303,8 +291,8 @@ export default function HomePage() {
                   height={48}
                 />
                 <div>
-                  <h4 className="font-semibold text-white">{ht.testimonials.testimonial1.name}</h4>
-                  <p className="text-sm text-gray-400">{ht.testimonials.verifiedBuyer}</p>
+                  <h4 className="font-semibold text-white">{t('home.testimonials.testimonial1.name')}</h4>
+                  <p className="text-sm text-gray-400">{t('home.testimonials.verifiedBuyer')}</p>
                 </div>
               </div>
               <div className="text-brand-gold mb-4">
@@ -314,7 +302,7 @@ export default function HomePage() {
                 <FontAwesomeIcon icon={faStar} />
                 <FontAwesomeIcon icon={faStar} />
               </div>
-              <p className="text-gray-300">&quot;{ht.testimonials.testimonial1.comment}&quot;</p>
+              <p className="text-gray-300">&quot;{t('home.testimonials.testimonial1.comment')}&quot;</p>
             </div>
             <div className="card-bg p-8 rounded-xl">
               <div className="flex items-center mb-4">
@@ -326,8 +314,8 @@ export default function HomePage() {
                   height={48}
                 />
                 <div>
-                  <h4 className="font-semibold text-white">{ht.testimonials.testimonial2.name}</h4>
-                  <p className="text-sm text-gray-400">{ht.testimonials.verifiedBuyer}</p>
+                  <h4 className="font-semibold text-white">{t('home.testimonials.testimonial2.name')}</h4>
+                  <p className="text-sm text-gray-400">{t('home.testimonials.verifiedBuyer')}</p>
                 </div>
               </div>
               <div className="text-brand-gold mb-4">
@@ -337,7 +325,7 @@ export default function HomePage() {
                 <FontAwesomeIcon icon={faStar} />
                 <FontAwesomeIcon icon={faStar} />
               </div>
-              <p className="text-gray-300">&quot;{ht.testimonials.testimonial2.comment}&quot;</p>
+              <p className="text-gray-300">&quot;{t('home.testimonials.testimonial2.comment')}&quot;</p>
             </div>
             <div className="card-bg p-8 rounded-xl">
               <div className="flex items-center mb-4">
@@ -349,8 +337,8 @@ export default function HomePage() {
                   height={48}
                 />
                 <div>
-                  <h4 className="font-semibold text-white">{ht.testimonials.testimonial3.name}</h4>
-                  <p className="text-sm text-gray-400">{ht.testimonials.verifiedBuyer}</p>
+                  <h4 className="font-semibold text-white">{t('home.testimonials.testimonial3.name')}</h4>
+                  <p className="text-sm text-gray-400">{t('home.testimonials.verifiedBuyer')}</p>
                 </div>
               </div>
               <div className="text-brand-gold mb-4">
@@ -360,7 +348,7 @@ export default function HomePage() {
                 <FontAwesomeIcon icon={faStar} />
                 <FontAwesomeIcon icon={faStarHalfStroke} />
               </div>
-              <p className="text-gray-300">&quot;{ht.testimonials.testimonial3.comment}&quot;</p>
+              <p className="text-gray-300">&quot;{t('home.testimonials.testimonial3.comment')}&quot;</p>
             </div>
           </div>
         </div>
@@ -370,8 +358,8 @@ export default function HomePage() {
       <section className="py-24 bg-[#111111]">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-2 gold-text-gradient">{ht.newProducts.title}</h2>
-            <p className="text-lg text-gray-400">{ht.newProducts.subtitle}</p>
+            <h2 className="text-4xl font-bold mb-2 gold-text-gradient">{t('home.newProducts.title')}</h2>
+            <p className="text-lg text-gray-400">{t('home.newProducts.subtitle')}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {newProducts.map((product) => (
@@ -385,8 +373,8 @@ export default function HomePage() {
       <section className="py-24 bg-brand-black">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-2 gold-text-gradient">{ht.community.title}</h2>
-            <p className="text-lg text-gray-400">{ht.community.subtitle}</p>
+            <h2 className="text-4xl font-bold mb-2 gold-text-gradient">{t('home.community.title')}</h2>
+            <p className="text-lg text-gray-400">{t('home.community.subtitle')}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
@@ -394,21 +382,21 @@ export default function HomePage() {
                 <FontAwesomeIcon icon={faUsers} className="text-brand-gold text-2xl" />
               </div>
               <h3 className="text-xl font-semibold text-white mb-2">10,000+</h3>
-              <p className="text-gray-400">{ht.community.activeMembers}</p>
+              <p className="text-gray-400">{t('home.community.activeMembers')}</p>
             </div>
             <div className="text-center">
               <div className="w-16 h-16 bg-brand-green/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <FontAwesomeIcon icon={faGlobe} className="text-brand-green text-2xl" />
               </div>
               <h3 className="text-xl font-semibold text-white mb-2">15+</h3>
-              <p className="text-gray-400">{ht.community.countriesServed}</p>
+              <p className="text-gray-400">{t('home.community.countriesServed')}</p>
             </div>
             <div className="text-center">
               <div className="w-16 h-16 bg-brand-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <FontAwesomeIcon icon={faHeart} className="text-brand-gold text-2xl" />
               </div>
               <h3 className="text-xl font-semibold text-white mb-2">98%</h3>
-              <p className="text-gray-400">{ht.community.customerSatisfaction}</p>
+              <p className="text-gray-400">{t('home.community.customerSatisfaction')}</p>
             </div>
           </div>
         </div>
@@ -418,8 +406,8 @@ export default function HomePage() {
       <section className="py-24 bg-gradient-to-r from-brand-gold/10 to-brand-green/10">
         <div className="container mx-auto px-6">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-2 gold-text-gradient">{ht.welcomeOffer.title}</h2>
-            <p className="text-lg text-gray-400">{ht.welcomeOffer.subtitle}</p>
+            <h2 className="text-4xl font-bold mb-2 gold-text-gradient">{t('home.welcomeOffer.title')}</h2>
+            <p className="text-lg text-gray-400">{t('home.welcomeOffer.subtitle')}</p>
           </div>
           <div className="max-w-4xl mx-auto">
             <div className="card-bg rounded-2xl p-8 text-center">
@@ -428,27 +416,27 @@ export default function HomePage() {
                   <FontAwesomeIcon icon={faGift} className="text-black text-3xl" />
                 </div>
                 <div className="text-left">
-                  <h3 className="text-2xl font-bold text-white">{ht.welcomeOffer.code}</h3>
-                  <p className="text-gray-400">{ht.welcomeOffer.validOn}</p>
+                  <h3 className="text-2xl font-bold text-white">{t('home.welcomeOffer.code')}</h3>
+                  <p className="text-gray-400">{t('home.welcomeOffer.validOn')}</p>
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div className="text-center">
                   <FontAwesomeIcon icon={faCheckCircle} className="text-brand-green text-2xl mb-2" />
-                  <p className="text-white font-medium">{ht.welcomeOffer.freeShipping}</p>
+                  <p className="text-white font-medium">{t('home.welcomeOffer.freeShipping')}</p>
                 </div>
                 <div className="text-center">
                   <FontAwesomeIcon icon={faCheckCircle} className="text-brand-green text-2xl mb-2" />
-                  <p className="text-white font-medium">{ht.welcomeOffer.freeReturn}</p>
+                  <p className="text-white font-medium">{t('home.welcomeOffer.freeReturn')}</p>
                 </div>
                 <div className="text-center">
                   <FontAwesomeIcon icon={faCheckCircle} className="text-brand-green text-2xl mb-2" />
-                  <p className="text-white font-medium">{ht.welcomeOffer.prioritySupport}</p>
+                  <p className="text-white font-medium">{t('home.welcomeOffer.prioritySupport')}</p>
                 </div>
               </div>
               <Link href="/products" className="btn-gold text-black font-semibold py-4 px-8 rounded-full shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300 inline-flex items-center text-lg">
                 <FontAwesomeIcon icon={faShoppingBag} className="mr-2" />
-                {ht.welcomeOffer.cta}
+                {t('home.welcomeOffer.cta')}
               </Link>
             </div>
           </div>
@@ -459,31 +447,31 @@ export default function HomePage() {
       <section className="py-24 bg-[#111111]">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-2 gold-text-gradient">{ht.faq.title}</h2>
-            <p className="text-lg text-gray-400">{ht.faq.subtitle}</p>
+            <h2 className="text-4xl font-bold mb-2 gold-text-gradient">{t('home.faq.title')}</h2>
+            <p className="text-lg text-gray-400">{t('home.faq.subtitle')}</p>
           </div>
           <div className="max-w-4xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="card-bg rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-white mb-3">{ht.faq.q1.question}</h3>
-                <p className="text-gray-400">{ht.faq.q1.answer}</p>
+                <h3 className="text-lg font-semibold text-white mb-3">{t('home.faq.q1.question')}</h3>
+                <p className="text-gray-400">{t('home.faq.q1.answer')}</p>
               </div>
               <div className="card-bg rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-white mb-3">{ht.faq.q2.question}</h3>
-                <p className="text-gray-400">{ht.faq.q2.answer}</p>
+                <h3 className="text-lg font-semibold text-white mb-3">{t('home.faq.q2.question')}</h3>
+                <p className="text-gray-400">{t('home.faq.q2.answer')}</p>
               </div>
               <div className="card-bg rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-white mb-3">{ht.faq.q3.question}</h3>
-                <p className="text-gray-400">{ht.faq.q3.answer}</p>
+                <h3 className="text-lg font-semibold text-white mb-3">{t('home.faq.q3.question')}</h3>
+                <p className="text-gray-400">{t('home.faq.q3.answer')}</p>
               </div>
               <div className="card-bg rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-white mb-3">{ht.faq.q4.question}</h3>
-                <p className="text-gray-400">{ht.faq.q4.answer}</p>
+                <h3 className="text-lg font-semibold text-white mb-3">{t('home.faq.q4.question')}</h3>
+                <p className="text-gray-400">{t('home.faq.q4.answer')}</p>
               </div>
             </div>
             <div className="text-center mt-12">
               <Link href="/faq" className="text-brand-gold hover:text-yellow-300 transition-colors font-medium">
-                {ht.faq.viewAll}
+                {t('home.faq.viewAll')}
                 <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
               </Link>
             </div>
@@ -500,5 +488,3 @@ export default function HomePage() {
     </div>
   )
 }
-
-
