@@ -131,6 +131,36 @@ export default function FAQPage() {
       question: ft.questions.q15.question,
       answer: ft.questions.q15.answer,
       category: 'general'
+    },
+    {
+      id: '16',
+      question: ft.questions.q16.question,
+      answer: ft.questions.q16.answer,
+      category: 'legal'
+    },
+    {
+      id: '17',
+      question: ft.questions.q17.question,
+      answer: ft.questions.q17.answer,
+      category: 'legal'
+    },
+    {
+      id: '18',
+      question: ft.questions.q18.question,
+      answer: ft.questions.q18.answer,
+      category: 'legal'
+    },
+    {
+      id: '19',
+      question: ft.questions.q19.question,
+      answer: ft.questions.q19.answer,
+      category: 'legal'
+    },
+    {
+      id: '20',
+      question: ft.questions.q20.question,
+      answer: ft.questions.q20.answer,
+      category: 'legal'
     }
   ]
 

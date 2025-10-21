@@ -321,6 +321,93 @@
     "updateQuantity": "Update quantity",
     "inCart": "in cart"
   },
+  "products": {
+    "hero": {
+      "title": "Our CBD Products",
+      "subtitle": "Discover our complete range of premium CBD products, carefully selected for your wellness",
+      "searchPlaceholder": "Search for a product...",
+      "searchButton": "Search"
+    },
+    "filters": {
+      "title": "Filters",
+      "clearAll": "Clear all",
+      "priceRange": "Price range",
+      "category": "Category",
+      "availability": "Availability",
+      "sortBy": "Sort by",
+      "sortOptions": {
+        "newest": "Newest",
+        "oldest": "Oldest",
+        "priceLow": "Price: Low to High",
+        "priceHigh": "Price: High to Low",
+        "nameAZ": "Name: A-Z",
+        "nameZA": "Name: Z-A",
+        "rating": "Highest Rated"
+      },
+      "viewOptions": {
+        "grid": "Grid view",
+        "list": "List view"
+      }
+    },
+    "categories": {
+      "all": "All products",
+      "oils": "CBD Oils",
+      "flowers": "CBD Flowers",
+      "gummies": "CBD Gummies",
+      "topicals": "Topical Products",
+      "capsules": "CBD Capsules",
+      "isolates": "CBD Isolates"
+    },
+    "products": {
+      "noProducts": "No products found",
+      "noProductsDescription": "Try modifying your search criteria or filters",
+      "loading": "Loading products...",
+      "loadMore": "Load more products",
+      "showing": "Showing",
+      "of": "of",
+      "results": "results",
+      "perPage": "per page"
+    },
+    "product": {
+      "addToCart": "Add to cart",
+      "adding": "Adding...",
+      "added": "Added!",
+      "inStock": "In stock",
+      "outOfStock": "Out of stock",
+      "lowStock": "Only {count} left in stock",
+      "stockCount": "{count} in stock",
+      "new": "New",
+      "bestSeller": "Bestseller",
+      "rating": "Rating",
+      "reviews": "reviews",
+      "quantity": "Quantity",
+      "description": "Description",
+      "ingredients": "Ingredients",
+      "usage": "Usage",
+      "labResults": "Lab results",
+      "shipping": "Shipping",
+      "returns": "Returns",
+      "viewDetails": "View details"
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page",
+      "of": "of"
+    },
+    "search": {
+      "noResults": "No results found",
+      "tryAgain": "Try with different keywords",
+      "suggestions": "Suggestions",
+      "popularSearches": "Popular searches"
+    },
+    "cta": {
+      "title": "Can't find what you're looking for?",
+      "subtitle": "Our expert team is here to help you find the perfect product",
+      "contact": "Contact us",
+      "chat": "Live chat"
+    }
+  },
   "checkout": {
     "title": "Checkout",
     "billing": "Billing",

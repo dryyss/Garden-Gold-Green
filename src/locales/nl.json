@@ -321,6 +321,93 @@
     "updateQuantity": "Hoeveelheid bijwerken",
     "inCart": "in winkelwagen"
   },
+  "products": {
+    "hero": {
+      "title": "Onze CBD Producten",
+      "subtitle": "Ontdek ons volledige assortiment premium CBD-producten, zorgvuldig geselecteerd voor jouw welzijn",
+      "searchPlaceholder": "Zoek naar een product...",
+      "searchButton": "Zoeken"
+    },
+    "filters": {
+      "title": "Filters",
+      "clearAll": "Alles wissen",
+      "priceRange": "Prijsbereik",
+      "category": "Categorie",
+      "availability": "Beschikbaarheid",
+      "sortBy": "Sorteren op",
+      "sortOptions": {
+        "newest": "Nieuwste",
+        "oldest": "Oudste",
+        "priceLow": "Prijs: Laag naar Hoog",
+        "priceHigh": "Prijs: Hoog naar Laag",
+        "nameAZ": "Naam: A-Z",
+        "nameZA": "Naam: Z-A",
+        "rating": "Hoogst gewaardeerd"
+      },
+      "viewOptions": {
+        "grid": "Rasterweergave",
+        "list": "Lijstweergave"
+      }
+    },
+    "categories": {
+      "all": "Alle producten",
+      "oils": "CBD Oliën",
+      "flowers": "CBD Bloemen",
+      "gummies": "CBD Gummies",
+      "topicals": "Topische producten",
+      "capsules": "CBD Capsules",
+      "isolates": "CBD Isolaten"
+    },
+    "products": {
+      "noProducts": "Geen producten gevonden",
+      "noProductsDescription": "Probeer je zoekcriteria of filters aan te passen",
+      "loading": "Producten laden...",
+      "loadMore": "Meer producten laden",
+      "showing": "Toont",
+      "of": "van",
+      "results": "resultaten",
+      "perPage": "per pagina"
+    },
+    "product": {
+      "addToCart": "Toevoegen aan winkelwagen",
+      "adding": "Toevoegen...",
+      "added": "Toegevoegd!",
+      "inStock": "Op voorraad",
+      "outOfStock": "Uitverkocht",
+      "lowStock": "Nog maar {count} op voorraad",
+      "stockCount": "{count} op voorraad",
+      "new": "Nieuw",
+      "bestSeller": "Bestseller",
+      "rating": "Beoordeling",
+      "reviews": "beoordelingen",
+      "quantity": "Hoeveelheid",
+      "description": "Beschrijving",
+      "ingredients": "Ingrediënten",
+      "usage": "Gebruik",
+      "labResults": "Labresultaten",
+      "shipping": "Verzending",
+      "returns": "Retourneren",
+      "viewDetails": "Bekijk details"
+    },
+    "pagination": {
+      "previous": "Vorige",
+      "next": "Volgende",
+      "page": "Pagina",
+      "of": "van"
+    },
+    "search": {
+      "noResults": "Geen resultaten gevonden",
+      "tryAgain": "Probeer met andere zoekwoorden",
+      "suggestions": "Suggesties",
+      "popularSearches": "Populaire zoekopdrachten"
+    },
+    "cta": {
+      "title": "Kun je niet vinden wat je zoekt?",
+      "subtitle": "Ons expertteam is er om je te helpen het perfecte product te vinden",
+      "contact": "Neem contact op",
+      "chat": "Live chat"
+    }
+  },
   "checkout": {
     "title": "Afrekenen",
     "billing": "Facturering",

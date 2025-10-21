@@ -1,0 +1,83 @@
+{
+  "hero": {
+    "title": "Nuestros Productos CBD",
+    "subtitle": "Descubre nuestra gama completa de productos CBD premium, cuidadosamente seleccionados para tu bienestar",
+    "searchPlaceholder": "Buscar un producto...",
+    "searchButton": "Buscar"
+  },
+  "filters": {
+    "title": "Filtros",
+    "clearAll": "Limpiar todo",
+    "priceRange": "Rango de precios",
+    "category": "Categoría",
+    "availability": "Disponibilidad",
+    "sortBy": "Ordenar por",
+    "sortOptions": {
+      "newest": "Más reciente",
+      "oldest": "Más antiguo",
+      "priceLow": "Precio: Menor a Mayor",
+      "priceHigh": "Precio: Mayor a Menor",
+      "nameAZ": "Nombre: A-Z",
+      "nameZA": "Nombre: Z-A",
+      "rating": "Mejor valorados"
+    },
+    "viewOptions": {
+      "grid": "Vista de cuadrícula",
+      "list": "Vista de lista"
+    }
+  },
+  "categories": {
+    "all": "Todos los productos",
+    "oils": "Aceites CBD",
+    "flowers": "Flores CBD",
+    "gummies": "Gomitas CBD",
+    "topicals": "Productos tópicos",
+    "capsules": "Cápsulas CBD",
+    "isolates": "Aislados CBD"
+  },
+  "products": {
+    "noProducts": "No se encontraron productos",
+    "noProductsDescription": "Intenta modificar tus criterios de búsqueda o filtros",
+    "loading": "Cargando productos...",
+    "loadMore": "Cargar más productos",
+    "showing": "Mostrando",
+    "of": "de",
+    "results": "resultados",
+    "perPage": "por página"
+  },
+  "product": {
+    "addToCart": "Añadir al carrito",
+    "adding": "Añadiendo...",
+    "inStock": "En stock",
+    "outOfStock": "Agotado",
+    "new": "Nuevo",
+    "bestseller": "Más vendido",
+    "rating": "Calificación",
+    "reviews": "reseñas",
+    "quantity": "Cantidad",
+    "description": "Descripción",
+    "ingredients": "Ingredientes",
+    "usage": "Uso",
+    "labResults": "Resultados de laboratorio",
+    "shipping": "Envío",
+    "returns": "Devoluciones"
+  },
+  "pagination": {
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "page": "Página",
+    "of": "de"
+  },
+  "search": {
+    "noResults": "No se encontraron resultados",
+    "tryAgain": "Intenta con palabras clave diferentes",
+    "suggestions": "Sugerencias",
+    "popularSearches": "Búsquedas populares"
+  },
+  "cta": {
+    "title": "¿No encuentras lo que buscas?",
+    "subtitle": "Nuestro equipo de expertos está aquí para ayudarte a encontrar el producto perfecto",
+    "contact": "Contáctanos",
+    "chat": "Chat en vivo"
+  }
+}

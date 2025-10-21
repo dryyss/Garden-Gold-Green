@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGlobe, faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation, useLanguage, useSetLanguage, SupportedLanguage } from '@/contexts/TranslationContext'
@@ -74,6 +75,9 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   const styles = getStyles()
 
   const containerRef = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+  const [menuPos, setMenuPos] = useState<{ top: number; left: number; width: number } | null>(null)
 
   // Fermer au clic extérieur ou touche Échap
   useEffect(() => {
@@ -82,7 +86,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     const handleClickOutside = (event: MouseEvent | PointerEvent) => {
       if (!containerRef.current) return
       const target = event.target as Node
-      if (!containerRef.current.contains(target)) {
+      if (!containerRef.current.contains(target) && !dropdownRef.current?.contains(target)) {
         setIsOpen(false)
       }
     }
@@ -99,9 +103,23 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     }
   }, [isOpen])
 
+  // Calculer la position du menu (fixed) quand on ouvre
+  useEffect(() => {
+    if (!isOpen || !buttonRef.current) {
+      setMenuPos(null)
+      return
+    }
+    const rect = buttonRef.current.getBoundingClientRect()
+    const width = 192 // w-48
+    const left = Math.max(8, Math.min(rect.right - width, window.innerWidth - width - 8))
+    const top = rect.bottom + 8
+    setMenuPos({ top, left, width })
+  }, [isOpen])
+
   return (
     <div ref={containerRef} className={`${styles.container} ${className}`}>
       <button
+        ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
         className={styles.button}
         aria-label={t('common.language')}
@@ -114,8 +132,8 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         />
       </button>
 
-      {isOpen && (
-        <div className={`${styles.dropdown} absolute right-0 top-full translate-y-2`} role="menu" aria-label={t('common.language')}>
+      {isOpen && menuPos && createPortal(
+        <div ref={dropdownRef} className={`${styles.dropdown} fixed`} style={{ top: menuPos.top, left: menuPos.left, width: menuPos.width }} role="menu" aria-label={t('common.language')}>
           <div className="py-2">
             {languages.map((lang) => (
               <div
@@ -131,7 +149,8 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
               </div>
             ))}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   )

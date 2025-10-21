@@ -205,9 +205,9 @@ export default function FAQPage() {
         </div>
 
         {/* FAQ Items */}
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredFAQs.length === 0 ? (
-            <div className="text-center py-16">
+            <div className="col-span-full text-center py-16">
               <FontAwesomeIcon icon={faQuestionCircle} className="text-6xl text-gray-600 mb-6" />
               <h2 className="text-2xl font-bold text-white mb-4">No Questions Found</h2>
               <p className="text-gray-400 mb-8">
@@ -216,17 +216,17 @@ export default function FAQPage() {
             </div>
           ) : (
             filteredFAQs.map((faq) => (
-              <div key={faq.id} className="card-bg rounded-xl overflow-hidden">
+              <div key={faq.id} className="card-bg rounded-xl overflow-hidden h-fit">
                           <button
                   onClick={() => toggleItem(faq.id)}
-                  className="w-full p-6 text-left flex items-center justify-between hover:bg-white/5 transition-colors"
+                  className="w-full p-6 text-left flex items-start justify-between hover:bg-white/5 transition-colors min-h-[80px]"
                 >
-                  <h3 className="text-lg font-semibold text-white pr-4">
+                  <h3 className="text-lg font-semibold text-white pr-4 flex-1">
                     {faq.question}
                   </h3>
                             <FontAwesomeIcon 
                     icon={openItems.has(faq.id) ? faChevronUp : faChevronDown} 
-                              className="text-brand-gold flex-shrink-0" 
+                              className="text-brand-gold flex-shrink-0 ml-2" 
                             />
                           </button>
                 {openItems.has(faq.id) && (

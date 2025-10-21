@@ -202,17 +202,39 @@ function CartPageContent() {
                   <div className="flex items-center space-x-4">
                     {/* Image du produit */}
                     <div className="w-20 h-20 relative flex-shrink-0">
-                      <ImageWithLoading
-                        src={item.image}
-                        alt={item.name}
-                        fill
-                        className="object-cover rounded-lg"
-                      />
+                      {item.slug ? (
+                        <Link href={`/products/${item.slug}`}>
+                          <ImageWithLoading
+                            src={item.image}
+                            alt={item.name}
+                            fill
+                            className="object-cover rounded-lg hover:opacity-80 transition-opacity cursor-pointer"
+                          />
+                        </Link>
+                      ) : (
+                        <ImageWithLoading
+                          src={item.image}
+                          alt={item.name}
+                          fill
+                          className="object-cover rounded-lg"
+                        />
+                      )}
                     </div>
 
                     {/* Détails du produit */}
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-white mb-1 line-clamp-2">{item.name}</h3>
+                      <h3 className="font-semibold text-white mb-1 line-clamp-2">
+                        {item.slug ? (
+                          <Link 
+                            href={`/products/${item.slug}`}
+                            className="hover:text-brand-gold transition-colors"
+                          >
+                            {item.name}
+                          </Link>
+                        ) : (
+                          item.name
+                        )}
+                      </h3>
                       <p className="text-brand-gold font-bold text-lg">
                         {item.price.toFixed(2)} €
                       </p>

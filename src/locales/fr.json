@@ -23,6 +23,14 @@
     "yes": "Oui",
     "no": "Non"
   },
+  "actions": {
+    "increase": "Augmenter",
+    "decrease": "Diminuer",
+    "addToCart": "Ajouter au panier",
+    "viewDetails": "Voir les détails",
+    "addToFavorites": "Ajouter aux favoris",
+    "share": "Partager"
+  },
   "header": {
     "title": "GARDEN GOLD GREEN",
     "phone": "+33 7 78 82 38 40",
@@ -386,6 +394,8 @@
     "specifications": "Spécifications",
     "reviews": "Avis",
     "relatedProducts": "Produits similaires",
+    "new": "Nouveau",
+    "bestSeller": "Best-seller",
     "comments": {
       "title": "Avis clients",
       "noComments": "Aucun avis pour ce produit pour le moment",
@@ -419,6 +429,158 @@
     "removeItem": "Retirer l'article",
     "updateQuantity": "Mettre à jour la quantité",
     "inCart": "dans le panier"
+  },
+  "products": {
+    "hero": {
+      "title": "Nos Produits CBD",
+      "subtitle": "Découvrez notre gamme complète de produits CBD premium, soigneusement sélectionnés pour votre bien-être",
+      "searchPlaceholder": "Rechercher un produit...",
+      "searchButton": "Rechercher"
+    },
+    "filters": {
+      "title": "Filtres",
+      "clearAll": "Effacer tout",
+      "priceRange": "Gamme de prix",
+      "category": "Catégorie",
+      "availability": "Disponibilité",
+      "sortBy": "Trier par",
+      "sortOptions": {
+        "newest": "Plus récent",
+        "oldest": "Plus ancien",
+        "priceLow": "Prix croissant",
+        "priceHigh": "Prix décroissant",
+        "nameAZ": "Nom A-Z",
+        "nameZA": "Nom Z-A",
+        "rating": "Mieux notés"
+      },
+      "viewOptions": {
+        "grid": "Vue grille",
+        "list": "Vue liste"
+      }
+    },
+    "categories": {
+      "all": "Tous les produits",
+      "oils": "Huiles CBD",
+      "flowers": "Fleurs CBD",
+      "gummies": "Gommes CBD",
+      "topicals": "Produits topiques",
+      "capsules": "Gélules CBD",
+      "isolates": "Isolats CBD"
+    },
+    "products": {
+      "noProducts": "Aucun produit trouvé",
+      "noProductsDescription": "Essayez de modifier vos critères de recherche ou de filtres",
+      "loading": "Chargement des produits...",
+      "loadMore": "Charger plus de produits",
+      "showing": "Affichage de",
+      "of": "sur",
+      "results": "résultats",
+      "perPage": "par page"
+    },
+    "product": {
+      "addToCart": "Ajouter au panier",
+      "adding": "Ajout en cours...",
+      "added": "Ajouté !",
+      "inStock": "En stock",
+      "outOfStock": "Rupture de stock",
+      "lowStock": "Plus que {count} en stock",
+      "stockCount": "{count} en stock",
+      "new": "Nouveau",
+      "bestSeller": "Best-seller",
+      "rating": "Note",
+      "reviews": "avis",
+      "quantity": "Quantité",
+      "description": "Description",
+      "ingredients": "Ingrédients",
+      "usage": "Mode d'emploi",
+      "labResults": "Résultats de laboratoire",
+      "shipping": "Livraison",
+      "returns": "Retours",
+      "viewDetails": "Voir les détails"
+    },
+    "pagination": {
+      "previous": "Précédent",
+      "next": "Suivant",
+      "page": "Page",
+      "of": "sur"
+    },
+    "search": {
+      "noResults": "Aucun résultat trouvé",
+      "tryAgain": "Essayez avec d'autres mots-clés",
+      "suggestions": "Suggestions",
+      "popularSearches": "Recherches populaires"
+    },
+    "cta": {
+      "title": "Vous ne trouvez pas ce que vous cherchez ?",
+      "subtitle": "Notre équipe d'experts est là pour vous aider à trouver le produit parfait",
+      "contact": "Nous contacter",
+      "chat": "Chat en direct"
+    }
+  },
+  "learn": {
+    "hero": {
+      "title": "Apprendre le CBD",
+      "subtitle": "Découvrez tout ce qu'il faut savoir sur le CBD, ses bienfaits et ses utilisations",
+      "description": "Notre centre d'apprentissage vous guide à travers l'univers du CBD avec des articles experts, des guides pratiques et des conseils d'utilisation."
+    },
+    "categories": {
+      "all": "Tous les articles",
+      "education": "Éducation",
+      "wellness": "Bien-être",
+      "science": "Science",
+      "lifestyle": "Mode de vie",
+      "beginner": "Débutant",
+      "advanced": "Avancé"
+    },
+    "filters": {
+      "title": "Filtres",
+      "clearAll": "Effacer tout",
+      "sortBy": "Trier par",
+      "newest": "Plus récent",
+      "oldest": "Plus ancien",
+      "mostRead": "Plus lu",
+      "category": "Catégorie",
+      "difficulty": "Niveau",
+      "searchPlaceholder": "Rechercher un article..."
+    },
+    "articles": {
+      "readMore": "Lire la suite",
+      "readTime": "min de lecture",
+      "publishedOn": "Publié le",
+      "by": "par",
+      "featured": "Article vedette",
+      "noArticles": "Aucun article trouvé",
+      "loadMore": "Charger plus d'articles",
+      "difficulty": {
+        "beginner": "Débutant",
+        "intermediate": "Intermédiaire",
+        "advanced": "Avancé"
+      }
+    },
+    "sections": {
+      "featured": {
+        "title": "Articles en vedette",
+        "subtitle": "Nos articles les plus populaires et informatifs"
+      },
+      "categories": {
+        "title": "Explorez par catégorie",
+        "subtitle": "Trouvez des articles adaptés à vos besoins"
+      },
+      "latest": {
+        "title": "Derniers articles",
+        "subtitle": "Restez à jour avec les dernières informations sur le CBD"
+      },
+      "beginner": {
+        "title": "Guide du débutant",
+        "subtitle": "Commencez votre parcours CBD avec nos guides essentiels"
+      }
+    },
+    "cta": {
+      "title": "Prêt à commencer votre parcours CBD ?",
+      "subtitle": "Découvrez nos produits premium et trouvez celui qui vous convient le mieux",
+      "button": "Découvrir nos produits",
+      "learnMore": "En savoir plus"
+    }
   },
   "checkout": {
     "title": "Commande",

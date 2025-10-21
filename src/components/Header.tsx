@@ -98,8 +98,8 @@ export function Header() {
     <header className="sticky top-0 z-50 bg-brand-black transition-all duration-300">
       {/* Top Bar - Info Contact et Livraison */}
       <div className="bg-gradient-to-r from-brand-green to-emerald-600 border-b border-emerald-700">
-        <div className="container mx-auto px-4 sm:px-6">
-          <div className="flex flex-col sm:flex-row items-center justify-between py-2 text-xs sm:text-sm">
+        <div className="container mx-auto px-3 sm:px-4 lg:px-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between py-1.5 sm:py-2 text-xs sm:text-sm">
             {/* Contact Info */}
             <div className="flex items-center space-x-4 sm:space-x-6 mb-2 sm:mb-0">
               <a href="tel:+33778823840" className="flex items-center space-x-1 sm:space-x-2 text-white hover:text-brand-gold transition-colors">
@@ -148,20 +148,20 @@ export function Header() {
 
       {/* Main Navbar - Logo, Navigation, Search, Actions */}
       <div className="bg-brand-black/95 backdrop-blur-sm border-b border-white/10">
-        <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6">
-          <div className="flex justify-between items-center gap-4">
-            {/* Logo - Plus gros */}
+        <div className="container mx-auto px-3 sm:px-4 lg:px-6 py-2 sm:py-3 lg:py-4 xl:py-6">
+          <div className="flex justify-between items-center gap-2 sm:gap-4">
+            {/* Logo - Responsive */}
             <Link href="/" className="flex items-center flex-shrink-0 group">
               <div className="relative">
                 <Image 
-                  className="h-20 w-20 sm:h-24 sm:w-24 drop-shadow-2xl group-hover:scale-105 transition-transform duration-300" 
+                  className="h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16 lg:h-20 lg:w-20 xl:h-24 xl:w-24 drop-shadow-2xl group-hover:scale-105 transition-transform duration-300" 
                   src="/logo.png" 
                   alt="Garden Gold Green logo"
                   width={96}
                   height={96}
                 />
-                <div className="absolute -inset-2 bg-gradient-to-r from-brand-gold/30 to-brand-green/30 rounded-full blur-sm group-hover:blur-md transition-all duration-300"></div>
-                <div className="absolute -inset-2 bg-gradient-to-r from-brand-gold/15 to-brand-green/15 rounded-full blur-md group-hover:blur-lg transition-all duration-300"></div>
+                <div className="absolute -inset-1 sm:-inset-2 bg-gradient-to-r from-brand-gold/30 to-brand-green/30 rounded-full blur-sm group-hover:blur-md transition-all duration-300"></div>
+                <div className="absolute -inset-1 sm:-inset-2 bg-gradient-to-r from-brand-gold/15 to-brand-green/15 rounded-full blur-md group-hover:blur-lg transition-all duration-300"></div>
               </div>
             </Link>
 
@@ -179,16 +179,18 @@ export function Header() {
             </nav>
 
             {/* Actions */}
-            <div className="flex items-center space-x-2 sm:space-x-4">
-              {/* Language Selector */}
-              <LanguageSelector variant="header" />
+            <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-4">
+              {/* Language Selector - Hidden on mobile */}
+              <div className="hidden sm:block">
+                <LanguageSelector variant="header" />
+              </div>
               
               {/* Search button */}
               <button 
                 onClick={() => setIsSearchModalOpen(true)}
-                className="text-gray-300 hover:text-brand-gold transition-colors duration-300 p-2"
+                className="text-gray-300 hover:text-brand-gold transition-colors duration-300 p-1.5 sm:p-2"
               >
-                <FontAwesomeIcon icon={faMagnifyingGlass} className="w-5 h-5" />
+                <FontAwesomeIcon icon={faMagnifyingGlass} className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
           
           {/* User Menu */}
@@ -196,10 +198,10 @@ export function Header() {
             <div className="relative user-menu-container">
               <button 
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="text-gray-300 hover:text-brand-gold transition-colors duration-300 flex items-center space-x-2 p-2"
+                className="text-gray-300 hover:text-brand-gold transition-colors duration-300 flex items-center space-x-1 sm:space-x-2 p-1.5 sm:p-2"
               >
-                <FontAwesomeIcon icon={faUserCircle} className="icon-responsive-md" />
-                <span className="hidden lg:block text-sm">{user.name || user.email}</span>
+                <FontAwesomeIcon icon={faUserCircle} className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="hidden lg:block text-xs sm:text-sm">{user.name || user.email}</span>
               </button>
               
               {showUserMenu && (
@@ -238,16 +240,16 @@ export function Header() {
               )}
             </div>
           ) : (
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-1 sm:space-x-2">
               <Link
                 href="/api/auth/login"
-                className="text-gray-300 hover:text-brand-gold transition-colors duration-300 px-3 py-2 text-sm font-medium"
+                className="text-gray-300 hover:text-brand-gold transition-colors duration-300 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium hidden sm:block"
               >
                 {t('header.user.login')}
               </Link>
               <Link
                 href="/api/auth/login?screen_hint=signup"
-                className="bg-brand-gold text-black font-semibold px-4 py-2 rounded-full text-sm hover:shadow-gold-glow transition-all duration-300"
+                className="bg-brand-gold text-black font-semibold px-2 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm hover:shadow-gold-glow transition-all duration-300"
               >
                 {t('header.user.register')}
               </Link>
@@ -257,10 +259,10 @@ export function Header() {
           {/* Cart button */}
           <Link 
             href="/cart"
-            className="relative text-gray-300 hover:text-brand-gold transition-colors duration-300 p-2"
+            className="relative text-gray-300 hover:text-brand-gold transition-colors duration-300 p-1.5 sm:p-2"
             data-cart-icon
           >
-            <FontAwesomeIcon icon={faCartShopping} className="icon-responsive-md" />
+            <FontAwesomeIcon icon={faCartShopping} className="w-4 h-4 sm:w-5 sm:h-5" />
             {state.totalItems > 0 && (
               <span className="absolute -top-1 -right-1 bg-brand-green text-white text-xs rounded-full h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center">
                 {state.totalItems}
@@ -270,10 +272,10 @@ export function Header() {
 
               {/* Mobile menu button */}
               <button
-                className="lg:hidden text-gray-300 hover:text-brand-gold transition-colors duration-300 p-2"
+                className="lg:hidden text-gray-300 hover:text-brand-gold transition-colors duration-300 p-1.5 sm:p-2"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
-                <FontAwesomeIcon icon={isMenuOpen ? faXmark : faBars} className="w-6 h-6" />
+                <FontAwesomeIcon icon={isMenuOpen ? faXmark : faBars} className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
             </div>
           </div>
@@ -415,17 +417,6 @@ export function Header() {
                 <div className="space-y-3">
                   <button
                     onClick={() => {
-                      setAuthMode('login')
-                      setShowAuthModal(true)
-                      setIsMenuOpen(false)
-                    }}
-                    className="flex items-center space-x-3 text-gray-300 hover:text-brand-gold transition-colors py-2 w-full text-left"
-                  >
-                    <FontAwesomeIcon icon={faUser} />
-                    <span>{t('header.user.login')}</span>
-                  </button>
-                  <button
-                    onClick={() => {
                       setAuthMode('register')
                       setShowAuthModal(true)
                       setIsMenuOpen(false)
@@ -434,6 +425,17 @@ export function Header() {
                   >
                     <FontAwesomeIcon icon={faUser} />
                     <span>{t('header.user.register')}</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setAuthMode('login')
+                      setShowAuthModal(true)
+                      setIsMenuOpen(false)
+                    }}
+                    className="flex items-center space-x-3 text-gray-300 hover:text-brand-gold transition-colors py-2 w-full text-left"
+                  >
+                    <FontAwesomeIcon icon={faUser} />
+                    <span>{t('header.user.login')}</span>
                   </button>
                 </div>
               )}

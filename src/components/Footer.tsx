@@ -9,34 +9,34 @@ export function Footer() {
   const { t } = useTranslation()
   
   return (
-    <footer className="bg-black py-16">
-      <div className="container mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="col-span-1 md:col-span-1">
-            <div className="flex items-center mb-4">
+    <footer className="bg-black py-12 sm:py-16">
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 sm:gap-8">
+          <div className="col-span-1 md:col-span-1 text-center md:text-left">
+            <div className="flex items-center justify-center md:justify-start mb-4">
               <Image 
-                className="h-12 w-12 mr-3" 
+                className="h-10 w-10 sm:h-12 sm:w-12 mr-3" 
                 src="/logo.png" 
                 alt="Garden Gold Green - Logo Premium CBD"
                 width={48}
                 height={48}
               />
-              <span className="text-white text-lg font-bold">{t('header.title')}</span>
+              <span className="text-white text-base sm:text-lg font-bold">{t('header.title')}</span>
             </div>
-            <p className="text-gray-400 text-sm">{t('footer.description')}</p>
-            <div className="flex space-x-4 mt-6">
+            <p className="text-gray-400 text-xs sm:text-sm">{t('footer.description')}</p>
+            <div className="flex space-x-4 mt-4 sm:mt-6 justify-center md:justify-start">
               <span className="text-gray-400 hover:text-brand-gold cursor-pointer">
-                <i className="fa-brands fa-instagram text-xl"></i>
+                <i className="fa-brands fa-instagram text-lg sm:text-xl"></i>
               </span>
               <span className="text-gray-400 hover:text-brand-gold cursor-pointer">
-                <i className="fa-brands fa-facebook text-xl"></i>
+                <i className="fa-brands fa-facebook text-lg sm:text-xl"></i>
               </span>
               <span className="text-gray-400 hover:text-brand-gold cursor-pointer">
-                <i className="fa-brands fa-twitter text-xl"></i>
+                <i className="fa-brands fa-twitter text-lg sm:text-xl"></i>
               </span>
             </div>
           </div>
-          <div>
+          <div className="text-center md:text-left">
             <h5 className="font-semibold text-white mb-4">{t('footer.categories')}</h5>
             <ul className="space-y-2">
               <li>
@@ -56,12 +56,12 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/products" className="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">
-                  {t('products.title')}
+                  Tous les produits
                 </Link>
               </li>
             </ul>
           </div>
-          <div>
+          <div className="text-center md:text-left">
             <h5 className="font-semibold text-white mb-4">{t('footer.quickLinks')}</h5>
             <ul className="space-y-2">
               <li>
@@ -86,7 +86,7 @@ export function Footer() {
               </li>
             </ul>
           </div>
-          <div>
+          <div className="text-center md:text-left">
             <h5 className="font-semibold text-white mb-4">{t('footer.legal')}</h5>
             <ul className="space-y-2">
               <li>

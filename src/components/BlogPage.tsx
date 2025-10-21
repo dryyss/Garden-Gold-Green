@@ -110,41 +110,52 @@ export default function BlogPage() {
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [sortBy, setSortBy] = useState('newest')
 
+  // Fallback pour les traductions manquantes
+  const getTranslation = (key: string, fallback: string) => {
+    const translation = t(key)
+    return translation === key ? fallback : translation
+  }
+
   // Filtrer et trier les articles
   const filteredPosts = useMemo(() => {
-    let filtered = blogPosts
+    try {
+      let filtered = Array.isArray(blogPosts) ? blogPosts : []
 
-    // Filtrer par catégorie
-    if (selectedCategory !== 'all') {
-      filtered = filtered.filter(post => 
-        post.category.toLowerCase() === selectedCategory.toLowerCase()
-      )
-    }
-
-    // Filtrer par terme de recherche
-    if (searchTerm) {
-      filtered = filtered.filter(post =>
-        post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        post.author.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    }
-
-    // Trier
-    filtered.sort((a, b) => {
-      switch (sortBy) {
-        case 'newest':
-          return new Date(b.date).getTime() - new Date(a.date).getTime()
-        case 'oldest':
-          return new Date(a.date).getTime() - new Date(b.date).getTime()
-        case 'mostRead':
-          return b.readTime.localeCompare(a.readTime)
-        default:
-          return 0
+      // Filtrer par catégorie
+      if (selectedCategory !== 'all') {
+        filtered = filtered.filter(post => 
+          post.category && post.category.toLowerCase() === selectedCategory.toLowerCase()
+        )
       }
-    })
 
-    return filtered
+      // Filtrer par terme de recherche
+      if (searchTerm) {
+        filtered = filtered.filter(post =>
+          post.title && post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          post.excerpt && post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          post.author && post.author.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      }
+
+      // Trier
+      filtered.sort((a, b) => {
+        switch (sortBy) {
+          case 'newest':
+            return new Date(b.date).getTime() - new Date(a.date).getTime()
+          case 'oldest':
+            return new Date(a.date).getTime() - new Date(b.date).getTime()
+          case 'mostRead':
+            return b.readTime.localeCompare(a.readTime)
+          default:
+            return 0
+        }
+      })
+
+      return filtered
+    } catch (error) {
+      console.warn('Error filtering blog posts:', error)
+      return []
+    }
   }, [searchTerm, selectedCategory, sortBy])
 
   return (
@@ -153,10 +164,10 @@ export default function BlogPage() {
       <section className="bg-gradient-to-r from-brand-gold/10 to-brand-green/10 py-20">
         <div className="container mx-auto px-6 text-center">
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
-            {t('blog.hero.title')}
+            {getTranslation('blog.hero.title', 'Blog CBD')}
           </h1>
           <p className="text-lg text-gray-300 mb-8 max-w-3xl mx-auto">
-            {t('blog.hero.subtitle')}
+            {getTranslation('blog.hero.subtitle', 'Découvrez nos derniers articles sur le CBD, le bien-être et la santé naturelle')}
           </p>
           
           {/* Barre de recherche */}
@@ -164,7 +175,7 @@ export default function BlogPage() {
             <div className="relative">
               <input
                 type="text"
-                placeholder={t('blog.hero.searchPlaceholder')}
+                placeholder={getTranslation('blog.hero.searchPlaceholder', 'Rechercher un article...')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full px-4 py-3 pl-12 bg-white/10 border border-white/20 rounded-full text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold focus:border-transparent"
@@ -201,15 +212,15 @@ export default function BlogPage() {
 
             {/* Tri */}
             <div className="flex items-center gap-4">
-              <span className="text-gray-400 text-sm">{t('blog.filters.sortBy')}:</span>
+              <span className="text-gray-400 text-sm">{getTranslation('blog.filters.sortBy', 'Trier par')}:</span>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
                 className="bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold"
               >
-                <option value="newest">{t('blog.filters.newest')}</option>
-                <option value="oldest">{t('blog.filters.oldest')}</option>
-                <option value="mostRead">{t('blog.filters.mostRead')}</option>
+                <option value="newest">{getTranslation('blog.filters.newest', 'Plus récent')}</option>
+                <option value="oldest">{getTranslation('blog.filters.oldest', 'Plus ancien')}</option>
+                <option value="mostRead">{getTranslation('blog.filters.mostRead', 'Plus lu')}</option>
               </select>
             </div>
           </div>
@@ -223,7 +234,7 @@ export default function BlogPage() {
             <div className="text-center py-16">
               <FontAwesomeIcon icon={faSearch} className="text-6xl text-gray-600 mb-4" />
               <h3 className="text-2xl font-semibold text-white mb-2">
-                {t('blog.articles.noArticles')}
+                {getTranslation('blog.articles.noArticles', 'Aucun article trouvé')}
               </h3>
               <p className="text-gray-400">
                 Essayez de modifier vos critères de recherche
@@ -231,7 +242,7 @@ export default function BlogPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredPosts.map((post) => (
+              {Array.isArray(filteredPosts) ? filteredPosts.map((post) => (
                 <article key={post.id} className="card-bg rounded-xl overflow-hidden hover:shadow-xl transition-shadow">
                   <div className="relative">
                     <Image
@@ -243,7 +254,7 @@ export default function BlogPage() {
                     />
                     {post.featured && (
                       <div className="absolute top-4 left-4 bg-brand-gold text-black px-3 py-1 rounded-full text-xs font-semibold">
-                        {t('blog.articles.featured')}
+                        {getTranslation('blog.articles.featured', 'Article vedette')}
                       </div>
                     )}
                     <div className="absolute top-4 right-4 bg-black/50 text-white px-2 py-1 rounded text-xs">
@@ -271,19 +282,23 @@ export default function BlogPage() {
                           <span>{post.date}</span>
                         </div>
                       </div>
-                      <span>{post.readTime} {t('blog.articles.readTime')}</span>
+                      <span>{post.readTime} {getTranslation('blog.articles.readTime', 'min de lecture')}</span>
                     </div>
                     
                     <Link 
                       href={`/blog/${post.slug}`}
                       className="inline-flex items-center text-brand-gold hover:text-yellow-300 font-medium transition-colors"
                     >
-                      {t('blog.articles.readMore')}
+                      {getTranslation('blog.articles.readMore', 'Lire la suite')}
                       <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
                     </Link>
                   </div>
                 </article>
-              ))}
+              )) : (
+                <div className="col-span-full text-center py-12">
+                  <p className="text-gray-400">Erreur lors du chargement des articles</p>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -293,19 +308,19 @@ export default function BlogPage() {
       <section className="py-16 bg-gradient-to-r from-brand-gold/10 to-brand-green/10">
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-3xl font-bold text-white mb-4">
-            {t('blog.cta.title')}
+            {getTranslation('blog.cta.title', 'Restez informé')}
           </h2>
           <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
-            {t('blog.cta.subtitle')}
+            {getTranslation('blog.cta.subtitle', 'Recevez nos derniers articles directement dans votre boîte mail')}
           </p>
           <div className="max-w-md mx-auto flex gap-4">
             <input
               type="email"
-              placeholder={t('blog.cta.emailPlaceholder')}
+              placeholder={getTranslation('blog.cta.emailPlaceholder', 'Votre adresse email')}
               className="flex-1 px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold"
             />
             <button className="btn-gold text-black font-semibold px-6 py-3 rounded-lg shadow-gold-glow hover:shadow-gold-glow-lg transition-all">
-              {t('blog.cta.subscribe')}
+              {getTranslation('blog.cta.subscribe', 'S\'abonner')}
             </button>
           </div>
         </div>

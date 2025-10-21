@@ -1,0 +1,65 @@
+{
+  "hero": {
+    "title": "Apprendre le CBD",
+    "subtitle": "Découvrez tout ce qu'il faut savoir sur le CBD, ses bienfaits et ses utilisations",
+    "description": "Notre centre d'apprentissage vous guide à travers l'univers du CBD avec des articles experts, des guides pratiques et des conseils d'utilisation."
+  },
+  "categories": {
+    "all": "Tous les articles",
+    "education": "Éducation",
+    "wellness": "Bien-être",
+    "science": "Science",
+    "lifestyle": "Mode de vie",
+    "beginner": "Débutant",
+    "advanced": "Avancé"
+  },
+  "filters": {
+    "title": "Filtres",
+    "clearAll": "Effacer tout",
+    "sortBy": "Trier par",
+    "newest": "Plus récent",
+    "oldest": "Plus ancien",
+    "mostRead": "Plus lu",
+    "category": "Catégorie",
+    "difficulty": "Niveau",
+    "searchPlaceholder": "Rechercher un article..."
+  },
+  "articles": {
+    "readMore": "Lire la suite",
+    "readTime": "min de lecture",
+    "publishedOn": "Publié le",
+    "by": "par",
+    "featured": "Article vedette",
+    "noArticles": "Aucun article trouvé",
+    "loadMore": "Charger plus d'articles",
+    "difficulty": {
+      "beginner": "Débutant",
+      "intermediate": "Intermédiaire",
+      "advanced": "Avancé"
+    }
+  },
+  "sections": {
+    "featured": {
+      "title": "Articles en vedette",
+      "subtitle": "Nos articles les plus populaires et informatifs"
+    },
+    "categories": {
+      "title": "Explorez par catégorie",
+      "subtitle": "Trouvez des articles adaptés à vos besoins"
+    },
+    "latest": {
+      "title": "Derniers articles",
+      "subtitle": "Restez à jour avec les dernières informations sur le CBD"
+    },
+    "beginner": {
+      "title": "Guide du débutant",
+      "subtitle": "Commencez votre parcours CBD avec nos guides essentiels"
+    }
+  },
+  "cta": {
+    "title": "Prêt à commencer votre parcours CBD ?",
+    "subtitle": "Découvrez nos produits premium et trouvez celui qui vous convient le mieux",
+    "button": "Découvrir nos produits",
+    "learnMore": "En savoir plus"
+  }
+}

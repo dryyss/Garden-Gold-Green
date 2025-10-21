@@ -24,6 +24,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { Newsletter } from '@/components/Newsletter'
 import { ProductCard } from '@/components/ProductCard'
+import { ProductGridCarousel } from '@/components/ProductGridCarousel'
 import { HeroLogo } from '@/components/HeroLogo'
 import { useTranslation } from '@/contexts/TranslationContext'
 import productsData from '@/data/products.json'
@@ -120,11 +121,14 @@ export default function HomePage() {
             <h2 className="text-4xl font-bold mb-2 gold-text-gradient">{t('home.featuredProducts.title')}</h2>
             <p className="text-lg text-gray-400">{t('home.featuredProducts.subtitle')}</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featuredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+          <ProductGridCarousel
+            products={featuredProducts}
+            itemsPerView={{ mobile: 1, tablet: 2, desktop: 3 }}
+            showNavigation={true}
+            showDots={true}
+            autoPlay={true}
+            autoPlayInterval={4000}
+          />
           <div className="text-center mt-12">
             <Link href="/products" className="btn-gold text-black font-semibold py-3 px-8 rounded-full shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300 inline-flex items-center">
               {t('home.featuredProducts.viewAll')}
@@ -181,11 +185,14 @@ export default function HomePage() {
             <h2 className="text-4xl font-bold mb-2 gold-text-gradient">{t('home.bestSellers.title')}</h2>
             <p className="text-lg text-gray-400">{t('home.bestSellers.subtitle')}</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {bestSellers.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+          <ProductGridCarousel
+            products={bestSellers}
+            itemsPerView={{ mobile: 1, tablet: 2, desktop: 3 }}
+            showNavigation={true}
+            showDots={true}
+            autoPlay={true}
+            autoPlayInterval={5000}
+          />
         </div>
       </section>
 
@@ -361,11 +368,14 @@ export default function HomePage() {
             <h2 className="text-4xl font-bold mb-2 gold-text-gradient">{t('home.newProducts.title')}</h2>
             <p className="text-lg text-gray-400">{t('home.newProducts.subtitle')}</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {newProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+          <ProductGridCarousel
+            products={newProducts}
+            itemsPerView={{ mobile: 1, tablet: 2, desktop: 3 }}
+            showNavigation={true}
+            showDots={true}
+            autoPlay={true}
+            autoPlayInterval={6000}
+          />
         </div>
       </section>
 

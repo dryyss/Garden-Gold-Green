@@ -49,14 +49,32 @@ const getDefaultLanguage = (): SupportedLanguage => {
 // Fonction pour charger les traductions
 const loadTranslations = async (language: SupportedLanguage): Promise<Translations> => {
   try {
-    const translations = await import(`@/locales/${language}.json`)
-    return translations.default
+    // Import dynamique des traductions principales
+    const mainTranslations = await import(`@/locales/${language}.json`)
+    
+    // Charger les traductions spécialisées
+    const [contactTranslations, faqTranslations] = await Promise.all([
+      import(`@/locales/contact-${language}.json`).catch(() => ({ default: {} })),
+      import(`@/locales/faq-${language}.json`).catch(() => ({ default: {} }))
+    ])
+    
+    // Fusionner toutes les traductions
+    return {
+      ...mainTranslations.default,
+      contact: contactTranslations.default,
+      faq: faqTranslations.default
+    }
   } catch (error) {
     console.error(`Erreur lors du chargement des traductions pour ${language}:`, error)
     // Fallback vers le français si la langue n'est pas trouvée
     if (language !== 'fr') {
-      const fallbackTranslations = await import('@/locales/fr.json')
-      return fallbackTranslations.default
+      try {
+        const fallbackTranslations = await import('@/locales/fr.json')
+        return fallbackTranslations.default
+      } catch (fallbackError) {
+        console.error('Failed to load fallback translations:', fallbackError)
+        return {}
+      }
     }
     return {}
   }
@@ -64,9 +82,31 @@ const loadTranslations = async (language: SupportedLanguage): Promise<Translatio
 
 // Fonction utilitaire pour obtenir une valeur imbriquée dans un objet
 const getNestedValue = (obj: any, path: string): string => {
-  return path.split('.').reduce((current, key) => {
+  const result = path.split('.').reduce((current, key) => {
     return current && current[key] !== undefined ? current[key] : undefined
-  }, obj) || path // Retourner la clé si la traduction n'est pas trouvée
+  }, obj)
+  
+  // Si la traduction n'est pas trouvée, essayer des fallbacks
+  if (!result) {
+    const fallbacks: { [key: string]: string } = {
+      'products.new': 'Nouveau',
+      'products.bestSeller': 'Best-seller',
+      'products.inStock': 'En stock',
+      'products.outOfStock': 'Rupture de stock',
+      'products.quantity': 'Quantité',
+      'products.viewDetails': 'Voir les détails',
+      'products.addToCart': 'Ajouter au panier',
+      'products.adding': 'Ajout...',
+      'products.added': 'Ajouté !',
+      'actions.increase': 'Augmenter',
+      'actions.decrease': 'Diminuer',
+      'cart.inCart': 'dans le panier'
+    }
+    
+    return fallbacks[path] || path
+  }
+  
+  return result
 }
 
 // Props pour le provider

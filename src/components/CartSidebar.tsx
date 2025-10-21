@@ -173,24 +173,25 @@ function CartSidebarContent() {
       />
       
       {/* Sidebar */}
-      <div className="absolute right-0 top-0 h-full w-96 max-w-md bg-brand-black border-l border-brand-gold/20 shadow-2xl">
+      <div className="absolute right-0 top-0 h-full w-full sm:w-96 max-w-md bg-brand-black border-l border-brand-gold/20 shadow-2xl">
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-white/10">
-            <h2 className="text-2xl font-bold text-white gold-text-gradient flex items-center">
-              <FontAwesomeIcon icon={faShoppingCart} className="icon-lg mr-3" />
-              Panier ({state.totalItems})
+          <div className="flex items-center justify-between p-4 sm:p-6 border-b border-white/10">
+            <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-white gold-text-gradient flex items-center">
+              <FontAwesomeIcon icon={faShoppingCart} className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 mr-2 sm:mr-3" />
+              <span className="hidden sm:inline">Panier ({state.totalItems})</span>
+              <span className="sm:hidden">Panier ({state.totalItems})</span>
             </h2>
             <button
               onClick={() => dispatch({ type: 'CLOSE_CART' })}
-              className="text-gray-400 hover:text-white transition-colors p-2"
+              className="text-gray-400 hover:text-white transition-colors p-1 sm:p-2"
             >
-              <FontAwesomeIcon icon={faXmark} className="icon-lg" />
+              <FontAwesomeIcon icon={faXmark} className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
             </button>
           </div>
 
           {/* Cart Items */}
-          <div className="flex-1 overflow-y-auto p-6">
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6">
             {state.items.length === 0 ? (
               <div className="text-center py-12">
                 <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4 border border-white/10">
@@ -209,9 +210,9 @@ function CartSidebarContent() {
             ) : (
               <div className="space-y-4">
                 {state.items.map((item) => (
-                  <div key={item.id} className="card-bg rounded-lg p-4 border border-white/10">
-                    <div className="flex items-start space-x-4">
-                      <div className="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+                  <div key={item.id} className="card-bg rounded-lg p-3 sm:p-4 border border-white/10">
+                    <div className="flex items-start space-x-3 sm:space-x-4">
+                      <div className="relative w-12 h-12 sm:w-16 sm:h-16 rounded-lg overflow-hidden flex-shrink-0">
                         <Image
                           src={item.image}
                           alt={item.name}
@@ -221,7 +222,7 @@ function CartSidebarContent() {
                       </div>
                       
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-white text-sm mb-1 line-clamp-2">
+                        <h3 className="font-semibold text-white text-xs sm:text-sm mb-1 line-clamp-2">
                           <Link 
                             href={`/products/${item.slug}`}
                             onClick={() => dispatch({ type: 'CLOSE_CART' })}
@@ -235,7 +236,7 @@ function CartSidebarContent() {
                             CBD {item.cbdPercent}%
                           </p>
                         )}
-                        <p className="text-brand-gold font-bold text-sm">
+                        <p className="text-brand-gold font-bold text-xs sm:text-sm">
                           {formatPrice(item.price)}
                         </p>
                       </div>

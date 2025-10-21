@@ -73,7 +73,7 @@ export function ProductCard({ product, className = '' }: ProductCardProps) {
           payload: {
             id: product.id,
             name: product.name,
-            price: product.price || (product.priceCents ? product.priceCents / 100 : 0),
+            price: product.price || ((product as any).priceCents ? (product as any).priceCents / 100 : 0),
             image: product.image,
             cbdPercent: product.cbdPercent,
             slug: product.slug
@@ -112,8 +112,8 @@ export function ProductCard({ product, className = '' }: ProductCardProps) {
   }
 
   return (
-    <div className={`card-bg rounded-xl overflow-hidden group transform hover:-translate-y-2 transition-transform duration-300 shadow-lg hover:shadow-gold-glow ${className}`}>
-      <div className="relative h-56 md:h-64 overflow-hidden">
+    <div className={`card-bg rounded-lg sm:rounded-xl overflow-hidden group transform hover:-translate-y-1 sm:hover:-translate-y-2 transition-transform duration-300 shadow-lg hover:shadow-gold-glow w-full max-w-full h-full flex flex-col ${className}`}>
+      <div className="relative h-48 sm:h-56 md:h-64 overflow-hidden flex-1">
         <Link href={`/products/${product.slug || product.id}`} className="block">
           <Image
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 cursor-pointer"
@@ -125,15 +125,15 @@ export function ProductCard({ product, className = '' }: ProductCardProps) {
         </Link>
         
         {/* Badges */}
-        <div className="absolute top-3 left-3 flex flex-col gap-2">
+        <div className="absolute top-2 left-2 sm:top-3 sm:left-3 flex flex-col gap-1 sm:gap-2">
           {product.isNew && (
             <span className="bg-brand-green text-white text-xs font-semibold px-2 py-1 rounded-full">
-              New
+              {t('products.new')}
             </span>
           )}
           {product.isBestSeller && (
             <span className="bg-brand-gold text-black text-xs font-semibold px-2 py-1 rounded-full">
-              Best Seller
+              {t('products.bestSeller')}
             </span>
           )}
         </div>
@@ -144,20 +144,20 @@ export function ProductCard({ product, className = '' }: ProductCardProps) {
             href={`/products/${product.slug || product.id}`}
             className="bg-white text-black font-semibold py-2 px-4 rounded-full hover:bg-brand-gold transition-colors"
           >
-            Voir le produit
+            {t('products.viewDetails')}
           </Link>
         </div>
       </div>
 
-      <div className="p-4 md:p-5">
+      <div className="p-3 sm:p-4 md:p-5 flex-1 flex flex-col">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-brand-green text-sm font-semibold uppercase tracking-wide">
+          <span className="text-brand-green text-xs font-semibold uppercase tracking-wide">
             {product.category}
           </span>
           <StarRating rating={product.rating} size="sm" />
         </div>
 
-        <h3 className="text-lg md:text-xl font-semibold text-white mb-2 line-clamp-2">
+        <h3 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2 line-clamp-2 flex-1">
           {product.name}
         </h3>
 
@@ -167,9 +167,9 @@ export function ProductCard({ product, className = '' }: ProductCardProps) {
             {product.totalStock === 0 ? (
               <span className="text-xs text-red-500 font-semibold">{t('products.outOfStock')}</span>
             ) : product.totalStock < 10 ? (
-              <span className="text-xs text-orange-500 font-semibold">{t('products.lowStock', { count: product.totalStock })}</span>
+              <span className="text-xs text-orange-500 font-semibold">{t('products.lowStock')} ({product.totalStock})</span>
             ) : product.totalStock < 30 ? (
-              <span className="text-xs text-yellow-500">{t('products.stockCount', { count: product.totalStock })}</span>
+              <span className="text-xs text-yellow-500">{t('products.stockCount')} ({product.totalStock})</span>
             ) : (
               <span className="text-xs text-green-500">{t('products.inStock')}</span>
             )}
@@ -181,8 +181,8 @@ export function ProductCard({ product, className = '' }: ProductCardProps) {
         </p>
 
         <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <span className="text-lg md:text-xl font-bold gold-text-gradient">
+          <div className="flex items-center gap-1">
+            <span className="text-lg sm:text-xl md:text-2xl font-bold gold-text-gradient">
               {product.price.toFixed(2)} €
             </span>
             {product.originalPrice && product.originalPrice > product.price && (
@@ -207,8 +207,8 @@ export function ProductCard({ product, className = '' }: ProductCardProps) {
         )}
 
         {/* Sélecteur de quantité */}
-        <div className="mb-2 flex items-center justify-center gap-2">
-          <span className="text-gray-400 text-xs">{t('products.quantity')}:</span>
+        <div className="mb-3 flex items-center justify-center gap-2">
+          <span className="text-gray-400 text-xs font-medium">{t('products.quantity')}:</span>
           <div className="flex items-center border border-white/20 rounded-lg">
             <button
               onClick={() => handleQuantityChange(-1)}
@@ -228,7 +228,7 @@ export function ProductCard({ product, className = '' }: ProductCardProps) {
               }}
               min={1}
               max={99}
-              className="w-12 text-center bg-transparent text-white border-none outline-none"
+              className="w-12 text-center bg-transparent text-white border-none outline-none text-sm font-semibold"
             />
             
             <button
@@ -242,47 +242,51 @@ export function ProductCard({ product, className = '' }: ProductCardProps) {
           </div>
         </div>
 
-        {/* Boutons d'action */}
-        <div className="flex flex-col gap-1.5">
-          {/* Bouton Voir le produit - toujours visible sur mobile */}
-          <Link
-            href={`/products/${product.slug || product.id}`}
-            className="w-full font-bold py-1.5 px-3 rounded-full text-xs transition-all duration-300 flex items-center justify-center gap-2 border-2 border-brand-gold text-brand-gold hover:bg-brand-gold hover:text-black"
-          >
-            <FontAwesomeIcon icon={faEye} className="w-3 h-3" />
-            <span>{t('products.viewDetails')}</span>
-          </Link>
-          
-          {/* Bouton Ajouter au panier avec animation */}
-          <button
-            onClick={handleAddToCart}
-            disabled={!product.inStock || isAdding || isAdded}
-            className={`w-full font-bold py-2 px-4 rounded-full text-xs transition-all duration-300 flex items-center justify-center gap-2 ${
-              isAdded
-                ? 'bg-brand-green text-white shadow-green-glow'
-                : product.inStock
-                ? 'btn-gold text-black hover:shadow-gold-glow hover:scale-105'
-                : 'bg-gray-600 text-gray-400 cursor-not-allowed'
-            } ${isAdding ? 'opacity-75 cursor-not-allowed' : ''}`}
-          >
-            {isAdding ? (
-              <>
-                <div className="w-3 h-3 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
-                <span>{t('products.adding')}</span>
-              </>
-            ) : isAdded ? (
-              <>
-                <FontAwesomeIcon icon={faCheck} className="w-3 h-3 animate-bounce" />
-                <span>{t('products.added')}</span>
-              </>
-            ) : product.inStock ? (
-              <>
-                <FontAwesomeIcon icon={faShoppingCart} className="w-3 h-3" />
-                <span>{t('products.addToCart')}</span>
-              </>
-            ) : (
-              t('products.outOfStock')
-            )}
+                    {/* Boutons d'action */}
+                    <div className="flex flex-col gap-1.5 sm:gap-2 mt-auto">
+                      {/* Bouton Voir le produit - toujours visible sur mobile */}
+                      <Link
+                        href={`/products/${product.slug || product.id}`}
+                        className="w-full font-bold py-1.5 sm:py-2 px-3 sm:px-4 rounded-full text-xs transition-all duration-300 flex items-center justify-center gap-1.5 border-2 border-brand-gold text-brand-gold hover:bg-brand-gold hover:text-black"
+                      >
+                        <FontAwesomeIcon icon={faEye} className="w-3 h-3" />
+                        <span className="hidden sm:inline">{t('products.viewDetails')}</span>
+                        <span className="sm:hidden">Voir</span>
+                      </Link>
+
+                      {/* Bouton Ajouter au panier avec animation */}
+                      <button
+                        onClick={handleAddToCart}
+                        disabled={!product.inStock || isAdding || isAdded}
+                        className={`w-full font-bold py-1.5 sm:py-2 px-3 sm:px-4 rounded-full text-xs transition-all duration-300 flex items-center justify-center gap-1.5 ${
+                          isAdded
+                            ? 'bg-brand-green text-white shadow-green-glow'
+                            : product.inStock
+                            ? 'btn-gold text-black hover:shadow-gold-glow hover:scale-105'
+                            : 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                        } ${isAdding ? 'opacity-75 cursor-not-allowed' : ''}`}
+                      >
+                        {isAdding ? (
+                          <>
+                            <div className="w-3 h-3 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+                            <span className="hidden sm:inline">{t('products.adding')}</span>
+                            <span className="sm:hidden">Ajout...</span>
+                          </>
+                        ) : isAdded ? (
+                          <>
+                            <FontAwesomeIcon icon={faCheck} className="w-3 h-3 animate-bounce" />
+                            <span className="hidden sm:inline">{t('products.added')}</span>
+                            <span className="sm:hidden">Ajouté!</span>
+                          </>
+                        ) : product.inStock ? (
+                          <>
+                            <FontAwesomeIcon icon={faShoppingCart} className="w-3 h-3" />
+                            <span className="hidden sm:inline">{t('products.addToCart')}</span>
+                            <span className="sm:hidden">Ajouter</span>
+                          </>
+                        ) : (
+                          <span className="text-xs">{t('products.outOfStock')}</span>
+                        )}
           </button>
         </div>
       </div>

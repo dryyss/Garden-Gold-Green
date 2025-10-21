@@ -1,8 +1,7 @@
 'use client'
 
-import React, { Suspense, useState, useEffect } from 'react'
-import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
+import React, { useState, useEffect } from 'react'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { ProductCard } from '@/components/ProductCard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
@@ -23,7 +22,7 @@ declare global {
 }
 
 // Transformer les données de l'ancienne structure vers la nouvelle
-function transformProduct(product: any) {
+function transformProduct(product: any): any {
   return {
     ...product,
     name: product.title,
@@ -47,625 +46,404 @@ function getProducts(searchParams: URLSearchParams) {
   const page = parseInt(searchParams.get('page') || '1')
   const limit = 12
   
-  let filteredProducts = productsData
-    .filter(product => product.published)
-    .map(transformProduct)
+  let products = productsData.map(transformProduct)
   
-  // Filtrer par catégorie
-  if (category) {
-    filteredProducts = filteredProducts.filter(product => 
-      product.categories.some(cat => cat.slug === category)
+  // Filtrage par catégorie
+  if (category && category !== 'all') {
+    products = products.filter(p => 
+      p.category.toLowerCase().includes(category.toLowerCase())
     )
   }
   
-  // Filtrer par recherche
+  // Filtrage par recherche
   if (search) {
     const searchLower = search.toLowerCase()
-    filteredProducts = filteredProducts.filter(product => 
-      product.name.toLowerCase().includes(searchLower) ||
-      product.description.toLowerCase().includes(searchLower)
+    products = products.filter(p => 
+      p.name.toLowerCase().includes(searchLower) ||
+      p.description?.toLowerCase().includes(searchLower)
     )
   }
-
-  // Filtrer par gamme de prix
+  
+  // Filtrage par prix
   if (priceRange) {
-    filteredProducts = filteredProducts.filter(product => {
-      switch (priceRange) {
-        case 'under-20':
-          return product.price < 20
-        case '20-50':
-          return product.price >= 20 && product.price <= 50
-        case '50-100':
-          return product.price >= 50 && product.price <= 100
-        case 'above-100':
-          return product.price > 100
-        default:
-          return true
-      }
-    })
-  }
-
-  // Filtrer par concentration CBD
-  if (cbdRange) {
-    filteredProducts = filteredProducts.filter(product => {
-      const cbdPercent = product.cbdPercent || 0
-      switch (cbdRange) {
-        case 'under-5':
-          return cbdPercent <= 5
-        case '6-15':
-          return cbdPercent >= 6 && cbdPercent <= 15
-        case '16-25':
-          return cbdPercent >= 16 && cbdPercent <= 25
-        case 'above-26':
-          return cbdPercent >= 26
-        default:
-          return true
-      }
+    const [min, max] = priceRange.split('-').map(Number)
+    products = products.filter(p => {
+      if (max) return p.price >= min && p.price <= max
+      return p.price >= min
     })
   }
   
-  // Trier
+  // Filtrage par CBD
+  if (cbdRange) {
+    const [min, max] = cbdRange.split('-').map(Number)
+    products = products.filter(p => {
+      const cbdPercent = p.cbdPercent || 0
+      if (max) return cbdPercent >= min && cbdPercent <= max
+      return cbdPercent >= min
+    })
+  }
+  
+  // Tri
   switch (sort) {
-    case 'price-asc':
-      filteredProducts.sort((a, b) => a.price - b.price)
+    case 'price-low':
+      products.sort((a, b) => a.price - b.price)
       break
-    case 'price-desc':
-      filteredProducts.sort((a, b) => b.price - a.price)
+    case 'price-high':
+      products.sort((a, b) => b.price - a.price)
       break
     case 'name':
-      filteredProducts.sort((a, b) => a.name.localeCompare(b.name))
+      products.sort((a, b) => a.name.localeCompare(b.name))
+      break
+    case 'rating':
+      products.sort((a, b) => b.rating - a.rating)
       break
     case 'newest':
     default:
-      // Garder l'ordre original (les premiers produits sont les plus récents)
+      products.sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
       break
   }
   
-  const totalProducts = filteredProducts.length
-  const totalPages = Math.ceil(totalProducts / limit)
+  // Pagination
   const startIndex = (page - 1) * limit
   const endIndex = startIndex + limit
-  const paginatedProducts = filteredProducts.slice(startIndex, endIndex)
+  const paginatedProducts = products.slice(startIndex, endIndex)
   
   return {
     products: paginatedProducts,
-    pagination: {
-      currentPage: page,
-      totalPages,
-      totalProducts,
-      hasNextPage: page < totalPages,
-      hasPrevPage: page > 1,
-      limit
-    }
+    total: products.length,
+    totalPages: Math.ceil(products.length / limit),
+    currentPage: page
   }
 }
 
 function getCategories() {
-  // Extraire les catégories uniques des produits
-  const categoriesMap = new Map()
+  const categories = new Set<string>()
   productsData.forEach(product => {
-    product.categories.forEach(category => {
-      if (!categoriesMap.has(category.slug)) {
-        categoriesMap.set(category.slug, category)
-      }
-    })
+    if (product.categories && product.categories.length > 0) {
+      product.categories.forEach((cat: any) => categories.add(cat.name))
+    }
   })
-  return Array.from(categoriesMap.values()).sort((a, b) => a.name.localeCompare(b.name))
+  return Array.from(categories).map((name: string) => ({
+    name,
+    slug: name.toLowerCase().replace(/\s+/g, '-')
+  }))
 }
 
 export default function ProductsPage() {
   const searchParams = useSearchParams()
-  const [productsData, setProductsData] = useState(getProducts(searchParams))
-  const [categories] = useState(getCategories())
-  const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '')
-  const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'newest')
-  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || '')
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const router = useRouter()
+  const [search, setSearch] = useState(searchParams.get('search') || '')
   const [showFilters, setShowFilters] = useState(false)
-  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false)
-
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  
+  // Mettre à jour la recherche quand les paramètres URL changent
   useEffect(() => {
-    setProductsData(getProducts(searchParams))
-    setSearchTerm(searchParams.get('search') || '')
-    setSortBy(searchParams.get('sort') || 'newest')
-    setSelectedCategory(searchParams.get('category') || '')
+    setSearch(searchParams.get('search') || '')
   }, [searchParams])
-
-  const { products, pagination } = productsData
-
-  const sortOptions = [
-    { value: 'newest', label: 'Plus récents' },
-    { value: 'price-asc', label: 'Prix: Croissant' },
-    { value: 'price-desc', label: 'Prix: Décroissant' },
-    { value: 'name', label: 'Nom A-Z' },
-  ]
-
-  // Fonction pour gérer la recherche
-  const handleSearch = (term: string) => {
-    const params = new URLSearchParams(searchParams)
-    if (term) {
-      params.set('search', term)
-    } else {
-      params.delete('search')
+  
+  const { products, total, totalPages, currentPage } = getProducts(searchParams)
+  const categories = getCategories()
+  const handleSearch = (value: string) => {
+    setSearch(value)
+    
+    // Debounce search
+    if (window.searchTimeout) {
+      clearTimeout(window.searchTimeout)
     }
-    params.delete('page') // Reset à la page 1
-    window.history.pushState({}, '', `/products?${params.toString()}`)
+    
+    window.searchTimeout = setTimeout(() => {
+      const params = new URLSearchParams(searchParams.toString())
+      if (value) {
+        params.set('search', value)
+      } else {
+        params.delete('search')
+      }
+      params.delete('page') // Reset to page 1
+      router.push(`/products?${params.toString()}`)
+    }, 300) // Réduit le délai pour une meilleure réactivité
   }
-
-  // Fonction pour gérer le tri
-  const handleSort = (sort: string) => {
-    const params = new URLSearchParams(searchParams)
-    params.set('sort', sort)
-    params.delete('page') // Reset à la page 1
-    window.history.pushState({}, '', `/products?${params.toString()}`)
-  }
-
-  // Fonction pour gérer les filtres de catégorie
-  const handleCategoryFilter = (category: string) => {
-    const params = new URLSearchParams(searchParams)
-    if (category) {
-      params.set('category', category)
+  
+  const updateFilter = (key: string, value: string) => {
+    const params = new URLSearchParams(searchParams.toString())
+    if (value && value !== 'all') {
+      params.set(key, value)
     } else {
-      params.delete('category')
+      params.delete(key)
     }
-    params.delete('page') // Reset à la page 1
-    window.history.pushState({}, '', `/products?${params.toString()}`)
+    params.delete('page') // Reset to page 1
+    router.push(`/products?${params.toString()}`)
   }
-
-  // Fonction pour gérer les filtres de prix
-  const handlePriceFilter = (priceRange: string) => {
-    const params = new URLSearchParams(searchParams)
-    if (priceRange) {
-    params.set('price', priceRange)
-    } else {
-      params.delete('price')
-    }
-    params.delete('page') // Reset à la page 1
-    window.history.pushState({}, '', `/products?${params.toString()}`)
-  }
-
-  // Fonction pour gérer les filtres de concentration CBD
-  const handleCbdFilter = (cbdRange: string) => {
-    const params = new URLSearchParams(searchParams)
-    if (cbdRange) {
-    params.set('cbd', cbdRange)
-    } else {
-      params.delete('cbd')
-    }
-    params.delete('page') // Reset à la page 1
-    window.history.pushState({}, '', `/products?${params.toString()}`)
-  }
-
-  // Fonction pour effacer tous les filtres
+  
   const clearFilters = () => {
-    window.history.pushState({}, '', '/products')
+    router.push('/products')
   }
-
+  
+  const goToPage = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.set('page', page.toString())
+    router.push(`/products?${params.toString()}`)
+  }
+  
   return (
-    <div className="min-h-screen bg-brand-black flex flex-col pt-24">
-      {/* Header Fixe - Responsive */}
-      <div className="bg-brand-black border-b border-white/10 flex-shrink-0">
-        <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex-1">
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2">
-                Notre Collection Premium
-              </h1>
-              <p className="text-sm sm:text-base text-gray-400">
-                Découvrez notre sélection soigneusement choisie de produits CBD premium
-              </p>
-            </div>
-            
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="bg-brand-green/20 text-brand-green px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
-                {pagination.totalProducts} produits
-              </div>
-              {pagination.totalPages > 1 && (
-                <div className="bg-brand-gold/20 text-brand-gold px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
-                  Page {pagination.currentPage} sur {pagination.totalPages}
-                </div>
-              )}
-              {(searchParams.get('category') || searchParams.get('search') || searchParams.get('price') || searchParams.get('cbd')) && (
-                <div className="bg-blue-600/20 text-blue-400 px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
-                  Filtres actifs
-                </div>
-              )}
-            </div>
+    <main className="bg-brand-black min-h-screen pt-2 sm:pt-6 lg:pt-10 xl:pt-14">
+      {/* Hero Section */}
+      <section className="py-8 sm:py-12 lg:py-16 bg-gradient-to-r from-brand-gold/10 to-brand-green/10">
+        <div className="container mx-auto px-3 sm:px-4 lg:px-6">
+          <div className="text-center">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4">
+              Nos <span className="gold-text-gradient">Produits CBD</span>
+            </h1>
+            <p className="text-base sm:text-lg lg:text-xl text-gray-300 max-w-2xl mx-auto px-2">
+              Découvrez notre sélection premium de produits CBD de qualité supérieure
+            </p>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Contenu principal avec layout fixe - Responsive */}
-      <div className="flex-1 flex min-h-0">
-        {/* Overlay pour mobile - doit être en premier */}
-        {isMobileFiltersOpen && (
-          <div 
-            className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-            onClick={() => setIsMobileFiltersOpen(false)}
-          />
-        )}
-
-        {/* Filtres fixes - Responsive */}
-        <div className={`bg-brand-black border-r border-white/10 flex-shrink-0 overflow-y-auto ${
-          isMobileFiltersOpen 
-            ? 'fixed inset-y-0 right-0 z-50 w-80 max-w-[85vw] lg:relative lg:inset-auto lg:w-80 lg:max-w-none' 
-            : 'hidden lg:block lg:w-80'
-        }`}>
-          
-          <div className="relative bg-brand-black h-full">
-            <div className="p-4 sm:p-6">
-              <div className="card-bg rounded-xl p-4 sm:p-6 space-y-4 sm:space-y-6">
-                {/* Header mobile avec bouton fermer */}
-                <div className="flex items-center justify-between lg:justify-start">
-                  <div className="flex items-center space-x-2">
-                    <FontAwesomeIcon icon={faFilter} className="text-brand-gold" />
-                    <h3 className="font-semibold text-white">Filtres</h3>
-                  </div>
-              <button
-                    onClick={() => setIsMobileFiltersOpen(false)}
-                    className="lg:hidden text-gray-400 hover:text-white p-2"
-              >
-                    <FontAwesomeIcon icon={faXmark} className="h-5 w-5" />
-              </button>
-            </div>
-
-            {/* Recherche */}
-                <div>
-              <label className="block text-sm font-medium text-white mb-2">
-                Rechercher des produits...
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  value={searchTerm}
-                  onChange={(e) => {
-                    setSearchTerm(e.target.value)
-                    handleSearch(e.target.value)
-                  }}
-                      className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 pr-10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold focus:border-transparent text-sm"
-                  placeholder="Rechercher..."
-                />
-                <FontAwesomeIcon 
-                  icon={faMagnifyingGlass} 
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4"
-                />
+      {/* Search and Filters */}
+      <section className="py-4 sm:py-6 lg:py-8 bg-[#111111]">
+        <div className="container mx-auto px-3 sm:px-4 lg:px-6">
+          <div className="max-w-7xl mx-auto">
+            {/* Search Bar */}
+            <div className="relative mb-3 sm:mb-4 lg:mb-6">
+              <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
+                <FontAwesomeIcon icon={faMagnifyingGlass} className="text-gray-400 text-sm sm:text-base" />
               </div>
+              <input
+                type="text"
+                placeholder="Rechercher des produits..."
+                value={search}
+                onChange={(e) => handleSearch(e.target.value)}
+                className="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-2.5 sm:py-3 lg:py-4 bg-white/10 border border-white/20 rounded-xl sm:rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold focus:border-transparent text-sm sm:text-base"
+              />
             </div>
 
-            {/* Catégories */}
-                <div>
-                  <h4 className="font-medium mb-3 text-white text-sm">Catégories</h4>
-              <div className="space-y-2">
+            {/* Results Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 sm:mb-4 lg:mb-6 gap-3 sm:gap-4">
+              <span className="text-gray-400 text-xs sm:text-sm lg:text-base">{total} produits trouvés</span>
+              <div className="flex space-x-1 sm:space-x-2">
                 <button
-                  onClick={() => handleCategoryFilter('')}
-                      className={`w-full text-left px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors text-xs sm:text-sm ${
-                        !selectedCategory 
-                          ? 'bg-brand-gold/20 text-brand-gold border border-brand-gold' 
-                          : 'text-gray-300 hover:text-brand-gold hover:bg-white/5'
-                  }`}
+                  onClick={() => setViewMode('grid')}
+                  className={`p-1.5 sm:p-2 rounded text-xs sm:text-sm ${viewMode === 'grid' ? 'bg-brand-gold text-black' : 'bg-white/10 text-white'}`}
                 >
-                  Toutes les catégories
+                  <FontAwesomeIcon icon={faTh} />
                 </button>
-                {categories.map((category) => (
-                  <button
-                    key={category.slug}
-                    onClick={() => handleCategoryFilter(category.slug)}
-                        className={`w-full text-left px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors text-xs sm:text-sm ${
-                      selectedCategory === category.slug 
-                            ? 'bg-brand-gold/20 text-brand-gold border border-brand-gold' 
-                            : 'text-gray-300 hover:text-brand-gold hover:bg-white/5'
-                    }`}
-                  >
-                    {category.name}
-                  </button>
-                ))}
+                <button
+                  onClick={() => setViewMode('list')}
+                  className={`p-1.5 sm:p-2 rounded text-xs sm:text-sm ${viewMode === 'list' ? 'bg-brand-gold text-black' : 'bg-white/10 text-white'}`}
+                >
+                  <FontAwesomeIcon icon={faList} />
+                </button>
               </div>
             </div>
 
-            {/* Concentration CBD */}
-                <div>
-                  <h4 className="font-medium mb-3 text-white text-sm">Concentration CBD</h4>
-              <div className="space-y-2">
-                {[
-                  { value: '', label: 'Toutes les concentrations' },
-                  { value: 'under-5', label: '5% et moins' },
-                  { value: '6-15', label: '6% - 15%' },
-                  { value: '16-25', label: '16% - 25%' },
-                  { value: 'above-26', label: '26% et plus' }
-                ].map((option) => (
-                  <button
-                    key={option.value}
-                    onClick={() => handleCbdFilter(option.value)}
-                        className={`w-full text-left px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors text-xs sm:text-sm ${
-                      searchParams.get('cbd') === option.value 
-                            ? 'bg-brand-gold/20 text-brand-gold border border-brand-gold' 
-                            : 'text-gray-300 hover:text-brand-gold hover:bg-white/5'
-                    }`}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Gamme de prix */}
-                <div>
-                  <h4 className="font-medium mb-3 text-white text-sm">Gamme de prix</h4>
-              <div className="space-y-2">
-                {[
-                  { value: '', label: 'Tous les prix' },
-                  { value: 'under-20', label: 'Moins de 20€' },
-                  { value: '20-50', label: '20€ - 50€' },
-                  { value: '50-100', label: '50€ - 100€' },
-                  { value: 'above-100', label: 'Plus de 100€' }
-                ].map((option) => (
-                  <button
-                    key={option.value}
-                    onClick={() => handlePriceFilter(option.value)}
-                        className={`w-full text-left px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors text-xs sm:text-sm ${
-                      searchParams.get('price') === option.value 
-                            ? 'bg-brand-gold/20 text-brand-gold border border-brand-gold' 
-                            : 'text-gray-300 hover:text-brand-gold hover:bg-white/5'
-                    }`}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Effacer les filtres */}
-            <button
-              onClick={clearFilters}
-                  className="w-full bg-red-600 text-white font-medium py-2 sm:py-3 px-3 sm:px-4 rounded-lg hover:bg-red-700 transition-colors text-xs sm:text-sm"
-            >
-              Effacer tous les filtres
-            </button>
-          </div>
-        </div>
-                </div>
-              </div>
-
-        {/* Zone des produits scrollable - Responsive */}
-        <div className="flex-1 flex flex-col min-h-0">
-          {/* Barre d'outils fixe - Responsive */}
-          <div className="bg-brand-black border-b border-white/10 flex-shrink-0 p-4 sm:p-6">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              {/* Bouton filtres mobile */}
-              <button 
-                onClick={() => setIsMobileFiltersOpen(true)}
-                className="lg:hidden flex items-center space-x-2 bg-brand-gold text-black font-semibold px-4 py-2 rounded-lg hover:bg-yellow-400 transition-colors shadow-lg"
+            {/* Mobile Filter Toggle */}
+            <div className="lg:hidden mb-4 sm:mb-6">
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className="flex items-center space-x-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-white/10 border border-white/20 rounded-full text-white hover:bg-white/20 transition-colors w-full justify-center text-sm sm:text-base"
               >
-                <FontAwesomeIcon icon={faFilter} className="h-4 w-4" />
+                <FontAwesomeIcon icon={faFilter} className="w-4 h-4" />
                 <span>Filtres</span>
               </button>
-
-              <div className="flex flex-col sm:flex-row sm:items-center gap-4 flex-1">
-                {/* Recherche mobile */}
-                <div className="relative flex-1">
-                  <FontAwesomeIcon 
-                    icon={faMagnifyingGlass} 
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" 
-                  />
-                    <input
-                      type="text"
-                      placeholder="Rechercher des produits..."
-                    className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold focus:border-brand-gold text-sm"
-                      value={searchTerm}
-                      onChange={(e) => {
-                        setSearchTerm(e.target.value)
-                        clearTimeout(window.searchTimeout)
-                        window.searchTimeout = setTimeout(() => {
-                          handleSearch(e.target.value)
-                        }, 500)
-                      }}
-                    />
-                </div>
-                
-                {/* Tri */}
-                <select
-                  className="px-3 py-2 bg-white/5 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-gold focus:border-brand-gold text-sm sm:w-auto w-full"
-                  value={sortBy}
-                  onChange={(e) => {
-                    setSortBy(e.target.value)
-                    handleSort(e.target.value)
-                  }}
-                >
-                  {sortOptions.map((option) => (
-                    <option key={option.value} value={option.value} className="bg-brand-black text-white">
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Boutons de vue */}
-              <div className="flex items-center space-x-2">
-                <button 
-                  onClick={() => setViewMode('grid')}
-                  className={`p-2 rounded-lg transition-colors ${
-                    viewMode === 'grid' 
-                      ? 'bg-brand-gold/20 text-brand-gold border border-brand-gold' 
-                      : 'text-gray-300 hover:text-brand-gold hover:bg-white/5'
-                  }`}
-                >
-                  <FontAwesomeIcon icon={faTh} className="h-4 w-4" />
-                </button>
-                <button 
-                  onClick={() => setViewMode('list')}
-                  className={`p-2 rounded-lg transition-colors ${
-                    viewMode === 'list' 
-                      ? 'bg-brand-gold/20 text-brand-gold border border-brand-gold' 
-                      : 'text-gray-300 hover:text-brand-gold hover:bg-white/5'
-                  }`}
-                >
-                  <FontAwesomeIcon icon={faList} className="h-4 w-4" />
-                </button>
-              </div>
-              </div>
             </div>
 
-          {/* Zone des produits scrollable - Responsive */}
-          <div className={`flex-1 overflow-y-auto p-4 sm:p-6 pb-20 transition-all duration-300 ${
-            isMobileFiltersOpen ? 'lg:ml-0' : ''
-          }`}>
-            {/* Products Grid/List - Responsive */}
-            {products.length > 0 ? (
-              <div className={`${
-                viewMode === 'grid' 
-                  ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6' 
-                  : 'space-y-4 sm:space-y-6'
-              }`}>
-                <Suspense fallback={<div className="text-white">Loading...</div>}>
+            {/* Main Content with Sidebar */}
+            <div className="flex flex-col lg:flex-row gap-8">
+              {/* Filters Sidebar */}
+              <div className={`w-full lg:w-80 flex-shrink-0 ${showFilters ? 'block' : 'hidden lg:block'}`}>
+                <div className="card-bg rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-6 sticky top-20 sm:top-24">
+                  <div className="flex items-center justify-between mb-4 sm:mb-6">
+                    <h3 className="text-base sm:text-lg font-semibold text-white">Filtres</h3>
+                    <div className="flex items-center space-x-1 sm:space-x-2">
+                      <button
+                        onClick={clearFilters}
+                        className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-1 text-xs sm:text-sm text-gray-400 hover:text-white transition-colors"
+                      >
+                        <FontAwesomeIcon icon={faXmark} className="w-3 h-3" />
+                        <span className="hidden sm:inline">Effacer</span>
+                        <span className="sm:hidden">Reset</span>
+                      </button>
+                      <button
+                        onClick={() => setShowFilters(false)}
+                        className="lg:hidden p-1.5 sm:p-2 text-gray-400 hover:text-white transition-colors"
+                      >
+                        <FontAwesomeIcon icon={faXmark} className="w-3 h-3" />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3 sm:space-y-4 lg:space-y-6">
+                    {/* Category Filter */}
+                    <div>
+                      <label className="block text-white font-semibold mb-1.5 sm:mb-2 text-sm sm:text-base">Catégorie</label>
+                      <select
+                        value={searchParams.get('category') || 'all'}
+                        onChange={(e) => updateFilter('category', e.target.value)}
+                        className="w-full p-2 sm:p-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-gold text-xs sm:text-sm lg:text-base appearance-none cursor-pointer"
+                        style={{
+                          backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
+                          backgroundPosition: 'right 0.5rem center',
+                          backgroundRepeat: 'no-repeat',
+                          backgroundSize: '1.5em 1.5em',
+                          paddingRight: '2.5rem'
+                        }}
+                      >
+                        <option value="all" className="bg-gray-800 text-white text-xs sm:text-sm">Toutes les catégories</option>
+                        {categories.map((cat) => (
+                          <option key={cat.slug} value={cat.slug} className="bg-gray-800 text-white text-xs sm:text-sm">
+                            {cat.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Sort Filter */}
+                    <div>
+                      <label className="block text-white font-semibold mb-1.5 sm:mb-2 text-sm sm:text-base">Trier par</label>
+                      <select
+                        value={searchParams.get('sort') || 'newest'}
+                        onChange={(e) => updateFilter('sort', e.target.value)}
+                        className="w-full p-2 sm:p-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-gold text-xs sm:text-sm lg:text-base appearance-none cursor-pointer"
+                        style={{
+                          backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
+                          backgroundPosition: 'right 0.5rem center',
+                          backgroundRepeat: 'no-repeat',
+                          backgroundSize: '1.5em 1.5em',
+                          paddingRight: '2.5rem'
+                        }}
+                      >
+                        <option value="newest" className="bg-gray-800 text-white text-xs sm:text-sm">Plus récents</option>
+                        <option value="price-low" className="bg-gray-800 text-white text-xs sm:text-sm">Prix croissant</option>
+                        <option value="price-high" className="bg-gray-800 text-white text-xs sm:text-sm">Prix décroissant</option>
+                        <option value="name" className="bg-gray-800 text-white text-xs sm:text-sm">Nom A-Z</option>
+                        <option value="rating" className="bg-gray-800 text-white text-xs sm:text-sm">Mieux notés</option>
+                      </select>
+                    </div>
+
+                    {/* Price Range */}
+                    <div>
+                      <label className="block text-white font-semibold mb-1.5 sm:mb-2 text-sm sm:text-base">Prix</label>
+                      <select
+                        value={searchParams.get('price') || 'all'}
+                        onChange={(e) => updateFilter('price', e.target.value)}
+                        className="w-full p-2 sm:p-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-gold text-xs sm:text-sm lg:text-base appearance-none cursor-pointer"
+                        style={{
+                          backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
+                          backgroundPosition: 'right 0.5rem center',
+                          backgroundRepeat: 'no-repeat',
+                          backgroundSize: '1.5em 1.5em',
+                          paddingRight: '2.5rem'
+                        }}
+                      >
+                        <option value="all" className="bg-gray-800 text-white text-xs sm:text-sm">Tous les prix</option>
+                        <option value="0-25" className="bg-gray-800 text-white text-xs sm:text-sm">0€ - 25€</option>
+                        <option value="25-50" className="bg-gray-800 text-white text-xs sm:text-sm">25€ - 50€</option>
+                        <option value="50-100" className="bg-gray-800 text-white text-xs sm:text-sm">50€ - 100€</option>
+                        <option value="100" className="bg-gray-800 text-white text-xs sm:text-sm">100€+</option>
+                      </select>
+                    </div>
+
+                    {/* CBD Range */}
+                    <div>
+                      <label className="block text-white font-semibold mb-1.5 sm:mb-2 text-sm sm:text-base">CBD %</label>
+                      <select
+                        value={searchParams.get('cbd') || 'all'}
+                        onChange={(e) => updateFilter('cbd', e.target.value)}
+                        className="w-full p-2 sm:p-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-gold text-xs sm:text-sm lg:text-base appearance-none cursor-pointer"
+                        style={{
+                          backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
+                          backgroundPosition: 'right 0.5rem center',
+                          backgroundRepeat: 'no-repeat',
+                          backgroundSize: '1.5em 1.5em',
+                          paddingRight: '2.5rem'
+                        }}
+                      >
+                        <option value="all" className="bg-gray-800 text-white text-xs sm:text-sm">Tous les %</option>
+                        <option value="0-5" className="bg-gray-800 text-white text-xs sm:text-sm">0% - 5%</option>
+                        <option value="5-10" className="bg-gray-800 text-white text-xs sm:text-sm">5% - 10%</option>
+                        <option value="10-20" className="bg-gray-800 text-white text-xs sm:text-sm">10% - 20%</option>
+                        <option value="20" className="bg-gray-800 text-white text-xs sm:text-sm">20%+</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Products Grid */}
+              <div className="flex-1">
+                {products.length === 0 ? (
+                  <div className="text-center py-16">
+                    <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-800 flex items-center justify-center">
+                      <FontAwesomeIcon icon={faMagnifyingGlass} className="text-4xl text-gray-400" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-white mb-4">Aucun produit trouvé</h3>
+                    <p className="text-gray-400 mb-8">Essayez de modifier vos critères de recherche</p>
+                <button
+                  onClick={clearFilters}
+                  className="btn-gold text-black font-bold py-2 sm:py-3 px-4 sm:px-8 rounded-full shadow-gold-glow text-sm sm:text-base"
+                >
+                  Effacer les filtres
+                </button>
+                  </div>
+                ) : (
+                  <>
+                    <div className={`grid gap-3 sm:gap-4 lg:gap-6 xl:gap-8 ${
+                      viewMode === 'grid' 
+                        ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3' 
+                        : 'grid-cols-1'
+                    }`} style={{ maxWidth: '100%', overflow: 'hidden' }}>
                       {products.map((product) => (
                         <ProductCard
                           key={product.id}
                           product={product}
                         />
                       ))}
-                </Suspense>
-              </div>
-            ) : (
-              <div className="card-bg rounded-xl p-8 sm:p-12 text-center">
-                <div className="space-y-4">
-                  <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto">
-                    <FontAwesomeIcon icon={faMagnifyingGlass} className="h-8 w-8 text-gray-400" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-white">Aucun produit trouvé</h3>
-                  <p className="text-gray-400 text-sm sm:text-base">
-                    Essayez d'ajuster vos critères de recherche ou de supprimer certains filtres.
-                  </p>
-                  <Link 
-                    href="/products"
-                    className="inline-flex items-center text-brand-gold hover:text-yellow-300 transition-colors text-sm sm:text-base"
-                  >
-                    <FontAwesomeIcon icon={faArrowLeft} className="h-4 w-4 mr-2" />
-                    Voir tous les produits
-                  </Link>
-                </div>
-              </div>
-            )}
-          </div>
+                    </div>
 
-          {/* Pagination Fixe - Responsive */}
-            {pagination.totalPages > 1 && (
-            <div className="bg-brand-black border-t border-white/10 flex-shrink-0 p-4 sm:p-6">
-              <div className="flex justify-center">
-                <div className="flex items-center space-x-1 sm:space-x-2">
-                  {/* Bouton Précédent */}
-                  <Link
-                    href={`/products?${new URLSearchParams({
-                      ...Object.fromEntries(searchParams.entries()),
-                      page: (pagination.currentPage - 1).toString()
-                    }).toString()}`}
-                    className={`px-2 sm:px-3 py-2 rounded-lg transition-colors text-sm ${
-                      pagination.hasPrevPage
-                        ? 'bg-white/5 border border-white/20 text-white hover:bg-white/10'
-                        : 'bg-gray-600/20 border border-gray-600/20 text-gray-500 cursor-not-allowed'
-                    }`}
-                    style={{ pointerEvents: pagination.hasPrevPage ? 'auto' : 'none' }}
-                  >
-                    <span className="hidden sm:inline">Précédent</span>
-                    <span className="sm:hidden">‹</span>
-                  </Link>
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="flex justify-center mt-8 sm:mt-12">
+                    <div className="flex items-center space-x-1 sm:space-x-2">
+                      <button
+                        onClick={() => goToPage(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className="p-1.5 sm:p-2 rounded-lg bg-white/10 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/20 transition-colors"
+                      >
+                        <FontAwesomeIcon icon={faArrowLeft} className="w-3 h-3 sm:w-4 sm:h-4" />
+                      </button>
 
-                  {/* Numéros de page */}
-                  {(() => {
-                    const pages = []
-                    const startPage = Math.max(1, pagination.currentPage - 2)
-                    const endPage = Math.min(pagination.totalPages, pagination.currentPage + 2)
-
-                    // Page 1
-                    if (startPage > 1) {
-                      pages.push(
-                        <Link
-                          key={1}
-                          href={`/products?${new URLSearchParams({
-                            ...Object.fromEntries(searchParams.entries()),
-                            page: '1'
-                          }).toString()}`}
-                          className="px-2 sm:px-3 py-2 bg-white/5 border border-white/20 rounded-lg text-white hover:bg-white/10 transition-colors text-sm"
-                        >
-                          1
-                        </Link>
-                      )
-                      if (startPage > 2) {
-                        pages.push(
-                          <span key="ellipsis1" className="px-1 sm:px-2 text-gray-400 text-sm">
-                            ...
-                          </span>
-                        )
-                      }
-                    }
-
-                    // Pages du milieu
-                    for (let i = startPage; i <= endPage; i++) {
-                      pages.push(
-                        <Link
-                          key={i}
-                          href={`/products?${new URLSearchParams({
-                            ...Object.fromEntries(searchParams.entries()),
-                            page: i.toString()
-                          }).toString()}`}
-                          className={`px-2 sm:px-3 py-2 rounded-lg transition-colors text-sm ${
-                            i === pagination.currentPage
-                              ? 'bg-brand-gold/20 border border-brand-gold text-brand-gold'
-                              : 'bg-white/5 border border-white/20 text-white hover:bg-white/10'
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                        <button
+                          key={page}
+                          onClick={() => goToPage(page)}
+                          className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg transition-colors text-xs sm:text-sm ${
+                            page === currentPage
+                              ? 'bg-brand-gold text-black'
+                              : 'bg-white/10 text-white hover:bg-white/20'
                           }`}
                         >
-                          {i}
-                        </Link>
-                      )
-                    }
+                          {page}
+                        </button>
+                      ))}
 
-                    // Dernière page
-                    if (endPage < pagination.totalPages) {
-                      if (endPage < pagination.totalPages - 1) {
-                        pages.push(
-                          <span key="ellipsis2" className="px-1 sm:px-2 text-gray-400 text-sm">
-                            ...
-                          </span>
-                        )
-                      }
-                      pages.push(
-                        <Link
-                          key={pagination.totalPages}
-                          href={`/products?${new URLSearchParams({
-                            ...Object.fromEntries(searchParams.entries()),
-                            page: pagination.totalPages.toString()
-                          }).toString()}`}
-                          className="px-2 sm:px-3 py-2 bg-white/5 border border-white/20 rounded-lg text-white hover:bg-white/10 transition-colors text-sm"
-                        >
-                          {pagination.totalPages}
-                        </Link>
-                      )
-                    }
-
-                    return pages
-                  })()}
-
-                  {/* Bouton Suivant */}
-                  <Link
-                    href={`/products?${new URLSearchParams({
-                      ...Object.fromEntries(searchParams.entries()),
-                      page: (pagination.currentPage + 1).toString()
-                    }).toString()}`}
-                    className={`px-2 sm:px-3 py-2 rounded-lg transition-colors text-sm ${
-                      pagination.hasNextPage
-                        ? 'bg-white/5 border border-white/20 text-white hover:bg-white/10'
-                        : 'bg-gray-600/20 border border-gray-600/20 text-gray-500 cursor-not-allowed'
-                    }`}
-                    style={{ pointerEvents: pagination.hasNextPage ? 'auto' : 'none' }}
-                  >
-                    <span className="hidden sm:inline">Suivant</span>
-                    <span className="sm:hidden">›</span>
-                  </Link>
-                </div>
-                </div>
+                      <button
+                        onClick={() => goToPage(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className="p-1.5 sm:p-2 rounded-lg bg-white/10 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/20 transition-colors"
+                      >
+                        <FontAwesomeIcon icon={faArrowLeft} className="rotate-180 w-3 h-3 sm:w-4 sm:h-4" />
+                      </button>
+                    </div>
+                  </div>
+                )}
+                  </>
+                )}
               </div>
-            )}
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      </section>
+    </main>
   )
 }

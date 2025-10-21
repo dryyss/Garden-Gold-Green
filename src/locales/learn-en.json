@@ -1,0 +1,65 @@
+{
+  "hero": {
+    "title": "Learn About CBD",
+    "subtitle": "Discover everything you need to know about CBD, its benefits and uses",
+    "description": "Our learning center guides you through the CBD universe with expert articles, practical guides and usage tips."
+  },
+  "categories": {
+    "all": "All articles",
+    "education": "Education",
+    "wellness": "Wellness",
+    "science": "Science",
+    "lifestyle": "Lifestyle",
+    "beginner": "Beginner",
+    "advanced": "Advanced"
+  },
+  "filters": {
+    "title": "Filters",
+    "clearAll": "Clear all",
+    "sortBy": "Sort by",
+    "newest": "Newest",
+    "oldest": "Oldest",
+    "mostRead": "Most read",
+    "category": "Category",
+    "difficulty": "Level",
+    "searchPlaceholder": "Search for an article..."
+  },
+  "articles": {
+    "readMore": "Read more",
+    "readTime": "min read",
+    "publishedOn": "Published on",
+    "by": "by",
+    "featured": "Featured article",
+    "noArticles": "No articles found",
+    "loadMore": "Load more articles",
+    "difficulty": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    }
+  },
+  "sections": {
+    "featured": {
+      "title": "Featured articles",
+      "subtitle": "Our most popular and informative articles"
+    },
+    "categories": {
+      "title": "Explore by category",
+      "subtitle": "Find articles tailored to your needs"
+    },
+    "latest": {
+      "title": "Latest articles",
+      "subtitle": "Stay up to date with the latest CBD information"
+    },
+    "beginner": {
+      "title": "Beginner's guide",
+      "subtitle": "Start your CBD journey with our essential guides"
+    }
+  },
+  "cta": {
+    "title": "Ready to start your CBD journey?",
+    "subtitle": "Discover our premium products and find the one that suits you best",
+    "button": "Discover our products",
+    "learnMore": "Learn more"
+  }
+}

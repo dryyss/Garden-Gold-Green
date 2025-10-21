@@ -23,6 +23,17 @@ interface ContactForm {
 
 export default function ContactPage() {
   const { t } = useTranslation()
+  
+  // Fonction helper pour éviter les erreurs de traduction
+  const safeT = (key: string, fallback: string = '') => {
+    try {
+      const result = t(key)
+      return result || fallback
+    } catch (error) {
+      console.warn(`Translation error for key: ${key}`, error)
+      return fallback
+    }
+  }
   const [form, setForm] = useState<ContactForm>({
     name: '',
     email: '',
@@ -366,13 +377,13 @@ export default function ContactPage() {
                     {t('contact.info.social.follow')}
                   </p>
                   <div className="flex space-x-4">
-                    <a href="#" className="text-gray-400 hover:text-brand-gold transition-colors">
+                    <a href="#" className="text-gray-400 hover:text-brand-gold transition-colors" aria-label="Instagram">
                       <i className="fa-brands fa-instagram text-xl"></i>
                     </a>
-                    <a href="#" className="text-gray-400 hover:text-brand-gold transition-colors">
+                    <a href="#" className="text-gray-400 hover:text-brand-gold transition-colors" aria-label="Facebook">
                       <i className="fa-brands fa-facebook text-xl"></i>
                     </a>
-                    <a href="#" className="text-gray-400 hover:text-brand-gold transition-colors">
+                    <a href="#" className="text-gray-400 hover:text-brand-gold transition-colors" aria-label="Twitter">
                       <i className="fa-brands fa-twitter text-xl"></i>
                     </a>
                   </div>
@@ -390,16 +401,47 @@ export default function ContactPage() {
               </p>
               
               <div className="space-y-4">
-                {t('contact.faq.items').map((item: any, index: number) => (
-                  <div key={index} className="card-bg rounded-lg p-4">
-                    <h4 className="text-white font-semibold mb-2">
-                      {item.question}
-                    </h4>
-                    <p className="text-gray-400 text-sm">
-                      {item.answer}
-                    </p>
-                  </div>
-                ))}
+                {(() => {
+                  try {
+                    const faqItems = t('contact.faq.items')
+                    if (Array.isArray(faqItems)) {
+                      return faqItems.map((item: any, index: number) => (
+                        <div key={index} className="card-bg rounded-lg p-4">
+                          <h4 className="text-white font-semibold mb-2">
+                            {item.question}
+                          </h4>
+                          <p className="text-gray-400 text-sm">
+                            {item.answer}
+                          </p>
+                        </div>
+                      ))
+                    } else {
+                      // Fallback si ce n'est pas un tableau
+                      return (
+                        <div className="card-bg rounded-lg p-4">
+                          <h4 className="text-white font-semibold mb-2">
+                            Comment puis-je vous contacter ?
+                          </h4>
+                          <p className="text-gray-400 text-sm">
+                            Vous pouvez nous contacter par téléphone au +33 7 78 82 38 40, par email à contact@gardengoldgreen.com, ou en remplissant le formulaire ci-dessus.
+                          </p>
+                        </div>
+                      )
+                    }
+                  } catch (error) {
+                    console.warn('Error rendering FAQ items:', error)
+                    return (
+                      <div className="card-bg rounded-lg p-4">
+                        <h4 className="text-white font-semibold mb-2">
+                          Comment puis-je vous contacter ?
+                        </h4>
+                        <p className="text-gray-400 text-sm">
+                          Vous pouvez nous contacter par téléphone au +33 7 78 82 38 40, par email à contact@gardengoldgreen.com, ou en remplissant le formulaire ci-dessus.
+                        </p>
+                      </div>
+                    )
+                  }
+                })()}
               </div>
               
               <div className="mt-6">

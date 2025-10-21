@@ -1,0 +1,83 @@
+{
+  "hero": {
+    "title": "Nos Produits CBD",
+    "subtitle": "Découvrez notre gamme complète de produits CBD premium, soigneusement sélectionnés pour votre bien-être",
+    "searchPlaceholder": "Rechercher un produit...",
+    "searchButton": "Rechercher"
+  },
+  "filters": {
+    "title": "Filtres",
+    "clearAll": "Effacer tout",
+    "priceRange": "Gamme de prix",
+    "category": "Catégorie",
+    "availability": "Disponibilité",
+    "sortBy": "Trier par",
+    "sortOptions": {
+      "newest": "Plus récent",
+      "oldest": "Plus ancien",
+      "priceLow": "Prix croissant",
+      "priceHigh": "Prix décroissant",
+      "nameAZ": "Nom A-Z",
+      "nameZA": "Nom Z-A",
+      "rating": "Mieux notés"
+    },
+    "viewOptions": {
+      "grid": "Vue grille",
+      "list": "Vue liste"
+    }
+  },
+  "categories": {
+    "all": "Tous les produits",
+    "oils": "Huiles CBD",
+    "flowers": "Fleurs CBD",
+    "gummies": "Gommes CBD",
+    "topicals": "Produits topiques",
+    "capsules": "Gélules CBD",
+    "isolates": "Isolats CBD"
+  },
+  "products": {
+    "noProducts": "Aucun produit trouvé",
+    "noProductsDescription": "Essayez de modifier vos critères de recherche ou de filtres",
+    "loading": "Chargement des produits...",
+    "loadMore": "Charger plus de produits",
+    "showing": "Affichage de",
+    "of": "sur",
+    "results": "résultats",
+    "perPage": "par page"
+  },
+  "product": {
+    "addToCart": "Ajouter au panier",
+    "adding": "Ajout en cours...",
+    "inStock": "En stock",
+    "outOfStock": "Rupture de stock",
+    "new": "Nouveau",
+    "bestseller": "Best-seller",
+    "rating": "Note",
+    "reviews": "avis",
+    "quantity": "Quantité",
+    "description": "Description",
+    "ingredients": "Ingrédients",
+    "usage": "Mode d'emploi",
+    "labResults": "Résultats de laboratoire",
+    "shipping": "Livraison",
+    "returns": "Retours"
+  },
+  "pagination": {
+    "previous": "Précédent",
+    "next": "Suivant",
+    "page": "Page",
+    "of": "sur"
+  },
+  "search": {
+    "noResults": "Aucun résultat trouvé",
+    "tryAgain": "Essayez avec d'autres mots-clés",
+    "suggestions": "Suggestions",
+    "popularSearches": "Recherches populaires"
+  },
+  "cta": {
+    "title": "Vous ne trouvez pas ce que vous cherchez ?",
+    "subtitle": "Notre équipe d'experts est là pour vous aider à trouver le produit parfait",
+    "contact": "Nous contacter",
+    "chat": "Chat en direct"
+  }
+}

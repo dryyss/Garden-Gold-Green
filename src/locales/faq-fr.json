@@ -76,6 +76,31 @@
     "q15": {
       "question": "Offrez-vous des remises pour les commandes en gros ?",
       "answer": "Oui ! Nous offrons des remises pour les commandes en gros de 10 unités ou plus. Contactez notre équipe commerciale à wholesale@gardengoldgreen.com pour plus d'informations sur nos prix de gros et nos options de partenariat."
+    },
+    "q16": {
+      "question": "Le CBD est-il légal en France ?",
+      "answer": "Oui, le CBD est légal en France depuis 2021. Nos produits respectent la réglementation française avec un taux de THC inférieur à 0,3%. Ils sont fabriqués à partir de chanvre industriel autorisé et testés par des laboratoires certifiés.",
+      "category": "legal"
+    },
+    "q17": {
+      "question": "Vos produits respectent-ils la réglementation européenne ?",
+      "answer": "Absolument ! Tous nos produits respectent la réglementation européenne sur les nouveaux aliments (Novel Food). Nous nous conformons aux directives de l'EFSA et aux lois nationales de chaque pays de l'UE où nous livrons.",
+      "category": "legal"
+    },
+    "q18": {
+      "question": "Puis-je voyager avec vos produits CBD ?",
+      "answer": "Les réglementations varient selon les pays. En général, vous pouvez voyager avec des produits CBD dans l'UE si le taux de THC est inférieur à 0,3%. Cependant, nous recommandons de vérifier les lois locales de votre destination avant de voyager.",
+      "category": "legal"
+    },
+    "q19": {
+      "question": "Vos produits sont-ils conformes aux normes de qualité ?",
+      "answer": "Oui, tous nos produits sont conformes aux normes ISO et GMP. Nous effectuons des tests de laboratoire tiers pour garantir la pureté, la puissance et l'absence de contaminants. Nos certificats de conformité sont disponibles sur demande.",
+      "category": "legal"
+    },
+    "q20": {
+      "question": "Quelles sont vos certifications légales ?",
+      "answer": "Nous sommes certifiés par des organismes reconnus pour la culture et la transformation du chanvre. Nos produits sont testés par des laboratoires accrédités COFRAC et respectent toutes les normes sanitaires françaises et européennes.",
+      "category": "legal"
     }
   },
   "contact": {

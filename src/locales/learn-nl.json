@@ -1,0 +1,65 @@
+{
+  "hero": {
+    "title": "Leer over CBD",
+    "subtitle": "Ontdek alles wat je moet weten over CBD, de voordelen en toepassingen",
+    "description": "Ons leercentrum begeleidt je door het CBD-universum met expertartikelen, praktische gidsen en gebruiktips."
+  },
+  "categories": {
+    "all": "Alle artikelen",
+    "education": "Onderwijs",
+    "wellness": "Welzijn",
+    "science": "Wetenschap",
+    "lifestyle": "Levensstijl",
+    "beginner": "Beginner",
+    "advanced": "Gevorderd"
+  },
+  "filters": {
+    "title": "Filters",
+    "clearAll": "Alles wissen",
+    "sortBy": "Sorteren op",
+    "newest": "Nieuwste",
+    "oldest": "Oudste",
+    "mostRead": "Meest gelezen",
+    "category": "Categorie",
+    "difficulty": "Niveau",
+    "searchPlaceholder": "Zoek naar een artikel..."
+  },
+  "articles": {
+    "readMore": "Lees meer",
+    "readTime": "min lezen",
+    "publishedOn": "Gepubliceerd op",
+    "by": "door",
+    "featured": "Uitgelicht artikel",
+    "noArticles": "Geen artikelen gevonden",
+    "loadMore": "Meer artikelen laden",
+    "difficulty": {
+      "beginner": "Beginner",
+      "intermediate": "Gemiddeld",
+      "advanced": "Gevorderd"
+    }
+  },
+  "sections": {
+    "featured": {
+      "title": "Uitgelichte artikelen",
+      "subtitle": "Onze meest populaire en informatieve artikelen"
+    },
+    "categories": {
+      "title": "Verken per categorie",
+      "subtitle": "Vind artikelen die aansluiten bij jouw behoeften"
+    },
+    "latest": {
+      "title": "Laatste artikelen",
+      "subtitle": "Blijf op de hoogte van de nieuwste CBD-informatie"
+    },
+    "beginner": {
+      "title": "Beginnersgids",
+      "subtitle": "Begin je CBD-reis met onze essentiële gidsen"
+    }
+  },
+  "cta": {
+    "title": "Klaar om je CBD-reis te beginnen?",
+    "subtitle": "Ontdek onze premium producten en vind degene die het beste bij je past",
+    "button": "Ontdek onze producten",
+    "learnMore": "Meer weten"
+  }
+}

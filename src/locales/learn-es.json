@@ -1,0 +1,65 @@
+{
+  "hero": {
+    "title": "Aprende sobre CBD",
+    "subtitle": "Descubre todo lo que necesitas saber sobre el CBD, sus beneficios y usos",
+    "description": "Nuestro centro de aprendizaje te guía a través del universo del CBD con artículos expertos, guías prácticas y consejos de uso."
+  },
+  "categories": {
+    "all": "Todos los artículos",
+    "education": "Educación",
+    "wellness": "Bienestar",
+    "science": "Ciencia",
+    "lifestyle": "Estilo de vida",
+    "beginner": "Principiante",
+    "advanced": "Avanzado"
+  },
+  "filters": {
+    "title": "Filtros",
+    "clearAll": "Limpiar todo",
+    "sortBy": "Ordenar por",
+    "newest": "Más reciente",
+    "oldest": "Más antiguo",
+    "mostRead": "Más leído",
+    "category": "Categoría",
+    "difficulty": "Nivel",
+    "searchPlaceholder": "Buscar un artículo..."
+  },
+  "articles": {
+    "readMore": "Leer más",
+    "readTime": "min de lectura",
+    "publishedOn": "Publicado el",
+    "by": "por",
+    "featured": "Artículo destacado",
+    "noArticles": "No se encontraron artículos",
+    "loadMore": "Cargar más artículos",
+    "difficulty": {
+      "beginner": "Principiante",
+      "intermediate": "Intermedio",
+      "advanced": "Avanzado"
+    }
+  },
+  "sections": {
+    "featured": {
+      "title": "Artículos destacados",
+      "subtitle": "Nuestros artículos más populares e informativos"
+    },
+    "categories": {
+      "title": "Explora por categoría",
+      "subtitle": "Encuentra artículos adaptados a tus necesidades"
+    },
+    "latest": {
+      "title": "Últimos artículos",
+      "subtitle": "Mantente actualizado con la última información sobre CBD"
+    },
+    "beginner": {
+      "title": "Guía para principiantes",
+      "subtitle": "Comienza tu viaje CBD con nuestras guías esenciales"
+    }
+  },
+  "cta": {
+    "title": "¿Listo para comenzar tu viaje CBD?",
+    "subtitle": "Descubre nuestros productos premium y encuentra el que mejor se adapte a ti",
+    "button": "Descubrir nuestros productos",
+    "learnMore": "Saber más"
+  }
+}
