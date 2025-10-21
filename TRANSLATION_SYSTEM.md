@@ -187,3 +187,4 @@ Pour ajouter une nouvelle langue :
 2. Ajouter le code de langue dans le type `SupportedLanguage`
 3. Ajouter la langue dans le tableau `languages` du composant `LanguageSelector`
 4. Mettre à jour la fonction `getDefaultLanguage` si nécessaire
+

@@ -13,7 +13,6 @@ import {
   faXmark,
   faSignOutAlt,
   faUserCircle,
-  faCog,
   faPhone,
   faEnvelope,
   faTruck,
@@ -45,7 +44,7 @@ export function Header() {
   const { state: authState, logout } = useAuth()
   const { t } = useTranslation()
   const user = authState.user
-  const isLoading = authState.loading
+  const isLoading = authState.isLoading
 
   // Gérer le scroll pour réduire la barre jaune et afficher le panier flottant
   useEffect(() => {
@@ -164,9 +163,6 @@ export function Header() {
                 <div className="absolute -inset-2 bg-gradient-to-r from-brand-gold/30 to-brand-green/30 rounded-full blur-sm group-hover:blur-md transition-all duration-300"></div>
                 <div className="absolute -inset-2 bg-gradient-to-r from-brand-gold/15 to-brand-green/15 rounded-full blur-md group-hover:blur-lg transition-all duration-300"></div>
               </div>
-              <span className="hidden sm:block text-white text-2xl sm:text-3xl font-bold tracking-wider ml-4 group-hover:text-brand-gold transition-colors duration-300 drop-shadow-lg">
-                {t('header.title')}
-              </span>
             </Link>
 
             {/* Navigation desktop */}
@@ -229,32 +225,32 @@ export function Header() {
                       <FontAwesomeIcon icon={faShoppingCart} className="icon-sm mr-2" />
                       {t('header.user.orders')}
                     </Link>
-                    <a
+                    <Link
                       href="/api/auth/logout"
                       className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
                       onClick={() => setShowUserMenu(false)}
                     >
                       <FontAwesomeIcon icon={faSignOutAlt} className="icon-sm mr-2" />
                       {t('header.user.logout')}
-                    </a>
+                    </Link>
                   </div>
                 </div>
               )}
             </div>
           ) : (
             <div className="flex items-center space-x-2">
-              <a
+              <Link
                 href="/api/auth/login"
                 className="text-gray-300 hover:text-brand-gold transition-colors duration-300 px-3 py-2 text-sm font-medium"
               >
                 {t('header.user.login')}
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/api/auth/login?screen_hint=signup"
                 className="bg-brand-gold text-black font-semibold px-4 py-2 rounded-full text-sm hover:shadow-gold-glow transition-all duration-300"
               >
                 {t('header.user.register')}
-              </a>
+              </Link>
             </div>
           )}
 

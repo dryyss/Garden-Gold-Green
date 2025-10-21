@@ -81,8 +81,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         aria-label={t('common.language')}
       >
         <FontAwesomeIcon icon={faGlobe} className="w-4 h-4" />
-        <span className="hidden sm:inline">{currentLang.flag}</span>
-        <span className="hidden lg:inline text-sm">{currentLang.name}</span>
+        <span className="ml-2 text-sm font-semibold">{currentLang.code.toUpperCase()}</span>
         <FontAwesomeIcon 
           icon={faChevronDown} 
           className={`w-3 h-3 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} 
@@ -131,8 +130,8 @@ export const CurrentLanguage: React.FC<{ className?: string }> = ({ className = 
 
   return (
     <div className={`flex items-center space-x-2 ${className}`}>
-      <span className="text-lg">{currentLang.flag}</span>
-      <span className="text-sm">{currentLang.name}</span>
+      <span className="text-sm font-semibold">{currentLang.code.toUpperCase()}</span>
     </div>
   )
 }
+

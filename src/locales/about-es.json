@@ -1,0 +1,86 @@
+{
+  "hero": {
+    "title": "Acerca de",
+    "subtitle": "Somos apasionados por brindarte productos CBD de la más alta calidad, elaborados con cuidado y respaldados por la ciencia. Nuestra misión es ayudarte a lograr un bienestar óptimo a través de la planta más poderosa de la naturaleza."
+  },
+  "story": {
+    "title": "Nuestra Historia",
+    "paragraph1": "Fundada en 2018 por un equipo de entusiastas del bienestar y expertos agrícolas, Garden Gold Green comenzó con una visión simple: hacer que los productos CBD premium sean accesibles para todos mientras mantenemos los más altos estándares de calidad y pureza.",
+    "paragraph2": "Nuestro viaje comenzó en los fértiles campos de Colorado, donde descubrimos las condiciones de cultivo perfectas para el cáñamo premium. Nos asociamos con agricultores locales que compartían nuestro compromiso con prácticas agrícolas sostenibles y orgánicas.",
+    "paragraph3": "Hoy, estamos orgullosos de servir a miles de clientes en todo el mundo, ayudándoles a descubrir los beneficios naturales del CBD para su viaje de salud y bienestar."
+  },
+  "values": {
+    "title": "Nuestros Valores",
+    "subtitle": "Todo lo que hacemos está guiado por nuestros valores fundamentales de calidad, transparencia y atención al cliente.",
+    "natural": {
+      "title": "Natural y Puro",
+      "description": "Utilizamos solo el cáñamo de la más alta calidad, cultivado orgánicamente, e ingredientes naturales en todos nuestros productos."
+    },
+    "labTested": {
+      "title": "Probado en Laboratorio",
+      "description": "Cada lote es rigurosamente probado por laboratorios independientes para garantizar pureza y potencia."
+    },
+    "transparent": {
+      "title": "Transparente",
+      "description": "Creemos en la transparencia total. Todos nuestros informes de laboratorio están disponibles públicamente."
+    },
+    "sustainable": {
+      "title": "Sostenible",
+      "description": "Estamos comprometidos con prácticas sostenibles que protegen nuestro planeta para las generaciones futuras."
+    },
+    "customerFirst": {
+      "title": "Cliente Primero",
+      "description": "Tu satisfacción es nuestra prioridad. Ofrecemos un soporte al cliente excepcional y garantías de satisfacción."
+    },
+    "innovative": {
+      "title": "Innovador",
+      "description": "Invertimos continuamente en investigación y desarrollo para mejorar nuestros productos."
+    }
+  },
+  "team": {
+    "title": "Nuestro Equipo",
+    "subtitle": "Conoce a los expertos apasionados que hacen de Garden Gold Green lo que es hoy.",
+    "sarah": {
+      "name": "Dr. Sarah Johnson",
+      "role": "Directora Científica",
+      "description": "Con más de 15 años de experiencia en fitoterapia, Sarah lidera nuestro equipo de investigación y desarrollo."
+    },
+    "marc": {
+      "name": "Marc Rodriguez",
+      "role": "Director de Operaciones",
+      "description": "Marc supervisa nuestros procesos de producción y se asegura de que cada producto cumpla con nuestros estándares de calidad."
+    },
+    "lisa": {
+      "name": "Lisa Chen",
+      "role": "Gerente de Aseguramiento de Calidad",
+      "description": "Lisa asegura que todos nuestros productos sean probados y certificados según los estándares más estrictos."
+    }
+  },
+  "mission": {
+    "title": "Nuestra Misión",
+    "subtitle": "Estamos comprometidos a proporcionar productos CBD de la más alta calidad que mejoren tu bienestar de forma natural.",
+    "goals": {
+      "quality": "Mantener los más altos estándares de calidad en todos nuestros productos",
+      "transparency": "Proporcionar transparencia total con informes de laboratorio públicos",
+      "sustainability": "Promover prácticas sostenibles y respetuosas con el medio ambiente",
+      "education": "Educar a nuestros clientes sobre los beneficios y uso del CBD",
+      "innovation": "Continuar innovando y mejorando nuestras formulaciones",
+      "community": "Construir una comunidad de bienestar y apoyo"
+    }
+  },
+  "certifications": {
+    "title": "Nuestras Certificaciones",
+    "subtitle": "Estamos orgullosos de nuestras certificaciones que atestiguan nuestro compromiso con la calidad y seguridad.",
+    "organic": "Certificado Orgánico",
+    "gmp": "Buenas Prácticas de Manufactura",
+    "iso": "ISO 9001:2015",
+    "thirdParty": "Probado por Terceros",
+    "fda": "Cumple con Regulaciones FDA",
+    "cannabis": "Certificado Cannabis"
+  },
+  "cta": {
+    "title": "Únete a Nuestra Misión",
+    "subtitle": "Descubre la diferencia Garden Gold Green y comienza tu viaje hacia el bienestar natural.",
+    "button": "Explorar Nuestros Productos"
+  }
+}

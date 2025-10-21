@@ -13,7 +13,7 @@ import { OrderNotificationHandler } from "@/components/OrderNotificationHandler"
 import { PageLoader } from "@/components/PageLoader";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { TranslationProvider } from "@/contexts/TranslationContext";
-
+  
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
@@ -74,7 +74,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" className={`${inter.variable} ${montserrat.variable}`}>
-      <body className="font-sans antialiased min-h-screen flex flex-col">
+      <body className="bg-brand-black watermark font-sans antialiased min-h-screen flex flex-col">
         <PageLoader minLoadingTime={2000} showOnce={false}>
           <TranslationProvider>
             <NotificationProvider>

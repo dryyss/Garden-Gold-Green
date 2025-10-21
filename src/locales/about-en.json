@@ -1,0 +1,86 @@
+{
+  "hero": {
+    "title": "About",
+    "subtitle": "We are passionate about bringing you the highest quality CBD products, crafted with care and backed by science. Our mission is to help you achieve optimal wellness through nature's most powerful plant."
+  },
+  "story": {
+    "title": "Our Story",
+    "paragraph1": "Founded in 2018 by a team of wellness enthusiasts and agricultural experts, Garden Gold Green began with a simple vision: to make premium CBD products accessible to everyone while maintaining the highest standards of quality and purity.",
+    "paragraph2": "Our journey started in the fertile fields of Colorado, where we discovered the perfect growing conditions for premium hemp. We partnered with local farmers who shared our commitment to sustainable, organic farming practices.",
+    "paragraph3": "Today, we're proud to serve thousands of customers worldwide, helping them discover the natural benefits of CBD for their health and wellness journey."
+  },
+  "values": {
+    "title": "Our Values",
+    "subtitle": "Everything we do is guided by our core values of quality, transparency, and customer care.",
+    "natural": {
+      "title": "Natural & Pure",
+      "description": "We use only the finest, organically grown hemp and natural ingredients in all our products."
+    },
+    "labTested": {
+      "title": "Lab Tested",
+      "description": "Every batch is rigorously tested by third-party laboratories to ensure purity and potency."
+    },
+    "transparent": {
+      "title": "Transparent",
+      "description": "We believe in complete transparency. All our lab reports are publicly available."
+    },
+    "sustainable": {
+      "title": "Sustainable",
+      "description": "We're committed to sustainable practices that protect our planet for future generations."
+    },
+    "customerFirst": {
+      "title": "Customer First",
+      "description": "Your satisfaction is our priority. We offer exceptional customer support and satisfaction guarantees."
+    },
+    "innovative": {
+      "title": "Innovative",
+      "description": "We continuously invest in research and development to improve our products."
+    }
+  },
+  "team": {
+    "title": "Our Team",
+    "subtitle": "Meet the passionate experts who make Garden Gold Green what it is today.",
+    "sarah": {
+      "name": "Dr. Sarah Johnson",
+      "role": "Chief Scientific Officer",
+      "description": "With over 15 years of experience in phytotherapy, Sarah leads our research and development team."
+    },
+    "marc": {
+      "name": "Marc Rodriguez",
+      "role": "Chief Operations Officer",
+      "description": "Marc oversees our production processes and ensures every product meets our quality standards."
+    },
+    "lisa": {
+      "name": "Lisa Chen",
+      "role": "Quality Assurance Manager",
+      "description": "Lisa ensures all our products are tested and certified to the strictest standards."
+    }
+  },
+  "mission": {
+    "title": "Our Mission",
+    "subtitle": "We're committed to providing the highest quality CBD products that enhance your wellness naturally.",
+    "goals": {
+      "quality": "Maintain the highest quality standards in all our products",
+      "transparency": "Provide complete transparency with public lab reports",
+      "sustainability": "Promote sustainable and environmentally friendly practices",
+      "education": "Educate our customers about CBD benefits and usage",
+      "innovation": "Continue to innovate and improve our formulations",
+      "community": "Build a supportive wellness community"
+    }
+  },
+  "certifications": {
+    "title": "Our Certifications",
+    "subtitle": "We're proud of our certifications that attest to our commitment to quality and safety.",
+    "organic": "Organic Certified",
+    "gmp": "Good Manufacturing Practices",
+    "iso": "ISO 9001:2015",
+    "thirdParty": "Third-Party Tested",
+    "fda": "FDA Compliant",
+    "cannabis": "Cannabis Certified"
+  },
+  "cta": {
+    "title": "Join Our Mission",
+    "subtitle": "Discover the Garden Gold Green difference and start your journey to natural wellness.",
+    "button": "Explore Our Products"
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "hero": {
+    "title": "Preguntas Frecuentes",
+    "subtitle": "Encuentra respuestas a tus preguntas sobre nuestros productos CBD y servicio al cliente."
+  },
+  "search": {
+    "placeholder": "Buscar en FAQ...",
+    "noResults": "No se encontraron preguntas para esta búsqueda."
+  },
+  "categories": {
+    "all": "Todas",
+    "general": "General",
+    "products": "Productos",
+    "quality": "Calidad",
+    "shipping": "Envío",
+    "returns": "Devoluciones",
+    "legal": "Legal"
+  },
+  "questions": {
+    "q1": {
+      "question": "¿Qué es el CBD y cómo funciona?",
+      "answer": "El CBD (cannabidiol) es un compuesto que se encuentra naturalmente en las plantas de cáñamo. Interactúa con el sistema endocannabinoide de tu cuerpo, que ayuda a regular varias funciones como el sueño, el estado de ánimo, el dolor y la respuesta inmunitaria. A diferencia del THC, el CBD no es psicoactivo, lo que significa que no te hará sentir 'colocado'."
+    },
+    "q2": {
+      "question": "¿Son legales sus productos?",
+      "answer": "¡Sí! Todos nuestros productos están hechos de cáñamo y contienen menos del 0.3% de THC, lo que los hace legales bajo la ley federal. Cumplimos con todas las regulaciones estatales y federales sobre productos CBD derivados del cáñamo."
+    },
+    "q3": {
+      "question": "¿Cómo elijo el producto CBD correcto para mí?",
+      "answer": "El producto correcto depende de tus necesidades y preferencias. Los aceites son excelentes para dosificación precisa y absorción rápida, las gomitas son convenientes y sabrosas, los tópicos son perfectos para alivio dirigido, y las cápsulas ofrecen dosificación consistente. Comienza con una dosis baja y aumenta gradualmente hasta encontrar lo que mejor te funcione."
+    },
+    "q4": {
+      "question": "¿Cuál es la diferencia entre CBD de espectro completo y aislado de CBD?",
+      "answer": "El CBD de espectro completo contiene todos los compuestos que se encuentran naturalmente en el cáñamo, incluyendo otros cannabinoides, terpenos y trazas de THC (menos del 0.3%). El aislado de CBD es CBD puro con todos los demás compuestos removidos. Los productos de espectro completo pueden ofrecer beneficios mejorados debido al 'efecto séquito'."
+    },
+    "q5": {
+      "question": "¿Cuánto CBD debo tomar?",
+      "answer": "La dosificación de CBD varía de persona a persona. Recomendamos comenzar con 10-20mg por día y aumentar gradualmente hasta encontrar tu dosis óptima. Factores como el peso corporal, el metabolismo y la condición que estás abordando pueden afectar la dosificación. Siempre consulta con un profesional de la salud antes de comenzar cualquier nuevo suplemento."
+    },
+    "q6": {
+      "question": "¿Cuánto tiempo tarda el CBD en hacer efecto?",
+      "answer": "Los efectos del CBD pueden variar dependiendo del método de consumo. Los aceites sublinguales típicamente toman 15-45 minutos, los comestibles pueden tomar 1-2 horas, y los tópicos pueden proporcionar alivio inmediato. Puede tomar 2-4 semanas de uso consistente para experimentar todos los beneficios."
+    },
+    "q7": {
+      "question": "¿Hay efectos secundarios?",
+      "answer": "El CBD es generalmente bien tolerado, pero algunas personas pueden experimentar efectos secundarios leves como sequedad bucal, somnolencia o cambios en el apetito. Estos efectos son típicamente leves y temporales. Siempre consulta con un profesional de la salud si tienes preocupaciones."
+    },
+    "q8": {
+      "question": "¿Prueban sus productos?",
+      "answer": "¡Sí! Todos nuestros productos se someten a pruebas rigurosas de terceros para potencia, pureza y seguridad. Probamos cannabinoides, terpenos, metales pesados, pesticidas y contaminantes microbianos. Puedes encontrar informes de laboratorio para cada producto en nuestro sitio web."
+    },
+    "q9": {
+      "question": "¿De dónde obtienen su cáñamo?",
+      "answer": "Obtenemos nuestro cáñamo de granjas orgánicas certificadas en Colorado y Oregon. Nuestros agricultores siguen prácticas de cultivo orgánico estrictas y están comprometidos con la agricultura sostenible. Mantenemos relaciones cercanas con nuestros proveedores para asegurar la más alta calidad."
+    },
+    "q10": {
+      "question": "¿Cómo extraen el CBD?",
+      "answer": "Utilizamos extracción con CO2, que se considera el estándar de oro para la extracción de CBD. Este método preserva los compuestos beneficiosos de la planta mientras elimina sustancias no deseadas. Es limpio, seguro y produce aceite de CBD de alta calidad."
+    },
+    "q11": {
+      "question": "¿Qué métodos de envío ofrecen?",
+      "answer": "Ofrecemos envío estándar (3-5 días hábiles) y envío express (1-2 días hábiles). ¡Todos los pedidos de más de $75 se envían gratis! Utilizamos empaque discreto para proteger tu privacidad."
+    },
+    "q12": {
+      "question": "¿Envían internacionalmente?",
+      "answer": "Actualmente, solo enviamos dentro de los Estados Unidos. Estamos trabajando en expandir nuestras opciones de envío internacional. Por favor, vuelve a consultarnos o contacta a nuestro equipo de servicio al cliente para actualizaciones."
+    },
+    "q13": {
+      "question": "¿Cuál es su política de devoluciones?",
+      "answer": "Ofrecemos una garantía de devolución de dinero de 30 días en todos los productos. Si no estás completamente satisfecho, puedes devolver tu compra para un reembolso completo. Los artículos deben estar sin abrir y en su empaque original."
+    },
+    "q14": {
+      "question": "¿Cómo puedo contactar al servicio al cliente?",
+      "answer": "Puedes contactarnos por email a support@gardengoldgreen.com, por teléfono al +33 7 78 82 38 40, o a través del chat en vivo en nuestro sitio web. Nuestro equipo está disponible de lunes a viernes de 9 AM a 6 PM."
+    },
+    "q15": {
+      "question": "¿Ofrecen descuentos por volumen?",
+      "answer": "¡Sí! Ofrecemos descuentos para pedidos al por mayor de 10 unidades o más. Contacta a nuestro equipo de ventas en wholesale@gardengoldgreen.com para más información sobre nuestros precios al por mayor y opciones de asociación."
+    }
+  },
+  "contact": {
+    "title": "¿No encuentras tu respuesta?",
+    "subtitle": "Nuestro equipo de servicio al cliente está aquí para ayudar.",
+    "button": "Contáctanos"
+  }
+}

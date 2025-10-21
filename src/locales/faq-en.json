@@ -1,0 +1,86 @@
+{
+  "hero": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Find answers to your questions about our CBD products and customer service."
+  },
+  "search": {
+    "placeholder": "Search FAQs...",
+    "noResults": "No questions found for this search."
+  },
+  "categories": {
+    "all": "All",
+    "general": "General",
+    "products": "Products",
+    "quality": "Quality",
+    "shipping": "Shipping",
+    "returns": "Returns",
+    "legal": "Legal"
+  },
+  "questions": {
+    "q1": {
+      "question": "What is CBD and how does it work?",
+      "answer": "CBD (cannabidiol) is a naturally occurring compound found in hemp plants. It interacts with your body's endocannabinoid system, which helps regulate various functions like sleep, mood, pain, and immune response. Unlike THC, CBD is non-psychoactive, meaning it won't make you feel 'high.'"
+    },
+    "q2": {
+      "question": "Are your products legal?",
+      "answer": "Yes! All our products are made from hemp and contain less than 0.3% THC, making them legal under federal law. We comply with all state and federal regulations regarding hemp-derived CBD products."
+    },
+    "q3": {
+      "question": "How do I choose the right CBD product for me?",
+      "answer": "The right product depends on your needs and preferences. Oils are great for precise dosing and quick absorption, gummies are convenient and tasty, topicals are perfect for targeted relief, and capsules offer consistent dosing. Start with a low dose and gradually increase until you find what works best for you."
+    },
+    "q4": {
+      "question": "What's the difference between full-spectrum and isolate CBD?",
+      "answer": "Full-spectrum CBD contains all the naturally occurring compounds in hemp, including other cannabinoids, terpenes, and trace amounts of THC (less than 0.3%). CBD isolate is pure CBD with all other compounds removed. Full-spectrum products may offer enhanced benefits due to the 'entourage effect.'"
+    },
+    "q5": {
+      "question": "How much CBD should I take?",
+      "answer": "CBD dosage varies from person to person. We recommend starting with 10-20mg per day and gradually increasing until you find your optimal dose. Factors like body weight, metabolism, and the condition you're addressing can affect dosage. Always consult with a healthcare professional before starting any new supplement."
+    },
+    "q6": {
+      "question": "How long does it take for CBD to work?",
+      "answer": "The effects of CBD can vary depending on the method of consumption. Sublingual oils typically take 15-45 minutes, edibles can take 1-2 hours, and topicals may provide immediate relief. It may take 2-4 weeks of consistent use to experience the full benefits."
+    },
+    "q7": {
+      "question": "Are there any side effects?",
+      "answer": "CBD is generally well-tolerated, but some people may experience mild side effects like dry mouth, drowsiness, or changes in appetite. These effects are typically mild and temporary. Always consult with a healthcare professional if you have concerns."
+    },
+    "q8": {
+      "question": "Do you test your products?",
+      "answer": "Yes! All our products undergo rigorous third-party testing for potency, purity, and safety. We test for cannabinoids, terpenes, heavy metals, pesticides, and microbial contaminants. You can find lab reports for each product on our website."
+    },
+    "q9": {
+      "question": "Where do you source your hemp?",
+      "answer": "We source our hemp from certified organic farms in Colorado and Oregon. Our farmers follow strict organic growing practices and are committed to sustainable agriculture. We maintain close relationships with our suppliers to ensure the highest quality."
+    },
+    "q10": {
+      "question": "How do you extract CBD?",
+      "answer": "We use CO2 extraction, which is considered the gold standard for CBD extraction. This method preserves the plant's beneficial compounds while removing unwanted substances. It's clean, safe, and produces high-quality CBD oil."
+    },
+    "q11": {
+      "question": "What shipping methods do you offer?",
+      "answer": "We offer standard shipping (3-5 business days) and express shipping (1-2 business days). All orders over $75 ship free! We use discreet packaging to protect your privacy."
+    },
+    "q12": {
+      "question": "Do you ship internationally?",
+      "answer": "Currently, we only ship within the United States. We're working on expanding our international shipping options. Please check back with us or contact our customer service team for updates."
+    },
+    "q13": {
+      "question": "What is your return policy?",
+      "answer": "We offer a 30-day money-back guarantee on all products. If you're not completely satisfied, you can return your purchase for a full refund. Items must be unopened and in original packaging."
+    },
+    "q14": {
+      "question": "How can I contact customer service?",
+      "answer": "You can reach us by email at support@gardengoldgreen.com, by phone at +33 7 78 82 38 40, or via live chat on our website. Our team is available Monday through Friday from 9 AM to 6 PM."
+    },
+    "q15": {
+      "question": "Do you offer bulk discounts?",
+      "answer": "Yes! We offer discounts for bulk orders of 10 units or more. Contact our sales team at wholesale@gardengoldgreen.com for more information about our wholesale pricing and partnership options."
+    }
+  },
+  "contact": {
+    "title": "Can't find your answer?",
+    "subtitle": "Our customer service team is here to help.",
+    "button": "Contact Us"
+  }
+}

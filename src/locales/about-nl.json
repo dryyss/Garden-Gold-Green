@@ -1,0 +1,86 @@
+{
+  "hero": {
+    "title": "Over",
+    "subtitle": "We zijn gepassioneerd over het brengen van CBD-producten van de hoogste kwaliteit, zorgvuldig vervaardigd en ondersteund door wetenschap. Onze missie is om je te helpen optimaal welzijn te bereiken door de krachtigste plant van de natuur."
+  },
+  "story": {
+    "title": "Ons Verhaal",
+    "paragraph1": "Opgericht in 2018 door een team van welzijnsenthusiasten en landbouwexperts, begon Garden Gold Green met een eenvoudige visie: premium CBD-producten toegankelijk maken voor iedereen terwijl we de hoogste kwaliteits- en zuiverheidsstandaarden handhaven.",
+    "paragraph2": "Onze reis begon in de vruchtbare velden van Colorado, waar we de perfecte groeiomstandigheden voor premium hennep ontdekten. We werkten samen met lokale boeren die ons engagement deelden voor duurzame, biologische landbouwpraktijken.",
+    "paragraph3": "Vandaag zijn we trots om duizenden klanten wereldwijd te bedienen, hen te helpen de natuurlijke voordelen van CBD te ontdekken voor hun gezondheids- en welzijnsreis."
+  },
+  "values": {
+    "title": "Onze Waarden",
+    "subtitle": "Alles wat we doen wordt geleid door onze kernwaarden van kwaliteit, transparantie en klantenzorg.",
+    "natural": {
+      "title": "Natuurlijk en Puur",
+      "description": "We gebruiken alleen de fijnste, biologisch geteelde hennep en natuurlijke ingrediënten in al onze producten."
+    },
+    "labTested": {
+      "title": "Laboratoriumgetest",
+      "description": "Elke batch wordt rigoureus getest door onafhankelijke laboratoria om zuiverheid en potentie te garanderen."
+    },
+    "transparent": {
+      "title": "Transparant",
+      "description": "We geloven in volledige transparantie. Al onze laboratoriumrapporten zijn publiek beschikbaar."
+    },
+    "sustainable": {
+      "title": "Duurzaam",
+      "description": "We zijn toegewijd aan duurzame praktijken die onze planeet beschermen voor toekomstige generaties."
+    },
+    "customerFirst": {
+      "title": "Klant Eerst",
+      "description": "Jouw tevredenheid is onze prioriteit. We bieden uitzonderlijke klantenservice en tevredenheidsgaranties."
+    },
+    "innovative": {
+      "title": "Innovatief",
+      "description": "We investeren continu in onderzoek en ontwikkeling om onze producten te verbeteren."
+    }
+  },
+  "team": {
+    "title": "Ons Team",
+    "subtitle": "Ontmoet de gepassioneerde experts die Garden Gold Green maken tot wat het vandaag is.",
+    "sarah": {
+      "name": "Dr. Sarah Johnson",
+      "role": "Chief Scientific Officer",
+      "description": "Met meer dan 15 jaar ervaring in fytotherapie leidt Sarah ons onderzoek- en ontwikkelteam."
+    },
+    "marc": {
+      "name": "Marc Rodriguez",
+      "role": "Chief Operations Officer",
+      "description": "Marc houdt toezicht op onze productieprocessen en zorgt ervoor dat elk product aan onze kwaliteitsstandaarden voldoet."
+    },
+    "lisa": {
+      "name": "Lisa Chen",
+      "role": "Kwaliteitsborging Manager",
+      "description": "Lisa zorgt ervoor dat al onze producten worden getest en gecertificeerd volgens de strengste standaarden."
+    }
+  },
+  "mission": {
+    "title": "Onze Missie",
+    "subtitle": "We zijn toegewijd aan het leveren van CBD-producten van de hoogste kwaliteit die je welzijn natuurlijk verbeteren.",
+    "goals": {
+      "quality": "De hoogste kwaliteitsstandaarden handhaven in al onze producten",
+      "transparency": "Volledige transparantie bieden met openbare laboratoriumrapporten",
+      "sustainability": "Duurzame en milieuvriendelijke praktijken bevorderen",
+      "education": "Onze klanten voorlichten over CBD-voordelen en gebruik",
+      "innovation": "Blijven innoveren en onze formules verbeteren",
+      "community": "Een ondersteunende welzijnsgemeenschap opbouwen"
+    }
+  },
+  "certifications": {
+    "title": "Onze Certificeringen",
+    "subtitle": "We zijn trots op onze certificeringen die ons engagement voor kwaliteit en veiligheid aantonen.",
+    "organic": "Biologisch Gecertificeerd",
+    "gmp": "Goede Productiepraktijken",
+    "iso": "ISO 9001:2015",
+    "thirdParty": "Derde Partij Getest",
+    "fda": "FDA Conform",
+    "cannabis": "Cannabis Gecertificeerd"
+  },
+  "cta": {
+    "title": "Word Onderdeel van Onze Missie",
+    "subtitle": "Ontdek het Garden Gold Green verschil en begin je reis naar natuurlijk welzijn.",
+    "button": "Verken Onze Producten"
+  }
+}

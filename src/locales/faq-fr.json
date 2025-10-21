@@ -1,0 +1,86 @@
+{
+  "hero": {
+    "title": "Questions Fréquentes",
+    "subtitle": "Trouvez les réponses à vos questions sur nos produits CBD et notre service client."
+  },
+  "search": {
+    "placeholder": "Rechercher dans les FAQ...",
+    "noResults": "Aucune question trouvée pour cette recherche."
+  },
+  "categories": {
+    "all": "Toutes",
+    "general": "Général",
+    "products": "Produits",
+    "quality": "Qualité",
+    "shipping": "Livraison",
+    "returns": "Retours",
+    "legal": "Légal"
+  },
+  "questions": {
+    "q1": {
+      "question": "Qu'est-ce que le CBD et comment fonctionne-t-il ?",
+      "answer": "Le CBD (cannabidiol) est un composé naturellement présent dans les plantes de chanvre. Il interagit avec le système endocannabinoïde de votre corps, qui aide à réguler diverses fonctions comme le sommeil, l'humeur, la douleur et la réponse immunitaire. Contrairement au THC, le CBD n'est pas psychoactif, ce qui signifie qu'il ne vous fera pas planer."
+    },
+    "q2": {
+      "question": "Vos produits sont-ils légaux ?",
+      "answer": "Oui ! Tous nos produits sont fabriqués à partir de chanvre et contiennent moins de 0,3% de THC, ce qui les rend légaux selon la loi fédérale. Nous respectons toutes les réglementations étatiques et fédérales concernant les produits CBD dérivés du chanvre."
+    },
+    "q3": {
+      "question": "Comment choisir le bon produit CBD pour moi ?",
+      "answer": "Le bon produit dépend de vos besoins et préférences. Les huiles sont excellentes pour un dosage précis et une absorption rapide, les gummies sont pratiques et savoureux, les topiques sont parfaits pour un soulagement ciblé, et les gélules offrent un dosage constant. Commencez par une faible dose et augmentez progressivement jusqu'à trouver ce qui vous convient le mieux."
+    },
+    "q4": {
+      "question": "Quelle est la différence entre le CBD à spectre complet et l'isolat de CBD ?",
+      "answer": "Le CBD à spectre complet contient tous les composés naturellement présents dans le chanvre, y compris d'autres cannabinoïdes, terpènes et des traces de THC (moins de 0,3%). L'isolat de CBD est du CBD pur avec tous les autres composés retirés. Les produits à spectre complet peuvent offrir des avantages améliorés grâce à l'effet d'entourage."
+    },
+    "q5": {
+      "question": "Combien de CBD devrais-je prendre ?",
+      "answer": "Le dosage de CBD varie d'une personne à l'autre. Nous recommandons de commencer avec 10-20mg par jour et d'augmenter progressivement jusqu'à trouver votre dose optimale. Des facteurs comme le poids corporel, le métabolisme et la condition que vous traitez peuvent affecter le dosage. Consultez toujours un professionnel de la santé avant de commencer tout nouveau supplément."
+    },
+    "q6": {
+      "question": "Combien de temps faut-il pour que le CBD agisse ?",
+      "answer": "Les effets du CBD peuvent varier selon la méthode de consommation. Les huiles sublinguales prennent généralement 15-45 minutes, les comestibles peuvent prendre 1-2 heures, et les topiques peuvent fournir un soulagement immédiat. Il peut falloir 2-4 semaines d'utilisation constante pour ressentir tous les bénéfices."
+    },
+    "q7": {
+      "question": "Y a-t-il des effets secondaires ?",
+      "answer": "Le CBD est généralement bien toléré, mais certaines personnes peuvent ressentir des effets secondaires légers comme la sécheresse buccale, la somnolence ou des changements d'appétit. Ces effets sont généralement légers et temporaires. Consultez toujours un professionnel de la santé si vous avez des préoccupations."
+    },
+    "q8": {
+      "question": "Testez-vous vos produits ?",
+      "answer": "Oui ! Tous nos produits subissent des tests rigoureux par des laboratoires tiers pour la puissance, la pureté et la sécurité. Nous testons les cannabinoïdes, terpènes, métaux lourds, pesticides et contaminants microbiens. Vous pouvez trouver les rapports de laboratoire pour chaque produit sur notre site web."
+    },
+    "q9": {
+      "question": "D'où provient votre chanvre ?",
+      "answer": "Nous nous approvisionnons en chanvre auprès de fermes biologiques certifiées du Colorado et de l'Oregon. Nos agriculteurs suivent des pratiques de culture biologique strictes et sont engagés dans une agriculture durable. Nous entretenons des relations étroites avec nos fournisseurs pour garantir la plus haute qualité."
+    },
+    "q10": {
+      "question": "Comment extrayez-vous le CBD ?",
+      "answer": "Nous utilisons l'extraction au CO2, qui est considérée comme l'étalon-or pour l'extraction du CBD. Cette méthode préserve les composés bénéfiques de la plante tout en éliminant les substances indésirables. C'est propre, sûr et produit une huile CBD de haute qualité."
+    },
+    "q11": {
+      "question": "Quelles méthodes d'expédition proposez-vous ?",
+      "answer": "Nous proposons l'expédition standard (3-5 jours ouvrables) et l'expédition express (1-2 jours ouvrables). Toutes les commandes de plus de 75€ sont expédiées gratuitement ! Nous utilisons un emballage discret pour protéger votre vie privée."
+    },
+    "q12": {
+      "question": "Expédiez-vous à l'international ?",
+      "answer": "Actuellement, nous n'expédions qu'aux États-Unis. Nous travaillons à l'expansion de nos options d'expédition internationale. Veuillez revenir nous voir ou contacter notre équipe de service client pour les mises à jour."
+    },
+    "q13": {
+      "question": "Quelle est votre politique de retour ?",
+      "answer": "Nous offrons une garantie de remboursement de 30 jours sur tous les produits. Si vous n'êtes pas complètement satisfait, vous pouvez retourner votre achat pour un remboursement complet. Les articles doivent être non ouverts et dans leur emballage d'origine."
+    },
+    "q14": {
+      "question": "Comment puis-je contacter le service client ?",
+      "answer": "Vous pouvez nous contacter par email à support@gardengoldgreen.com, par téléphone au +33 7 78 82 38 40, ou via le chat en direct sur notre site web. Notre équipe est disponible du lundi au vendredi de 9h à 18h."
+    },
+    "q15": {
+      "question": "Offrez-vous des remises pour les commandes en gros ?",
+      "answer": "Oui ! Nous offrons des remises pour les commandes en gros de 10 unités ou plus. Contactez notre équipe commerciale à wholesale@gardengoldgreen.com pour plus d'informations sur nos prix de gros et nos options de partenariat."
+    }
+  },
+  "contact": {
+    "title": "Vous ne trouvez pas votre réponse ?",
+    "subtitle": "Notre équipe de service client est là pour vous aider.",
+    "button": "Nous Contacter"
+  }
+}

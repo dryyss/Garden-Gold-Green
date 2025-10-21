@@ -1,0 +1,86 @@
+{
+  "hero": {
+    "title": "Veelgestelde Vragen",
+    "subtitle": "Vind antwoorden op je vragen over onze CBD-producten en klantenservice."
+  },
+  "search": {
+    "placeholder": "Zoek in FAQ...",
+    "noResults": "Geen vragen gevonden voor deze zoekopdracht."
+  },
+  "categories": {
+    "all": "Alle",
+    "general": "Algemeen",
+    "products": "Producten",
+    "quality": "Kwaliteit",
+    "shipping": "Verzending",
+    "returns": "Retourzendingen",
+    "legal": "Wettelijk"
+  },
+  "questions": {
+    "q1": {
+      "question": "Wat is CBD en hoe werkt het?",
+      "answer": "CBD (cannabidiol) is een natuurlijk voorkomende verbinding gevonden in hennep planten. Het interageert met het endocannabinoïde systeem van je lichaam, dat helpt bij het reguleren van verschillende functies zoals slaap, stemming, pijn en immuunrespons. In tegenstelling tot THC is CBD niet-psychoactief, wat betekent dat het je niet 'high' zal maken."
+    },
+    "q2": {
+      "question": "Zijn jullie producten legaal?",
+      "answer": "Ja! Al onze producten zijn gemaakt van hennep en bevatten minder dan 0,3% THC, waardoor ze legaal zijn onder federale wet. We voldoen aan alle staat en federale regelgevingen betreffende hennep-afgeleide CBD producten."
+    },
+    "q3": {
+      "question": "Hoe kies ik het juiste CBD product voor mij?",
+      "answer": "Het juiste product hangt af van je behoeften en voorkeuren. Oliën zijn geweldig voor precieze dosering en snelle absorptie, gummies zijn handig en smakelijk, topicals zijn perfect voor gerichte verlichting, en capsules bieden consistente dosering. Begin met een lage dosis en verhoog geleidelijk tot je vindt wat het beste voor je werkt."
+    },
+    "q4": {
+      "question": "Wat is het verschil tussen full-spectrum en geïsoleerd CBD?",
+      "answer": "Full-spectrum CBD bevat alle natuurlijk voorkomende verbindingen in hennep, inclusief andere cannabinoïden, terpenen en sporen van THC (minder dan 0,3%). CBD isolaat is puur CBD met alle andere verbindingen verwijderd. Full-spectrum producten kunnen verbeterde voordelen bieden door het 'entourage effect'."
+    },
+    "q5": {
+      "question": "Hoeveel CBD moet ik nemen?",
+      "answer": "CBD dosering varieert van persoon tot persoon. We raden aan om te beginnen met 10-20mg per dag en geleidelijk te verhogen tot je je optimale dosis vindt. Factoren zoals lichaamsgewicht, metabolisme en de conditie die je aanpakt kunnen de dosering beïnvloeden. Raadpleeg altijd een zorgverlener voordat je een nieuw supplement start."
+    },
+    "q6": {
+      "question": "Hoe lang duurt het voordat CBD werkt?",
+      "answer": "De effecten van CBD kunnen variëren afhankelijk van de consumptiemethode. Sublinguale oliën nemen typisch 15-45 minuten, eetbare producten kunnen 1-2 uur duren, en topicals kunnen onmiddellijke verlichting bieden. Het kan 2-4 weken consistent gebruik duren om de volledige voordelen te ervaren."
+    },
+    "q7": {
+      "question": "Zijn er bijwerkingen?",
+      "answer": "CBD wordt over het algemeen goed verdragen, maar sommige mensen kunnen milde bijwerkingen ervaren zoals droge mond, slaperigheid of veranderingen in eetlust. Deze effecten zijn typisch mild en tijdelijk. Raadpleeg altijd een zorgverlener als je zorgen hebt."
+    },
+    "q8": {
+      "question": "Testen jullie jullie producten?",
+      "answer": "Ja! Al onze producten ondergaan rigoureuze derde partij testen voor potentie, zuiverheid en veiligheid. We testen op cannabinoïden, terpenen, zware metalen, pesticiden en microbiële verontreinigingen. Je kunt laboratoriumrapporten voor elk product vinden op onze website."
+    },
+    "q9": {
+      "question": "Waar halen jullie jullie hennep vandaan?",
+      "answer": "We halen onze hennep van gecertificeerde biologische boerderijen in Colorado en Oregon. Onze boeren volgen strikte biologische teeltpraktijken en zijn toegewijd aan duurzame landbouw. We onderhouden nauwe relaties met onze leveranciers om de hoogste kwaliteit te waarborgen."
+    },
+    "q10": {
+      "question": "Hoe extraheren jullie CBD?",
+      "answer": "We gebruiken CO2 extractie, wat wordt beschouwd als de gouden standaard voor CBD extractie. Deze methode behoudt de gunstige verbindingen van de plant terwijl ongewenste stoffen worden verwijderd. Het is schoon, veilig en produceert hoogwaardige CBD olie."
+    },
+    "q11": {
+      "question": "Welke verzendmethoden bieden jullie?",
+      "answer": "We bieden standaard verzending (3-5 werkdagen) en express verzending (1-2 werkdagen). Alle bestellingen boven €75 worden gratis verzonden! We gebruiken discrete verpakking om je privacy te beschermen."
+    },
+    "q12": {
+      "question": "Verzenden jullie internationaal?",
+      "answer": "Momenteel verzenden we alleen binnen de Verenigde Staten. We werken aan het uitbreiden van onze internationale verzendopties. Kom gerust terug bij ons of neem contact op met ons klantenserviceteam voor updates."
+    },
+    "q13": {
+      "question": "Wat is jullie retourbeleid?",
+      "answer": "We bieden een 30-dagen geld-terug-garantie op alle producten. Als je niet volledig tevreden bent, kun je je aankoop retourneren voor een volledige terugbetaling. Items moeten ongeopend en in originele verpakking zijn."
+    },
+    "q14": {
+      "question": "Hoe kan ik klantenservice bereiken?",
+      "answer": "Je kunt ons bereiken via email op support@gardengoldgreen.com, telefonisch op +33 7 78 82 38 40, of via live chat op onze website. Ons team is beschikbaar van maandag tot vrijdag van 9:00 tot 18:00."
+    },
+    "q15": {
+      "question": "Bieden jullie bulk kortingen?",
+      "answer": "Ja! We bieden kortingen voor bulk bestellingen van 10 eenheden of meer. Neem contact op met ons verkoopteam op wholesale@gardengoldgreen.com voor meer informatie over onze groothandelsprijzen en partnerschapsopties."
+    }
+  },
+  "contact": {
+    "title": "Vind je je antwoord niet?",
+    "subtitle": "Ons klantenserviceteam staat klaar om te helpen.",
+    "button": "Neem Contact Op"
+  }
+}
