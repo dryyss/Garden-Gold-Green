@@ -158,7 +158,7 @@ export default function ContactPage() {
             {t('contact.hero.subtitle')}
           </p>
           <p className="text-gray-400 max-w-2xl mx-auto">
-            {t('contact.hero.description')}
+            {safeT('contact.hero.description', 'Nous sommes là pour vous accompagner dans votre découverte du CBD.')}
           </p>
         </div>
       </section>
@@ -188,7 +188,7 @@ export default function ContactPage() {
                     name="name"
                     value={form.name}
                     onChange={handleInputChange}
-                    placeholder={t('contact.form.fields.namePlaceholder')}
+                    placeholder={safeT('contact.form.fields.namePlaceholder', 'Votre nom complet')}
                     className={`w-full px-4 py-3 bg-white/10 border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold ${
                       errors.name ? 'border-red-500' : 'border-white/20'
                     }`}
@@ -208,7 +208,7 @@ export default function ContactPage() {
                     name="email"
                     value={form.email}
                     onChange={handleInputChange}
-                    placeholder={t('contact.form.fields.emailPlaceholder')}
+                    placeholder={safeT('contact.form.fields.emailPlaceholder', 'votre@email.com')}
                     className={`w-full px-4 py-3 bg-white/10 border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold ${
                       errors.email ? 'border-red-500' : 'border-white/20'
                     }`}
@@ -230,7 +230,7 @@ export default function ContactPage() {
                     name="phone"
                     value={form.phone}
                     onChange={handleInputChange}
-                    placeholder={t('contact.form.fields.phonePlaceholder')}
+                    placeholder={safeT('contact.form.fields.phonePlaceholder', 'Votre numéro de téléphone')}
                     className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold"
                   />
                 </div>
@@ -248,7 +248,7 @@ export default function ContactPage() {
                       errors.subject ? 'border-red-500' : 'border-white/20'
                     }`}
                   >
-                    <option value="">{t('contact.form.fields.subjectPlaceholder')}</option>
+                    <option value="">{safeT('contact.form.fields.subjectPlaceholder', 'Sélectionnez un sujet')}</option>
                     {subjects.map((subject) => (
                       <option key={subject.value} value={subject.value}>
                         {subject.label}
@@ -270,7 +270,7 @@ export default function ContactPage() {
                   name="message"
                   value={form.message}
                   onChange={handleInputChange}
-                  placeholder={t('contact.form.fields.messagePlaceholder')}
+                  placeholder={safeT('contact.form.fields.messagePlaceholder', 'Décrivez votre question ou préoccupation...')}
                   rows={6}
                   className={`w-full px-4 py-3 bg-white/10 border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold resize-none ${
                     errors.message ? 'border-red-500' : 'border-white/20'
@@ -320,10 +320,10 @@ export default function ContactPage() {
                     {t('contact.info.phone.title')}
                   </h3>
                   <p className="text-brand-gold text-lg font-medium mb-1">
-                    {t('contact.info.phone.number')}
+                    {safeT('contact.contactInfo.phone.value', '+33 7 78 82 38 40')}
                   </p>
                   <p className="text-gray-400 text-sm">
-                    {t('contact.info.phone.hours')}
+                    {safeT('contact.contactInfo.phone.description', 'Lun-Ven 9h-18h')}
                   </p>
                 </div>
               </div>
@@ -338,10 +338,10 @@ export default function ContactPage() {
                     {t('contact.info.email.title')}
                   </h3>
                   <p className="text-brand-green text-lg font-medium mb-1">
-                    {t('contact.info.email.address')}
+                    {safeT('contact.contactInfo.email.value', 'contact@gardengoldgreen.com')}
                   </p>
                   <p className="text-gray-400 text-sm">
-                    {t('contact.info.email.response')}
+                    {safeT('contact.contactInfo.email.description', 'Réponse sous 24h')}
                   </p>
                 </div>
               </div>
@@ -356,10 +356,10 @@ export default function ContactPage() {
                     {t('contact.info.address.title')}
                   </h3>
                   <p className="text-gray-300 mb-1">
-                    {t('contact.info.address.street')}
+                    {safeT('contact.contactInfo.address.value', '123 Rue du CBD')}
                   </p>
                   <p className="text-gray-300">
-                    {t('contact.info.address.city')}
+                    {safeT('contact.contactInfo.address.description', '75001 Paris')}
                   </p>
                 </div>
               </div>
@@ -374,7 +374,7 @@ export default function ContactPage() {
                     {t('contact.info.social.title')}
                   </h3>
                   <p className="text-gray-400 text-sm mb-4">
-                    {t('contact.info.social.follow')}
+                    {safeT('contact.contactInfo.hours.description', 'Suivez-nous sur nos réseaux sociaux')}
                   </p>
                   <div className="flex space-x-4">
                     <a href="#" className="text-gray-400 hover:text-brand-gold transition-colors" aria-label="Instagram">
@@ -397,13 +397,13 @@ export default function ContactPage() {
                 {t('contact.faq.title')}
               </h3>
               <p className="text-gray-400 mb-8">
-                {t('contact.faq.subtitle')}
+                {safeT('contact.faq.subtitle', 'Trouvez rapidement les réponses à vos questions')}
               </p>
               
               <div className="space-y-4">
                 {(() => {
                   try {
-                    const faqItems = t('contact.faq.items')
+                    const faqItems = safeT('contact.faq.items', [])
                     if (Array.isArray(faqItems)) {
                       return faqItems.map((item: any, index: number) => (
                         <div key={index} className="card-bg rounded-lg p-4">
@@ -449,7 +449,7 @@ export default function ContactPage() {
                   href="/faq" 
                   className="text-brand-gold hover:text-yellow-300 font-medium transition-colors"
                 >
-                  {t('contact.faq.viewAll')} →
+                  {safeT('contact.faq.viewAll', 'Voir toutes les FAQ')} →
                 </a>
               </div>
             </div>
