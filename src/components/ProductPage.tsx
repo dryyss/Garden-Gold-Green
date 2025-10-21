@@ -202,7 +202,10 @@ export default function ProductPage({ product }: { product: Product }) {
         cbdPercent: product.cbdPercent
       }
     })
-    addNotification('Produit ajouté au panier !', 'success')
+    addNotification({
+      type: 'success',
+      title: 'Produit ajouté au panier !'
+    })
   }
 
   const handleShare = () => {
@@ -214,16 +217,19 @@ export default function ProductPage({ product }: { product: Product }) {
       })
     } else {
       navigator.clipboard.writeText(window.location.href)
-      addNotification('Lien copié dans le presse-papiers !', 'success')
+      addNotification({
+        type: 'success',
+        title: 'Lien copié dans le presse-papiers !'
+      })
     }
   }
 
   const handleFavorite = () => {
     setIsFavorited(!isFavorited)
-    addNotification(
-      isFavorited ? 'Retiré des favoris' : 'Ajouté aux favoris',
-      'success'
-    )
+    addNotification({
+      type: 'success',
+      title: isFavorited ? 'Retiré des favoris' : 'Ajouté aux favoris'
+    })
   }
 
   const handleReviewHelpful = (reviewId: string, helpful: boolean) => {

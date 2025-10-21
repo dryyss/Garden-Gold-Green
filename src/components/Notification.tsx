@@ -58,7 +58,7 @@ export function Notification({
   duration = 5000, 
   onClose 
 }: NotificationProps) {
-  const config = notificationConfig[type]
+  const config = notificationConfig[type] || notificationConfig.info
 
   useEffect(() => {
     if (duration > 0) {
