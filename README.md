@@ -8,8 +8,9 @@ Une plateforme e-commerce moderne et élégante spécialisée dans les produits 
 - **Catalogue de produits** avec filtres avancés (catégorie, prix, concentration CBD)
 - **Page de détail produit** avec galerie d'images et informations détaillées
 - **Panier intelligent** avec gestion des quantités et recommandations
-- **Système de commande** avec intégration Stripe
+- **Système de commande** avec intégration Stripe et PayPal
 - **Gestion des commandes** et historique client
+- **Système d'abonnements** pour les produits récurrents
 
 ### 🎨 **Interface Utilisateur**
 - **Design moderne** avec thème sombre et accents dorés/verts
@@ -17,12 +18,19 @@ Une plateforme e-commerce moderne et élégante spécialisée dans les produits 
 - **Animations fluides** et micro-interactions
 - **Loading states** pour toutes les images
 - **Breadcrumbs** pour une navigation intuitive
+- **Système de notifications** en temps réel
 
 ### 🔐 **Authentification & Sécurité**
 - **Intégration Auth0** pour l'authentification
 - **Connexions sociales** (Apple, Google, Facebook)
 - **Gestion des sessions** sécurisée
 - **Protection des routes** sensibles
+- **Gestion des rôles** utilisateur (admin, client)
+
+### 🌍 **Internationalisation**
+- **Support multilingue** (Français, Anglais, Espagnol)
+- **Système de traduction** dynamique
+- **Localisation** des devises et formats
 
 ### 🚀 **Performance & SEO**
 - **Optimisation Next.js** avec App Router
@@ -36,10 +44,10 @@ Une plateforme e-commerce moderne et élégante spécialisée dans les produits 
 - **Language** : TypeScript
 - **Styling** : Tailwind CSS
 - **State Management** : React Context API
-- **Paiements** : Stripe
+- **Paiements** : Stripe + PayPal
 - **Authentification** : Auth0
 - **Base de données** : Prisma (SQLite)
-- **Icons** : FontAwesome
+- **Icons** : FontAwesome + Lucide React
 - **Déploiement** : Vercel
 
 ## 🚀 Installation
@@ -63,14 +71,14 @@ npm install
 
 3. **Configurer les variables d'environnement**
 ```bash
-cp .env.example .env.local
+cp env.example .env.local
 ```
 
 4. **Configurer la base de données**
 ```bash
-npx prisma generate
-npx prisma db push
-npx prisma db seed
+npm run db:generate
+npm run db:push
+npm run db:seed
 ```
 
 5. **Lancer le serveur de développement**
@@ -86,26 +94,51 @@ Le site sera accessible sur [http://localhost:3000](http://localhost:3000)
 garden-gold-green/
 ├── src/
 │   ├── app/                    # Pages Next.js (App Router)
-│   │   ├── products/          # Pages produits
-│   │   ├── cart/              # Page panier
-│   │   ├── auth/              # Authentification
-│   │   └── api/               # API Routes
+│   │   ├── [locale]/          # Pages internationalisées
+│   │   │   ├── products/      # Pages produits
+│   │   │   ├── cart/          # Page panier
+│   │   │   ├── checkout/      # Processus de commande
+│   │   │   ├── orders/        # Gestion des commandes
+│   │   │   ├── subscriptions/ # Gestion des abonnements
+│   │   │   └── profile/       # Profil utilisateur
+│   │   ├── api/               # API Routes
+│   │   │   ├── auth/          # Authentification
+│   │   │   ├── stripe/        # Paiements Stripe
+│   │   │   ├── paypal/        # Paiements PayPal
+│   │   │   ├── orders/        # Gestion des commandes
+│   │   │   └── subscriptions/ # Gestion des abonnements
+│   │   └── globals.css        # Styles globaux
 │   ├── components/            # Composants React
 │   │   ├── ui/               # Composants UI de base
 │   │   ├── ProductCard.tsx   # Carte produit
 │   │   ├── Breadcrumb.tsx    # Navigation breadcrumb
-│   │   └── ImageWithLoading.tsx # Images avec loading
+│   │   ├── ImageWithLoading.tsx # Images avec loading
+│   │   └── PaymentForm.tsx   # Formulaire de paiement
 │   ├── contexts/             # Contextes React
 │   │   ├── AuthContext.tsx   # Authentification
 │   │   ├── CartContext.tsx   # Panier
-│   │   └── NotificationContext.tsx # Notifications
+│   │   ├── NotificationContext.tsx # Notifications
+│   │   └── TranslationContext.tsx # Traductions
+│   ├── hooks/                # Hooks personnalisés
+│   │   ├── useAuthNotifications.ts
+│   │   ├── useOrderNotifications.ts
+│   │   └── useSubscriptions.ts
 │   ├── lib/                  # Utilitaires
 │   │   ├── prisma.ts         # Client Prisma
+│   │   ├── stripe.ts         # Configuration Stripe
 │   │   └── utils.ts          # Fonctions utilitaires
-│   └── data/                 # Données statiques
-│       └── products.json     # Catalogue produits
+│   ├── locales/              # Fichiers de traduction
+│   │   ├── fr.json           # Français
+│   │   ├── en.json           # Anglais
+│   │   └── es.json           # Espagnol
+│   └── types/                # Types TypeScript
+│       └── subscription.ts   # Types d'abonnement
 ├── prisma/                   # Schéma base de données
+│   ├── schema.prisma         # Schéma Prisma
+│   └── seed.ts              # Données de test
 ├── public/                   # Assets statiques
+│   └── products/            # Images des produits
+├── scripts/                  # Scripts utilitaires
 └── tailwind.config.js       # Configuration Tailwind
 ```
 
@@ -117,6 +150,7 @@ garden-gold-green/
 - **Tri dynamique** (prix, popularité, nouveauté)
 - **Pagination** optimisée
 - **Vue grille/liste** avec toggle
+- **Images haute qualité** avec lazy loading
 
 ### 🛒 **Panier & Commande**
 - **Gestion des quantités** avec sélecteur intuitif
@@ -124,18 +158,26 @@ garden-gold-green/
 - **Sauvegarde locale** des paniers
 - **Recommandations** basées sur l'historique
 - **Codes promo** et réductions
+- **Paiement sécurisé** Stripe et PayPal
 
 ### 👤 **Compte Utilisateur**
 - **Profil utilisateur** avec informations personnelles
 - **Historique des commandes** détaillé
 - **Favoris** et listes de souhaits
 - **Adresses de livraison** multiples
+- **Gestion des abonnements**
 
-### 🎨 **Design System**
-- **Thème cohérent** avec couleurs de marque
-- **Composants réutilisables** et modulaires
-- **Animations** et transitions fluides
-- **Accessibilité** respectée (WCAG)
+### 📧 **Système de Notifications**
+- **Notifications en temps réel** pour les commandes
+- **Emails de confirmation** automatiques
+- **Alertes de paiement** et livraison
+- **Notifications d'abonnement**
+
+### 🌍 **Internationalisation**
+- **3 langues** supportées (FR, EN, ES)
+- **Traduction dynamique** de l'interface
+- **Localisation** des devises et dates
+- **SEO multilingue**
 
 ## 🔧 Configuration
 
@@ -157,9 +199,18 @@ STRIPE_PUBLISHABLE_KEY="pk_test_..."
 STRIPE_SECRET_KEY="sk_test_..."
 STRIPE_WEBHOOK_SECRET="whsec_..."
 
+# PayPal
+PAYPAL_CLIENT_ID="your-paypal-client-id"
+PAYPAL_CLIENT_SECRET="your-paypal-client-secret"
+PAYPAL_MODE="sandbox"
+
 # Next.js
 NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="your-nextauth-secret"
+
+# SendGrid (Emails)
+SENDGRID_API_KEY="your-sendgrid-api-key"
+SENDGRID_FROM_EMAIL="noreply@gardengoldgreen.com"
 ```
 
 ## 📦 Scripts Disponibles
@@ -174,7 +225,9 @@ npm run lint         # Linting ESLint
 # Base de données
 npm run db:generate  # Générer le client Prisma
 npm run db:push      # Pousser le schéma vers la DB
+npm run db:migrate   # Migrations de base de données
 npm run db:seed      # Peupler la base de données
+npm run db:studio    # Interface Prisma Studio
 ```
 
 ## 🚀 Déploiement
@@ -192,6 +245,25 @@ Le projet est compatible avec :
 - **Railway**
 - **Heroku**
 - **AWS Amplify**
+
+## 📊 Fonctionnalités Avancées
+
+### 💳 **Système de Paiement**
+- **Stripe** pour les cartes bancaires
+- **PayPal** pour les paiements alternatifs
+- **Webhooks** pour la synchronisation
+- **Gestion des remboursements**
+
+### 🔄 **Système d'Abonnements**
+- **Plans d'abonnement** flexibles
+- **Gestion des récurrences** automatique
+- **Pause/Reprise** d'abonnements
+- **Historique des abonnements**
+
+### 📈 **Analytics & Monitoring**
+- **Suivi des commandes** en temps réel
+- **Métriques de performance**
+- **Logs d'erreurs** centralisés
 
 ## 🤝 Contribution
 
@@ -216,5 +288,17 @@ Pour toute question ou support :
 - **Email** : support@gardengoldgreen.com
 - **Issues** : [GitHub Issues](https://github.com/dryyss/Garden-Gold-Green/issues)
 
+## 🔄 Changelog
+
+### Version 0.1.0
+- ✅ E-commerce complet avec Stripe et PayPal
+- ✅ Authentification Auth0
+- ✅ Système d'abonnements
+- ✅ Internationalisation (FR, EN, ES)
+- ✅ Interface responsive et moderne
+- ✅ Gestion des commandes et notifications
+- ✅ Optimisations de performance
+
 ---
+
 **Garden Gold Green** - *Experience Nature's Finest Elixir* 🌿✨
