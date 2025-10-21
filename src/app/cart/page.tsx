@@ -109,31 +109,31 @@ function CartPageContent() {
           />
 
           {/* Header */}
-          <div className="flex items-center mb-8">
+          <div className="flex items-center mb-6 sm:mb-8">
             <Link 
               href="/products" 
-              className="text-gray-400 hover:text-brand-gold transition-colors mr-4"
+              className="text-gray-400 hover:text-brand-gold transition-colors mr-3 sm:mr-4"
             >
-              <FontAwesomeIcon icon={faArrowLeft} className="text-xl" />
+              <FontAwesomeIcon icon={faArrowLeft} className="text-lg sm:text-xl" />
             </Link>
-            <h1 className="text-3xl font-bold text-white flex items-center">
-              <FontAwesomeIcon icon={faShoppingCart} className="mr-3 text-brand-gold" />
+            <h1 className="text-2xl sm:text-3xl font-bold text-white flex items-center">
+              <FontAwesomeIcon icon={faShoppingCart} className="mr-2 sm:mr-3 text-brand-gold text-lg sm:text-xl" />
               Panier
             </h1>
           </div>
 
           {/* Panier vide */}
-          <div className="text-center py-16">
-            <div className="w-32 h-32 mx-auto mb-8 bg-white/5 rounded-full flex items-center justify-center">
-              <FontAwesomeIcon icon={faShoppingCart} className="text-6xl text-gray-400" />
+          <div className="text-center py-12 sm:py-16">
+            <div className="w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-6 sm:mb-8 bg-white/5 rounded-full flex items-center justify-center">
+              <FontAwesomeIcon icon={faShoppingCart} className="text-4xl sm:text-6xl text-gray-400" />
             </div>
-            <h2 className="text-2xl font-bold text-white mb-4">Votre panier est vide</h2>
-            <p className="text-gray-400 mb-8 max-w-md mx-auto">
+            <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4">Votre panier est vide</h2>
+            <p className="text-gray-400 mb-6 sm:mb-8 max-w-md mx-auto text-sm sm:text-base px-4">
               Découvrez notre sélection de produits CBD premium et trouvez ce qui vous convient le mieux.
             </p>
             <Link 
               href="/products"
-              className="btn-gold text-black font-semibold py-3 px-8 rounded-full shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300 inline-flex items-center"
+              className="btn-gold text-black font-semibold py-2 sm:py-3 px-6 sm:px-8 rounded-full shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300 inline-flex items-center text-sm sm:text-base"
             >
               Découvrir nos produits
             </Link>
@@ -162,33 +162,33 @@ function CartPageContent() {
         />
 
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center">
+        <div className="mb-6 sm:mb-8">
+          <div className="flex items-center mb-4 sm:mb-0">
             <Link 
               href="/products" 
-              className="text-gray-400 hover:text-brand-gold transition-colors mr-4"
+              className="text-gray-400 hover:text-brand-gold transition-colors mr-3 sm:mr-4"
             >
-              <FontAwesomeIcon icon={faArrowLeft} className="text-xl" />
+              <FontAwesomeIcon icon={faArrowLeft} className="text-lg sm:text-xl" />
             </Link>
-            <h1 className="text-3xl font-bold text-white flex items-center">
-              <FontAwesomeIcon icon={faShoppingCart} className="mr-3 text-brand-gold" />
+            <h1 className="text-2xl sm:text-3xl font-bold text-white flex items-center">
+              <FontAwesomeIcon icon={faShoppingCart} className="mr-2 sm:mr-3 text-brand-gold text-lg sm:text-xl" />
               Panier ({state.totalItems})
             </h1>
           </div>
-          <div className="flex space-x-4">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
             <button
               onClick={() => setIsSaveModalOpen(true)}
-              className="text-brand-gold hover:text-brand-gold/80 transition-colors flex items-center"
+              className="text-brand-gold hover:text-brand-gold/80 transition-colors flex items-center justify-center sm:justify-start py-2 px-3 sm:px-0 rounded-lg sm:rounded-none bg-white/5 sm:bg-transparent"
             >
-              <FontAwesomeIcon icon={faGift} className="mr-2" />
-              Sauvegarder
+              <FontAwesomeIcon icon={faGift} className="mr-2 text-sm sm:text-base" />
+              <span className="text-sm sm:text-base">Sauvegarder</span>
             </button>
             <button
               onClick={clearCart}
-              className="text-red-400 hover:text-red-300 transition-colors flex items-center"
+              className="text-red-400 hover:text-red-300 transition-colors flex items-center justify-center sm:justify-start py-2 px-3 sm:px-0 rounded-lg sm:rounded-none bg-red-900/20 sm:bg-transparent"
             >
-              <FontAwesomeIcon icon={faTrash} className="mr-2" />
-              Vider le panier
+              <FontAwesomeIcon icon={faTrash} className="mr-2 text-sm sm:text-base" />
+              <span className="text-sm sm:text-base">Vider le panier</span>
             </button>
           </div>
         </div>
@@ -198,10 +198,10 @@ function CartPageContent() {
           <div className="lg:col-span-2">
             <div className="space-y-4">
               {state.items.map((item) => (
-                <div key={item.id} className="bg-white/5 rounded-xl p-6 hover:bg-white/10 transition-colors">
-                  <div className="flex items-center space-x-4">
+                <div key={item.id} className="bg-white/5 rounded-xl p-4 sm:p-6 hover:bg-white/10 transition-colors">
+                  <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
                     {/* Image du produit */}
-                    <div className="w-20 h-20 relative flex-shrink-0">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 relative flex-shrink-0 mx-auto sm:mx-0">
                       {item.slug ? (
                         <Link href={`/products/${item.slug}`}>
                           <ImageWithLoading
@@ -222,8 +222,8 @@ function CartPageContent() {
                     </div>
 
                     {/* Détails du produit */}
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-white mb-1 line-clamp-2">
+                    <div className="flex-1 min-w-0 text-center sm:text-left">
+                      <h3 className="font-semibold text-white mb-1 line-clamp-2 text-sm sm:text-base">
                         {item.slug ? (
                           <Link 
                             href={`/products/${item.slug}`}
@@ -235,53 +235,55 @@ function CartPageContent() {
                           item.name
                         )}
                       </h3>
-                      <p className="text-brand-gold font-bold text-lg">
+                      <p className="text-brand-gold font-bold text-base sm:text-lg">
                         {item.price.toFixed(2)} €
                       </p>
                       {item.cbdPercent && (
-                        <p className="text-sm text-gray-400">
+                        <p className="text-xs sm:text-sm text-gray-400">
                           CBD {item.cbdPercent}%
                         </p>
                       )}
                     </div>
 
-                    {/* Sélecteur de quantité */}
-                    <div className="flex items-center space-x-3">
-                      <QuantitySelector
-                        quantity={item.quantity}
-                        onQuantityChange={(newQuantity) => handleQuantityChange(item.id, newQuantity)}
-                        min={1}
-                        max={99}
-                      />
-                    </div>
+                    {/* Sélecteur de quantité et prix total */}
+                    <div className="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-4">
+                      <div className="flex items-center space-x-3">
+                        <QuantitySelector
+                          quantity={item.quantity}
+                          onQuantityChange={(newQuantity) => handleQuantityChange(item.id, newQuantity)}
+                          min={1}
+                          max={99}
+                        />
+                      </div>
 
-                    {/* Prix total et actions */}
-                    <div className="text-right">
-                      <p className="text-white font-bold text-lg mb-2">
-                        {(item.price * item.quantity).toFixed(2)} €
-                      </p>
-                      <div className="flex space-x-2">
-                        <button
-                          onClick={() => handleRemoveItem(item.id)}
-                          className="text-red-400 hover:text-red-300 transition-colors p-1"
-                          title="Supprimer"
-                        >
-                          <FontAwesomeIcon icon={faTrash} className="text-sm" />
-                        </button>
-                        <button 
-                          onClick={() => handleAddToFavorites(item.id)}
-                          className="text-gray-400 hover:text-brand-gold transition-colors p-1" 
-                          title="Ajouter aux favoris"
-                        >
-                          <FontAwesomeIcon icon={faHeart} className="text-sm" />
-                        </button>
-                        <button 
-                          onClick={() => handleShare(item.id)}
-                          className="text-gray-400 hover:text-brand-gold transition-colors p-1" 
-                          title="Partager"
-                        >
-                          <FontAwesomeIcon icon={faShare} className="text-sm" />
-                        </button>
+                      {/* Prix total et actions */}
+                      <div className="text-center sm:text-right">
+                        <p className="text-white font-bold text-base sm:text-lg mb-2">
+                          {(item.price * item.quantity).toFixed(2)} €
+                        </p>
+                        <div className="flex justify-center sm:justify-end space-x-2">
+                          <button
+                            onClick={() => handleRemoveItem(item.id)}
+                            className="text-red-400 hover:text-red-300 transition-colors p-1"
+                            title="Supprimer"
+                          >
+                            <FontAwesomeIcon icon={faTrash} className="text-sm" />
+                          </button>
+                          <button 
+                            onClick={() => handleAddToFavorites(item.id)}
+                            className="text-gray-400 hover:text-brand-gold transition-colors p-1" 
+                            title="Ajouter aux favoris"
+                          >
+                            <FontAwesomeIcon icon={faHeart} className="text-sm" />
+                          </button>
+                          <button 
+                            onClick={() => handleShare(item.id)}
+                            className="text-gray-400 hover:text-brand-gold transition-colors p-1" 
+                            title="Partager"
+                          >
+                            <FontAwesomeIcon icon={faShare} className="text-sm" />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -290,18 +292,18 @@ function CartPageContent() {
             </div>
 
             {/* Code promo */}
-            <div className="mt-8 bg-gradient-to-r from-brand-gold/10 to-brand-green/10 rounded-xl p-6 border border-brand-gold/20">
-              <h3 className="text-white font-semibold mb-4 flex items-center">
-                <FontAwesomeIcon icon={faGift} className="mr-2 text-brand-gold" />
+            <div className="mt-6 sm:mt-8 bg-gradient-to-r from-brand-gold/10 to-brand-green/10 rounded-xl p-4 sm:p-6 border border-brand-gold/20">
+              <h3 className="text-white font-semibold mb-3 sm:mb-4 flex items-center text-sm sm:text-base">
+                <FontAwesomeIcon icon={faGift} className="mr-2 text-brand-gold text-sm sm:text-base" />
                 Code promo
               </h3>
-              <div className="flex space-x-3">
+              <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
                 <input
                   type="text"
                   placeholder="Entrez votre code promo"
-                  className="flex-1 bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-brand-gold"
+                  className="flex-1 bg-white/10 border border-white/20 rounded-lg px-3 sm:px-4 py-2 sm:py-2 text-white placeholder-gray-400 focus:outline-none focus:border-brand-gold text-sm sm:text-base"
                 />
-                <button className="btn-gold text-black font-semibold px-6 py-2 rounded-lg">
+                <button className="btn-gold text-black font-semibold px-4 sm:px-6 py-2 rounded-lg text-sm sm:text-base">
                   Appliquer
                 </button>
               </div>
@@ -309,24 +311,24 @@ function CartPageContent() {
           </div>
 
           {/* Résumé de commande */}
-          <div className="lg:col-span-1">
-            <div className="bg-white/5 rounded-xl p-6 sticky top-24">
-              <h3 className="text-xl font-bold text-white mb-6">Résumé de commande</h3>
+          <div className="lg:col-span-1 order-first lg:order-last">
+            <div className="bg-white/5 rounded-xl p-4 sm:p-6 sticky top-20 sm:top-24">
+              <h3 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6">Résumé de commande</h3>
               
               {/* Détails des prix */}
-              <div className="space-y-3 mb-6">
-                <div className="flex justify-between text-gray-300">
+              <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
+                <div className="flex justify-between text-gray-300 text-sm sm:text-base">
                   <span>Sous-total ({state.totalItems} articles)</span>
                   <span>{subtotal.toFixed(2)} €</span>
                 </div>
-                <div className="flex justify-between text-gray-300">
+                <div className="flex justify-between text-gray-300 text-sm sm:text-base">
                   <span>Livraison</span>
                   <span className={shipping === 0 ? 'text-brand-green' : ''}>
                     {shipping === 0 ? 'Gratuite' : `${shipping.toFixed(2)} €`}
                   </span>
                 </div>
-                <div className="border-t border-white/20 pt-3">
-                  <div className="flex justify-between text-xl font-bold text-white">
+                <div className="border-t border-white/20 pt-2 sm:pt-3">
+                  <div className="flex justify-between text-lg sm:text-xl font-bold text-white">
                     <span>Total</span>
                     <span className="text-brand-gold">{total.toFixed(2)} €</span>
                   </div>
@@ -334,23 +336,23 @@ function CartPageContent() {
               </div>
 
               {/* Avantages */}
-              <div className="space-y-2 mb-6 text-sm text-gray-400">
+              <div className="space-y-1 sm:space-y-2 mb-4 sm:mb-6 text-xs sm:text-sm text-gray-400">
                 <div className="flex items-center">
-                  <FontAwesomeIcon icon={faShield} className="mr-2 text-brand-green" />
+                  <FontAwesomeIcon icon={faShield} className="mr-2 text-brand-green text-xs sm:text-sm" />
                   <span>Paiement sécurisé</span>
                 </div>
                 <div className="flex items-center">
-                  <FontAwesomeIcon icon={faTruck} className="mr-2 text-brand-gold" />
+                  <FontAwesomeIcon icon={faTruck} className="mr-2 text-brand-gold text-xs sm:text-sm" />
                   <span>Livraison rapide</span>
                 </div>
                 <div className="flex items-center">
-                  <FontAwesomeIcon icon={faGift} className="mr-2 text-brand-green" />
+                  <FontAwesomeIcon icon={faGift} className="mr-2 text-brand-green text-xs sm:text-sm" />
                   <span>Retour gratuit sous 30 jours</span>
                 </div>
               </div>
 
               {/* Boutons d'action */}
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 {/* Payment Method Selector */}
                 <PaymentMethodSelector 
                   onPaymentSuccess={() => {
@@ -365,7 +367,7 @@ function CartPageContent() {
                 {/* Lien pour continuer les achats */}
                 <Link
                   href="/products"
-                  className="w-full bg-white/10 text-white font-semibold py-3 px-6 rounded-lg hover:bg-white/20 transition-colors flex items-center justify-center"
+                  className="w-full bg-white/10 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg hover:bg-white/20 transition-colors flex items-center justify-center text-sm sm:text-base"
                 >
                   Continuer mes achats
                 </Link>
