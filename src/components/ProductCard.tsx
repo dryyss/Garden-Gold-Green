@@ -66,6 +66,19 @@ export function ProductCard({ product, className = '' }: ProductCardProps) {
     setIsAdding(true)
     
     try {
+      // Vérifier que le produit a un prix valide
+      if (!product.price || isNaN(product.price) || product.price <= 0) {
+        console.error('Produit sans prix valide:', product)
+        addNotification({
+          type: 'error',
+          title: 'Erreur',
+          message: 'Le prix du produit n\'est pas disponible',
+          duration: 3000
+        })
+        setIsAdding(false)
+        return
+      }
+
       // Ajouter la quantité sélectionnée
       for (let i = 0; i < quantity; i++) {
         dispatch({
@@ -73,7 +86,7 @@ export function ProductCard({ product, className = '' }: ProductCardProps) {
           payload: {
             id: product.id,
             name: product.name,
-            price: product.price ?? 0,
+            price: product.price,
             image: product.image,
             cbdPercent: product.cbdPercent,
             slug: product.slug
