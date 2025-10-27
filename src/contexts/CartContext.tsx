@@ -194,12 +194,21 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         const items = Array.isArray(parsed) ? parsed : Array.isArray(parsed?.items) ? parsed.items : []
         const updatedAt: string | undefined = Array.isArray(parsed) ? undefined : parsed?.updatedAt
 
+        // Nettoyer les items avec des prix invalides
+        const validItems = items.filter((item: any) => {
+          const isValid = item && item.price && !isNaN(item.price) && isFinite(item.price) && item.price > 0
+          if (!isValid) {
+            console.warn('Item avec prix invalide supprimé:', item)
+          }
+          return isValid
+        })
+
         if (updatedAt && isExpired(updatedAt)) {
           // Expiré: purge
           localStorage.removeItem(CART_STORAGE_KEY)
           dispatch({ type: 'CLEAR_CART' })
         } else {
-          dispatch({ type: 'LOAD_CART', payload: items })
+          dispatch({ type: 'LOAD_CART', payload: validItems })
           // Programmer l'expiration si disponible
           scheduleExpiry(updatedAt)
         }
