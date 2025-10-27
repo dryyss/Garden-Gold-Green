@@ -66,6 +66,7 @@ export function LogoLoading({
             src="/logo black whit.png"
             alt="Garden Gold Green Loading"
             fill
+            sizes="(max-width: 768px) 192px, 256px"
             className="object-contain"
             priority
           />
@@ -75,6 +76,7 @@ export function LogoLoading({
             src="/logo.png"
             alt="Garden Gold Green"
             fill
+            sizes="(max-width: 768px) 192px, 256px"
             className="object-contain absolute inset-0"
             style={{
               opacity: colorOpacity,

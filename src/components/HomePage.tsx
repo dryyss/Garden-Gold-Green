@@ -38,11 +38,11 @@ function transformProduct(product: any) { // eslint-disable-line @typescript-esl
     image: product.images?.[0] || '/logo2.png',
     category: product.categories?.[0]?.name || 'CBD Products',
     rating: 4.5, // Valeur par défaut
-    reviewCount: Math.floor(Math.random() * 100) + 10, // Valeur aléatoire
+    reviewCount: 50, // Valeur fixe pour éviter l'erreur d'hydratation
     inStock: product.totalStock > 0 || product.stock > 0,
     totalStock: product.totalStock || product.stock || 0,
-    isNew: Math.random() > 0.7, // 30% de chance d'être nouveau
-    isBestSeller: Math.random() > 0.8 // 20% de chance d'être best seller
+    isNew: false, // Valeur fixe pour éviter l'erreur d'hydratation
+    isBestSeller: false // Valeur fixe pour éviter l'erreur d'hydratation
   }
 }
 
