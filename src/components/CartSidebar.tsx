@@ -40,7 +40,8 @@ function CartSidebarContent() {
 
   const formatPrice = (price: number) => {
     // Vérifier que le prix est valide
-    if (isNaN(price) || !isFinite(price) || price < 0) {
+    if (!price || isNaN(price) || !isFinite(price)) {
+      console.error('Invalid price:', price)
       return '0,00 €'
     }
     return new Intl.NumberFormat('fr-FR', {
