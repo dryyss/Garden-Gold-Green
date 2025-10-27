@@ -39,6 +39,10 @@ function CartSidebarContent() {
   const isOnCartPage = pathname === '/cart'
 
   const formatPrice = (price: number) => {
+    // Vérifier que le prix est valide
+    if (isNaN(price) || !isFinite(price) || price < 0) {
+      return '0,00 €'
+    }
     return new Intl.NumberFormat('fr-FR', {
       style: 'currency',
       currency: 'EUR',
