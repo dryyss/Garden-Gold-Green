@@ -73,7 +73,7 @@ export function ProductCard({ product, className = '' }: ProductCardProps) {
           payload: {
             id: product.id,
             name: product.name,
-            price: product.price || ((product as any).priceCents ? (product as any).priceCents / 100 : 0),
+            price: product.price ?? 0,
             image: product.image,
             cbdPercent: product.cbdPercent,
             slug: product.slug
