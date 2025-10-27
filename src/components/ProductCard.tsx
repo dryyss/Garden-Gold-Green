@@ -80,19 +80,18 @@ export function ProductCard({ product, className = '' }: ProductCardProps) {
       }
 
       // Ajouter la quantité sélectionnée
-      for (let i = 0; i < quantity; i++) {
-        dispatch({
-          type: 'ADD_ITEM',
-          payload: {
-            id: product.id,
-            name: product.name,
-            price: product.price,
-            image: product.image,
-            cbdPercent: product.cbdPercent,
-            slug: product.slug
-          }
-        })
-      }
+      dispatch({
+        type: 'ADD_ITEM',
+        payload: {
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          quantity: quantity,
+          image: product.image,
+          cbdPercent: product.cbdPercent,
+          slug: product.slug
+        }
+      })
 
       // Animation de succès
       setIsAdded(true)

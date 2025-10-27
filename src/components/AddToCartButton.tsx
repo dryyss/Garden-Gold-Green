@@ -62,6 +62,7 @@ export function AddToCartButton({
           id: product.id,
           name: product.name || product.title || 'Produit',
           price: product.price || (product.priceCents ? product.priceCents / 100 : 0),
+          quantity: 1,
           image: product.image,
           cbdPercent: product.cbdPercent,
           slug: product.slug
