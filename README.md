@@ -46,7 +46,7 @@ Une plateforme e-commerce moderne et élégante spécialisée dans les produits 
 - **State Management** : React Context API
 - **Paiements** : Stripe + PayPal
 - **Authentification** : Auth0
-- **Base de données** : Prisma (SQLite)
+- **Base de données** : Prisma (PostgreSQL)
 - **Icons** : FontAwesome + Lucide React
 - **Déploiement** : Vercel
 
@@ -232,16 +232,12 @@ npm run db:studio    # Interface Prisma Studio
 
 ## 🚀 Déploiement
 
-### Vercel (Recommandé)
+Pour déployer votre application, consultez le **Guide de Déploiement Complet** : [DEPLOYMENT.md](./DEPLOYMENT.md)
 
-1. **Connecter le repository** à Vercel
-2. **Configurer les variables d'environnement**
-3. **Déployer automatiquement** à chaque push
+### Plateformes supportées
 
-### Autres plateformes
-
-Le projet est compatible avec :
-- **Netlify**
+- **IONOS** (Guide complet disponible)
+- **Vercel**
 - **Railway**
 - **Heroku**
 - **AWS Amplify**
