@@ -118,3 +118,4 @@ Consultez la section "Dépannage" dans `DEPLOYMENT.md`
 ---
 
 **Bon déploiement ! 🌿✨**
+

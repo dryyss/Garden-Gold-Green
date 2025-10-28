@@ -88,3 +88,4 @@ echo "2. Configurez votre serveur web (Nginx/Apache) pour proxifier les requête
 echo "3. Configurez SSL avec Let's Encrypt pour HTTPS"
 echo ""
 echo "📖 Pour plus d'informations, consultez DEPLOYMENT.md"
+
