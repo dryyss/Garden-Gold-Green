@@ -72,7 +72,7 @@ export default function HomePage() {
         <div className="absolute inset-0 hero-bg"></div>
         <div className="absolute inset-0 hero-overlay"></div>
         <div className="relative z-10 flex flex-col items-center px-4">
-          <div className="mb-8">
+          <div className="mb-8 pt-8 sm:pt-12 md:pt-16">
             <HeroLogo />
           </div>
           <h1 className="text-5xl md:text-7xl font-bold text-white mb-4 tracking-tight">

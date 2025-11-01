@@ -152,8 +152,8 @@ export function Header() {
       <div className="bg-brand-black/95 backdrop-blur-sm border-b border-white/10">
         <div className="container mx-auto px-3 sm:px-4 lg:px-6 py-2 sm:py-3 lg:py-4 xl:py-6">
           <div className="flex justify-between items-center gap-2 sm:gap-4">
-            {/* Logo - Responsive */}
-            <Link href="/" className="flex items-center flex-shrink-0 group">
+            {/* Logo - Hidden on mobile, visible on sm and up */}
+            <Link href="/" className="hidden sm:flex items-center flex-shrink-0 group">
               <div className="relative">
                 <Image 
                   className="h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16 lg:h-20 lg:w-20 xl:h-24 xl:w-24 drop-shadow-2xl group-hover:scale-105 transition-transform duration-300" 
@@ -180,8 +180,8 @@ export function Header() {
               ))}
             </nav>
 
-            {/* Actions */}
-            <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-4">
+            {/* Actions - Centered on mobile when logo is hidden */}
+            <div className="flex items-center justify-center sm:justify-end flex-1 sm:flex-none space-x-1 sm:space-x-2 lg:space-x-4">
               {/* Language Selector - Hidden on mobile */}
               <div className="hidden sm:block">
                 <LanguageSelector variant="header" />

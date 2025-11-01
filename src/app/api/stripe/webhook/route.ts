@@ -39,8 +39,12 @@ export async function POST(request: NextRequest) {
 
         // Créer la commande en base de données
         try {
+          // Générer un numéro de commande lisible (ex: CMD-20250101-0001)
+          const orderNumber = `CMD-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Date.now().toString().slice(-4)}`
+          
           const order = await prisma.order.create({
             data: {
+              id: orderNumber, // Numéro de commande personnalisé
               userId: userId || null,
               stripeSessionId: session.id,
               paymentIntentId: session.payment_intent as string,
@@ -83,6 +87,7 @@ export async function POST(request: NextRequest) {
             },
           })
 
+          console.log(`✅ Commande créée: ${order.id}`)
           // TODO: Envoyer email de confirmation
           // await sendOrderConfirmationEmail(order)
 

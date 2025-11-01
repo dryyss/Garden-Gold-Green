@@ -16,8 +16,8 @@ interface OrderItem {
   quantity: number
   product?: {
     id: string
-    name: string
-    image: string
+    title: string
+    images: string
   }
 }
 
