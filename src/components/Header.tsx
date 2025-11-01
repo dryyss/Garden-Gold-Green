@@ -230,6 +230,14 @@ export function Header() {
                       {t('header.user.orders')}
                     </Link>
                     <Link
+                      href="/track-order"
+                      className="block px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
+                      onClick={() => setShowUserMenu(false)}
+                    >
+                      <FontAwesomeIcon icon={faTruck} className="icon-sm mr-2" />
+                      {t('header.user.trackOrder')}
+                    </Link>
+                    <Link
                       href="/auth/logout"
                       className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
                       onClick={() => setShowUserMenu(false)}
@@ -402,6 +410,15 @@ export function Header() {
                   >
                     <FontAwesomeIcon icon={faShoppingCart} />
                     <span>{t('header.user.orders')}</span>
+                  </Link>
+                  
+                  <Link
+                    href="/track-order"
+                    className="flex items-center space-x-3 text-gray-300 hover:text-white transition-colors py-2"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <FontAwesomeIcon icon={faTruck} />
+                    <span>{t('header.user.trackOrder')}</span>
                   </Link>
                   
                   <button

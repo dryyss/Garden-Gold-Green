@@ -74,8 +74,8 @@ export async function POST(request: NextRequest) {
                   product: {
                     select: {
                       id: true,
-                      name: true,
-                      image: true,
+                      title: true,
+                      images: true,
                     }
                   }
                 }

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
+import { auth0 } from '@/lib/auth0'
 
 // Vérifier que la clé Stripe est présente
 if (!process.env.STRIPE_SECRET_KEY) {
@@ -20,6 +21,11 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
+
+    // Récupérer l'utilisateur Auth0 si connecté
+    const session = await auth0.getSession(request)
+    const userId = session?.user?.sub || 'guest'
+    const userEmail = session?.user?.email || undefined
 
     // Calculer le sous-total et les frais de livraison
     const subtotal = items.reduce((total: number, item: any) => total + (item.price * item.quantity), 0)
@@ -61,16 +67,19 @@ export async function POST(request: NextRequest) {
     const paymentMethodTypes: Stripe.Checkout.SessionCreateParams.PaymentMethodType[] = ['card']
 
     // Créer la session Stripe Checkout
-    const session = await stripe.checkout.sessions.create({
+    const checkoutSession = await stripe.checkout.sessions.create({
       payment_method_types: paymentMethodTypes,
       line_items: lineItems,
       mode: 'payment',
       success_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/cart`,
       metadata: {
-        userId: 'guest',
+        userId: userId,
+        userEmail: userEmail || '',
+        cartItems: JSON.stringify(items),
         paymentMethod: paymentMethod || 'stripe',
       },
+      customer_email: userEmail,
       shipping_address_collection: {
         allowed_countries: ['FR', 'BE', 'LU', 'CH', 'DE', 'ES', 'IT', 'NL'],
       },
@@ -80,7 +89,7 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    return NextResponse.json({ sessionId: session.id, url: session.url })
+    return NextResponse.json({ sessionId: checkoutSession.id, url: checkoutSession.url })
   } catch (error: any) {
     console.error('❌ Erreur création session Stripe:', error)
     console.error('Détails:', {

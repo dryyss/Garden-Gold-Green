@@ -65,6 +65,11 @@ export function Footer() {
             <h5 className="font-semibold text-white mb-4">{t('footer.quickLinks')}</h5>
             <ul className="space-y-2">
               <li>
+                <Link href="/track-order" className="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">
+                  {t('header.user.trackOrder')}
+                </Link>
+              </li>
+              <li>
                 <Link href="/about" className="text-gray-400 hover:text-brand-gold text-sm cursor-pointer">
                   {t('header.navigation.about')}
                 </Link>
