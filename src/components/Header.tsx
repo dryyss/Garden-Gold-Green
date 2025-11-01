@@ -27,6 +27,7 @@ import {
 } from '@fortawesome/free-brands-svg-icons'
 import { useCart } from '@/contexts/CartContext'
 import { useAuth } from '@/contexts/AuthContext'
+import { useAuth0Context } from '@/contexts/Auth0Context'
 import { useTranslation } from '@/contexts/TranslationContext'
 import { SearchModal } from './SearchModal'
 import { AuthModal } from './AuthModal'
@@ -42,8 +43,9 @@ export function Header() {
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
   const { state, dispatch } = useCart()
   const { state: authState, logout } = useAuth()
+  const { state: auth0State, logout: logoutAuth0 } = useAuth0Context()
   const { t } = useTranslation()
-  const user = authState.user
+  const user = auth0State.user || authState.user
   // const isLoading = authState.isLoading
 
   // Gérer le scroll pour réduire la barre jaune et afficher le panier flottant
@@ -228,7 +230,7 @@ export function Header() {
                       {t('header.user.orders')}
                     </Link>
                     <Link
-                      href="/api/auth/logout"
+                      href="/auth/logout"
                       className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
                       onClick={() => setShowUserMenu(false)}
                     >
@@ -242,13 +244,13 @@ export function Header() {
           ) : (
             <div className="flex items-center space-x-1 sm:space-x-2">
               <Link
-                href="/api/auth/login"
+                href="/auth/login"
                 className="text-gray-300 hover:text-brand-gold transition-colors duration-300 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium hidden sm:block"
               >
                 {t('header.user.login')}
               </Link>
               <Link
-                href="/api/auth/login?screen_hint=signup"
+                href="/auth/login?screen_hint=signup"
                 className="bg-brand-gold text-black font-semibold px-2 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm hover:shadow-gold-glow transition-all duration-300"
               >
                 {t('header.user.register')}
@@ -404,7 +406,11 @@ export function Header() {
                   
                   <button
                     onClick={() => {
-                      logout()
+                      if (auth0State.user) {
+                        logoutAuth0()
+                      } else {
+                        logout()
+                      }
                       setIsMenuOpen(false)
                     }}
                     className="flex items-center space-x-3 text-gray-300 hover:text-brand-gold transition-colors py-2 w-full text-left"

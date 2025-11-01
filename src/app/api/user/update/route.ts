@@ -17,7 +17,6 @@ export async function POST(request: NextRequest) {
 
     // Pour l'instant, on simule la mise à jour
     // Dans un vrai projet, vous devriez utiliser Auth0 Management API
-    console.log('Mise à jour utilisateur:', user.sub, { phone, address })
 
     return NextResponse.json(
       { message: 'Profil mis à jour avec succès' },

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useCart } from '@/contexts/CartContext'
 import { useAuth } from '@/contexts/AuthContext'
+import { useAuth0Context } from '@/contexts/Auth0Context'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
   faLock, 
@@ -38,10 +39,11 @@ export default function CheckoutPage() {
   const router = useRouter()
   const { state: cartState } = useCart()
   const { state: authState } = useAuth()
+  const { state: auth0State } = useAuth0Context()
   const [form, setForm] = useState<CheckoutForm>({
-    email: authState.user?.email || '',
-    firstName: authState.user?.firstName || '',
-    lastName: authState.user?.lastName || '',
+    email: auth0State.user?.email || authState.user?.email || '',
+    firstName: auth0State.user?.firstName || authState.user?.firstName || '',
+    lastName: auth0State.user?.lastName || authState.user?.lastName || '',
     address: '',
     city: '',
     state: '',
@@ -371,7 +373,6 @@ export default function CheckoutPage() {
               {/* Payment Method Selector */}
               <PaymentMethodSelector 
                 onPaymentSuccess={() => {
-                  console.log('Paiement réussi')
                   // Rediriger vers la page de succès
                   router.push('/checkout/success')
                 }}

@@ -3,14 +3,19 @@
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
+import { useAuth0Context } from '@/contexts/Auth0Context'
 
 interface AdminGuardProps {
   children: React.ReactNode
 }
 
 export function AdminGuard({ children }: AdminGuardProps) {
-  const { state, isAdmin } = useAuth()
+  const { state: authState, isAdmin: isAdminAuth } = useAuth()
+  const { state: auth0State, isAdmin: isAdminAuth0 } = useAuth0Context()
   const router = useRouter()
+  
+  const state = auth0State.user ? auth0State : authState
+  const isAdmin = auth0State.user ? isAdminAuth0 : isAdminAuth
 
   useEffect(() => {
     if (!state.isAuthenticated) {

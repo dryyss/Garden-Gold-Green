@@ -112,7 +112,7 @@ export default function SubscriptionsPage() {
             Vous devez être connecté pour accéder à vos abonnements.
           </p>
           <a
-            href="/api/auth/login"
+            href="/auth/login"
             className="inline-block bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors"
           >
             Se connecter

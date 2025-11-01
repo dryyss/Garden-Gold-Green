@@ -21,20 +21,54 @@ declare global {
   }
 }
 
+interface TransformedProduct {
+  id: string
+  name: string
+  price: number
+  originalPrice?: number
+  image: string
+  category: string
+  description: string
+  rating: number
+  reviewCount: number
+  inStock: boolean
+  isNew?: boolean
+  isBestSeller?: boolean
+  slug?: string
+  cbdPercent?: number
+  variants?: Array<{
+    id: string
+    weight: number
+    unit: string
+    priceCents: number
+    stock: number
+    sku: string
+    isDefault: boolean
+  }>
+  totalStock?: number
+}
+
 // Transformer les données de l'ancienne structure vers la nouvelle
-function transformProduct(product: any): any {
+function transformProduct(product: Record<string, unknown>): TransformedProduct {
+  // Utiliser un ID stable pour générer des valeurs déterministes
+  const productId = String(product.id || '')
+  const hash = productId.split('').reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0)
+  const reviewCount = 10 + (hash % 90) // Entre 10 et 99
+  const isNew = hash % 10 < 3 // 30% de chance
+  const isBestSeller = hash % 10 < 2 // 20% de chance
+  
   return {
     ...product,
-    name: product.title,
-    price: product.priceCents / 100, // Convertir les centimes en euros
-    image: product.images?.[0] || '/logo2.png',
-    category: product.categories?.[0]?.name || 'CBD Products',
+    name: String((product as { title?: string }).title || ''),
+    price: (Number((product as { priceCents?: number }).priceCents) || 0) / 100, // Convertir les centimes en euros
+    image: String(((product as { images?: string[] }).images?.[0]) || '/logo2.png'),
+    category: String(((product as { categories?: Array<{ name?: string }> }).categories?.[0]?.name) || 'CBD Products'),
     rating: 4.5, // Valeur par défaut
-    reviewCount: Math.floor(Math.random() * 100) + 10, // Valeur aléatoire
-    inStock: product.stock > 0,
-    isNew: Math.random() > 0.7, // 30% de chance d'être nouveau
-    isBestSeller: Math.random() > 0.8 // 20% de chance d'être best seller
-  }
+    reviewCount, // Valeur déterministe basée sur l'ID
+    inStock: Number((product as { stock?: number }).stock) > 0,
+    isNew, // Valeur déterministe
+    isBestSeller, // Valeur déterministe
+  } as TransformedProduct
 }
 
 function getProducts(searchParams: URLSearchParams) {
@@ -99,7 +133,8 @@ function getProducts(searchParams: URLSearchParams) {
       break
     case 'newest':
     default:
-      products.sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
+      // Tri par ID (ordre par défaut)
+      products.sort((a, b) => a.id.localeCompare(b.id))
       break
   }
   
@@ -118,9 +153,12 @@ function getProducts(searchParams: URLSearchParams) {
 
 function getCategories() {
   const categories = new Set<string>()
-  productsData.forEach(product => {
-    if (product.categories && product.categories.length > 0) {
-      product.categories.forEach((cat: any) => categories.add(cat.name))
+  productsData.forEach((product: Record<string, unknown>) => {
+    const cats = (product as { categories?: Array<{ name?: string }> }).categories
+    if (cats && cats.length > 0) {
+      cats.forEach((cat: { name?: string }) => {
+        if (cat.name) categories.add(cat.name)
+      })
     }
   })
   return Array.from(categories).map((name: string) => ({

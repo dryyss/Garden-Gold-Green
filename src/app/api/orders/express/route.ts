@@ -86,7 +86,6 @@ export async function POST(request: NextRequest) {
     if (saveInfo) {
       // Ici vous pourriez créer un compte utilisateur avec les informations fournies
       // et lier la commande à ce compte
-      console.log('L\'utilisateur souhaite sauvegarder ses informations pour les prochaines commandes')
     }
 
     // Ici vous devriez intégrer avec Stripe pour le paiement

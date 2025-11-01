@@ -11,6 +11,7 @@ import { AuthNotificationHandler } from "@/components/AuthNotificationHandler";
 import { OrderNotificationHandler } from "@/components/OrderNotificationHandler";
 import { PageLoader } from "@/components/PageLoader";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { Auth0Provider } from "@/contexts/Auth0Context";
 import { TranslationProvider } from "@/contexts/TranslationContext";
   
 const inter = Inter({
@@ -79,22 +80,24 @@ export default function RootLayout({
         <PageLoader minLoadingTime={2000} showOnce={false}>
           <TranslationProvider>
             <NotificationProvider>
-              <AuthProvider>
-                <CartProvider>
-                  <Header />
+              <Auth0Provider>
+                <AuthProvider>
+                  <CartProvider>
+                    <Header />
 
-                  <main className="flex-1">
-                    {children}
-                  </main>
+                    <main className="flex-1">
+                      {children}
+                    </main>
 
-                  <Footer />
+                    <Footer />
 
-                  <CookieConsent />
-                  <CartSidebar />
-                  <AuthNotificationHandler />
-                  <OrderNotificationHandler />
-                </CartProvider>
-              </AuthProvider>
+                    <CookieConsent />
+                    <CartSidebar />
+                    <AuthNotificationHandler />
+                    <OrderNotificationHandler />
+                  </CartProvider>
+                </AuthProvider>
+              </Auth0Provider>
             </NotificationProvider>
           </TranslationProvider>
         </PageLoader>

@@ -18,6 +18,11 @@ export function PageLoader({
   const [showLoading, setShowLoading] = useState(true)
 
   useEffect(() => {
+    // Vérifier si on est côté client avant d'accéder à sessionStorage
+    if (typeof window === 'undefined') {
+      return
+    }
+
     // Vérifier si le loading a déjà été affiché dans cette session
     if (showOnce) {
       const hasShownLoading = sessionStorage.getItem('hasShownLoading')

@@ -1,6 +1,7 @@
 'use client'
 
 import { useAuth } from '@/contexts/AuthContext'
+import { useAuth0Context } from '@/contexts/Auth0Context'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -15,15 +16,19 @@ import {
 
 export default function AccountPage() {
   const { state: authState, logout } = useAuth()
+  const { state: auth0State, logout: logoutAuth0 } = useAuth0Context()
   const router = useRouter()
+  
+  const user = auth0State.user || authState.user
+  const isAuthenticated = auth0State.isAuthenticated || authState.isAuthenticated
 
   useEffect(() => {
-    if (!authState.isAuthenticated) {
+    if (!isAuthenticated) {
       router.push('/')
     }
-  }, [authState.isAuthenticated, router])
+  }, [isAuthenticated, router])
 
-  if (!authState.isAuthenticated) {
+  if (!isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -154,7 +159,13 @@ export default function AccountPage() {
             </a>
 
             <button
-              onClick={logout}
+              onClick={() => {
+                if (auth0State.user) {
+                  logoutAuth0()
+                } else {
+                  logout()
+                }
+              }}
               className="card-bg rounded-xl p-6 border border-white/10 hover:border-red-500/30 transition-all duration-300 group"
             >
               <div className="flex items-center space-x-4">

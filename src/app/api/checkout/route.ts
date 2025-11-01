@@ -12,14 +12,9 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('📦 Début création session Stripe...')
-    
     const { items, paymentMethod } = await request.json()
-    console.log('📦 Items reçus:', items)
-    console.log('💳 Méthode de paiement:', paymentMethod)
 
     if (!items || items.length === 0) {
-      console.log('❌ Panier vide')
       return NextResponse.json(
         { error: 'Le panier est vide' },
         { status: 400 }
@@ -31,11 +26,8 @@ export async function POST(request: NextRequest) {
     const shipping = subtotal > 100 ? 0 : 9.90
     const total = subtotal + shipping
 
-    console.log('💰 Calculs:', { subtotal, shipping, total })
-
     // Créer les line items pour Stripe
     const lineItems = items.map((item: any) => {
-      console.log('🛍️ Traitement item:', item.name, 'Prix:', item.price)
       return {
         price_data: {
           currency: 'eur',
@@ -63,17 +55,12 @@ export async function POST(request: NextRequest) {
         quantity: 1,
       })
     }
-    
-    console.log('📋 Line items préparés:', lineItems.length, 'items')
 
     // Pour l'instant, on utilise seulement les cartes
     // Apple Pay et Google Pay nécessitent une configuration plus complexe
     const paymentMethodTypes: Stripe.Checkout.SessionCreateParams.PaymentMethodType[] = ['card']
 
     // Créer la session Stripe Checkout
-    console.log('🔐 Création session Stripe...')
-    console.log('💳 Méthodes de paiement:', paymentMethodTypes)
-    
     const session = await stripe.checkout.sessions.create({
       payment_method_types: paymentMethodTypes,
       line_items: lineItems,
@@ -92,9 +79,6 @@ export async function POST(request: NextRequest) {
         enabled: true,
       },
     })
-
-    console.log('✅ Session créée:', session.id)
-    console.log('🔗 URL:', session.url)
 
     return NextResponse.json({ sessionId: session.id, url: session.url })
   } catch (error: any) {

@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
-import { getAuthenticatedUser } from '@/lib/auth-utils'
+import { auth0 } from '@/lib/auth0'
 
 const prisma = new PrismaClient()
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getSession()
+    const session = await auth0.getSession(request)
     
     if (!session?.user) {
       return NextResponse.json(

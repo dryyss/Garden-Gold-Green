@@ -31,10 +31,7 @@ async function getPayPalAccessToken() {
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('🔄 Capture paiement PayPal...')
-    
     const { orderId } = await request.json()
-    console.log('📦 Order ID reçu:', orderId)
 
     if (!orderId) {
       return NextResponse.json(
@@ -45,7 +42,6 @@ export async function POST(request: NextRequest) {
 
     // Obtenir le token d'accès
     const accessToken = await getPayPalAccessToken()
-    console.log('🔑 Token PayPal obtenu')
 
     // Capturer le paiement
     const response = await fetch(`${paypalBaseUrl}/v2/checkout/orders/${orderId}/capture`, {
@@ -63,7 +59,6 @@ export async function POST(request: NextRequest) {
     }
 
     const captureResponse = await response.json()
-    console.log('✅ Paiement PayPal capturé:', captureResponse.id)
 
     return NextResponse.json({
       success: true,

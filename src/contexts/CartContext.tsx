@@ -96,8 +96,6 @@ function cartReducer(state: CartState, action: CartAction): CartState {
     }
 
     case 'CLEAR_CART':
-      console.log('🗑️ CLEAR_CART action received, clearing cart...')
-      console.log('📊 Cart before clear:', { items: state.items.length, totalItems: state.totalItems, totalPrice: state.totalPrice })
       const clearedState = {
         ...state,
         items: [],
@@ -105,7 +103,6 @@ function cartReducer(state: CartState, action: CartAction): CartState {
         totalPrice: 0,
         isOpen: false
       }
-      console.log('✅ Cart cleared:', { items: clearedState.items.length, totalItems: clearedState.totalItems, totalPrice: clearedState.totalPrice })
       return clearedState
 
     case 'TOGGLE_CART':

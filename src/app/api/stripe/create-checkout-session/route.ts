@@ -8,9 +8,6 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(request: NextRequest) {
   try {
-    // Debug: Vérifier la configuration Stripe
-    console.log('STRIPE_SECRET_KEY:', process.env.STRIPE_SECRET_KEY ? 'Défini' : 'Non défini')
-    
     if (!process.env.STRIPE_SECRET_KEY) {
       console.error('❌ STRIPE_SECRET_KEY non définie')
       return NextResponse.json(
@@ -29,7 +26,6 @@ export async function POST(request: NextRequest) {
         user = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret')
       } catch (error) {
         // Utilisateur non authentifié, on continue quand même
-        console.log('Token JWT invalide ou manquant')
       }
     }
 

@@ -1,6 +1,7 @@
 'use client'
 
 import { useAuth } from '@/contexts/AuthContext'
+import { useAuth0Context } from '@/contexts/Auth0Context'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -16,7 +17,10 @@ import Link from 'next/link'
 
 export default function OrdersPage() {
   const { state: authState } = useAuth()
+  const { state: auth0State } = useAuth0Context()
   const router = useRouter()
+  
+  const isAuthenticated = auth0State.isAuthenticated || authState.isAuthenticated
 
   useEffect(() => {
     if (!isAuthenticated) {

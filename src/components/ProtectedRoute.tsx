@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
+import { useAuth0Context } from '@/contexts/Auth0Context'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 
@@ -12,8 +13,11 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ children, redirectTo = '/auth' }: ProtectedRouteProps) {
-  const { state } = useAuth()
+  const { state: authState } = useAuth()
+  const { state: auth0State } = useAuth0Context()
   const router = useRouter()
+  
+  const state = auth0State.user ? auth0State : authState
 
   useEffect(() => {
     if (!state.isLoading && !state.isAuthenticated) {

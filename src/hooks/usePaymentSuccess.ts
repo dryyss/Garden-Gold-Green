@@ -22,27 +22,21 @@ export function usePaymentSuccess({
   const [hasProcessed, setHasProcessed] = useState(false)
 
   useEffect(() => {
-    console.log('🔄 usePaymentSuccess effect triggered', { sessionId, orderId, hasProcessed })
-    
     // Éviter les appels multiples
     if (hasProcessed) {
-      console.log('⚠️ Already processed, skipping')
       return
     }
 
     const handlePaymentSuccess = async () => {
       try {
-        console.log('✅ Processing payment success...')
         setHasProcessed(true)
         
         // Vider le panier immédiatement
-        console.log('🗑️ Clearing cart...')
         dispatch({ type: 'CLEAR_CART' })
         
         // Supprimer aussi du localStorage pour éviter les conflits
         if (typeof window !== 'undefined') {
           localStorage.removeItem('garden-gold-green-cart')
-          console.log('🗑️ Cart removed from localStorage')
         }
 
         if (orderId) {

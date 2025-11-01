@@ -4,6 +4,7 @@ import React from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { useCart } from '@/contexts/CartContext'
 import { useAuth } from '@/contexts/AuthContext'
+import { useAuth0Context } from '@/contexts/Auth0Context'
 import Image from 'next/image'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -34,6 +35,10 @@ function CartSidebarContent() {
   const pathname = usePathname()
   const { state, dispatch } = useCart()
   const { state: authState } = useAuth()
+  const { state: auth0State } = useAuth0Context()
+  
+  // Utiliser Auth0 si disponible, sinon AuthContext
+  const isAuthenticated = auth0State.isAuthenticated || authState.isAuthenticated
   
   // Vérifier si on est sur la page panier
   const isOnCartPage = pathname === '/cart'
@@ -71,16 +76,6 @@ function CartSidebarContent() {
     }
 
     try {
-      console.log('========================================')
-      console.log('🛒 DÉBUT CHECKOUT')
-      console.log('========================================')
-      console.log('📦 État du panier:', {
-        items: state.items,
-        totalItems: state.totalItems,
-        totalPrice: state.totalPrice,
-        isOpen: state.isOpen
-      })
-      
       // Préparer les items pour Stripe
       const items = state.items.map(item => ({
         name: item.name,
@@ -90,15 +85,7 @@ function CartSidebarContent() {
         cbdPercent: item.cbdPercent,
       }))
 
-      console.log('✅ Items préparés pour Stripe:', JSON.stringify(items, null, 2))
-      console.log('📊 Nombre d\'items:', items.length)
-
       // Créer une session Stripe Checkout
-      console.log('========================================')
-      console.log('🔄 APPEL API /api/checkout')
-      console.log('========================================')
-      console.log('📤 Body envoyé:', JSON.stringify({ items }, null, 2))
-      
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: {
@@ -106,13 +93,6 @@ function CartSidebarContent() {
         },
         body: JSON.stringify({ items }),
       })
-
-      console.log('========================================')
-      console.log('📡 RÉPONSE API REÇUE')
-      console.log('========================================')
-      console.log('📊 Status:', response.status)
-      console.log('📊 Status Text:', response.statusText)
-      console.log('📊 Headers:', Object.fromEntries(response.headers.entries()))
       
       if (!response.ok) {
         const errorText = await response.text()
@@ -126,10 +106,6 @@ function CartSidebarContent() {
       }
 
       const data = await response.json()
-      console.log('========================================')
-      console.log('📄 DONNÉES JSON REÇUES')
-      console.log('========================================')
-      console.log('Données complètes:', JSON.stringify(data, null, 2))
 
       if (data.error) {
         console.error('========================================')
@@ -142,11 +118,6 @@ function CartSidebarContent() {
 
       // Rediriger vers Stripe Checkout
       if (data.url) {
-        console.log('========================================')
-        console.log('✅ REDIRECTION VERS STRIPE')
-        console.log('========================================')
-        console.log('URL:', data.url)
-        console.log('Session ID:', data.sessionId)
         window.location.href = data.url
       } else {
         console.error('========================================')
@@ -288,7 +259,7 @@ function CartSidebarContent() {
                 {isOnCartPage ? (
                   <PaymentMethodSelector 
                     onPaymentSuccess={() => {
-                      console.log('Paiement réussi')
+                      // Paiement réussi
                     }}
                     onPaymentError={(error) => {
                       console.error('Erreur de paiement:', error)
@@ -305,10 +276,10 @@ function CartSidebarContent() {
                   </button>
                 )}
                 
-                {!authState.isAuthenticated && (
+                {!isAuthenticated && (
                   <p className="text-gray-400 text-xs text-center">
                     {t('cart.guestCheckout')}{' '}
-                    <Link href="/login" className="text-brand-gold hover:underline">
+                    <Link href="/auth/login" className="text-brand-gold hover:underline">
                       {t('cart.login')}
                     </Link>
                   </p>

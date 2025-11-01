@@ -89,3 +89,8 @@ sudo certbot --nginx -d votredomaine.fr -d www.votredomaine.fr
 # ========================================
 pm2 status
 pm2 logs garden-gold-green
+
+
+
+
+

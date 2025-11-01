@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 interface User {
   id: string
   email: string
+  name: string
   firstName: string
   lastName: string
   phone?: string
@@ -63,11 +64,15 @@ export function Auth0Provider({ children }: { children: React.ReactNode }) {
 
     if (auth0User) {
       // Transformer l'utilisateur Auth0 en notre format
+      const firstName = auth0User.given_name || auth0User.name?.split(' ')[0] || ''
+      const lastName = auth0User.family_name || auth0User.name?.split(' ').slice(1).join(' ') || ''
+      const name = `${firstName} ${lastName}`.trim() || auth0User.name || auth0User.email || ''
       const user: User = {
         id: auth0User.sub || '',
         email: auth0User.email || '',
-        firstName: auth0User.given_name || auth0User.name?.split(' ')[0] || '',
-        lastName: auth0User.family_name || auth0User.name?.split(' ').slice(1).join(' ') || '',
+        name,
+        firstName,
+        lastName,
         role: (auth0User['https://gardengoldgreen.com/roles'] as string[])?.includes('admin') ? 'admin' : 'customer',
         picture: auth0User.picture,
         createdAt: auth0User.created_at || new Date().toISOString(),
@@ -91,7 +96,7 @@ export function Auth0Provider({ children }: { children: React.ReactNode }) {
   }, [auth0User, auth0Error, auth0Loading])
 
   const logout = () => {
-    router.push('/api/auth/logout')
+    router.push('/auth/logout')
   }
 
   const isAdmin = () => {

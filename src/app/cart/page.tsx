@@ -74,7 +74,6 @@ function CartPageContent() {
     
     // Logique pour ajouter aux favoris (à implémenter)
     const item = state.items.find(item => item.id === itemId)
-    console.log('Ajouter aux favoris:', item?.name)
     // TODO: Implémenter la logique de favoris
   }
 
@@ -356,8 +355,7 @@ function CartPageContent() {
                 {/* Payment Method Selector */}
                 <PaymentMethodSelector 
                   onPaymentSuccess={() => {
-                    console.log('Paiement réussi')
-                    // Optionnel: rediriger vers une page de succès
+                    // Paiement réussi
                   }}
                   onPaymentError={(error) => {
                     console.error('Erreur de paiement:', error)

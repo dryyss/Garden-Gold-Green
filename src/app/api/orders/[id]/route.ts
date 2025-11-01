@@ -1,26 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
-import { getAuthenticatedUser } from '@/lib/auth-utils'
+import { auth0 } from '@/lib/auth0'
 
 const prisma = new PrismaClient()
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Récupérer l'utilisateur authentifié
-    const user = await getAuthenticatedUser(request)
+    // Récupérer la session utilisateur
+    const session = await auth0.getSession(request)
     
-    if (!user) {
+    if (!session?.user) {
       return NextResponse.json(
         { error: 'Non authentifié' },
         { status: 401 }
       )
     }
 
-    const userId = user.sub
-    const orderId = params.id
+    const userId = session.user.sub
+    const { id: orderId } = await params
 
     // Récupérer la commande spécifique
     const order = await prisma.order.findFirst({
@@ -34,8 +34,8 @@ export async function GET(
             product: {
               select: {
                 id: true,
-                name: true,
-                image: true,
+                title: true,
+                images: true,
               }
             }
           }
@@ -88,10 +88,10 @@ export async function GET(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getSession()
+    const session = await auth0.getSession(request)
     
     if (!session?.user) {
       return NextResponse.json(
@@ -101,7 +101,7 @@ export async function PATCH(
     }
 
     const userId = session.user.sub
-    const orderId = params.id
+    const { id: orderId } = await params
     const body = await request.json()
     const { status, deliveredAt } = body
 
@@ -133,8 +133,8 @@ export async function PATCH(
             product: {
               select: {
                 id: true,
-                name: true,
-                image: true,
+                title: true,
+                images: true,
               }
             }
           }

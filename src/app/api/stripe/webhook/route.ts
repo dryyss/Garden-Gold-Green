@@ -31,8 +31,6 @@ export async function POST(request: NextRequest) {
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session
 
-        console.log('✅ Paiement réussi:', session.id)
-
         // Récupérer les métadonnées
         const metadata = session.metadata
         const cartItems = metadata?.cartItems ? JSON.parse(metadata.cartItems) : []
@@ -85,15 +83,6 @@ export async function POST(request: NextRequest) {
             },
           })
 
-          console.log('📦 Commande créée:', order.id)
-          console.log('📦 Détails commande:', {
-            id: order.id,
-            userId: order.userId,
-            totalCents: order.totalCents,
-            itemsCount: order.items.length,
-            customerEmail: order.customerEmail
-          })
-
           // TODO: Envoyer email de confirmation
           // await sendOrderConfirmationEmail(order)
 
@@ -107,13 +96,11 @@ export async function POST(request: NextRequest) {
 
       case 'payment_intent.succeeded': {
         const paymentIntent = event.data.object as Stripe.PaymentIntent
-        console.log('💳 Payment Intent réussi:', paymentIntent.id)
         break
       }
 
       case 'payment_intent.payment_failed': {
         const paymentIntent = event.data.object as Stripe.PaymentIntent
-        console.log('❌ Payment Intent échoué:', paymentIntent.id)
         
         // TODO: Notifier l'utilisateur de l'échec
         break
@@ -121,7 +108,6 @@ export async function POST(request: NextRequest) {
 
       case 'charge.refunded': {
         const charge = event.data.object as Stripe.Charge
-        console.log('↩️ Remboursement:', charge.id)
 
         // Mettre à jour le statut de la commande
         try {
@@ -138,7 +124,8 @@ export async function POST(request: NextRequest) {
       }
 
       default:
-        console.log(`ℹ️ Événement non traité: ${event.type}`)
+        // Événement non traité
+        break
     }
 
     return NextResponse.json({ received: true })

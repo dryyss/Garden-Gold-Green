@@ -89,3 +89,8 @@ echo "3. Configurez SSL avec Let's Encrypt pour HTTPS"
 echo ""
 echo "📖 Pour plus d'informations, consultez DEPLOYMENT.md"
 
+
+
+
+
+

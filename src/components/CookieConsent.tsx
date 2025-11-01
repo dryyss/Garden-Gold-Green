@@ -84,17 +84,14 @@ export function CookieConsent() {
 
   const initializeAnalytics = () => {
     // Initialiser Google Analytics ou autres outils d'analyse
-    console.log('Analytics cookies initialized')
   }
 
   const initializeMarketing = () => {
     // Initialiser les cookies marketing
-    console.log('Marketing cookies initialized')
   }
 
   const removeNonEssentialCookies = () => {
     // Supprimer les cookies non essentiels
-    console.log('Non-essential cookies removed')
   }
 
   if (!isVisible) return null
