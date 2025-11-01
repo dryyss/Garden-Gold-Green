@@ -53,6 +53,14 @@ function ProfileContent() {
                       }
                     </span>
                   </div>
+                  {user?.id && (
+                    <div className="pt-3 border-t border-white/10">
+                      <div className="text-xs">
+                        <span className="text-gray-500">ID:</span>
+                        <p className="text-gray-400 font-mono break-all mt-1">{user.id}</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
