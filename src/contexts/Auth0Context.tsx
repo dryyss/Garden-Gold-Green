@@ -68,13 +68,8 @@ export function Auth0Provider({ children }: { children: React.ReactNode }) {
       const lastName = auth0User.family_name || auth0User.name?.split(' ').slice(1).join(' ') || ''
       const name = `${firstName} ${lastName}`.trim() || auth0User.name || auth0User.email || ''
       
-      // DEBUG: Log pour vérifier les rôles
-      console.log('🔍 Auth0 User:', auth0User)
-      console.log('🔍 Roles claim:', auth0User['https://gardengoldgreen.com/roles'])
-      
       const roles = auth0User['https://gardengoldgreen.com/roles'] as string[]
       const isAdminUser = roles?.includes('admin')
-      console.log('🔍 Final role:', isAdminUser ? 'admin' : 'customer')
       
       const user: User = {
         id: auth0User.sub || '',

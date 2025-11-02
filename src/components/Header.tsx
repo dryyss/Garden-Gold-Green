@@ -51,17 +51,6 @@ export function Header() {
   const { t } = useTranslation()
   const user = auth0State.user || authState.user
   const isAdmin = auth0State.user ? isAdminAuth0() : isAdminAuth()
-  
-  // DEBUG: Log pour vérifier le rôle
-  useEffect(() => {
-    if (user) {
-      console.log('🔍 Header - User:', user.email)
-      console.log('🔍 Header - Role:', user.role)
-      console.log('🔍 Header - Is Admin:', isAdmin)
-    }
-  }, [user, isAdmin])
-  
-  // const isLoading = authState.isLoading
 
   // Gérer le scroll pour réduire la barre jaune et afficher le panier flottant
   useEffect(() => {
