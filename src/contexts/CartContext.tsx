@@ -204,7 +204,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         // Nettoyer les items avec des prix invalides
         const validItems = items.filter((item: any) => {
           const isValid = item && item.price && !isNaN(item.price) && isFinite(item.price) && item.price > 0
-          if (!isValid) {
+          if (!isValid && process.env.NODE_ENV === 'development') {
             console.warn('Item avec prix invalide supprimé:', item)
           }
           return isValid
@@ -220,7 +220,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           scheduleExpiry(updatedAt)
         }
       } catch (error) {
-        console.error('Erreur lors du chargement du panier:', error)
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Erreur lors du chargement du panier:', error)
+        }
       }
     }
     

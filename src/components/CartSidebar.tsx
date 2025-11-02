@@ -96,22 +96,19 @@ function CartSidebarContent() {
       
       if (!response.ok) {
         const errorText = await response.text()
-        console.error('========================================')
-        console.error('❌ ERREUR HTTP')
-        console.error('========================================')
-        console.error('Status:', response.status)
-        console.error('Texte:', errorText)
-        alert(`Erreur ${response.status}: ${errorText}`)
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Erreur checkout:', response.status, errorText)
+        }
+        alert(`Erreur ${response.status}`)
         return
       }
 
       const data = await response.json()
 
       if (data.error) {
-        console.error('========================================')
-        console.error('❌ ERREUR DANS LA RÉPONSE')
-        console.error('========================================')
-        console.error('Erreur:', data.error)
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Erreur response:', data.error)
+        }
         alert(`Erreur: ${data.error}`)
         return
       }
@@ -120,20 +117,15 @@ function CartSidebarContent() {
       if (data.url) {
         window.location.href = data.url
       } else {
-        console.error('========================================')
-        console.error('❌ PAS D\'URL DE REDIRECTION')
-        console.error('========================================')
-        console.error('Données reçues:', data)
-        alert('Erreur: pas d\'URL de redirection')
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Pas d\'URL de redirection')
+        }
+        alert('Erreur de configuration')
       }
     } catch (error) {
-      console.error('========================================')
-      console.error('❌ EXCEPTION CAPTURÉE')
-      console.error('========================================')
-      console.error('Type:', typeof error)
-      console.error('Message:', error instanceof Error ? error.message : 'Erreur inconnue')
-      console.error('Stack:', error instanceof Error ? error.stack : 'Pas de stack')
-      console.error('Objet complet:', error)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Exception checkout:', error)
+      }
       alert(`Erreur: ${error instanceof Error ? error.message : 'Erreur inconnue'}`)
     }
   }
