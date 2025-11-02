@@ -1,5 +1,6 @@
 'use client'
 
+import { lazy, Suspense } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -22,12 +23,13 @@ import {
   faShoppingBag,
   faGift
 } from '@fortawesome/free-solid-svg-icons'
-import { Newsletter } from '@/components/Newsletter'
-import { ProductCard } from '@/components/ProductCard'
-import { ProductGridCarousel } from '@/components/ProductGridCarousel'
 import { HeroLogo } from '@/components/HeroLogo'
 import { useTranslation } from '@/contexts/TranslationContext'
 import productsData from '@/data/products.json'
+
+// Lazy load des composants lourds
+const ProductGridCarousel = lazy(() => import('@/components/ProductGridCarousel').then(m => ({ default: m.ProductGridCarousel })))
+const Newsletter = lazy(() => import('@/components/Newsletter').then(m => ({ default: m.Newsletter })))
 
 // Transformer les données de l'ancienne structure vers la nouvelle
 function transformProduct(product: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -121,14 +123,16 @@ export default function HomePage() {
             <h2 className="text-4xl font-bold mb-2 gold-text-gradient">{t('home.featuredProducts.title')}</h2>
             <p className="text-lg text-gray-400">{t('home.featuredProducts.subtitle')}</p>
           </div>
-          <ProductGridCarousel
-            products={featuredProducts}
-            itemsPerView={{ mobile: 1, tablet: 2, desktop: 3 }}
-            showNavigation={true}
-            showDots={true}
-            autoPlay={true}
-            autoPlayInterval={4000}
-          />
+          <Suspense fallback={<div className="h-96 flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-gold"></div></div>}>
+            <ProductGridCarousel
+              products={featuredProducts}
+              itemsPerView={{ mobile: 1, tablet: 2, desktop: 3 }}
+              showNavigation={true}
+              showDots={true}
+              autoPlay={true}
+              autoPlayInterval={4000}
+            />
+          </Suspense>
           <div className="text-center mt-12">
             <Link href="/products" className="btn-gold text-black font-semibold py-3 px-8 rounded-full shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300 inline-flex items-center">
               {t('home.featuredProducts.viewAll')}
@@ -185,14 +189,16 @@ export default function HomePage() {
             <h2 className="text-4xl font-bold mb-2 gold-text-gradient">{t('home.bestSellers.title')}</h2>
             <p className="text-lg text-gray-400">{t('home.bestSellers.subtitle')}</p>
           </div>
-          <ProductGridCarousel
-            products={bestSellers}
-            itemsPerView={{ mobile: 1, tablet: 2, desktop: 3 }}
-            showNavigation={true}
-            showDots={true}
-            autoPlay={true}
-            autoPlayInterval={5000}
-          />
+          <Suspense fallback={<div className="h-96 flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-gold"></div></div>}>
+            <ProductGridCarousel
+              products={bestSellers}
+              itemsPerView={{ mobile: 1, tablet: 2, desktop: 3 }}
+              showNavigation={true}
+              showDots={true}
+              autoPlay={true}
+              autoPlayInterval={5000}
+            />
+          </Suspense>
         </div>
       </section>
 
@@ -368,14 +374,16 @@ export default function HomePage() {
             <h2 className="text-4xl font-bold mb-2 gold-text-gradient">{t('home.newProducts.title')}</h2>
             <p className="text-lg text-gray-400">{t('home.newProducts.subtitle')}</p>
           </div>
-          <ProductGridCarousel
-            products={newProducts}
-            itemsPerView={{ mobile: 1, tablet: 2, desktop: 3 }}
-            showNavigation={true}
-            showDots={true}
-            autoPlay={true}
-            autoPlayInterval={6000}
-          />
+          <Suspense fallback={<div className="h-96 flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-gold"></div></div>}>
+            <ProductGridCarousel
+              products={newProducts}
+              itemsPerView={{ mobile: 1, tablet: 2, desktop: 3 }}
+              showNavigation={true}
+              showDots={true}
+              autoPlay={true}
+              autoPlayInterval={6000}
+            />
+          </Suspense>
         </div>
       </section>
 
@@ -492,7 +500,9 @@ export default function HomePage() {
       {/* CTA Section */}
       <section className="py-24 bg-brand-black">
         <div className="container mx-auto px-6">
-          <Newsletter variant="hero" />
+          <Suspense fallback={<div className="h-64 flex items-center justify-center"><div className="animate-pulse text-gray-400">Chargement...</div></div>}>
+            <Newsletter variant="hero" />
+          </Suspense>
         </div>
       </section>
     </div>
