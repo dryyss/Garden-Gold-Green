@@ -92,7 +92,7 @@ export default function RootLayout({
       <body className="bg-brand-black watermark font-sans antialiased min-h-screen flex flex-col">
         {/* Filigrane global */}
         <div aria-hidden className="watermark-overlay" />
-        <PageLoader minLoadingTime={1500} showOnce={true}>
+        <PageLoader minLoadingTime={300} showOnce={true}>
           <GoogleAnalytics />
           <TranslationProvider>
             <NotificationProvider>
