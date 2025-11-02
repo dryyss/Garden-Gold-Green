@@ -128,7 +128,7 @@
 
 ---
 
-**Date**: $(Get-Date -Format "yyyy-MM-dd HH:mm")
+**Date**: 2025-01-XX
 **Branche**: wip/2025-10-13
-**Commits**: 6 commits de features et optimisations
+**Commits**: 10+ commits de features et optimisations
 
