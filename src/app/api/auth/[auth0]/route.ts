@@ -4,7 +4,7 @@ import { NextRequest } from 'next/server';
 // Cette route est un fallback pour assurer la compatibilité
 export async function GET(
   request: NextRequest,
-  { params }: { params: { auth0: string } }
+  { params }: { params: Promise<{ auth0: string }> }
 ) {
   // Le middleware devrait avoir intercepté cette requête
   // Si on arrive ici, retourner une erreur
