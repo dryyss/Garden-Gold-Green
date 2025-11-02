@@ -40,6 +40,7 @@ model Product {
   comments          Comment[]
   subscriptionPlans SubscriptionPlan[] // Plans d'abonnement disponibles
   published         Boolean            @default(true)
+  isFeatured        Boolean            @default(false) // Produit mis en vedette
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
 }

@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark, faMagnifyingGlass, faTimes } from '@fortawesome/free-solid-svg-icons'
 import Link from 'next/link'
+import Image from 'next/image'
+import { trackSearch } from '@/lib/analytics'
 
 interface SearchModalProps {
   isOpen: boolean
@@ -36,15 +38,22 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
   useEffect(() => {
     if (searchQuery.trim()) {
       setIsLoading(true)
-      // Simulation d'une recherche
-      setTimeout(() => {
-        const results = mockProducts.filter(product =>
-          product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          product.category.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-        setSearchResults(results)
-        setIsLoading(false)
+      
+      // Debounce
+      const timeoutId = setTimeout(async () => {
+        try {
+          const response = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}&limit=8`)
+          const data = await response.json()
+          setSearchResults(data.results || [])
+        } catch (error) {
+          console.error('Erreur recherche:', error)
+          setSearchResults([])
+        } finally {
+          setIsLoading(false)
+        }
       }, 300)
+      
+      return () => clearTimeout(timeoutId)
     } else {
       setSearchResults([])
     }
@@ -66,6 +75,11 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
     setSearchQuery('')
     setSearchResults([])
     onClose()
+  }
+
+  const handleResultClick = (result: any) => {
+    trackSearch(result.name)
+    handleClose()
   }
 
   if (!isOpen) return null
@@ -118,15 +132,28 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                       <Link
                         key={product.id}
                         href={`/products/${product.slug}`}
-                        onClick={handleClose}
+                        onClick={() => handleResultClick(product)}
                         className="block p-3 hover:bg-white/5 rounded-lg transition-colors"
                       >
-                        <div className="flex justify-between items-center">
-                          <div>
+                        <div className="flex items-center space-x-3">
+                          {product.image && (
+                            <Image
+                              src={product.image}
+                              alt={product.name}
+                              width={60}
+                              height={60}
+                              className="rounded-lg object-cover"
+                            />
+                          )}
+                          <div className="flex-1">
                             <h4 className="text-white font-medium">{product.name}</h4>
-                            <p className="text-sm text-gray-400">{product.category}</p>
+                            {product.categories && product.categories.length > 0 && (
+                              <p className="text-sm text-gray-400">
+                                {product.categories.join(', ')}
+                              </p>
+                            )}
                           </div>
-                          <span className="text-brand-gold font-semibold">€{product.price}</span>
+                          <span className="text-brand-gold font-semibold">€{product.price.toFixed(2)}</span>
                         </div>
                       </Link>
                     ))}

@@ -2,7 +2,7 @@
 
 import { useUser } from '@auth0/nextjs-auth0'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faShoppingCart, faBox, faTruck, faCheckCircle, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { ResponsiveContainer } from '@/components/ResponsiveContainer'
@@ -42,20 +42,7 @@ export default function OrdersPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (!authLoading && !user) {
-      router.push('/auth/login')
-      return
-    }
-  }, [user, authLoading, router])
-
-  useEffect(() => {
-    if (user) {
-      fetchOrders()
-    }
-  }, [user])
-
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     try {
       setIsLoading(true)
       setErrorMessage(null)
@@ -79,7 +66,20 @@ export default function OrdersPage() {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/auth/login')
+      return
+    }
+  }, [user, authLoading, router])
+
+  useEffect(() => {
+    if (user) {
+      fetchOrders()
+    }
+  }, [user, fetchOrders])
 
   const getStatusIcon = (status: string) => {
     switch (status) {

@@ -16,7 +16,10 @@ import {
   faPhone,
   faEnvelope,
   faTruck,
-  faPercent
+  faPercent,
+  faChevronDown,
+  faChevronRight,
+  faShieldHalved
 } from '@fortawesome/free-solid-svg-icons'
 import { 
   faFacebook, 
@@ -37,15 +40,27 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false)
   const [showUserMenu, setShowUserMenu] = useState(false)
+  const [expandedCategories, setExpandedCategories] = useState<string[]>([])
   const [isScrolled, setIsScrolled] = useState(false)
   const [showFloatingCart, setShowFloatingCart] = useState(false)
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
   const { state, dispatch } = useCart()
-  const { state: authState, logout } = useAuth()
-  const { state: auth0State, logout: logoutAuth0 } = useAuth0Context()
+  const { state: authState, logout, isAdmin: isAdminAuth } = useAuth()
+  const { state: auth0State, logout: logoutAuth0, isAdmin: isAdminAuth0 } = useAuth0Context()
   const { t } = useTranslation()
   const user = auth0State.user || authState.user
+  const isAdmin = auth0State.user ? isAdminAuth0() : isAdminAuth()
+  
+  // DEBUG: Log pour vérifier le rôle
+  useEffect(() => {
+    if (user) {
+      console.log('🔍 Header - User:', user.email)
+      console.log('🔍 Header - Role:', user.role)
+      console.log('🔍 Header - Is Admin:', isAdmin)
+    }
+  }, [user, isAdmin])
+  
   // const isLoading = authState.isLoading
 
   // Gérer le scroll pour réduire la barre jaune et afficher le panier flottant
@@ -149,7 +164,7 @@ export function Header() {
       </div>
 
       {/* Main Navbar - Logo, Navigation, Search, Actions */}
-      <div className="bg-brand-black/95 backdrop-blur-sm border-b border-white/10">
+      <div className="bg-brand-black/95 backdrop-blur-sm border-b border-white/10 relative z-40 overflow-visible">
         <div className="container mx-auto px-3 sm:px-4 lg:px-6 py-2 sm:py-3 lg:py-4 xl:py-6">
           <div className="flex justify-between items-center gap-2 sm:gap-4">
             {/* Logo - Hidden on mobile, visible on sm and up */}
@@ -207,42 +222,52 @@ export function Header() {
               </button>
               
               {showUserMenu && (
-                <div className="absolute right-0 mt-2 w-48 sm:w-56 bg-brand-black border border-white/10 rounded-lg shadow-lg z-50">
-                  <div className="py-2">
-                    <div className="px-4 py-2 border-b border-white/10">
-                      <p className="text-sm text-white font-medium">{user.name}</p>
-                      <p className="text-xs text-gray-400">{user.email}</p>
+                <div className="absolute right-0 top-full mt-1 w-52 bg-brand-black border border-white/20 rounded-md shadow-xl z-50">
+                  <div className="py-1">
+                    <div className="px-3 py-2 border-b border-white/10">
+                      <p className="text-xs text-white font-medium truncate">{user.name}</p>
+                      <p className="text-xs text-gray-400 truncate">{user.email}</p>
                     </div>
                     <Link
                       href="/profile"
-                      className="block px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
+                      className="flex items-center px-3 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
                       onClick={() => setShowUserMenu(false)}
                     >
-                      <FontAwesomeIcon icon={faUser} className="icon-sm mr-2" />
+                      <FontAwesomeIcon icon={faUser} className="w-3 h-3 mr-2" />
                       {t('header.user.profile')}
                     </Link>
                     <Link
                       href="/orders"
-                      className="block px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
+                      className="flex items-center px-3 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
                       onClick={() => setShowUserMenu(false)}
                     >
-                      <FontAwesomeIcon icon={faShoppingCart} className="icon-sm mr-2" />
+                      <FontAwesomeIcon icon={faShoppingCart} className="w-3 h-3 mr-2" />
                       {t('header.user.orders')}
                     </Link>
                     <Link
                       href="/track-order"
-                      className="block px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
+                      className="flex items-center px-3 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
                       onClick={() => setShowUserMenu(false)}
                     >
-                      <FontAwesomeIcon icon={faTruck} className="icon-sm mr-2" />
+                      <FontAwesomeIcon icon={faTruck} className="w-3 h-3 mr-2" />
                       {t('header.user.trackOrder')}
                     </Link>
+                    {isAdmin && (
+                      <Link
+                        href="/admin"
+                        className="flex items-center px-3 py-2 text-sm text-brand-gold hover:bg-white/10 hover:text-yellow-400 transition-colors border-t border-white/10"
+                        onClick={() => setShowUserMenu(false)}
+                      >
+                        <FontAwesomeIcon icon={faShieldHalved} className="w-3 h-3 mr-2" />
+                        Admin
+                      </Link>
+                    )}
                     <Link
                       href="/auth/logout"
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
+                      className="flex items-center w-full text-left px-3 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors border-t border-white/10"
                       onClick={() => setShowUserMenu(false)}
                     >
-                      <FontAwesomeIcon icon={faSignOutAlt} className="icon-sm mr-2" />
+                      <FontAwesomeIcon icon={faSignOutAlt} className="w-3 h-3 mr-2" />
                       {t('header.user.logout')}
                     </Link>
                   </div>
@@ -328,101 +353,96 @@ export function Header() {
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="lg:hidden bg-brand-black/95 backdrop-blur-sm border-t border-white/10">
-          <div className="px-6 py-4 space-y-4">
-            {/* Titre du menu mobile */}
-            <div className="flex items-center justify-center pb-4 border-b border-white/10">
-              <span className="text-white text-lg font-bold tracking-wider drop-shadow-lg">
-                {t('header.title')}
-              </span>
-            </div>
-            
-            {/* Category Tabs - Mobile */}
-            <div className="border-b border-white/10 pb-4 mb-4">
-              <h3 className="text-brand-gold text-sm font-semibold mb-3 uppercase">{t('header.categories.title')}</h3>
-              <div className="space-y-2">
-                {categoryTabs.map((tab) => (
-                  <Link
-                    key={tab.name}
-                    href={tab.href}
-                    className={`
-                      flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors
-                      ${tab.special 
-                        ? 'bg-red-600 text-white' 
-                        : 'text-gray-300 hover:bg-white/10 hover:text-white'
-                      }
-                    `}
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <span>{tab.name}</span>
-                    {tab.badge && (
-                      <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
-                        {tab.badge}
+        <>
+          {/* Overlay sombre */}
+          <div 
+            className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40 transition-opacity"
+            onClick={() => setIsMenuOpen(false)}
+          />
+          
+          {/* Menu latéral - style comme dans les captures */}
+          <div className="lg:hidden fixed right-0 top-0 h-full w-full max-w-sm bg-brand-black shadow-2xl z-50 overflow-y-auto">
+            <div className="px-4 py-3">
+              {/* Barre supérieure avec icônes et fermeture */}
+              <div className="flex items-center justify-between mb-3 pb-3 border-b border-white/10">
+                <div className="flex items-center space-x-4">
+                  <button onClick={() => setIsSearchModalOpen(true)} className="text-white p-2">
+                    <FontAwesomeIcon icon={faMagnifyingGlass} className="w-5 h-5" />
+                  </button>
+                  <button className="text-white p-2">
+                    <FontAwesomeIcon icon={faUserCircle} className="w-5 h-5" />
+                  </button>
+                  <Link href="/cart" className="text-white p-2 relative">
+                    <FontAwesomeIcon icon={faCartShopping} className="w-5 h-5" />
+                    {state.totalItems > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-brand-green text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+                        {state.totalItems}
                       </span>
                     )}
                   </Link>
-                ))}
+                </div>
+                <button
+                  onClick={() => setIsMenuOpen(false)}
+                  className="text-white p-2"
+                >
+                  <FontAwesomeIcon icon={faXmark} className="w-5 h-5" />
+                </button>
               </div>
-            </div>
 
-            {/* Navigation Links */}
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className="text-gray-300 hover:text-brand-gold block text-base font-medium transition-colors py-2"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {item.name}
-              </Link>
-            ))}
-            
-            {/* Language Selector Mobile */}
-            <div className="border-t border-white/10 pt-4">
-              <LanguageSelector variant="mobile" />
-            </div>
-            
-            {/* Mobile User Actions */}
-            <div className="border-t border-white/10 pt-4 mt-4">
+              {/* Titre */}
+              <div className="flex items-center justify-center py-2 mb-3 border-b border-white/10">
+                <span className="text-white text-base font-bold tracking-wider">
+                  {t('header.title')}
+                </span>
+              </div>
+
+              {/* Sélecteur de langue */}
+              <div className="mb-3 pb-3 border-b border-white/10">
+                <LanguageSelector variant="mobile" />
+              </div>
+
+              {/* Section utilisateur */}
               {user ? (
-                <div className="space-y-3">
-                  <div className="flex items-center space-x-3 py-2">
-                    <FontAwesomeIcon icon={faUserCircle} className="text-brand-gold" />
+                <div className="mb-3 pb-3 border-b border-white/10">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <FontAwesomeIcon icon={faUserCircle} className="text-brand-gold w-5 h-5" />
                     <div>
-                      <p className="text-white font-medium">{user.name}</p>
-                      <p className="text-gray-400 text-sm">{user.email}</p>
+                      <p className="text-white font-semibold text-sm">{user.email}</p>
+                      <p className="text-gray-400 text-xs">{user.email}</p>
                     </div>
                   </div>
                   
                   <Link
                     href="/profile"
-                    className="flex items-center space-x-3 text-gray-300 hover:text-white transition-colors py-2"
+                    className="flex items-center space-x-3 text-white hover:text-brand-gold transition-colors py-2"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    <FontAwesomeIcon icon={faUser} />
-                    <span>{t('header.user.profile')}</span>
+                    <FontAwesomeIcon icon={faUser} className="w-4 h-4" />
+                    <span className="text-sm">{t('header.user.profile')}</span>
                   </Link>
                   
                   <Link
                     href="/orders"
-                    className="flex items-center space-x-3 text-gray-300 hover:text-white transition-colors py-2"
+                    className="flex items-center space-x-3 text-white hover:text-brand-gold transition-colors py-2"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    <FontAwesomeIcon icon={faShoppingCart} />
-                    <span>{t('header.user.orders')}</span>
+                    <FontAwesomeIcon icon={faShoppingCart} className="w-4 h-4" />
+                    <span className="text-sm">{t('header.user.orders')}</span>
                   </Link>
                   
                   <Link
                     href="/track-order"
-                    className="flex items-center space-x-3 text-gray-300 hover:text-white transition-colors py-2"
+                    className="flex items-center space-x-3 text-white hover:text-brand-gold transition-colors py-2"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    <FontAwesomeIcon icon={faTruck} />
-                    <span>{t('header.user.trackOrder')}</span>
+                    <FontAwesomeIcon icon={faTruck} className="w-4 h-4" />
+                    <span className="text-sm">{t('header.user.trackOrder')}</span>
                   </Link>
                   
-                  <button
-                    onClick={() => {
+                  <Link
+                    href="/auth/logout"
+                    onClick={(e) => {
+                      e.preventDefault()
                       if (auth0State.user) {
                         logoutAuth0()
                       } else {
@@ -430,21 +450,21 @@ export function Header() {
                       }
                       setIsMenuOpen(false)
                     }}
-                    className="flex items-center space-x-3 text-gray-300 hover:text-brand-gold transition-colors py-2 w-full text-left"
+                    className="flex items-center space-x-3 text-white hover:text-brand-gold transition-colors py-2"
                   >
-                    <FontAwesomeIcon icon={faSignOutAlt} />
-                    <span>{t('header.user.logout')}</span>
-                  </button>
+                    <FontAwesomeIcon icon={faSignOutAlt} className="w-4 h-4" />
+                    <span className="text-sm">{t('header.user.logout')}</span>
+                  </Link>
                 </div>
               ) : (
-                <div className="space-y-3">
+                <div className="mb-3 pb-3 border-b border-white/10 space-y-2">
                   <button
                     onClick={() => {
                       setAuthMode('register')
                       setShowAuthModal(true)
                       setIsMenuOpen(false)
                     }}
-                    className="flex items-center space-x-3 bg-brand-gold text-black font-semibold px-4 py-2 rounded-full hover:shadow-gold-glow transition-all duration-300 w-full justify-center"
+                    className="w-full flex items-center justify-center space-x-2 bg-brand-gold text-black font-semibold px-4 py-2 rounded-full hover:shadow-gold-glow transition-all duration-300"
                   >
                     <FontAwesomeIcon icon={faUser} />
                     <span>{t('header.user.register')}</span>
@@ -455,16 +475,98 @@ export function Header() {
                       setShowAuthModal(true)
                       setIsMenuOpen(false)
                     }}
-                    className="flex items-center space-x-3 text-gray-300 hover:text-brand-gold transition-colors py-2 w-full text-left"
+                    className="w-full flex items-center space-x-2 text-white hover:text-brand-gold transition-colors py-2"
                   >
                     <FontAwesomeIcon icon={faUser} />
                     <span>{t('header.user.login')}</span>
                   </button>
                 </div>
               )}
+
+              {/* Catégories */}
+              <div className="mb-3 pb-3 border-b border-white/10">
+                <h3 className="text-brand-gold text-xs font-semibold uppercase mb-2 px-2">
+                  {t('header.categories.title')}
+                </h3>
+                <div className="space-y-1">
+                  {categoryTabs.map((tab) => {
+                    const hasSubmenu = !tab.special && tab.name !== t('header.categories.liquidations')
+                    const isExpanded = expandedCategories.includes(tab.name)
+                    
+                    return (
+                      <div key={tab.name}>
+                        {hasSubmenu ? (
+                          <>
+                            <button
+                              onClick={() => {
+                                if (isExpanded) {
+                                  setExpandedCategories(expandedCategories.filter(c => c !== tab.name))
+                                } else {
+                                  setExpandedCategories([...expandedCategories, tab.name])
+                                }
+                              }}
+                              className="w-full flex items-center justify-between px-2 py-2 text-sm font-medium transition-colors text-white hover:text-brand-gold"
+                            >
+                              <span>{tab.name}</span>
+                              <FontAwesomeIcon 
+                                icon={isExpanded ? faChevronDown : faChevronRight} 
+                                className="w-3 h-3 text-gray-400"
+                              />
+                            </button>
+                            {isExpanded && (
+                              <div className="ml-3 mt-1 space-y-0.5 border-l border-white/10 pl-3 pb-2">
+                                <Link
+                                  href={tab.href}
+                                  className="block px-2 py-1.5 text-xs text-gray-300 hover:text-brand-gold transition-colors"
+                                  onClick={() => setIsMenuOpen(false)}
+                                >
+                                  Voir tout - {tab.name}
+                                </Link>
+                              </div>
+                            )}
+                          </>
+                        ) : (
+                          <Link
+                            href={tab.href}
+                            className={`
+                              flex items-center justify-between px-2 py-2 text-sm font-medium transition-colors
+                              ${tab.special 
+                                ? 'bg-red-600 text-white rounded-md' 
+                                : 'text-white hover:text-brand-gold'
+                              }
+                            `}
+                            onClick={() => setIsMenuOpen(false)}
+                          >
+                            <span>{tab.name}</span>
+                            {tab.badge && (
+                              <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                                {tab.badge}
+                              </span>
+                            )}
+                          </Link>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Navigation principale */}
+              <div>
+                {navigation.map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className="block text-white hover:text-brand-gold transition-colors py-2 text-sm font-medium"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        </>
       )}
 
       {/* Search Modal */}

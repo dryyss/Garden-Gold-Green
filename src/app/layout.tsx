@@ -13,15 +13,22 @@ import { PageLoader } from "@/components/PageLoader";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Auth0Provider } from "@/contexts/Auth0Context";
 import { TranslationProvider } from "@/contexts/TranslationContext";
+import { GoogleAnalytics } from "@/components/GoogleAnalytics";
+import { ChatSupport } from "@/components/ChatSupport";
+import { ChatButton } from "@/components/ChatSupport";
   
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  display: "swap",
+  preload: true,
 });
 
 const montserrat = Montserrat({
   subsets: ["latin"],
   variable: "--font-montserrat",
+  display: "swap",
+  preload: true,
 });
 
 export const metadata: Metadata = {
@@ -74,10 +81,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" className={`${inter.variable} ${montserrat.variable}`}>
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#10b981" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="Garden CBD" />
+        <link rel="apple-touch-icon" href="/logo.png" />
+      </head>
       <body className="bg-brand-black watermark font-sans antialiased min-h-screen flex flex-col">
         {/* Filigrane global */}
         <div aria-hidden className="watermark-overlay" />
-        <PageLoader minLoadingTime={2000} showOnce={false}>
+        <PageLoader minLoadingTime={1500} showOnce={true}>
+          <GoogleAnalytics />
           <TranslationProvider>
             <NotificationProvider>
               <Auth0Provider>
@@ -95,6 +111,8 @@ export default function RootLayout({
                     <CartSidebar />
                     <AuthNotificationHandler />
                     <OrderNotificationHandler />
+                    <ChatSupport />
+                    <ChatButton />
                   </CartProvider>
                 </AuthProvider>
               </Auth0Provider>

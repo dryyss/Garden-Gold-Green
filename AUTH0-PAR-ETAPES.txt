@@ -1,0 +1,219 @@
+================================================================================
+   GUIDE CONFIGURATION AUTH0 - ÉTAPE PAR ÉTAPE
+================================================================================
+
+📌 ALLEZ SUR : https://manage.auth0.com/
+
+================================================================================
+ÉTAPE 1 : CRÉER LES RÔLES
+================================================================================
+
+1. Dans le menu de gauche, cliquez sur :
+   ┌─────────────────────────┐
+   │ 👤 User Management      │
+   │   └─ 👑 Roles          │ ← Cliquez ici
+   └─────────────────────────┘
+
+2. Vous voyez une liste vide ou des rôles existants
+
+3. Cliquez sur le bouton en haut :
+   ┌─────────────────────────────────┐
+   │ [+ Create Role]               │ ← Bouton en haut à droite
+   └─────────────────────────────────┘
+
+4. Remplissez le formulaire :
+
+   ┌─────────────────────────────────────────┐
+   │ Create Role                             │
+   ├─────────────────────────────────────────┤
+   │ Name *                                 │
+   │ ┌───────────────────────────────────┐  │
+   │ │ admin                             │  │ ← Tapez "admin"
+   │ └───────────────────────────────────┘  │
+   │                                         │
+   │ Description                            │
+   │ ┌───────────────────────────────────┐  │
+   │ │ Administrateur du site           │  │ ← Description
+   │ └───────────────────────────────────┘  │
+   │                                         │
+   │        [Cancel]  [Create]              │ ← Cliquez Create
+   └─────────────────────────────────────────┘
+
+5. Répétez pour créer le 2ème rôle :
+   - Name : "customer"
+   - Description : "Client standard"
+   - Cliquez Create
+
+✅ ÉTAPE 1 TERMINÉE : Vous avez maintenant "admin" et "customer"
+
+================================================================================
+ÉTAPE 2 : CONFIGURER L'ACTION (IMPORTANT !)
+================================================================================
+
+SANS CETTE ÉTAPE, LES RÔLES NE SERONT PAS DANS LE TOKEN !
+
+1. Dans le menu de gauche, cliquez sur :
+   ┌─────────────────────────┐
+   │ ⚡ Actions              │
+   │   └─ Login             │ ← Cliquez sur "Login"
+   └─────────────────────────┘
+
+2. Vous voyez un flow (diagramme) :
+   ┌─────────────────────────────────────────────┐
+   │ Flow: Login                    [Apply]      │
+   ├─────────────────────────────────────────────┤
+   │                                              │
+   │    [Start]                                   │
+   │       ↓                                      │
+   │    [Complete]                                │
+   │       ↓                                      │
+   │    [Finish]                                  │
+   │                                              │
+   │  Custom Actions on the right →              │
+   └─────────────────────────────────────────────┘
+
+3. À droite, vous voyez "Custom" → Cliquez sur :
+   ┌─────────────────────────────────┐
+   │ Custom                          │
+   │ └─ [+ Add Action]             │ ← Cliquez ici
+   └─────────────────────────────────┘
+
+4. Cliquez sur :
+   ┌─────────────────────────────────┐
+   │ [Build Custom]                 │ ← Choisissez ceci
+   └─────────────────────────────────┘
+
+5. Un formulaire s'ouvre :
+   ┌─────────────────────────────────────────┐
+   │ Create Action                           │
+   ├─────────────────────────────────────────┤
+   │ Name *                                 │
+   │ ┌───────────────────────────────────┐  │
+   │ │ Add Roles to Token               │  │ ← Ce nom exact
+   │ └───────────────────────────────────┘  │
+   │                                         │
+   │ Trigger                                 │
+   │ ┌───────────────────────────────────┐  │
+   │ │ Login / Post Login ▼             │  │ ← Déjà sélectionné
+   │ └───────────────────────────────────┘  │
+   │                                         │
+   │        [Cancel]  [Create]              │ ← Cliquez Create
+   └─────────────────────────────────────────┘
+
+6. Un éditeur de code s'ouvre. VOUS VOYEZ :
+   ┌─────────────────────────────────────────────┐
+   │ Add Roles to Token              [Deploy]    │
+   ├─────────────────────────────────────────────┤
+   │ exports.onExecutePostLogin = async...      │
+   │                                            │
+   │     // VOTRE CODE ICI                      │
+   │                                            │
+   └─────────────────────────────────────────────┘
+
+7. SUPPRIMEZ TOUT LE CODE et remplacez par :
+   ┌─────────────────────────────────────────────┐
+   │ exports.onExecutePostLogin = async (event, │
+   │   api) => {                                │
+   │  const namespace = 'https://gardengoldgre..│
+   │  en.com';                                   │
+   │                                            │
+   │  if (event.authorization) {               │
+   │    api.idToken.setCustomClaim(namespace +  │
+   │      '/roles', event.authorization.roles); │
+   │    api.accessToken.setCustomClaim(namespac │
+   │      + '/roles', event.authorization...   │
+   │      les);                                  │
+   │  }                                         │
+   │};                                          │
+   └─────────────────────────────────────────────┘
+
+8. Cliquez sur [Deploy] en haut à droite
+
+9. Maintenant, FAITES GISSER votre action dans le flow :
+   ┌─────────────────────────────────────────────┐
+   │ Flow: Login                    [Apply]      │
+   ├─────────────────────────────────────────────┤
+   │    [Start]                                   │
+   │       ↓                                      │
+   │ [Add Roles...] ← GLISSEZ ICI !               │
+   │       ↓                                      │
+   │    [Complete]                                │
+   │       ↓                                      │
+   │    [Finish]                                  │
+   └─────────────────────────────────────────────┘
+
+   Comment faire : Cliquez sur votre action à droite, 
+   glissez-la et déposez-la entre Start et Complete
+
+10. Cliquez [Apply] en haut
+
+✅ ÉTAPE 2 TERMINÉE : Les rôles seront maintenant dans le token
+
+================================================================================
+ÉTAPE 3 : VOUS DONNER LE RÔLE ADMIN
+================================================================================
+
+1. Dans le menu de gauche, cliquez sur :
+   ┌─────────────────────────┐
+   │ 👤 User Management      │
+   │   └─ 👥 Users          │ ← Cliquez ici
+   └─────────────────────────┘
+
+2. Vous voyez la liste de vos utilisateurs
+
+3. Cliquez sur votre utilisateur (votre email)
+
+4. Vous voyez des onglets :
+   ┌─────────────────────────────────────────────┐
+   │ User Details                                │
+   │ [👤 Profile] [🔐 Password] [👑 Roles] [🔗] │
+   └─────────────────────────────────────────────┘
+         ← Cliquez sur l'onglet "Roles"
+
+5. Vous voyez :
+   ┌─────────────────────────────────────────────┐
+   │ Roles (0)                            [+]    │
+   │                                            │
+   │ No roles assigned                          │
+   └─────────────────────────────────────────────┘
+
+6. Cliquez sur [+ Assign Roles] (ou le bouton [+])
+
+7. Une fenêtre apparaît :
+   ┌─────────────────────────────────────────────┐
+   │ Assign Roles                                │
+   ├─────────────────────────────────────────────┤
+   │                                             │
+   │  [☐] admin                                 │ ← COCHEZ cette case
+   │  [☐] customer                              │
+   │                                             │
+   │        [Cancel]  [Assign]                  │ ← Cliquez Assign
+   └─────────────────────────────────────────────┘
+
+8. Maintenant vous voyez :
+   ┌─────────────────────────────────────────────┐
+   │ Roles (1)                            [+]    │
+   ├─────────────────────────────────────────────┤
+   │ admin                              [Remove] │
+   └─────────────────────────────────────────────┘
+
+✅ ÉTAPE 3 TERMINÉE : Vous êtes maintenant ADMIN !
+
+================================================================================
+RÉSULTAT FINAL
+================================================================================
+
+Maintenant :
+1. Déconnectez-vous de votre site
+2. Reconnectez-vous
+3. Allez sur http://localhost:3000/admin
+   → Ça devrait fonctionner ! 🎉
+
+Si ça ne marche pas :
+- Vérifiez que vous avez bien fait les 3 étapes
+- Vérifiez que l'action est bien dans le flow Login (ÉTAPE 2)
+- Vérifiez que vous avez bien le rôle admin (ÉTAPE 3)
+- Reconnectez-vous
+
+================================================================================
+

@@ -46,6 +46,9 @@ npm install
 log_info "Génération du client Prisma..."
 npx prisma generate
 
+log_info "Application des migrations de base de données..."
+npx prisma migrate deploy
+
 log_info "Construction de l'application..."
 npm run build
 
@@ -83,11 +86,11 @@ log_info "✅ Déploiement terminé avec succès !"
 
 echo ""
 echo "📋 Prochaines étapes:"
-echo "1. Vérifiez que les migrations de base de données sont appliquées: npm run db:migrate"
-echo "2. Configurez votre serveur web (Nginx/Apache) pour proxifier les requêtes vers localhost:3000"
-echo "3. Configurez SSL avec Let's Encrypt pour HTTPS"
+echo "1. Configurez votre serveur web (Nginx/Apache) pour proxifier les requêtes vers localhost:3000"
+echo "2. Configurez SSL avec Let's Encrypt pour HTTPS: sudo certbot --nginx -d VOTRE_DOMAINE.fr"
+echo "3. Vérifiez que l'application fonctionne: pm2 logs garden-gold-green"
 echo ""
-echo "📖 Pour plus d'informations, consultez DEPLOYMENT.md"
+echo "📖 Pour plus d'informations, consultez GUIDE-DEPLOIEMENT-COMPLET.md"
 
 
 

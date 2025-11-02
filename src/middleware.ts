@@ -1,8 +1,12 @@
-import type { NextRequest } from "next/server";
+import type { NextRequest, NextResponse } from "next/server";
 import { auth0 } from "./lib/auth0";
+import { withSecurityHeaders } from "./middleware-security";
 
-export async function middleware(request: NextRequest) {
-  return await auth0.middleware(request);
+export async function middleware(request: NextRequest): Promise<NextResponse> {
+  const response = await auth0.middleware(request);
+  
+  // Appliquer les headers de sécurité
+  return withSecurityHeaders(response);
 }
 
 export const config = {

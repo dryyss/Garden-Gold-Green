@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { PrismaClient } from '@prisma/client'
+import { sendOrderConfirmationEmail } from '@/lib/email'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2025-09-30.clover',
@@ -88,8 +89,25 @@ export async function POST(request: NextRequest) {
           })
 
           console.log(`✅ Commande créée: ${order.id}`)
-          // TODO: Envoyer email de confirmation
-          // await sendOrderConfirmationEmail(order)
+          
+          // Envoyer email de confirmation
+          try {
+            await sendOrderConfirmationEmail({
+              id: order.id,
+              customerName: order.customerName || 'Client',
+              total: order.totalCents / 100,
+              currency: order.currency,
+              items: order.items.map(item => ({
+                name: item.name,
+                quantity: item.quantity,
+                price: item.priceCents / 100,
+              })),
+              shippingAddress: order.shippingAddress as any,
+            })
+          } catch (emailError) {
+            console.error('❌ Erreur envoi email:', emailError)
+            // Ne pas bloquer le webhook si l'email échoue
+          }
 
         } catch (dbError) {
           console.error('❌ Erreur création commande:', dbError)

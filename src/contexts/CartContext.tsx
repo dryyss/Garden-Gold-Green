@@ -1,6 +1,7 @@
 'use client'
 
 import { createContext, useContext, useReducer, useEffect, useState, useRef } from 'react'
+import { trackAddToCart as trackAddToCartGA } from '@/lib/analytics'
 
 interface CartItem {
   id: string
@@ -38,6 +39,15 @@ function cartReducer(state: CartState, action: CartAction): CartState {
   switch (action.type) {
     case 'ADD_ITEM': {
       const existingItem = state.items.find(item => item.id === action.payload.id)
+      
+      // Track GA
+      trackAddToCartGA({
+        itemId: action.payload.id,
+        itemName: action.payload.name,
+        price: action.payload.price,
+        quantity: action.payload.quantity,
+        itemCategory: 'CBD Products',
+      })
       
       if (existingItem) {
         const updatedItems = state.items.map(item =>

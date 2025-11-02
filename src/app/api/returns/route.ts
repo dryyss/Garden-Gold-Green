@@ -1,17 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
+import { auth0 } from '@/lib/auth0'
 
 const prisma = new PrismaClient()
 
 // POST - Créer une demande de retour
 export async function POST(request: NextRequest) {
   try {
+    // Vérifier que l'utilisateur est connecté
+    const session = await auth0.getSession(request)
+    
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: 'Non authentifié' },
+        { status: 401 }
+      )
+    }
+
+    const userId = session.user.sub
     const body = await request.json()
     const { orderId, items, reason, type } = body
-
-    // Vérifier que l'utilisateur est connecté (à adapter selon votre système d'auth)
-    // const userId = await getCurrentUserId(request)
-    const userId = 'temp-user-id' // À remplacer par l'ID utilisateur réel
 
     if (!orderId || !items || items.length === 0 || !reason || !type) {
       return NextResponse.json(
@@ -82,8 +90,17 @@ export async function POST(request: NextRequest) {
 // GET - Récupérer les demandes de retour d'un utilisateur
 export async function GET(request: NextRequest) {
   try {
-    // const userId = await getCurrentUserId(request)
-    const userId = 'temp-user-id' // À remplacer par l'ID utilisateur réel
+    // Vérifier que l'utilisateur est connecté
+    const session = await auth0.getSession(request)
+    
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: 'Non authentifié' },
+        { status: 401 }
+      )
+    }
+
+    const userId = session.user.sub
 
     const returnRequests = await prisma.returnRequest.findMany({
       where: {
