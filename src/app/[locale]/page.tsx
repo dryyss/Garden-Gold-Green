@@ -25,6 +25,7 @@ export default function Home() {
               src="/logo.png" 
               alt="3G - Garden Gold Green logo, metallic gold, emerald green, and shiny silver, on a dark background with light reflections"
               width={256}
+              priority
               height={256}
             />
           </div>
