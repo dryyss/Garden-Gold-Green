@@ -1,11 +1,8 @@
 {
   "hero": {
     "title": "Contactez-nous",
-    "subtitle": "Notre équipe est là pour vous aider. N'hésitez pas à nous contacter pour toute question ou préoccupation."
-  },
-  "info": {
-    "title": "Informations de contact",
-    "subtitle": "Plusieurs façons de nous joindre"
+    "subtitle": "Notre équipe est là pour vous aider. N'hésitez pas à nous contacter pour toute question ou préoccupation.",
+    "description": "Notre équipe d'experts en CBD est disponible pour répondre à toutes vos questions et vous accompagner dans votre parcours bien-être."
   },
   "form": {
     "title": "Envoyez-nous un message",
@@ -28,11 +25,9 @@
       "phone": "Téléphone (optionnel)",
       "phonePlaceholder": "Votre numéro de téléphone",
       "subject": "Sujet",
-      "subjectPlaceholder": "Sujet de votre message",
+      "subjectPlaceholder": "Sélectionnez un sujet",
       "message": "Message",
-      "messagePlaceholder": "Décrivez votre question ou préoccupation...",
-      "submit": "Envoyer le message",
-      "submitting": "Envoi en cours..."
+      "messagePlaceholder": "Décrivez votre question ou préoccupation..."
     },
     "validation": {
       "nameRequired": "Le nom est requis",
@@ -42,32 +37,35 @@
       "messageRequired": "Le message est requis",
       "messageMinLength": "Le message doit contenir au moins 10 caractères"
     },
+    "submit": "Envoyer le message",
+    "submitting": "Envoi en cours...",
     "success": {
       "title": "Message envoyé !",
       "message": "Merci pour votre message. Nous vous répondrons dans les plus brefs délais.",
       "button": "Envoyer un autre message"
     }
   },
-  "contactInfo": {
+  "info": {
+    "title": "Informations de contact",
+    "subtitle": "Plusieurs façons de nous joindre",
     "phone": {
       "title": "Téléphone",
-      "value": "+33 7 78 82 38 40",
-      "description": "Lun-Ven 9h-18h"
+      "number": "+33 7 78 82 38 40",
+      "hours": "Lun-Ven: 9h-18h"
     },
     "email": {
       "title": "Email",
-      "value": "contact@gardengoldgreen.com",
-      "description": "Réponse sous 24h"
+      "address": "contact@gardengoldgreen.com",
+      "response": "Réponse sous 24h"
     },
     "address": {
       "title": "Adresse",
-      "value": "123 Rue du CBD, 75001 Paris",
-      "description": "Visite sur rendez-vous"
+      "street": "123 Rue du CBD",
+      "city": "75001 Paris, France"
     },
-    "hours": {
-      "title": "Horaires",
-      "value": "Lun-Ven: 9h-18h",
-      "description": "Samedi: 10h-16h"
+    "social": {
+      "title": "Réseaux sociaux",
+      "follow": "Suivez-nous pour les dernières actualités"
     }
   },
   "faq": {

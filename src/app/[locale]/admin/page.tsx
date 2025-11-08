@@ -23,6 +23,7 @@ import {
   faXmark
 } from '@fortawesome/free-solid-svg-icons'
 import Image from 'next/image'
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Area, AreaChart } from 'recharts'
 
 interface Order {
   id: string
@@ -83,6 +84,8 @@ function AdminContent() {
   const [orderStatusFilter, setOrderStatusFilter] = useState('all')
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
   const [showOrderModal, setShowOrderModal] = useState(false)
+  const [periodFilter, setPeriodFilter] = useState('30days') // 7days, 30days, 3months, year, all
+  const [chartData, setChartData] = useState<any[]>([])
   
   const isOwnerUser = auth0State.user ? isOwner() : false
 
@@ -100,8 +103,8 @@ function AdminContent() {
       setIsLoading(true)
       
       try {
-        // Charger les statistiques
-        const statsResponse = await fetch('/api/admin/statistics?period=all')
+        // Charger les statistiques selon la période
+        const statsResponse = await fetch(`/api/admin/statistics?period=${periodFilter}`)
         const statsData = await statsResponse.json()
         if (statsData.success) {
           setStats({
@@ -113,6 +116,11 @@ function AdminContent() {
             monthlyOrders: statsData.statistics.orders || 0,
             monthlyCustomers: statsData.statistics.customers || 0
           })
+          
+          // Préparer les données pour les graphiques
+          if (statsData.statistics.chartData) {
+            setChartData(statsData.statistics.chartData)
+          }
         }
 
         // Charger les commandes
@@ -175,7 +183,7 @@ function AdminContent() {
     }
 
     loadData()
-  }, [isOwnerUser])
+  }, [isOwnerUser, periodFilter])
 
   if (isLoading) {
     return (
@@ -281,6 +289,82 @@ function AdminContent() {
                     <FontAwesomeIcon icon={faBox} className="text-brand-gold text-xl" />
                   </div>
                 </div>
+              </div>
+            </div>
+
+            {/* Filtre de période */}
+            <div className="flex items-center justify-between card-bg rounded-xl p-4">
+              <h3 className="text-white font-semibold">Période d'analyse</h3>
+              <div className="flex gap-2">
+                {[
+                  { value: '7days', label: '7 jours' },
+                  { value: '30days', label: '30 jours' },
+                  { value: '3months', label: '3 mois' },
+                  { value: 'year', label: '1 an' },
+                  { value: 'all', label: 'Tout' }
+                ].map(period => (
+                  <button
+                    key={period.value}
+                    onClick={() => setPeriodFilter(period.value)}
+                    className={`px-4 py-2 rounded-lg transition-colors ${
+                      periodFilter === period.value
+                        ? 'bg-brand-gold text-black font-semibold'
+                        : 'bg-white/5 text-gray-400 hover:text-white hover:bg-white/10'
+                    }`}
+                  >
+                    {period.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Graphiques */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Graphique des revenus */}
+              <div className="card-bg rounded-xl p-6">
+                <h3 className="text-white font-semibold mb-4">Évolution des revenus</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <AreaChart data={chartData}>
+                    <defs>
+                      <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#D4AF37" stopOpacity={0.8}/>
+                        <stop offset="95%" stopColor="#D4AF37" stopOpacity={0}/>
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#333" />
+                    <XAxis dataKey="date" stroke="#999" />
+                    <YAxis stroke="#999" />
+                    <Tooltip 
+                      contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333', borderRadius: '8px' }}
+                      labelStyle={{ color: '#fff' }}
+                    />
+                    <Area 
+                      type="monotone" 
+                      dataKey="revenue" 
+                      stroke="#D4AF37" 
+                      fillOpacity={1} 
+                      fill="url(#colorRevenue)"
+                      name="Revenus (€)"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* Graphique des commandes */}
+              <div className="card-bg rounded-xl p-6">
+                <h3 className="text-white font-semibold mb-4">Nombre de commandes</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#333" />
+                    <XAxis dataKey="date" stroke="#999" />
+                    <YAxis stroke="#999" />
+                    <Tooltip 
+                      contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333', borderRadius: '8px' }}
+                      labelStyle={{ color: '#fff' }}
+                    />
+                    <Bar dataKey="orders" fill="#10B981" name="Commandes" />
+                  </BarChart>
+                </ResponsiveContainer>
               </div>
             </div>
 

@@ -209,39 +209,46 @@ export const GET = requireAdmin(async (request: NextRequest) => {
       }
     }
 
-    // Grouper les revenus par jour
-    const revenueByDayMap: Record<string, number> = {}
-    revenueByDay.forEach(order => {
+    // Grouper les revenus et commandes par jour pour les graphiques
+    const dataByDayMap: Record<string, { revenue: number; orders: number }> = {}
+    
+    ordersData.forEach(order => {
       const date = order.createdAt.toISOString().split('T')[0]
-      if (!revenueByDayMap[date]) {
-        revenueByDayMap[date] = 0
+      if (!dataByDayMap[date]) {
+        dataByDayMap[date] = { revenue: 0, orders: 0 }
       }
-      revenueByDayMap[date] += order.totalCents
+      dataByDayMap[date].orders++
+      if (['paid', 'shipped', 'delivered'].includes(order.status)) {
+        dataByDayMap[date].revenue += order.totalCents
+      }
     })
 
-    const revenueByDayArray = Object.entries(revenueByDayMap)
-      .map(([date, revenue]) => ({ date, revenue }))
-      .sort((a, b) => a.date.localeCompare(b.date))
+    // Formater pour les graphiques Recharts
+    const chartData = Object.entries(dataByDayMap)
+      .map(([dateStr, data]) => ({
+        date: new Date(dateStr).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' }),
+        revenue: +(data.revenue / 100).toFixed(2),
+        orders: data.orders
+      }))
+      .sort((a, b) => {
+        const dateA = new Date(a.date.split(' ').reverse().join(' '))
+        const dateB = new Date(b.date.split(' ').reverse().join(' '))
+        return dateA.getTime() - dateB.getTime()
+      })
 
     return NextResponse.json({
       success: true,
       statistics: {
-        overview: {
-          totalRevenue,
-          totalRevenueInCents: revenueTotal,
-          totalRevenueInEuros: (revenueTotal / 100).toFixed(2),
-          totalOrders,
-          deliveredOrders,
-          pendingOrders,
-          totalCustomers,
-          totalProducts
-        },
+        revenue: revenueTotal,
+        orders: totalOrders,
+        customers: totalCustomers,
+        products: totalProducts,
+        deliveredOrders,
+        pendingOrders,
         comparison: comparisonStats,
-        products: {
-          featured: featuredProductsStats,
-          topSelling: topProductsStats
-        },
-        revenueByDay: revenueByDayArray
+        chartData,
+        featured: featuredProductsStats,
+        topSelling: topProductsStats
       }
     })
   } catch (error) {
