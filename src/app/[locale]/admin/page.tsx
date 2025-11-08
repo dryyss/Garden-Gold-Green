@@ -234,9 +234,9 @@ function AdminContent() {
               <div className="card-bg rounded-xl p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-400 text-sm">Total Revenue</p>
-                    <p className="text-3xl font-bold text-white">${stats.totalRevenue.toLocaleString()}</p>
-                    <p className="text-green-400 text-sm">+12.5% from last month</p>
+                    <p className="text-gray-400 text-sm">Revenus totaux</p>
+                    <p className="text-3xl font-bold text-white">{stats.totalRevenue.toFixed(2)} €</p>
+                    <p className="text-gray-400 text-sm">Toutes périodes</p>
                   </div>
                   <div className="w-12 h-12 bg-brand-gold/20 rounded-full flex items-center justify-center">
                     <FontAwesomeIcon icon={faDollarSign} className="text-brand-gold text-xl" />
@@ -247,9 +247,9 @@ function AdminContent() {
               <div className="card-bg rounded-xl p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-400 text-sm">Total Orders</p>
-                    <p className="text-3xl font-bold text-white">{stats.totalOrders.toLocaleString()}</p>
-                    <p className="text-green-400 text-sm">+8.2% from last month</p>
+                    <p className="text-gray-400 text-sm">Commandes totales</p>
+                    <p className="text-3xl font-bold text-white">{stats.totalOrders}</p>
+                    <p className="text-gray-400 text-sm">Toutes périodes</p>
                   </div>
                   <div className="w-12 h-12 bg-brand-gold/20 rounded-full flex items-center justify-center">
                     <FontAwesomeIcon icon={faShoppingBag} className="text-brand-gold text-xl" />
@@ -260,9 +260,9 @@ function AdminContent() {
               <div className="card-bg rounded-xl p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-400 text-sm">Total Customers</p>
-                    <p className="text-3xl font-bold text-white">{stats.totalCustomers.toLocaleString()}</p>
-                    <p className="text-green-400 text-sm">+15.3% from last month</p>
+                    <p className="text-gray-400 text-sm">Clients totaux</p>
+                    <p className="text-3xl font-bold text-white">{stats.totalCustomers}</p>
+                    <p className="text-gray-400 text-sm">Comptes créés</p>
                   </div>
                   <div className="w-12 h-12 bg-brand-gold/20 rounded-full flex items-center justify-center">
                     <FontAwesomeIcon icon={faUsers} className="text-brand-gold text-xl" />
