@@ -169,3 +169,22 @@ model SubscriptionDelivery {
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
 }
+
+// Modèle pour les promotions et codes promo
+model Promotion {
+  id              String    @id @default(cuid())
+  code            String    @unique // Code promo unique (ex: "SUMMER2024")
+  description     String?   // Description de la promotion
+  discountType    String    // "percentage" ou "fixed" (pourcentage ou montant fixe)
+  discountValue   Int       // Valeur de la remise (en % ou en centimes selon le type)
+  minimumAmount   Int?      // Montant minimum de commande en centimes
+  maxUses         Int?      // Nombre maximum d'utilisations (null = illimité)
+  usedCount       Int       @default(0) // Nombre d'utilisations actuelles
+  validFrom       DateTime  @default(now()) // Date de début de validité
+  validUntil      DateTime? // Date de fin de validité (null = pas d'expiration)
+  isActive        Boolean   @default(true) // Actif ou non
+  applicableProducts String? // JSON array des IDs de produits concernés (null = tous)
+  applicableCategories String? // JSON array des IDs de catégories concernées (null = toutes)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}

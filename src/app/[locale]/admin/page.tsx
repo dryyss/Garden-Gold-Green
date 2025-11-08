@@ -19,7 +19,8 @@ import {
   faFilter,
   faDownload,
   faUserShield,
-  faCrown
+  faCrown,
+  faXmark
 } from '@fortawesome/free-solid-svg-icons'
 import Image from 'next/image'
 
@@ -69,96 +70,112 @@ function AdminContent() {
   const [users, setUsers] = useState<User[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isLoadingUsers, setIsLoadingUsers] = useState(false)
+  const [stats, setStats] = useState({
+    totalRevenue: 0,
+    totalOrders: 0,
+    totalCustomers: 0,
+    totalProducts: 0,
+    monthlyRevenue: 0,
+    monthlyOrders: 0,
+    monthlyCustomers: 0
+  })
+  const [orderSearch, setOrderSearch] = useState('')
+  const [orderStatusFilter, setOrderStatusFilter] = useState('all')
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
+  const [showOrderModal, setShowOrderModal] = useState(false)
   
   const isOwnerUser = auth0State.user ? isOwner() : false
+
+  // Filtrer les commandes
+  const filteredOrders = orders.filter(order => {
+    const matchesSearch = order.orderNumber.toLowerCase().includes(orderSearch.toLowerCase()) ||
+                         order.customer.toLowerCase().includes(orderSearch.toLowerCase()) ||
+                         order.email.toLowerCase().includes(orderSearch.toLowerCase())
+    const matchesStatus = orderStatusFilter === 'all' || order.status === orderStatusFilter
+    return matchesSearch && matchesStatus
+  })
 
   useEffect(() => {
     const loadData = async () => {
       setIsLoading(true)
       
-      // Charger les utilisateurs si owner
-      if (isOwnerUser) {
-        try {
+      try {
+        // Charger les statistiques
+        const statsResponse = await fetch('/api/admin/statistics?period=all')
+        const statsData = await statsResponse.json()
+        if (statsData.success) {
+          setStats({
+            totalRevenue: (statsData.statistics.revenue / 100) || 0,
+            totalOrders: statsData.statistics.orders || 0,
+            totalCustomers: statsData.statistics.customers || 0,
+            totalProducts: statsData.statistics.products || 0,
+            monthlyRevenue: (statsData.statistics.revenue / 100) || 0,
+            monthlyOrders: statsData.statistics.orders || 0,
+            monthlyCustomers: statsData.statistics.customers || 0
+          })
+        }
+
+        // Charger les commandes
+        const ordersResponse = await fetch('/api/orders/admin?limit=50')
+        const ordersData = await ordersResponse.json()
+        if (ordersData.success && ordersData.orders) {
+          const formattedOrders = ordersData.orders.map((order: any) => ({
+            id: order.id,
+            orderNumber: order.id.slice(0, 10).toUpperCase(),
+            customer: order.customerName || order.user?.name || 'Client',
+            email: order.customerEmail || order.user?.email || '',
+            date: new Date(order.createdAt).toLocaleDateString(),
+            status: order.status,
+            total: (order.totalCents / 100),
+            items: order.items?.map((item: any) => ({
+              id: item.id,
+              name: item.name || item.product?.title || 'Produit',
+              quantity: item.quantity,
+              price: (item.priceCents / 100)
+            })) || []
+          }))
+          setOrders(formattedOrders)
+        }
+
+        // Charger les produits
+        const productsResponse = await fetch('/api/admin/products?limit=50')
+        const productsData = await productsResponse.json()
+        if (productsData.success && productsData.products) {
+          const formattedProducts = productsData.products.map((product: any) => {
+            const images = typeof product.images === 'string' ? JSON.parse(product.images) : product.images
+            return {
+              id: product.id,
+              name: product.title,
+              price: (product.priceCents / 100),
+              stock: product.stock || 0,
+              category: product.categories?.[0]?.name || 'Non catégorisé',
+              image: Array.isArray(images) && images.length > 0 ? images[0] : '/products/default.svg',
+              status: product.published ? 'active' : 'inactive',
+              sales: product.sales || 0
+            }
+          })
+          setProducts(formattedProducts)
+        }
+      
+        // Charger les utilisateurs si owner
+        if (isOwnerUser) {
+          setIsLoadingUsers(true)
           const usersResponse = await fetch('/api/admin/users?limit=100')
           const usersData = await usersResponse.json()
           if (usersData.success) {
             setUsers(usersData.users)
           }
-        } catch (error) {
-          console.error('Erreur lors du chargement des utilisateurs:', error)
+          setIsLoadingUsers(false)
         }
+      } catch (error) {
+        console.error('Erreur lors du chargement des données:', error)
+      } finally {
+        setIsLoading(false)
       }
-      
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      // Mock data
-      setOrders([
-        {
-          id: '1',
-          orderNumber: 'GGG-123456',
-          customer: 'John Doe',
-          email: 'john@example.com',
-          date: '2024-01-15',
-          status: 'delivered',
-          total: 89.97,
-          items: [
-            { id: '1', name: 'Gold Standard CBD Oil', quantity: 1, price: 49.99 },
-            { id: '2', name: 'Emerald Soothe Balm', quantity: 2, price: 39.98 }
-          ]
-        },
-        {
-          id: '2',
-          orderNumber: 'GGG-123457',
-          customer: 'Jane Smith',
-          email: 'jane@example.com',
-          date: '2024-01-14',
-          status: 'shipped',
-          total: 129.97,
-          items: [
-            { id: '3', name: 'Green Serenity Gummies', quantity: 1, price: 59.99 },
-            { id: '4', name: 'Silver Purity Vape', quantity: 1, price: 69.98 }
-          ]
-        }
-      ])
-
-      setProducts([
-        {
-          id: '1',
-          name: 'Gold Standard CBD Oil - 1000mg',
-          price: 49.99,
-          stock: 45,
-          category: 'Oils',
-          image: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/6150e371c9-cf959decb319ba5f18c3.png',
-          status: 'active',
-          sales: 156
-        },
-        {
-          id: '2',
-          name: 'Emerald Soothe Balm - 500mg',
-          price: 39.99,
-          stock: 23,
-          category: 'Topicals',
-          image: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/efac7e243f-ef87256518694e833470.png',
-          status: 'active',
-          sales: 89
-        }
-      ])
-      
-      setIsLoading(false)
     }
 
     loadData()
   }, [isOwnerUser])
-
-  const stats = {
-    totalRevenue: 45678.90,
-    totalOrders: 1234,
-    totalCustomers: 567,
-    totalProducts: 45,
-    monthlyRevenue: 12345.67,
-    monthlyOrders: 234,
-    monthlyCustomers: 89
-  }
 
   if (isLoading) {
     return (
@@ -317,15 +334,23 @@ function AdminContent() {
                   <input
                     type="text"
                     placeholder="Search orders..."
+                    value={orderSearch}
+                    onChange={(e) => setOrderSearch(e.target.value)}
                     className="bg-white/5 border border-white/20 rounded-lg pl-10 pr-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold"
                   />
                 </div>
-                <select className="bg-white/5 border border-white/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-brand-gold">
-                  <option>All Status</option>
-                  <option>Pending</option>
-                  <option>Processing</option>
-                  <option>Shipped</option>
-                  <option>Delivered</option>
+                <select 
+                  value={orderStatusFilter}
+                  onChange={(e) => setOrderStatusFilter(e.target.value)}
+                  className="bg-white/5 border border-white/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                >
+                  <option value="all">All Status</option>
+                  <option value="pending">Pending</option>
+                  <option value="paid">Paid</option>
+                  <option value="processing">Processing</option>
+                  <option value="shipped">Shipped</option>
+                  <option value="delivered">Delivered</option>
+                  <option value="cancelled">Cancelled</option>
                 </select>
                 <button className="btn-gold text-black font-semibold py-2 px-4 rounded-lg">
                   <FontAwesomeIcon icon={faDownload} className="mr-2" />
@@ -348,8 +373,15 @@ function AdminContent() {
                     </tr>
                   </thead>
                   <tbody>
-                    {orders.map(order => (
-                      <tr key={order.id} className="border-t border-white/10">
+                    {filteredOrders.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="px-6 py-8 text-center text-gray-400">
+                          Aucune commande trouvée
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredOrders.map(order => (
+                        <tr key={order.id} className="border-t border-white/10">
                         <td className="px-6 py-4">
                           <p className="text-white font-medium">#{order.orderNumber}</p>
                         </td>
@@ -373,16 +405,31 @@ function AdminContent() {
                         <td className="px-6 py-4 text-white font-semibold">${order.total.toFixed(2)}</td>
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-2">
-                            <button className="text-gray-400 hover:text-brand-gold transition-colors">
+                            <button 
+                              onClick={() => {
+                                setSelectedOrder(order)
+                                setShowOrderModal(true)
+                              }}
+                              className="text-gray-400 hover:text-brand-gold transition-colors"
+                              title="Voir détails"
+                            >
                               <FontAwesomeIcon icon={faEye} />
                             </button>
-                            <button className="text-gray-400 hover:text-brand-gold transition-colors">
+                            <button 
+                              onClick={() => {
+                                setSelectedOrder(order)
+                                setShowOrderModal(true)
+                              }}
+                              className="text-gray-400 hover:text-brand-gold transition-colors"
+                              title="Modifier"
+                            >
                               <FontAwesomeIcon icon={faEdit} />
                             </button>
                           </div>
                         </td>
                       </tr>
-                    ))}
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -654,44 +701,192 @@ function AdminContent() {
                             {(user.totalSpent / 100).toFixed(2)} €
                           </td>
                           <td className="px-6 py-4">
-                            <select
-                              className="bg-white/5 border border-white/20 rounded-lg px-3 py-1 text-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                              defaultValue={user.role}
-                              onChange={async (e) => {
-                                const newRole = e.target.value
-                                if (newRole !== user.role) {
-                                  try {
-                                    const response = await fetch(`/api/admin/users/${user.id}`, {
-                                      method: 'PATCH',
-                                      headers: { 'Content-Type': 'application/json' },
-                                      body: JSON.stringify({ role: newRole })
-                                    })
-                                    const data = await response.json()
-                                    if (data.success) {
-                                      setUsers(users.map(u => u.id === user.id ? { ...u, role: newRole as any } : u))
-                                      alert(`Rôle modifié avec succès !`)
-                                    } else {
-                                      alert(`Erreur: ${data.error}`)
+                            <div className="flex items-center gap-2">
+                              <select
+                                className="bg-white/5 border border-white/20 rounded-lg px-3 py-1 text-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                                defaultValue={user.role}
+                                onChange={async (e) => {
+                                  const newRole = e.target.value
+                                  if (newRole !== user.role) {
+                                    try {
+                                      const response = await fetch(`/api/admin/users/${user.id}`, {
+                                        method: 'PATCH',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ role: newRole })
+                                      })
+                                      const data = await response.json()
+                                      if (data.success) {
+                                        setUsers(users.map(u => u.id === user.id ? { ...u, role: newRole as any } : u))
+                                        alert(`Rôle modifié avec succès !`)
+                                      } else {
+                                        alert(`Erreur: ${data.error}`)
+                                        e.target.value = user.role
+                                      }
+                                    } catch (error) {
+                                      console.error('Erreur:', error)
+                                      alert('Erreur lors de la modification du rôle')
                                       e.target.value = user.role
                                     }
-                                  } catch (error) {
-                                    console.error('Erreur:', error)
-                                    alert('Erreur lors de la modification du rôle')
-                                    e.target.value = user.role
                                   }
-                                }
-                              }}
-                            >
-                              <option value="customer">Customer</option>
-                              <option value="admin">Admin</option>
-                              <option value="owner">Owner</option>
-                            </select>
+                                }}
+                              >
+                                <option value="customer">Customer</option>
+                                <option value="admin">Admin</option>
+                                <option value="owner">Owner</option>
+                              </select>
+                              <button
+                                onClick={async () => {
+                                  if (confirm(`Êtes-vous sûr de vouloir supprimer l'utilisateur ${user.email} ?`)) {
+                                    try {
+                                      const response = await fetch(`/api/admin/users/${user.id}`, {
+                                        method: 'DELETE'
+                                      })
+                                      const data = await response.json()
+                                      if (data.success) {
+                                        setUsers(users.filter(u => u.id !== user.id))
+                                        alert('Utilisateur supprimé avec succès!')
+                                      } else {
+                                        alert(`Erreur: ${data.error}`)
+                                      }
+                                    } catch (error) {
+                                      console.error('Erreur:', error)
+                                      alert('Erreur lors de la suppression')
+                                    }
+                                  }
+                                }}
+                                className="text-red-400 hover:text-red-300 transition-colors p-2"
+                                title="Supprimer utilisateur"
+                              >
+                                <FontAwesomeIcon icon={faTrash} />
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))
                     )}
                   </tbody>
                 </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Modal de détails de commande */}
+        {showOrderModal && selectedOrder && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="card-bg rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6 border-b border-white/10">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-2xl font-bold text-white">
+                    Commande #{selectedOrder.orderNumber}
+                  </h3>
+                  <button
+                    onClick={() => setShowOrderModal(false)}
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
+                    <FontAwesomeIcon icon={faXmark} className="text-2xl" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="p-6 space-y-6">
+                {/* Informations client */}
+                <div>
+                  <h4 className="text-lg font-semibold text-white mb-3">Informations client</h4>
+                  <div className="space-y-2 text-gray-300">
+                    <p><span className="text-gray-400">Nom:</span> {selectedOrder.customer}</p>
+                    <p><span className="text-gray-400">Email:</span> {selectedOrder.email}</p>
+                    <p><span className="text-gray-400">Date:</span> {selectedOrder.date}</p>
+                  </div>
+                </div>
+
+                {/* Statut de la commande */}
+                <div>
+                  <h4 className="text-lg font-semibold text-white mb-3">Statut</h4>
+                  <select
+                    value={selectedOrder.status}
+                    onChange={async (e) => {
+                      const newStatus = e.target.value
+                      try {
+                        const response = await fetch('/api/orders/admin', {
+                          method: 'PATCH',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ 
+                            orderId: selectedOrder.id, 
+                            status: newStatus 
+                          })
+                        })
+                        const data = await response.json()
+                        if (data.success) {
+                          setOrders(orders.map(o => 
+                            o.id === selectedOrder.id ? { ...o, status: newStatus as any } : o
+                          ))
+                          setSelectedOrder({ ...selectedOrder, status: newStatus as any })
+                          alert('Statut mis à jour avec succès!')
+                        } else {
+                          alert('Erreur lors de la mise à jour du statut')
+                        }
+                      } catch (error) {
+                        console.error('Erreur:', error)
+                        alert('Erreur lors de la mise à jour')
+                      }
+                    }}
+                    className="bg-white/5 border border-white/20 rounded-lg px-4 py-2 text-white w-full focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                  >
+                    <option value="pending">Pending</option>
+                    <option value="paid">Paid</option>
+                    <option value="processing">Processing</option>
+                    <option value="shipped">Shipped</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                </div>
+
+                {/* Articles de la commande */}
+                <div>
+                  <h4 className="text-lg font-semibold text-white mb-3">Articles</h4>
+                  <div className="space-y-3">
+                    {selectedOrder.items.map(item => (
+                      <div key={item.id} className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+                        <div>
+                          <p className="text-white font-medium">{item.name}</p>
+                          <p className="text-gray-400 text-sm">Quantité: {item.quantity}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-white font-semibold">${item.price.toFixed(2)}</p>
+                          <p className="text-gray-400 text-sm">Total: ${(item.price * item.quantity).toFixed(2)}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Total */}
+                <div className="border-t border-white/10 pt-4">
+                  <div className="flex items-center justify-between text-xl">
+                    <span className="text-white font-bold">Total</span>
+                    <span className="text-brand-gold font-bold">${selectedOrder.total.toFixed(2)}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-6 border-t border-white/10 flex gap-3">
+                <button
+                  onClick={() => setShowOrderModal(false)}
+                  className="flex-1 bg-white/10 text-white font-semibold py-2 px-4 rounded-lg hover:bg-white/20 transition-colors"
+                >
+                  Fermer
+                </button>
+                <button
+                  onClick={() => {
+                    // TODO: Générer facture PDF
+                    alert('Fonctionnalité de génération de facture à venir')
+                  }}
+                  className="flex-1 btn-gold text-black font-semibold py-2 px-4 rounded-lg"
+                >
+                  <FontAwesomeIcon icon={faDownload} className="mr-2" />
+                  Télécharger facture
+                </button>
               </div>
             </div>
           </div>
