@@ -6,6 +6,8 @@
 const AUTH0_DOMAIN = process.env.AUTH0_DOMAIN?.replace('https://', '') || 'dev-1tkaqeynik4yy714.us.auth0.com'
 const AUTH0_M2M_CLIENT_ID = process.env.AUTH0_M2M_CLIENT_ID || ''
 const AUTH0_M2M_CLIENT_SECRET = process.env.AUTH0_M2M_CLIENT_SECRET || ''
+const AUTH0_M2M_AUDIENCE =
+  process.env.AUTH0_M2M_AUDIENCE || `https://${AUTH0_DOMAIN}/api/v2/`
 
 // Cache du token d'accès (valide 24h)
 let cachedToken: { token: string; expiresAt: number } | null = null
@@ -27,7 +29,7 @@ async function getManagementToken(): Promise<string> {
     body: JSON.stringify({
       client_id: AUTH0_M2M_CLIENT_ID,
       client_secret: AUTH0_M2M_CLIENT_SECRET,
-      audience: `https://${AUTH0_DOMAIN}/api/v2/`,
+      audience: AUTH0_M2M_AUDIENCE,
       grant_type: 'client_credentials',
     }),
   })
@@ -208,6 +210,77 @@ export async function updateAuth0UserRoles(
  */
 export async function assignSingleRole(auth0UserId: string, roleName: string): Promise<void> {
   await updateAuth0UserRoles(auth0UserId, [roleName])
+}
+
+
+export interface CreateAuth0UserOptions {
+  email: string
+  password?: string
+  name?: string
+  role?: 'customer' | 'admin' | 'owner'
+  metadata?: Record<string, any>
+}
+
+/**
+ * Crée un utilisateur dans Auth0 via l'API Management
+ * Retourne l'objet utilisateur Auth0
+ */
+export async function createAuth0User(options: CreateAuth0UserOptions): Promise<any> {
+  const token = await getManagementToken()
+
+  const payload: any = {
+    email: options.email,
+    name: options.name,
+    connection: 'Username-Password-Authentication',
+    email_verified: false,
+    verify_email: false,
+    user_metadata: options.metadata || {},
+  }
+
+  if (options.password) {
+    payload.password = options.password
+  } else {
+    // Générer un mot de passe aléatoire si non fourni (obligatoire pour la connexion DB)
+    payload.password = `Ggg-${Math.random().toString(36).slice(2, 10)}A!`
+  }
+
+  const response = await fetch(`https://${AUTH0_DOMAIN}/api/v2/users`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  })
+
+  if (!response.ok) {
+    const errorText = await response.text()
+    throw new Error(`Failed to create Auth0 user: ${errorText}`)
+  }
+
+  const user = await response.json()
+
+  if (options.role) {
+    await assignSingleRole(user.user_id, options.role)
+  }
+
+  return user
+}
+
+export async function deleteAuth0User(auth0UserId: string): Promise<void> {
+  const token = await getManagementToken()
+  const response = await fetch(`https://${AUTH0_DOMAIN}/api/v2/users/${encodeURIComponent(auth0UserId)}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  })
+
+  if (!response.ok) {
+    const errorText = await response.text()
+    throw new Error(`Failed to delete Auth0 user: ${errorText}`)
+  }
 }
 
 

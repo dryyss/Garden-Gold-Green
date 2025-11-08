@@ -86,6 +86,14 @@ function AdminContent() {
   const [showOrderModal, setShowOrderModal] = useState(false)
   const [periodFilter, setPeriodFilter] = useState('30days') // 7days, 30days, 3months, year, all
   const [chartData, setChartData] = useState<any[]>([])
+  const [showCreateUserModal, setShowCreateUserModal] = useState(false)
+  const [isCreatingUser, setIsCreatingUser] = useState(false)
+  const [newUserForm, setNewUserForm] = useState({
+    email: '',
+    name: '',
+    role: 'customer',
+    password: '',
+  })
   
   const isOwnerUser = auth0State.user ? isOwner() : false
 
@@ -97,6 +105,58 @@ function AdminContent() {
     const matchesStatus = orderStatusFilter === 'all' || order.status === orderStatusFilter
     return matchesSearch && matchesStatus
   })
+
+  const handleCreateUser = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setIsCreatingUser(true)
+
+    try {
+      const response = await fetch('/api/admin/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...newUserForm,
+          email: newUserForm.email.trim(),
+          name: newUserForm.name.trim() || undefined,
+          password: newUserForm.password || undefined,
+        }),
+      })
+
+      const data = await response.json()
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || 'Création impossible')
+      }
+
+      setUsers((prev) => [
+        {
+          id: data.user.id,
+          email: data.user.email,
+          name: data.user.name,
+          role: data.user.role,
+          orderCount: 0,
+          totalSpent: 0,
+          createdAt: new Date().toISOString(),
+        },
+        ...prev,
+      ])
+
+      setShowCreateUserModal(false)
+      setNewUserForm({
+        email: '',
+        name: '',
+        role: 'customer',
+        password: '',
+      })
+      alert('Utilisateur créé et synchronisé avec Auth0 ✅')
+    } catch (error: any) {
+      console.error('Erreur création utilisateur:', error)
+      alert(`Erreur lors de la création: ${error.message || error}`)
+    } finally {
+      setIsCreatingUser(false)
+    }
+  }
 
   useEffect(() => {
     const loadData = async () => {
@@ -410,6 +470,13 @@ function AdminContent() {
             <div className="flex items-center justify-between">
               <h2 className="text-3xl font-bold text-white">Orders</h2>
               <div className="flex items-center gap-4">
+                <button
+                  onClick={() => setShowCreateUserModal(true)}
+                  className="btn-gold text-black font-semibold py-2 px-4 rounded-lg flex items-center gap-2"
+                >
+                  <FontAwesomeIcon icon={faPlus} />
+                  Nouvel utilisateur
+                </button>
                 <div className="relative">
                   <FontAwesomeIcon 
                     icon={faSearch} 
@@ -851,6 +918,104 @@ function AdminContent() {
                   </tbody>
                 </table>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* Modal création utilisateur */}
+        {showCreateUserModal && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="card-bg rounded-xl max-w-lg w-full">
+              <div className="p-6 border-b border-white/10 flex items-center justify-between">
+                <h3 className="text-2xl font-bold text-white">Créer un utilisateur</h3>
+                <button
+                  onClick={() => !isCreatingUser && setShowCreateUserModal(false)}
+                  className="text-gray-400 hover:text-white transition-colors"
+                  disabled={isCreatingUser}
+                >
+                  <FontAwesomeIcon icon={faXmark} className="text-2xl" />
+                </button>
+              </div>
+              <form onSubmit={handleCreateUser} className="p-6 space-y-4">
+                <div>
+                  <label className="block text-gray-300 text-sm mb-1">Email</label>
+                  <input
+                    type="email"
+                    required
+                    value={newUserForm.email}
+                    onChange={(e) => setNewUserForm((prev) => ({ ...prev, email: e.target.value }))}
+                    className="w-full bg-white/5 border border-white/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                    placeholder="utilisateur@exemple.com"
+                    disabled={isCreatingUser}
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-300 text-sm mb-1">Nom (optionnel)</label>
+                  <input
+                    type="text"
+                    value={newUserForm.name}
+                    onChange={(e) => setNewUserForm((prev) => ({ ...prev, name: e.target.value }))}
+                    className="w-full bg-white/5 border border-white/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                    placeholder="Nom complet"
+                    disabled={isCreatingUser}
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-300 text-sm mb-1">Mot de passe initial</label>
+                  <input
+                    type="password"
+                    value={newUserForm.password}
+                    onChange={(e) => setNewUserForm((prev) => ({ ...prev, password: e.target.value }))}
+                    className="w-full bg-white/5 border border-white/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                    placeholder="Généré automatiquement si vide"
+                    disabled={isCreatingUser}
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    L’utilisateur pourra changer son mot de passe à la première connexion.
+                  </p>
+                </div>
+                <div>
+                  <label className="block text-gray-300 text-sm mb-1">Rôle</label>
+                  <select
+                    value={newUserForm.role}
+                    onChange={(e) => setNewUserForm((prev) => ({ ...prev, role: e.target.value as 'customer' | 'admin' | 'owner' }))}
+                    className="w-full bg-white/5 border border-white/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                    disabled={isCreatingUser}
+                  >
+                    <option value="customer">Customer</option>
+                    <option value="admin">Admin</option>
+                    <option value="owner">Owner</option>
+                  </select>
+                </div>
+
+                <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/10">
+                  <button
+                    type="button"
+                    onClick={() => !isCreatingUser && setShowCreateUserModal(false)}
+                    className="px-4 py-2 text-gray-400 hover:text-white transition-colors"
+                    disabled={isCreatingUser}
+                  >
+                    Annuler
+                  </button>
+                  <button
+                    type="submit"
+                    className="btn-gold text-black font-semibold py-2 px-4 rounded-lg flex items-center gap-2 disabled:opacity-60"
+                    disabled={isCreatingUser}
+                  >
+                    {isCreatingUser ? (
+                      <>
+                        <span className="spinner w-4 h-4 border-2 border-black/40 border-t-black"></span>
+                        Création...
+                      </>
+                    ) : (
+                      <>
+                        <FontAwesomeIcon icon={faPlus} />
+                        Créer
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         )}

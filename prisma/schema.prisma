@@ -15,6 +15,7 @@ model User {
   email         String    @unique
   name          String?
   password      String?   // si credentials
+  auth0Id       String?   @unique
   role          String    @default("customer") // 'admin' possible
   orders        Order[]
   comments      Comment[]
@@ -99,11 +100,16 @@ model Comment {
   user      User     @relation(fields: [userId], references: [id])
   productId String
   product   Product  @relation(fields: [productId], references: [id])
+  orderId   String?  // L'ID de la commande qui a permis de vérifier l'achat
   rating    Int      // 1-5 étoiles
   content   String
   isVerified Boolean @default(false) // true si l'utilisateur a acheté le produit
+  isModerated Boolean @default(false) // true si le commentaire a été modéré par un admin
+  status    String   @default("published") // published, pending, rejected
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  
+  @@unique([userId, productId, orderId]) // Un seul commentaire par utilisateur/produit/commande
 }
 
 model ReturnRequest {
