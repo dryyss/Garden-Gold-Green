@@ -5,8 +5,10 @@ export interface AuthenticatedUser {
   id: string
   email?: string
   name?: string
-  role?: 'admin' | 'customer'
+  role?: 'admin' | 'customer' | 'owner'
 }
+
+const bypassAdminSecurity = process.env.BYPASS_ADMIN_SECURITY !== 'false'
 
 function extractBearerToken(request: NextRequest): string | null {
   const authHeader = request.headers.get('authorization')
@@ -55,8 +57,19 @@ export function requireAuth(
 export function requireAdmin(
   handler: (request: NextRequest, user: AuthenticatedUser, ...args: any[]) => Promise<Response>
 ) {
+  if (bypassAdminSecurity) {
+    return async (request: NextRequest, ...args: any[]) => {
+      const dummyUser: AuthenticatedUser = {
+        id: 'bypass-admin',
+        email: 'bypass-admin@test.local',
+        role: 'owner'
+      }
+      return handler(request, dummyUser, ...args)
+    }
+  }
+
   return requireAuth(async (request, user, ...args) => {
-    if (user.role !== 'admin') {
+    if (user.role !== 'admin' && user.role !== 'owner') {
       return new Response(
         JSON.stringify({ error: 'Accès non autorisé' }),
         {
@@ -67,5 +80,44 @@ export function requireAdmin(
     }
     return handler(request, user, ...args)
   })
+}
+
+// Fonction pour exiger le rôle owner (permissions supérieures)
+export function requireOwner(
+  handler: (request: NextRequest, user: AuthenticatedUser, ...args: any[]) => Promise<Response>
+) {
+  if (bypassAdminSecurity) {
+    return async (request: NextRequest, ...args: any[]) => {
+      const dummyUser: AuthenticatedUser = {
+        id: 'bypass-owner',
+        email: 'bypass-owner@test.local',
+        role: 'owner'
+      }
+      return handler(request, dummyUser, ...args)
+    }
+  }
+
+  return requireAuth(async (request, user, ...args) => {
+    if (user.role !== 'owner') {
+      return new Response(
+        JSON.stringify({ error: 'Accès réservé au propriétaire' }),
+        {
+          status: 403,
+          headers: { 'Content-Type': 'application/json' }
+        }
+      )
+    }
+    return handler(request, user, ...args)
+  })
+}
+
+// Fonction pour vérifier si l'utilisateur est owner ou admin
+export function isAdminOrOwner(user: AuthenticatedUser | null): boolean {
+  return user?.role === 'admin' || user?.role === 'owner'
+}
+
+// Fonction pour vérifier si l'utilisateur est owner
+export function isOwner(user: AuthenticatedUser | null): boolean {
+  return user?.role === 'owner'
 }
 

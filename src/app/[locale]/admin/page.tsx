@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
+import { useAuth0Context } from '@/contexts/Auth0Context'
 import { AdminGuard } from '@/components/AdminGuard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
@@ -16,7 +17,9 @@ import {
   faPlus,
   faSearch,
   faFilter,
-  faDownload
+  faDownload,
+  faUserShield,
+  faCrown
 } from '@fortawesome/free-solid-svg-icons'
 import Image from 'next/image'
 
@@ -47,16 +50,45 @@ interface Product {
   sales: number
 }
 
+interface User {
+  id: string
+  email: string
+  name: string
+  role: 'customer' | 'admin' | 'owner'
+  orderCount: number
+  totalSpent: number
+  createdAt: string
+}
+
 function AdminContent() {
   const { state: authState } = useAuth()
+  const { state: auth0State, isOwner } = useAuth0Context()
   const [activeTab, setActiveTab] = useState('dashboard')
   const [orders, setOrders] = useState<Order[]>([])
   const [products, setProducts] = useState<Product[]>([])
+  const [users, setUsers] = useState<User[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [isLoadingUsers, setIsLoadingUsers] = useState(false)
+  
+  const isOwnerUser = auth0State.user ? isOwner() : false
 
   useEffect(() => {
     const loadData = async () => {
       setIsLoading(true)
+      
+      // Charger les utilisateurs si owner
+      if (isOwnerUser) {
+        try {
+          const usersResponse = await fetch('/api/admin/users?limit=100')
+          const usersData = await usersResponse.json()
+          if (usersData.success) {
+            setUsers(usersData.users)
+          }
+        } catch (error) {
+          console.error('Erreur lors du chargement des utilisateurs:', error)
+        }
+      }
+      
       await new Promise(resolve => setTimeout(resolve, 1000))
       
       // Mock data
@@ -116,7 +148,7 @@ function AdminContent() {
     }
 
     loadData()
-  }, [])
+  }, [isOwnerUser])
 
   const stats = {
     totalRevenue: 45678.90,
@@ -150,12 +182,13 @@ function AdminContent() {
 
         {/* Navigation Tabs */}
         <div className="card-bg rounded-xl p-2 mb-8">
-          <div className="flex space-x-1">
+          <div className="flex space-x-1 flex-wrap">
             {[
               { id: 'dashboard', name: 'Dashboard', icon: faChartLine },
               { id: 'orders', name: 'Orders', icon: faShoppingBag },
               { id: 'products', name: 'Products', icon: faBox },
-              { id: 'customers', name: 'Customers', icon: faUsers }
+              { id: 'customers', name: 'Customers', icon: faUsers },
+              ...(isOwnerUser ? [{ id: 'users', name: 'Gestion Utilisateurs', icon: faUserShield, ownerOnly: true }] : [])
             ].map(tab => (
               <button
                 key={tab.id}
@@ -164,10 +197,13 @@ function AdminContent() {
                   activeTab === tab.id
                     ? 'bg-brand-gold text-black font-semibold'
                     : 'text-gray-400 hover:text-white hover:bg-white/10'
-                }`}
+                } ${(tab as any).ownerOnly ? 'border border-brand-gold/50' : ''}`}
               >
                 <FontAwesomeIcon icon={tab.icon} />
                 {tab.name}
+                {(tab as any).ownerOnly && (
+                  <FontAwesomeIcon icon={faCrown} className="text-yellow-400 ml-1" title="Owner uniquement" />
+                )}
               </button>
             ))}
           </div>
@@ -449,6 +485,214 @@ function AdminContent() {
               <p className="text-gray-400 text-center py-8">
                 Customer management features coming soon...
               </p>
+            </div>
+          </div>
+        )}
+
+        {/* Users Management Tab - Owner Only */}
+        {activeTab === 'users' && isOwnerUser && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-3xl font-bold text-white flex items-center gap-2">
+                  <FontAwesomeIcon icon={faUserShield} className="text-brand-gold" />
+                  Gestion des Utilisateurs
+                  <FontAwesomeIcon icon={faCrown} className="text-yellow-400 text-xl" title="Owner uniquement" />
+                </h2>
+                <p className="text-gray-400 mt-2">Gérer les rôles et permissions des utilisateurs</p>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <FontAwesomeIcon 
+                    icon={faSearch} 
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" 
+                  />
+                  <input
+                    type="text"
+                    id="user-search"
+                    placeholder="Rechercher un utilisateur (email ou nom)..."
+                    className="bg-white/5 border border-white/20 rounded-lg pl-10 pr-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                    onKeyPress={async (e) => {
+                      if (e.key === 'Enter') {
+                        setIsLoadingUsers(true)
+                        const search = (e.target as HTMLInputElement).value
+                        try {
+                          const response = await fetch(`/api/admin/users?search=${encodeURIComponent(search)}`)
+                          const data = await response.json()
+                          if (data.success) {
+                            setUsers(data.users)
+                          } else {
+                            alert('Erreur lors de la recherche: ' + (data.error || 'Erreur inconnue'))
+                          }
+                        } catch (error) {
+                          console.error('Erreur lors de la recherche:', error)
+                          alert('Erreur lors de la recherche. Vérifiez votre connexion.')
+                        } finally {
+                          setIsLoadingUsers(false)
+                        }
+                      }
+                    }}
+                  />
+                  <button
+                    onClick={async () => {
+                      const input = document.getElementById('user-search') as HTMLInputElement
+                      if (!input?.value.trim()) {
+                        // Charger tous les utilisateurs si le champ est vide
+                        setIsLoadingUsers(true)
+                        try {
+                          const response = await fetch('/api/admin/users?limit=100')
+                          const data = await response.json()
+                          if (data.success) {
+                            setUsers(data.users)
+                          }
+                        } catch (error) {
+                          console.error('Erreur:', error)
+                          alert('Erreur lors du chargement des utilisateurs')
+                        } finally {
+                          setIsLoadingUsers(false)
+                        }
+                      } else {
+                        // Déclencher la recherche
+                        const event = new KeyboardEvent('keypress', { key: 'Enter' })
+                        input.dispatchEvent(event)
+                      }
+                    }}
+                    className="btn-gold text-black font-semibold py-2 px-4 rounded-lg ml-2"
+                  >
+                    <FontAwesomeIcon icon={faSearch} className="mr-2" />
+                    Rechercher
+                  </button>
+                  <button
+                    onClick={async () => {
+                      setIsLoadingUsers(true)
+                      try {
+                        const response = await fetch('/api/admin/users?limit=100')
+                        const data = await response.json()
+                        if (data.success) {
+                          setUsers(data.users)
+                        }
+                      } catch (error) {
+                        console.error('Erreur:', error)
+                        alert('Erreur lors du chargement')
+                      } finally {
+                        setIsLoadingUsers(false)
+                      }
+                    }}
+                    className="text-gray-400 hover:text-white px-4 py-2 rounded-lg border border-white/20 hover:border-brand-gold transition-colors"
+                  >
+                    Afficher tous
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Info Box pour Owner */}
+            <div className="card-bg rounded-xl p-6 border-l-4 border-brand-gold">
+              <div className="flex items-start gap-3">
+                <FontAwesomeIcon icon={faCrown} className="text-yellow-400 text-xl mt-1" />
+                <div>
+                  <h3 className="text-white font-semibold mb-2">Permissions Owner</h3>
+                  <ul className="text-gray-300 text-sm space-y-1">
+                    <li>✅ Créer de nouveaux admins</li>
+                    <li>✅ Modifier les rôles de tous les utilisateurs</li>
+                    <li>✅ Supprimer des admins (sauf le dernier s'il n'y a pas d'owner)</li>
+                    <li>✅ Créer d'autres owners</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Users List */}
+            <div className="card-bg rounded-xl overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-white/5">
+                    <tr>
+                      <th className="px-6 py-4 text-left text-gray-400 font-medium">Email</th>
+                      <th className="px-6 py-4 text-left text-gray-400 font-medium">Nom</th>
+                      <th className="px-6 py-4 text-left text-gray-400 font-medium">Rôle</th>
+                      <th className="px-6 py-4 text-left text-gray-400 font-medium">Commandes</th>
+                      <th className="px-6 py-4 text-left text-gray-400 font-medium">Total dépensé</th>
+                      <th className="px-6 py-4 text-left text-gray-400 font-medium">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {isLoadingUsers ? (
+                      <tr>
+                        <td colSpan={6} className="px-6 py-8 text-center text-gray-400">
+                          <div className="spinner mx-auto"></div>
+                          <p className="mt-2">Chargement...</p>
+                        </td>
+                      </tr>
+                    ) : users.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="px-6 py-8 text-center text-gray-400">
+                          <p>Utilisez la recherche pour trouver des utilisateurs</p>
+                        </td>
+                      </tr>
+                    ) : (
+                      users.map(user => (
+                        <tr key={user.id} className="border-t border-white/10">
+                          <td className="px-6 py-4">
+                            <p className="text-white">{user.email}</p>
+                          </td>
+                          <td className="px-6 py-4">
+                            <p className="text-gray-300">{user.name || 'N/A'}</p>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                              user.role === 'owner' ? 'bg-yellow-400/20 text-yellow-400' :
+                              user.role === 'admin' ? 'bg-brand-gold/20 text-brand-gold' :
+                              'bg-gray-400/20 text-gray-400'
+                            }`}>
+                              {user.role === 'owner' && <FontAwesomeIcon icon={faCrown} className="mr-1" />}
+                              {user.role.toUpperCase()}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-gray-300">{user.orderCount}</td>
+                          <td className="px-6 py-4 text-white font-semibold">
+                            {(user.totalSpent / 100).toFixed(2)} €
+                          </td>
+                          <td className="px-6 py-4">
+                            <select
+                              className="bg-white/5 border border-white/20 rounded-lg px-3 py-1 text-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                              defaultValue={user.role}
+                              onChange={async (e) => {
+                                const newRole = e.target.value
+                                if (newRole !== user.role) {
+                                  try {
+                                    const response = await fetch(`/api/admin/users/${user.id}`, {
+                                      method: 'PATCH',
+                                      headers: { 'Content-Type': 'application/json' },
+                                      body: JSON.stringify({ role: newRole })
+                                    })
+                                    const data = await response.json()
+                                    if (data.success) {
+                                      setUsers(users.map(u => u.id === user.id ? { ...u, role: newRole as any } : u))
+                                      alert(`Rôle modifié avec succès !`)
+                                    } else {
+                                      alert(`Erreur: ${data.error}`)
+                                      e.target.value = user.role
+                                    }
+                                  } catch (error) {
+                                    console.error('Erreur:', error)
+                                    alert('Erreur lors de la modification du rôle')
+                                    e.target.value = user.role
+                                  }
+                                }
+                              }}
+                            >
+                              <option value="customer">Customer</option>
+                              <option value="admin">Admin</option>
+                              <option value="owner">Owner</option>
+                            </select>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         )}

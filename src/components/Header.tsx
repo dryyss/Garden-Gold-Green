@@ -45,12 +45,25 @@ export function Header() {
   const [showFloatingCart, setShowFloatingCart] = useState(false)
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
+  const [isCategoriesOpen, setIsCategoriesOpen] = useState(true)
+  const [isNavigationOpen, setIsNavigationOpen] = useState(true)
   const { state, dispatch } = useCart()
   const { state: authState, logout, isAdmin: isAdminAuth } = useAuth()
   const { state: auth0State, logout: logoutAuth0, isAdmin: isAdminAuth0 } = useAuth0Context()
   const { t } = useTranslation()
   const user = auth0State.user || authState.user
   const isAdmin = auth0State.user ? isAdminAuth0() : isAdminAuth()
+  
+  // DEBUG: Log pour vérifier le rôle
+  useEffect(() => {
+    if (user) {
+      console.log('🔍 Header - User:', user.email)
+      console.log('🔍 Header - Role:', user.role)
+      console.log('🔍 Header - Is Admin:', isAdmin)
+    }
+  }, [user, isAdmin])
+  
+  // const isLoading = authState.isLoading
 
   // Gérer le scroll pour réduire la barre jaune et afficher le panier flottant
   useEffect(() => {
@@ -99,6 +112,9 @@ export function Header() {
     { name: t('header.navigation.contact'), href: '/contact' },
     { name: t('header.navigation.faq'), href: '/faq' },
   ]
+
+  const navigationTitle = t('header.navigation.title')
+  const navigationLabel = navigationTitle === 'header.navigation.title' ? 'Navigation' : navigationTitle
 
   return (
     <header className="sticky top-0 z-50 bg-brand-black transition-all duration-300">
@@ -155,7 +171,9 @@ export function Header() {
       {/* Main Navbar - Logo, Navigation, Search, Actions */}
       <div className="bg-brand-black/95 backdrop-blur-sm border-b border-white/10 relative z-40 overflow-visible">
         <div className="container mx-auto px-3 sm:px-4 lg:px-6 py-2 sm:py-3 lg:py-4 xl:py-6">
-          <div className="flex justify-between items-center gap-2 sm:gap-4">
+          <div
+            className={`${isMenuOpen ? 'hidden md:flex' : 'flex'} justify-between items-center gap-2 sm:gap-4`}
+          >
             {/* Logo - Hidden on mobile, visible on sm and up */}
             <Link href="/" className="hidden sm:flex items-center flex-shrink-0 group">
               <div className="relative">
@@ -172,7 +190,7 @@ export function Header() {
             </Link>
 
             {/* Navigation desktop */}
-            <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8">
+            <nav className="hidden md:flex items-center space-x-6 xl:space-x-8">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
@@ -296,7 +314,7 @@ export function Header() {
 
               {/* Mobile menu button */}
               <button
-                className="lg:hidden text-gray-300 hover:text-brand-gold transition-colors duration-300 p-1.5 sm:p-2"
+                className="md:hidden text-gray-300 hover:text-brand-gold transition-colors duration-300 p-1.5 sm:p-2"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
                 <FontAwesomeIcon icon={isMenuOpen ? faXmark : faBars} className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -342,19 +360,11 @@ export function Header() {
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <>
-          {/* Overlay sombre */}
-          <div 
-            className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40 transition-opacity"
-            onClick={() => setIsMenuOpen(false)}
-          />
-          
-          {/* Menu latéral - style comme dans les captures */}
-          <div className="lg:hidden fixed right-0 top-0 h-full w-full max-w-sm bg-brand-black shadow-2xl z-50 overflow-y-auto">
+        <div className="md:hidden fixed inset-0 h-full w-full bg-brand-black z-50 overflow-y-auto">
             <div className="px-4 py-3">
               {/* Barre supérieure avec icônes et fermeture */}
-              <div className="flex items-center justify-between mb-3 pb-3 border-b border-white/10">
-                <div className="flex items-center space-x-4">
+              <div className="relative flex flex-col items-center gap-3 mb-3 pb-3 border-b border-white/10">
+                <div className="flex items-center justify-center space-x-6">
                   <button onClick={() => setIsSearchModalOpen(true)} className="text-white p-2">
                     <FontAwesomeIcon icon={faMagnifyingGlass} className="w-5 h-5" />
                   </button>
@@ -372,7 +382,7 @@ export function Header() {
                 </div>
                 <button
                   onClick={() => setIsMenuOpen(false)}
-                  className="text-white p-2"
+                  className="absolute right-0 top-0 text-white p-2"
                 >
                   <FontAwesomeIcon icon={faXmark} className="w-5 h-5" />
                 </button>
@@ -380,13 +390,13 @@ export function Header() {
 
               {/* Titre */}
               <div className="flex items-center justify-center py-2 mb-3 border-b border-white/10">
-                <span className="text-white text-base font-bold tracking-wider">
+                <span className="text-white text-base font-bold tracking-wider text-center">
                   {t('header.title')}
                 </span>
               </div>
 
               {/* Sélecteur de langue */}
-              <div className="mb-3 pb-3 border-b border-white/10">
+              <div className="mb-3 pb-3 border-b border-white/10 flex justify-center">
                 <LanguageSelector variant="mobile" />
               </div>
 
@@ -396,14 +406,14 @@ export function Header() {
                   <div className="flex items-center space-x-3 mb-3">
                     <FontAwesomeIcon icon={faUserCircle} className="text-brand-gold w-5 h-5" />
                     <div>
-                      <p className="text-white font-semibold text-sm">{user.email}</p>
-                      <p className="text-gray-400 text-xs">{user.email}</p>
+                      <p className="text-white font-semibold text-sm text-center">{user.email}</p>
+                      <p className="text-gray-400 text-xs text-center">{user.email}</p>
                     </div>
                   </div>
                   
                   <Link
                     href="/profile"
-                    className="flex items-center space-x-3 text-white hover:text-brand-gold transition-colors py-2"
+                    className="flex items-center space-x-3 justify-center text-white hover:text-brand-gold transition-colors py-2"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <FontAwesomeIcon icon={faUser} className="w-4 h-4" />
@@ -412,7 +422,7 @@ export function Header() {
                   
                   <Link
                     href="/orders"
-                    className="flex items-center space-x-3 text-white hover:text-brand-gold transition-colors py-2"
+                    className="flex items-center space-x-3 justify-center text-white hover:text-brand-gold transition-colors py-2"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <FontAwesomeIcon icon={faShoppingCart} className="w-4 h-4" />
@@ -421,7 +431,7 @@ export function Header() {
                   
                   <Link
                     href="/track-order"
-                    className="flex items-center space-x-3 text-white hover:text-brand-gold transition-colors py-2"
+                    className="flex items-center space-x-3 justify-center text-white hover:text-brand-gold transition-colors py-2"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <FontAwesomeIcon icon={faTruck} className="w-4 h-4" />
@@ -439,7 +449,7 @@ export function Header() {
                       }
                       setIsMenuOpen(false)
                     }}
-                    className="flex items-center space-x-3 text-white hover:text-brand-gold transition-colors py-2"
+                    className="flex items-center space-x-3 justify-center text-white hover:text-brand-gold transition-colors py-2"
                   >
                     <FontAwesomeIcon icon={faSignOutAlt} className="w-4 h-4" />
                     <span className="text-sm">{t('header.user.logout')}</span>
@@ -464,7 +474,7 @@ export function Header() {
                       setShowAuthModal(true)
                       setIsMenuOpen(false)
                     }}
-                    className="w-full flex items-center space-x-2 text-white hover:text-brand-gold transition-colors py-2"
+                    className="w-full flex items-center justify-center space-x-2 text-white hover:text-brand-gold transition-colors py-2"
                   >
                     <FontAwesomeIcon icon={faUser} />
                     <span>{t('header.user.login')}</span>
@@ -474,88 +484,112 @@ export function Header() {
 
               {/* Catégories */}
               <div className="mb-3 pb-3 border-b border-white/10">
-                <h3 className="text-brand-gold text-xs font-semibold uppercase mb-2 px-2">
-                  {t('header.categories.title')}
-                </h3>
-                <div className="space-y-1">
-                  {categoryTabs.map((tab) => {
-                    const hasSubmenu = !tab.special && tab.name !== t('header.categories.liquidations')
-                    const isExpanded = expandedCategories.includes(tab.name)
-                    
-                    return (
-                      <div key={tab.name}>
-                        {hasSubmenu ? (
-                          <>
-                            <button
-                              onClick={() => {
-                                if (isExpanded) {
-                                  setExpandedCategories(expandedCategories.filter(c => c !== tab.name))
-                                } else {
-                                  setExpandedCategories([...expandedCategories, tab.name])
+                <button
+                  onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
+                  className="relative w-full flex items-center justify-center px-2 py-2 text-sm font-semibold uppercase tracking-wide text-brand-gold"
+                >
+                  <span>{t('header.categories.title')}</span>
+                  <FontAwesomeIcon
+                    icon={isCategoriesOpen ? faChevronDown : faChevronRight}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400"
+                  />
+                </button>
+
+                {isCategoriesOpen && (
+                  <div className="mt-2 space-y-1">
+                    {categoryTabs.map((tab) => {
+                      const hasSubmenu = !tab.special && tab.name !== t('header.categories.liquidations')
+                      const isExpanded = expandedCategories.includes(tab.name)
+
+                      return (
+                        <div key={tab.name}>
+                          {hasSubmenu ? (
+                            <>
+                              <button
+                                onClick={() => {
+                                  if (isExpanded) {
+                                    setExpandedCategories(expandedCategories.filter(c => c !== tab.name))
+                                  } else {
+                                    setExpandedCategories([...expandedCategories, tab.name])
+                                  }
+                                }}
+                                className="w-full flex items-center justify-between px-2 py-2 text-sm font-medium transition-colors text-white hover:text-brand-gold"
+                              >
+                                <span>{tab.name}</span>
+                                <FontAwesomeIcon
+                                  icon={isExpanded ? faChevronDown : faChevronRight}
+                                  className="w-3 h-3 text-gray-400"
+                                />
+                              </button>
+                              {isExpanded && (
+                                <div className="ml-3 mt-1 space-y-0.5 border-l border-white/10 pl-3 pb-2">
+                                  <Link
+                                    href={tab.href}
+                                    className="block px-2 py-1.5 text-xs text-gray-300 hover:text-brand-gold transition-colors text-center"
+                                    onClick={() => setIsMenuOpen(false)}
+                                  >
+                                    Voir tout - {tab.name}
+                                  </Link>
+                                </div>
+                              )}
+                            </>
+                          ) : (
+                            <Link
+                              href={tab.href}
+                              className={`
+                                flex items-center justify-between px-2 py-2 text-sm font-medium transition-colors
+                                ${tab.special
+                                  ? 'bg-red-600 text-white rounded-md'
+                                  : 'text-white hover:text-brand-gold'
                                 }
-                              }}
-                              className="w-full flex items-center justify-between px-2 py-2 text-sm font-medium transition-colors text-white hover:text-brand-gold"
+                              `}
+                              onClick={() => setIsMenuOpen(false)}
                             >
                               <span>{tab.name}</span>
-                              <FontAwesomeIcon 
-                                icon={isExpanded ? faChevronDown : faChevronRight} 
-                                className="w-3 h-3 text-gray-400"
-                              />
-                            </button>
-                            {isExpanded && (
-                              <div className="ml-3 mt-1 space-y-0.5 border-l border-white/10 pl-3 pb-2">
-                                <Link
-                                  href={tab.href}
-                                  className="block px-2 py-1.5 text-xs text-gray-300 hover:text-brand-gold transition-colors"
-                                  onClick={() => setIsMenuOpen(false)}
-                                >
-                                  Voir tout - {tab.name}
-                                </Link>
-                              </div>
-                            )}
-                          </>
-                        ) : (
-                          <Link
-                            href={tab.href}
-                            className={`
-                              flex items-center justify-between px-2 py-2 text-sm font-medium transition-colors
-                              ${tab.special 
-                                ? 'bg-red-600 text-white rounded-md' 
-                                : 'text-white hover:text-brand-gold'
-                              }
-                            `}
-                            onClick={() => setIsMenuOpen(false)}
-                          >
-                            <span>{tab.name}</span>
-                            {tab.badge && (
-                              <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
-                                {tab.badge}
-                              </span>
-                            )}
-                          </Link>
-                        )}
-                      </div>
-                    )
-                  })}
-                </div>
+                              {tab.badge && (
+                                <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                                  {tab.badge}
+                                </span>
+                              )}
+                            </Link>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
               </div>
 
               {/* Navigation principale */}
-              <div>
-                {navigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className="block text-white hover:text-brand-gold transition-colors py-2 text-sm font-medium"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {item.name}
-                  </Link>
-                ))}
+              <div className="pb-3 border-b border-white/10">
+                <button
+                  onClick={() => setIsNavigationOpen(!isNavigationOpen)}
+                  className="relative w-full flex items-center justify-center px-2 py-2 text-sm font-semibold uppercase tracking-wide text-white"
+                >
+                  <span>{navigationLabel}</span>
+                  <FontAwesomeIcon
+                    icon={isNavigationOpen ? faChevronDown : faChevronRight}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400"
+                  />
+                </button>
+
+                {isNavigationOpen && (
+                  <div className="mt-2">
+                    {navigation.map((item) => (
+                      <Link
+                        key={item.name}
+                        href={item.href}
+                        className="block text-white hover:text-brand-gold transition-colors py-2 text-sm font-medium text-center"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        {item.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
-          </div>
-        </>
+        </div>
       )}
 
       {/* Search Modal */}

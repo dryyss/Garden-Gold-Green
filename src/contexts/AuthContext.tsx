@@ -180,6 +180,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem('auth_token', data.token)
       localStorage.setItem('user', JSON.stringify(data.user))
 
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🔐 Connexion réussie:', {
+          tokenPreview: `${data.token?.slice(0, 10)}...`,
+          user: data.user
+        })
+      }
+
       dispatch({ type: 'LOGIN_SUCCESS', payload: data.user })
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Erreur de connexion'
@@ -209,6 +216,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Sauvegarder le token et les données utilisateur
       localStorage.setItem('auth_token', data.token)
       localStorage.setItem('user', JSON.stringify(data.user))
+
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🆕 Inscription réussie:', {
+          tokenPreview: `${data.token?.slice(0, 10)}...`,
+          user: data.user
+        })
+      }
 
       dispatch({ type: 'REGISTER_SUCCESS', payload: data.user })
     } catch (error) {

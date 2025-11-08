@@ -81,3 +81,9 @@ ANALYZE=true npm run build
 - Pas assez de code splitting
 - Composants lourds qui bloquent le thread principal
 
+
+
+
+
+
+

@@ -110,3 +110,9 @@ Après avoir fait les 3 étapes et reconnecté, **ouvrez la console et dites-moi
 
 Les logs 🔍 vous diront exactement où est le problème !
 
+
+
+
+
+
+

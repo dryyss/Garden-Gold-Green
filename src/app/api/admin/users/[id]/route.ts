@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
-import { requireAdmin } from '@/lib/auth-utils'
+import { requireAdmin, isOwner, getAuthenticatedUser } from '@/lib/auth-utils'
 
 const prisma = new PrismaClient()
 
@@ -86,8 +86,12 @@ export async function PATCH(
         )
       }
 
-      // Ne pas permettre de supprimer le dernier admin
-      if (role === 'customer' && existingUser.role === 'admin') {
+      // Récupérer l'utilisateur actuel pour vérifier ses permissions
+      const currentUser = await getAuthenticatedUser(request)
+      const isOwnerUser = currentUser && isOwner(currentUser)
+
+      // Ne pas permettre de supprimer le dernier admin (sauf pour owner)
+      if (role === 'customer' && existingUser.role === 'admin' && !isOwnerUser) {
         const adminCount = await prisma.user.count({
           where: { role: 'admin' }
         })
@@ -100,15 +104,41 @@ export async function PATCH(
         }
       }
 
+      // Owner peut modifier les rôles admin, mais pas les supprimer complètement si c'est le dernier
+      if (isOwnerUser && role === 'customer' && existingUser.role === 'admin') {
+        const adminCount = await prisma.user.count({
+          where: { role: 'admin' }
+        })
+        const ownerCount = await prisma.user.count({
+          where: { role: 'owner' }
+        })
+        
+        // Si c'est le dernier admin et qu'il n'y a pas d'owner, ne pas permettre
+        if (adminCount === 1 && ownerCount === 0) {
+          return NextResponse.json(
+            { error: 'Impossible de supprimer le dernier administrateur. Créez un owner d\'abord.' },
+            { status: 400 }
+          )
+        }
+      }
+
       // Valider le rôle
-      if (role && !['admin', 'customer'].includes(role)) {
+      if (role && !['admin', 'customer', 'owner'].includes(role)) {
         return NextResponse.json(
           { error: 'Rôle invalide' },
           { status: 400 }
         )
       }
 
-      // Mettre à jour l'utilisateur
+      // Seul owner peut créer/modifier un owner
+      if (role === 'owner' && !isOwnerUser) {
+        return NextResponse.json(
+          { error: 'Seul le propriétaire peut créer ou modifier un owner' },
+          { status: 403 }
+        )
+      }
+
+      // Mettre à jour l'utilisateur dans Prisma
       const updateData: any = {}
       if (role) updateData.role = role
       if (name !== undefined) updateData.name = name
@@ -124,6 +154,51 @@ export async function PATCH(
           createdAt: true
         }
       })
+
+      // Synchroniser avec Auth0 si le rôle a changé
+      if (role && role !== existingUser.role) {
+        try {
+          // Trouver l'Auth0 user ID depuis l'email
+          // Note: L'ID Prisma peut être différent de l'Auth0 ID
+          // On essaie de trouver l'utilisateur Auth0 par email
+          const email = existingUser.email
+
+          // Option 1: Si l'ID Prisma est l'Auth0 ID (sub)
+          let auth0UserId: string | null = null
+
+          // Vérifier si l'ID ressemble à un Auth0 ID (commence par auth0|, google-oauth2|, etc.)
+          if (id.includes('|')) {
+            auth0UserId = id
+          } else {
+            // Si ce n'est pas un Auth0 ID, on doit trouver l'utilisateur Auth0 par email
+            // Pour cela, on peut utiliser l'API Auth0 Management pour rechercher par email
+            // Mais pour simplifier, on va supposer que l'email dans Prisma correspond à Auth0
+            // Dans un vrai projet, vous devriez stocker l'Auth0 ID dans Prisma
+            console.warn('⚠️ ID Prisma ne semble pas être un Auth0 ID. Synchronisation Auth0 peut échouer.')
+            console.warn('💡 Solution: Stockez l\'Auth0 user ID (sub) dans la table User lors de la création')
+          }
+
+          // Si on a un Auth0 ID, synchroniser
+          if (auth0UserId) {
+            await assignSingleRole(auth0UserId, role)
+            console.log(`✅ Rôle ${role} synchronisé avec Auth0 pour ${email}`)
+          } else {
+            console.warn(`⚠️ Impossible de synchroniser Auth0: ID non trouvé pour ${email}`)
+            // Ne pas faire échouer la requête, on continue quand même
+          }
+        } catch (auth0Error) {
+          console.error('❌ Erreur lors de la synchronisation Auth0:', auth0Error)
+          // Ne pas faire échouer la requête si Auth0 échoue
+          // Le rôle est quand même mis à jour dans Prisma
+          // On peut retourner un avertissement
+          return NextResponse.json({
+            success: true,
+            user: updatedUser,
+            message: 'Utilisateur mis à jour avec succès dans la base de données',
+            warning: 'La synchronisation avec Auth0 a échoué. Le rôle sera mis à jour à la prochaine connexion.'
+          })
+        }
+      }
 
       return NextResponse.json({
         success: true,

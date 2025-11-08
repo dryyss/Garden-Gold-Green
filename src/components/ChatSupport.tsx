@@ -18,7 +18,7 @@ export function ChatSupport() {
     const crispWebsiteId = process.env.NEXT_PUBLIC_CRISP_WEBSITE_ID
 
     if (!crispWebsiteId) {
-      console.warn('Crisp Website ID non configuré')
+      // Silencieux si Crisp n'est pas configuré (optionnel)
       return
     }
 

@@ -161,3 +161,9 @@ npx prisma studio
 
 **Le code est prêt à 95% !** Il ne manque que la configuration Auth0 ! 🚀
 
+
+
+
+
+
+
