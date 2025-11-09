@@ -64,7 +64,7 @@ interface User {
 
 function AdminContent() {
   const { state: authState } = useAuth()
-  const { state: auth0State, isOwner } = useAuth0Context()
+  const { state: auth0State, isAdminOrOwner } = useAuth0Context()
   const [activeTab, setActiveTab] = useState('dashboard')
   const [orders, setOrders] = useState<Order[]>([])
   const [products, setProducts] = useState<Product[]>([])
@@ -86,16 +86,9 @@ function AdminContent() {
   const [showOrderModal, setShowOrderModal] = useState(false)
   const [periodFilter, setPeriodFilter] = useState('30days') // 7days, 30days, 3months, year, all
   const [chartData, setChartData] = useState<any[]>([])
-  const [showCreateUserModal, setShowCreateUserModal] = useState(false)
-  const [isCreatingUser, setIsCreatingUser] = useState(false)
-  const [newUserForm, setNewUserForm] = useState({
-    email: '',
-    name: '',
-    role: 'customer',
-    password: '',
-  })
   
-  const isOwnerUser = auth0State.user ? isOwner() : false
+  const isAdminOwnerUser = auth0State.user ? isAdminOrOwner() : false
+  const isBypassMode = process.env.NEXT_PUBLIC_FORCE_ADMIN_BYPASS !== 'false'
 
   // Filtrer les commandes
   const filteredOrders = orders.filter(order => {
@@ -105,58 +98,6 @@ function AdminContent() {
     const matchesStatus = orderStatusFilter === 'all' || order.status === orderStatusFilter
     return matchesSearch && matchesStatus
   })
-
-  const handleCreateUser = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setIsCreatingUser(true)
-
-    try {
-      const response = await fetch('/api/admin/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...newUserForm,
-          email: newUserForm.email.trim(),
-          name: newUserForm.name.trim() || undefined,
-          password: newUserForm.password || undefined,
-        }),
-      })
-
-      const data = await response.json()
-      if (!response.ok || !data.success) {
-        throw new Error(data.error || 'Création impossible')
-      }
-
-      setUsers((prev) => [
-        {
-          id: data.user.id,
-          email: data.user.email,
-          name: data.user.name,
-          role: data.user.role,
-          orderCount: 0,
-          totalSpent: 0,
-          createdAt: new Date().toISOString(),
-        },
-        ...prev,
-      ])
-
-      setShowCreateUserModal(false)
-      setNewUserForm({
-        email: '',
-        name: '',
-        role: 'customer',
-        password: '',
-      })
-      alert('Utilisateur créé et synchronisé avec Auth0 ✅')
-    } catch (error: any) {
-      console.error('Erreur création utilisateur:', error)
-      alert(`Erreur lors de la création: ${error.message || error}`)
-    } finally {
-      setIsCreatingUser(false)
-    }
-  }
 
   useEffect(() => {
     const loadData = async () => {
@@ -225,8 +166,8 @@ function AdminContent() {
           setProducts(formattedProducts)
         }
       
-        // Charger les utilisateurs si owner
-        if (isOwnerUser) {
+        // Charger les utilisateurs Auth0 (admin/owner ou mode bypass)
+        if (isAdminOwnerUser || isBypassMode) {
           setIsLoadingUsers(true)
           const usersResponse = await fetch('/api/admin/users?limit=100')
           const usersData = await usersResponse.json()
@@ -243,7 +184,7 @@ function AdminContent() {
     }
 
     loadData()
-  }, [isOwnerUser, periodFilter])
+  }, [isAdminOwnerUser, isBypassMode, periodFilter])
 
   if (isLoading) {
     return (
@@ -272,8 +213,7 @@ function AdminContent() {
               { id: 'dashboard', name: 'Dashboard', icon: faChartLine },
               { id: 'orders', name: 'Orders', icon: faShoppingBag },
               { id: 'products', name: 'Products', icon: faBox },
-              { id: 'customers', name: 'Customers', icon: faUsers },
-              ...(isOwnerUser ? [{ id: 'users', name: 'Gestion Utilisateurs', icon: faUserShield, ownerOnly: true }] : [])
+              { id: 'customers', name: 'Utilisateurs', icon: faUserShield },
             ].map(tab => (
               <button
                 key={tab.id}
@@ -470,13 +410,6 @@ function AdminContent() {
             <div className="flex items-center justify-between">
               <h2 className="text-3xl font-bold text-white">Orders</h2>
               <div className="flex items-center gap-4">
-                <button
-                  onClick={() => setShowCreateUserModal(true)}
-                  className="btn-gold text-black font-semibold py-2 px-4 rounded-lg flex items-center gap-2"
-                >
-                  <FontAwesomeIcon icon={faPlus} />
-                  Nouvel utilisateur
-                </button>
                 <div className="relative">
                   <FontAwesomeIcon 
                     icon={faSearch} 
@@ -659,45 +592,17 @@ function AdminContent() {
         {activeTab === 'customers' && (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-3xl font-bold text-white">Customers</h2>
-              <div className="flex items-center gap-4">
-                <div className="relative">
-                  <FontAwesomeIcon 
-                    icon={faSearch} 
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" 
-                  />
-                  <input
-                    type="text"
-                    placeholder="Search customers..."
-                    className="bg-white/5 border border-white/20 rounded-lg pl-10 pr-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                  />
-                </div>
-                <button className="btn-gold text-black font-semibold py-2 px-4 rounded-lg">
-                  <FontAwesomeIcon icon={faDownload} className="mr-2" />
-                  Export
-                </button>
-              </div>
-            </div>
-
-            <div className="card-bg rounded-xl p-6">
-              <p className="text-gray-400 text-center py-8">
-                Customer management features coming soon...
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Users Management Tab - Owner Only */}
-        {activeTab === 'users' && isOwnerUser && (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-3xl font-bold text-white flex items-center gap-2">
                   <FontAwesomeIcon icon={faUserShield} className="text-brand-gold" />
-                  Gestion des Utilisateurs
-                  <FontAwesomeIcon icon={faCrown} className="text-yellow-400 text-xl" title="Owner uniquement" />
+                  Utilisateurs Auth0
+                  {(isAdminOwnerUser || isBypassMode) && (
+                    <FontAwesomeIcon icon={faCrown} className="text-yellow-400 text-xl" title="Accès admin/owner" />
+                  )}
                 </h2>
-                <p className="text-gray-400 mt-2">Gérer les rôles et permissions des utilisateurs</p>
+                <p className="text-gray-400 mt-2">
+                  Liste des comptes synchronisés depuis Auth0. Lecture seule pendant les tests.
+                </p>
               </div>
               <div className="flex items-center gap-4">
                 <div className="relative">
@@ -784,22 +689,6 @@ function AdminContent() {
               </div>
             </div>
 
-            {/* Info Box pour Owner */}
-            <div className="card-bg rounded-xl p-6 border-l-4 border-brand-gold">
-              <div className="flex items-start gap-3">
-                <FontAwesomeIcon icon={faCrown} className="text-yellow-400 text-xl mt-1" />
-                <div>
-                  <h3 className="text-white font-semibold mb-2">Permissions Owner</h3>
-                  <ul className="text-gray-300 text-sm space-y-1">
-                    <li>✅ Créer de nouveaux admins</li>
-                    <li>✅ Modifier les rôles de tous les utilisateurs</li>
-                    <li>✅ Supprimer des admins (sauf le dernier s'il n'y a pas d'owner)</li>
-                    <li>✅ Créer d'autres owners</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
             {/* Users List */}
             <div className="card-bg rounded-xl overflow-hidden">
               <div className="overflow-x-auto">
@@ -811,7 +700,7 @@ function AdminContent() {
                       <th className="px-6 py-4 text-left text-gray-400 font-medium">Rôle</th>
                       <th className="px-6 py-4 text-left text-gray-400 font-medium">Commandes</th>
                       <th className="px-6 py-4 text-left text-gray-400 font-medium">Total dépensé</th>
-                      <th className="px-6 py-4 text-left text-gray-400 font-medium">Actions</th>
+                      <th className="px-6 py-4 text-left text-gray-400 font-medium">Dernière connexion</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -851,66 +740,16 @@ function AdminContent() {
                           <td className="px-6 py-4 text-white font-semibold">
                             {(user.totalSpent / 100).toFixed(2)} €
                           </td>
-                          <td className="px-6 py-4">
-                            <div className="flex items-center gap-2">
-                              <select
-                                className="bg-white/5 border border-white/20 rounded-lg px-3 py-1 text-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                                defaultValue={user.role}
-                                onChange={async (e) => {
-                                  const newRole = e.target.value
-                                  if (newRole !== user.role) {
-                                    try {
-                                      const response = await fetch(`/api/admin/users/${user.id}`, {
-                                        method: 'PATCH',
-                                        headers: { 'Content-Type': 'application/json' },
-                                        body: JSON.stringify({ role: newRole })
-                                      })
-                                      const data = await response.json()
-                                      if (data.success) {
-                                        setUsers(users.map(u => u.id === user.id ? { ...u, role: newRole as any } : u))
-                                        alert(`Rôle modifié avec succès !`)
-                                      } else {
-                                        alert(`Erreur: ${data.error}`)
-                                        e.target.value = user.role
-                                      }
-                                    } catch (error) {
-                                      console.error('Erreur:', error)
-                                      alert('Erreur lors de la modification du rôle')
-                                      e.target.value = user.role
-                                    }
-                                  }
-                                }}
-                              >
-                                <option value="customer">Customer</option>
-                                <option value="admin">Admin</option>
-                                <option value="owner">Owner</option>
-                              </select>
-                              <button
-                                onClick={async () => {
-                                  if (confirm(`Êtes-vous sûr de vouloir supprimer l'utilisateur ${user.email} ?`)) {
-                                    try {
-                                      const response = await fetch(`/api/admin/users/${user.id}`, {
-                                        method: 'DELETE'
-                                      })
-                                      const data = await response.json()
-                                      if (data.success) {
-                                        setUsers(users.filter(u => u.id !== user.id))
-                                        alert('Utilisateur supprimé avec succès!')
-                                      } else {
-                                        alert(`Erreur: ${data.error}`)
-                                      }
-                                    } catch (error) {
-                                      console.error('Erreur:', error)
-                                      alert('Erreur lors de la suppression')
-                                    }
-                                  }
-                                }}
-                                className="text-red-400 hover:text-red-300 transition-colors p-2"
-                                title="Supprimer utilisateur"
-                              >
-                                <FontAwesomeIcon icon={faTrash} />
-                              </button>
-                            </div>
+                          <td className="px-6 py-4 text-gray-300">
+                            {user.lastLogin
+                              ? new Date(user.lastLogin).toLocaleString('fr-FR', {
+                                  day: '2-digit',
+                                  month: 'short',
+                                  year: 'numeric',
+                                  hour: '2-digit',
+                                  minute: '2-digit',
+                                })
+                              : 'Jamais'}
                           </td>
                         </tr>
                       ))
@@ -918,104 +757,6 @@ function AdminContent() {
                   </tbody>
                 </table>
               </div>
-            </div>
-          </div>
-        )}
-
-        {/* Modal création utilisateur */}
-        {showCreateUserModal && (
-          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="card-bg rounded-xl max-w-lg w-full">
-              <div className="p-6 border-b border-white/10 flex items-center justify-between">
-                <h3 className="text-2xl font-bold text-white">Créer un utilisateur</h3>
-                <button
-                  onClick={() => !isCreatingUser && setShowCreateUserModal(false)}
-                  className="text-gray-400 hover:text-white transition-colors"
-                  disabled={isCreatingUser}
-                >
-                  <FontAwesomeIcon icon={faXmark} className="text-2xl" />
-                </button>
-              </div>
-              <form onSubmit={handleCreateUser} className="p-6 space-y-4">
-                <div>
-                  <label className="block text-gray-300 text-sm mb-1">Email</label>
-                  <input
-                    type="email"
-                    required
-                    value={newUserForm.email}
-                    onChange={(e) => setNewUserForm((prev) => ({ ...prev, email: e.target.value }))}
-                    className="w-full bg-white/5 border border-white/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                    placeholder="utilisateur@exemple.com"
-                    disabled={isCreatingUser}
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-300 text-sm mb-1">Nom (optionnel)</label>
-                  <input
-                    type="text"
-                    value={newUserForm.name}
-                    onChange={(e) => setNewUserForm((prev) => ({ ...prev, name: e.target.value }))}
-                    className="w-full bg-white/5 border border-white/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                    placeholder="Nom complet"
-                    disabled={isCreatingUser}
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-300 text-sm mb-1">Mot de passe initial</label>
-                  <input
-                    type="password"
-                    value={newUserForm.password}
-                    onChange={(e) => setNewUserForm((prev) => ({ ...prev, password: e.target.value }))}
-                    className="w-full bg-white/5 border border-white/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                    placeholder="Généré automatiquement si vide"
-                    disabled={isCreatingUser}
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    L’utilisateur pourra changer son mot de passe à la première connexion.
-                  </p>
-                </div>
-                <div>
-                  <label className="block text-gray-300 text-sm mb-1">Rôle</label>
-                  <select
-                    value={newUserForm.role}
-                    onChange={(e) => setNewUserForm((prev) => ({ ...prev, role: e.target.value as 'customer' | 'admin' | 'owner' }))}
-                    className="w-full bg-white/5 border border-white/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                    disabled={isCreatingUser}
-                  >
-                    <option value="customer">Customer</option>
-                    <option value="admin">Admin</option>
-                    <option value="owner">Owner</option>
-                  </select>
-                </div>
-
-                <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/10">
-                  <button
-                    type="button"
-                    onClick={() => !isCreatingUser && setShowCreateUserModal(false)}
-                    className="px-4 py-2 text-gray-400 hover:text-white transition-colors"
-                    disabled={isCreatingUser}
-                  >
-                    Annuler
-                  </button>
-                  <button
-                    type="submit"
-                    className="btn-gold text-black font-semibold py-2 px-4 rounded-lg flex items-center gap-2 disabled:opacity-60"
-                    disabled={isCreatingUser}
-                  >
-                    {isCreatingUser ? (
-                      <>
-                        <span className="spinner w-4 h-4 border-2 border-black/40 border-t-black"></span>
-                        Création...
-                      </>
-                    ) : (
-                      <>
-                        <FontAwesomeIcon icon={faPlus} />
-                        Créer
-                      </>
-                    )}
-                  </button>
-                </div>
-              </form>
             </div>
           </div>
         )}

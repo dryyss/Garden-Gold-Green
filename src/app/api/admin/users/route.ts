@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 import { requireAdmin } from '@/lib/auth-utils'
-import { createAuth0User, deleteAuth0User } from '@/lib/auth0-management'
+import { getAuth0UserRoles, listAuth0Users } from '@/lib/auth0-management'
 
 const prisma = new PrismaClient()
 
@@ -9,152 +9,96 @@ const prisma = new PrismaClient()
 export const GET = requireAdmin(async (request: NextRequest) => {
   try {
     const { searchParams } = new URL(request.url)
-    const page = parseInt(searchParams.get('page') || '1')
-    const limit = parseInt(searchParams.get('limit') || '50')
-    const skip = (page - 1) * limit
-    const search = searchParams.get('search')
-    const role = searchParams.get('role')
+    const page = Math.max(1, parseInt(searchParams.get('page') || '1'))
+    const limit = Math.max(1, Math.min(100, parseInt(searchParams.get('limit') || '25')))
+    const search = searchParams.get('search') || undefined
+    const roleFilter = searchParams.get('role')?.toLowerCase()
 
-    const whereClause: any = {}
+    const auth0Response = await listAuth0Users({
+      page,
+      perPage: limit,
+      search,
+    })
 
-    // Recherche par email ou nom
-    if (search) {
-      whereClause.OR = [
-        { email: { contains: search, mode: 'insensitive' } },
-        { name: { contains: search, mode: 'insensitive' } }
-      ]
-    }
+    const usersWithRoles = await Promise.all(
+      auth0Response.users.map(async (user) => {
+        let roles: string[] = []
+        try {
+          roles = await getAuth0UserRoles(user.user_id)
+        } catch (error) {
+          console.warn(`Impossible de récupérer les rôles Auth0 pour ${user.email}:`, error)
+        }
+        const primaryRole = roles[0] || 'customer'
+        return {
+          auth0Id: user.user_id,
+          email: user.email,
+          name: user.name || '',
+          role: primaryRole,
+          createdAt: user.created_at,
+          lastLogin: user.last_login || null,
+        }
+      })
+    )
 
-    // Filtre par rôle
-    if (role) {
-      whereClause.role = role
-    }
+    const filteredUsers = roleFilter
+      ? usersWithRoles.filter((u) => u.role.toLowerCase() === roleFilter)
+      : usersWithRoles
 
-    const [users, total] = await Promise.all([
-      prisma.user.findMany({
-        where: whereClause,
-        include: {
-          orders: {
-            select: {
-              id: true,
-              totalCents: true,
-              status: true,
-              createdAt: true
-            }
-          }
+    // Calcul statistiques commandes depuis Prisma
+    const emails = filteredUsers.map((u) => u.email).filter(Boolean)
+    let statsMap = new Map<string, { orderCount: number; totalSpent: number }>()
+
+    if (emails.length > 0) {
+      const orderStats = await prisma.order.groupBy({
+        by: ['customerEmail'],
+        where: {
+          customerEmail: { in: emails },
         },
-        orderBy: { createdAt: 'desc' },
-        skip,
-        take: limit
-      }),
-      prisma.user.count({ where: whereClause })
-    ])
+        _count: { _all: true },
+        _sum: { totalCents: true },
+      })
 
-    // Calculer les statistiques pour chaque utilisateur
-    const usersWithStats = users.map(user => {
-      const orderCount = user.orders.length
-      const totalSpent = user.orders
-        .filter(order => ['paid', 'shipped', 'delivered'].includes(order.status))
-        .reduce((sum, order) => sum + order.totalCents, 0)
-
-      return {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        role: user.role,
-        orderCount,
-        totalSpent,
-        createdAt: user.createdAt.toISOString()
-      }
-    })
-
-    return NextResponse.json({
-      success: true,
-      users: usersWithStats,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit)
-      }
-    })
-  } catch (error) {
-    console.error('Erreur lors de la récupération des utilisateurs:', error)
-    return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 })
-  } finally {
-    await prisma.$disconnect()
-  }
-})
-
-// POST - Créer un nouvel utilisateur (Prisma + Auth0)
-export const POST = requireAdmin(async (request: NextRequest) => {
-  let createdAuth0UserId: string | null = null
-
-  try {
-    const body = await request.json()
-    const { email, name, password, role = 'customer' } = body
-
-    if (!email) {
-      return NextResponse.json({ error: 'Email requis' }, { status: 400 })
-    }
-
-    if (!['customer', 'admin', 'owner'].includes(role)) {
-      return NextResponse.json({ error: 'Rôle invalide' }, { status: 400 })
-    }
-
-    // Vérifier si l'utilisateur existe déjà
-    const existing = await prisma.user.findUnique({ where: { email } })
-    if (existing) {
-      return NextResponse.json(
-        { error: 'Un utilisateur avec cet email existe déjà' },
-        { status: 409 }
+      statsMap = new Map(
+        orderStats.map((stat) => [
+          (stat.customerEmail || '').toLowerCase(),
+          {
+            orderCount: stat._count._all,
+            totalSpent: stat._sum.totalCents || 0,
+          },
+        ])
       )
     }
 
-    // Créer l'utilisateur dans Auth0
-    const auth0User = await createAuth0User({
-      email,
-      password,
-      name,
-      role,
-    })
-    createdAuth0UserId = auth0User.user_id
-
-    // Créer l'utilisateur dans Prisma
-    const user = await prisma.user.create({
-      data: {
-        email,
-        name,
-        role,
-        auth0Id: auth0User.user_id,
-      },
-    })
-
-    return NextResponse.json({
-      success: true,
-      user: {
-        id: user.id,
+    const users = filteredUsers.map((user) => {
+      const stats = statsMap.get(user.email.toLowerCase()) || {
+        orderCount: 0,
+        totalSpent: 0,
+      }
+      return {
+        id: user.auth0Id,
         email: user.email,
         name: user.name,
         role: user.role,
         createdAt: user.createdAt,
+        lastLogin: user.lastLogin,
+        orderCount: stats.orderCount,
+        totalSpent: stats.totalSpent,
+      }
+    })
+
+    return NextResponse.json({
+      success: true,
+      users,
+      pagination: {
+        page,
+        limit,
+        total: roleFilter ? users.length : auth0Response.total,
+        totalPages: roleFilter ? 1 : Math.ceil(auth0Response.total / limit),
       },
     })
   } catch (error) {
-    console.error('Erreur lors de la création utilisateur:', error)
-
-    if (createdAuth0UserId) {
-      try {
-        await deleteAuth0User(createdAuth0UserId)
-      } catch (cleanupError) {
-        console.error('Erreur lors du rollback Auth0:', cleanupError)
-      }
-    }
-
-    return NextResponse.json(
-      { error: 'Erreur lors de la création de l’utilisateur' },
-      { status: 500 }
-    )
+    console.error('Erreur lors de la récupération des utilisateurs Auth0:', error)
+    return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 })
   } finally {
     await prisma.$disconnect()
   }

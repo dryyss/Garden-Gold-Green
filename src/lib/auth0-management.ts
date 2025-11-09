@@ -283,7 +283,81 @@ export async function deleteAuth0User(auth0UserId: string): Promise<void> {
   }
 }
 
+interface Auth0UserRaw {
+  user_id: string
+  email?: string
+  name?: string
+  nickname?: string
+  created_at: string
+  last_login?: string
+  logins_count?: number
+}
 
+export interface ListAuth0UsersOptions {
+  page?: number
+  perPage?: number
+  search?: string
+}
 
+export interface Auth0UserSummary {
+  user_id: string
+  email: string
+  name?: string
+  created_at: string
+  last_login?: string
+  logins_count?: number
+}
 
+export async function listAuth0Users(
+  options: ListAuth0UsersOptions = {}
+): Promise<{ users: Auth0UserSummary[]; total: number; page: number; perPage: number }> {
+  const token = await getManagementToken()
+  const page = Math.max(1, options.page ?? 1)
+  const perPage = Math.max(1, Math.min(100, options.perPage ?? 25))
 
+  const params = new URLSearchParams({
+    page: String(page - 1),
+    per_page: String(perPage),
+    include_totals: 'true',
+    sort: 'created_at:-1',
+    search_engine: 'v3',
+  })
+
+  if (options.search) {
+    const query = options.search.trim()
+    params.set('q', `email:*${query}* OR name:*${query}* OR nickname:*${query}*`)
+  }
+
+  const response = await fetch(`https://${AUTH0_DOMAIN}/api/v2/users?${params.toString()}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  })
+
+  if (!response.ok) {
+    const errorText = await response.text()
+    throw new Error(`Failed to list Auth0 users: ${errorText}`)
+  }
+
+  const data = await response.json()
+  const users: Auth0UserRaw[] = data.users || data || []
+  const total = data.total ?? users.length
+
+  return {
+    users: users
+      .filter((user) => !!user.email)
+      .map((user) => ({
+        user_id: user.user_id,
+        email: user.email as string,
+        name: user.name || user.nickname,
+        created_at: user.created_at,
+        last_login: user.last_login,
+        logins_count: user.logins_count,
+      })),
+    total,
+    page,
+    perPage,
+  }
+}
