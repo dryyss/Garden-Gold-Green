@@ -1,16 +1,110 @@
-import sgMail from '@sendgrid/mail'
+import sgMail, { MailDataRequired } from '@sendgrid/mail'
+import productsData from '@/data/products.json'
 
-// Configuration SendGrid
+type TemplateData = Record<string, unknown>
+
 if (process.env.SENDGRID_API_KEY) {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 }
 
+interface EmailAttachment {
+  filename: string
+  content: string
+  type?: string
+}
+
 interface EmailOptions {
   to: string
-  subject: string
-  html: string
+  subject?: string
+  html?: string
   text?: string
   from?: string
+  templateId?: string
+  dynamicTemplateData?: TemplateData
+  attachments?: EmailAttachment[]
+}
+
+interface OrderEmailItem {
+  name: string
+  quantity: number
+  price: number
+}
+
+interface ShippingAddress {
+  firstName?: string
+  lastName?: string
+  address?: string
+  address2?: string
+  postalCode?: string
+  city?: string
+  country?: string
+  phone?: string
+  email?: string
+}
+
+interface OrderEmailPayload {
+  id: string
+  customerEmail: string
+  customerName: string
+  total: number
+  currency: string
+  items: OrderEmailItem[]
+  shippingAddress?: ShippingAddress
+  billingAddress?: ShippingAddress
+  trackingNumber?: string
+  receiptUrl?: string
+  invoicePdfUrl?: string
+  unsubscribeUrl?: string
+  unsubscribePreferencesUrl?: string
+  logoUrl?: string
+}
+
+interface OrderShippedEmailPayload {
+  email: string
+  orderId: string
+  trackingNumber: string
+  customerName?: string
+  trackOrderUrl?: string
+  unsubscribeUrl?: string
+  unsubscribePreferencesUrl?: string
+  logoUrl?: string
+}
+
+const DEFAULT_FROM_EMAIL = process.env.SENDGRID_FROM_EMAIL || 'contact@gardengoldgreen.com'
+const RAW_APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://gardengoldgreen.com'
+const APP_URL = RAW_APP_URL.replace(/\/$/, '')
+const LOGO_URL = process.env.SENDGRID_LOGO_URL || `${APP_URL}/logo.png`
+const TRACK_ORDER_URL = `${APP_URL}/track-order`
+const PRODUCTS_URL = `${APP_URL}/products`
+
+const ORDER_CONFIRMATION_TEMPLATE_ID = process.env.SENDGRID_TEMPLATE_ORDER_CONFIRMATION
+const ORDER_SHIPPED_TEMPLATE_ID = process.env.SENDGRID_TEMPLATE_ORDER_SHIPPED
+const WELCOME_TEMPLATE_ID = process.env.SENDGRID_TEMPLATE_WELCOME
+const PASSWORD_RESET_TEMPLATE_ID = process.env.SENDGRID_TEMPLATE_PASSWORD_RESET
+const NEWSLETTER_WELCOME_TEMPLATE_ID = process.env.SENDGRID_TEMPLATE_NEWSLETTER_WELCOME
+
+function cleanData(data: TemplateData): TemplateData {
+  return Object.fromEntries(
+    Object.entries(data).filter(([, value]) => value !== undefined && value !== null)
+  )
+}
+
+function withBaseData(data: TemplateData): TemplateData {
+  return cleanData({
+    app_url: APP_URL,
+    logo_url: LOGO_URL,
+    unsubscribe: process.env.SENDGRID_UNSUBSCRIBE_URL,
+    unsubscribe_preferences: process.env.SENDGRID_UNSUBSCRIBE_PREFERENCES_URL,
+    ...data,
+  })
+}
+
+function formatPrice(amount: number, currency = 'EUR'): string {
+  return new Intl.NumberFormat('fr-FR', {
+    style: 'currency',
+    currency,
+    minimumFractionDigits: 2,
+  }).format(amount)
 }
 
 export async function sendEmail(options: EmailOptions): Promise<void> {
@@ -19,14 +113,38 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
     return
   }
 
+  if (!options.html && !options.templateId) {
+    console.error('❌ sendEmail nécessite soit un templateId soit du HTML inline')
+    return
+  }
+
+  const message: MailDataRequired = {
+    to: options.to,
+    from: options.from || DEFAULT_FROM_EMAIL,
+  }
+
+  if (options.subject) {
+    message.subject = options.subject
+  }
+  if (options.text) {
+    message.text = options.text
+  }
+  if (options.html) {
+    message.html = options.html
+  }
+  if (options.templateId) {
+    message.templateId = options.templateId
+    if (options.dynamicTemplateData) {
+      message.dynamicTemplateData = options.dynamicTemplateData
+    }
+  }
+
+  if (options.attachments?.length) {
+    message.attachments = options.attachments
+  }
+
   try {
-    await sgMail.send({
-      to: options.to,
-      from: options.from || process.env.SENDGRID_FROM_EMAIL || 'contact@gardengoldgreen.com',
-      subject: options.subject,
-      text: options.text || '',
-      html: options.html,
-    })
+    await sgMail.send(message)
     console.log(`✅ Email envoyé à ${options.to}`)
   } catch (error) {
     console.error('❌ Erreur envoi email:', error)
@@ -34,330 +152,179 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
   }
 }
 
-// Template d'email de confirmation de commande
-export function getOrderConfirmationTemplate(order: {
-  id: string
-  customerName: string
-  total: number
-  currency: string
-  items: Array<{
-    name: string
-    quantity: number
-    price: number
-  }>
-  shippingAddress: any
-  trackingNumber?: string
-}): string {
-  const itemsHTML = order.items.map(item => `
-    <tr>
-      <td style="padding: 12px; border-bottom: 1px solid #eee;">${item.name}</td>
-      <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: center;">${item.quantity}</td>
-      <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right;">€${item.price.toFixed(2)}</td>
-      <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right;">€${(item.price * item.quantity).toFixed(2)}</td>
-    </tr>
-  `).join('')
+export async function sendOrderConfirmationEmail(order: OrderEmailPayload) {
+  if (!ORDER_CONFIRMATION_TEMPLATE_ID) {
+    console.error('❌ SENDGRID_TEMPLATE_ORDER_CONFIRMATION non configuré')
+    return
+  }
 
-  return `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Confirmation de commande</title>
-      </head>
-      <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <div style="background: linear-gradient(135deg, #fbbf24 0%, #10b981 100%); padding: 20px; text-align: center; border-radius: 10px 10px 0 0;">
-          <h1 style="color: #fff; margin: 0;">🎉 Commande confirmée !</h1>
-        </div>
-        
-        <div style="background: #fff; padding: 30px; border: 1px solid #ddd; border-top: none; border-radius: 0 0 10px 10px;">
-          <p>Bonjour <strong>${order.customerName}</strong>,</p>
-          
-          <p>Merci pour votre commande chez <strong>Garden Gold Green</strong> ! Nous avons bien reçu votre commande #${order.id}.</p>
-          
-          <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h2 style="margin-top: 0; color: #111827;">Résumé de votre commande</h2>
-            
-            <table style="width: 100%; border-collapse: collapse;">
-              <thead>
-                <tr style="background: #111827; color: #fff;">
-                  <th style="padding: 12px; text-align: left;">Produit</th>
-                  <th style="padding: 12px; text-align: center;">Quantité</th>
-                  <th style="padding: 12px; text-align: right;">Prix unitaire</th>
-                  <th style="padding: 12px; text-align: right;">Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${itemsHTML}
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td colspan="3" style="padding: 12px; text-align: right; font-weight: bold; border-top: 2px solid #111827;">Total</td>
-                  <td style="padding: 12px; text-align: right; font-weight: bold; font-size: 1.2em; color: #10b981; border-top: 2px solid #111827;">
-                    ${order.currency === 'EUR' ? '€' : ''}${order.total.toFixed(2)}
-                  </td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
+  const shipping = order.shippingAddress || {}
+  const billing = order.billingAddress || {}
+  const items = order.items || []
 
-          ${order.trackingNumber ? `
-            <div style="background: #dbeafe; border-left: 4px solid #3b82f6; padding: 15px; margin: 20px 0;">
-              <p style="margin: 0;">
-                <strong>📦 Numéro de suivi :</strong> ${order.trackingNumber}
-              </p>
-            </div>
-          ` : ''}
-          
-          <div style="background: #f0fdf4; border-left: 4px solid #10b981; padding: 15px; margin: 20px 0;">
-            <p style="margin: 0;">
-              <strong>📍 Adresse de livraison :</strong><br>
-              ${order.shippingAddress.firstName || ''} ${order.shippingAddress.lastName || ''}<br>
-              ${order.shippingAddress.address || ''}<br>
-              ${order.shippingAddress.postalCode || ''} ${order.shippingAddress.city || ''}<br>
-              ${order.shippingAddress.country || ''}
-            </p>
-          </div>
-          
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/track-order" 
-               style="background: #fbbf24; color: #111827; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">
-              Suivre ma commande
-            </a>
-          </div>
-          
-          <p>Nous vous enverrons un email de confirmation dès que votre commande sera expédiée.</p>
-          
-          <p style="margin-top: 30px;">À très bientôt,<br><strong>L'équipe Garden Gold Green 🌿</strong></p>
-        </div>
-        
-        <div style="text-align: center; margin-top: 20px; color: #6b7280; font-size: 12px;">
-          <p>Vous avez reçu cet email car vous avez passé une commande sur <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}" style="color: #10b981;">Garden Gold Green</a></p>
-        </div>
-      </body>
-    </html>
-  `
-}
+  const attachments: EmailAttachment[] = []
 
-// Template d'email de bienvenue
-export function getWelcomeEmailTemplate(user: {
-  name: string
-}): string {
-  return `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="UTF-8">
-        <title>Bienvenue chez Garden Gold Green</title>
-      </head>
-      <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <div style="background: linear-gradient(135deg, #fbbf24 0%, #10b981 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-          <h1 style="color: #fff; margin: 0;">🌿 Bienvenue !</h1>
-        </div>
-        
-        <div style="background: #fff; padding: 30px; border: 1px solid #ddd; border-top: none; border-radius: 0 0 10px 10px;">
-          <p>Bonjour <strong>${user.name}</strong>,</p>
-          
-          <p>Nous sommes ravis de vous accueillir chez <strong>Garden Gold Green</strong> ! 🎉</p>
-          
-          <p>Découvrez notre sélection de produits CBD premium :</p>
-          <ul>
-            <li>🌿 Huiles CBD de qualité supérieure</li>
-            <li>🌸 Fleurs CBD sélectionnées</li>
-            <li>💊 Capsules et gummies</li>
-            <li>🧴 Cosmétiques CBD naturels</li>
-          </ul>
-          
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/products" 
-               style="background: #fbbf24; color: #111827; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">
-              Découvrir nos produits
-            </a>
-          </div>
-          
-          <p><strong>Avantages de votre compte :</strong></p>
-          <ul>
-            <li>✅ Suivi en temps réel de vos commandes</li>
-            <li>✅ Historique de vos achats</li>
-            <li>✅ Gestion de vos abonnements</li>
-            <li>✅ Livraison gratuite dès 50€</li>
-          </ul>
-          
-          <p style="margin-top: 30px;">À très bientôt,<br><strong>L'équipe Garden Gold Green 🌿</strong></p>
-        </div>
-        
-        <div style="text-align: center; margin-top: 20px; color: #6b7280; font-size: 12px;">
-          <p>Vous avez reçu cet email car vous avez créé un compte sur <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}" style="color: #10b981;">Garden Gold Green</a></p>
-        </div>
-      </body>
-    </html>
-  `
-}
+  if (order.invoicePdfUrl) {
+    try {
+      const response = await fetch(order.invoicePdfUrl)
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`)
+      }
+      const buffer = Buffer.from(await response.arrayBuffer())
+      attachments.push({
+        filename: `facture-${order.id}.pdf`,
+        content: buffer.toString('base64'),
+        type: 'application/pdf',
+      })
+    } catch (attachmentError) {
+      console.warn('⚠️ Impossible de joindre la facture PDF:', attachmentError)
+    }
+  }
 
-// Template d'email de reset password
-export function getPasswordResetTemplate(name: string, resetLink: string): string {
-  return `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="UTF-8">
-        <title>Réinitialisation de mot de passe</title>
-      </head>
-      <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <div style="background: linear-gradient(135deg, #fbbf24 0%, #10b981 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-          <h1 style="color: #fff; margin: 0;">🔐 Réinitialisation</h1>
-        </div>
-        
-        <div style="background: #fff; padding: 30px; border: 1px solid #ddd; border-top: none; border-radius: 0 0 10px 10px;">
-          <p>Bonjour <strong>${name}</strong>,</p>
-          
-          <p>Vous avez demandé la réinitialisation de votre mot de passe sur <strong>Garden Gold Green</strong>.</p>
-          
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="${resetLink}" 
-               style="background: #fbbf24; color: #111827; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">
-              Réinitialiser mon mot de passe
-            </a>
-          </div>
-          
-          <p style="color: #6b7280; font-size: 14px;">
-            ⚠️ Ce lien est valable pendant 24 heures. Si vous n'avez pas demandé cette réinitialisation, ignorez cet email.
-          </p>
-          
-          <p style="margin-top: 30px;">Cordialement,<br><strong>L'équipe Garden Gold Green 🌿</strong></p>
-        </div>
-        
-        <div style="text-align: center; margin-top: 20px; color: #6b7280; font-size: 12px;">
-          <p>Vous avez reçu cet email car une réinitialisation de mot de passe a été demandée sur votre compte.</p>
-        </div>
-      </body>
-    </html>
-  `
-}
-
-// Template d'email de newsletter
-export function getNewsletterWelcomeTemplate(): string {
-  return `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="UTF-8">
-        <title>Bienvenue à la newsletter</title>
-      </head>
-      <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <div style="background: linear-gradient(135deg, #fbbf24 0%, #10b981 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-          <h1 style="color: #fff; margin: 0;">📬 Bienvenue à la newsletter !</h1>
-        </div>
-        
-        <div style="background: #fff; padding: 30px; border: 1px solid #ddd; border-top: none; border-radius: 0 0 10px 10px;">
-          <p>Merci de vous être inscrit à notre newsletter ! 🎉</p>
-          
-          <p>Vous recevrez désormais :</p>
-          <ul>
-            <li>✨ Nos dernières actualités CBD</li>
-            <li>🎁 Offres exclusives et promotions</li>
-            <li>📚 Conseils bien-être et guides</li>
-            <li>🆕 Lancements de nouveaux produits</li>
-          </ul>
-          
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/products" 
-               style="background: #fbbf24; color: #111827; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">
-              Découvrir nos produits
-            </a>
-          </div>
-          
-          <p style="margin-top: 30px;">À très bientôt,<br><strong>L'équipe Garden Gold Green 🌿</strong></p>
-        </div>
-      </body>
-    </html>
-  `
-}
-
-// Fonctions d'envoi d'emails spécialisés
-export async function sendOrderConfirmationEmail(order: any) {
-  const html = getOrderConfirmationTemplate(order)
   await sendEmail({
     to: order.customerEmail,
-    subject: `🎉 Commande confirmée #${order.id} - Garden Gold Green`,
-    html,
+    templateId: ORDER_CONFIRMATION_TEMPLATE_ID,
+    attachments: attachments.length ? attachments : undefined,
+    dynamicTemplateData: withBaseData({
+      logo_url: order.logoUrl || LOGO_URL,
+      unsubscribe: order.unsubscribeUrl || process.env.SENDGRID_UNSUBSCRIBE_URL,
+      unsubscribe_preferences:
+        order.unsubscribePreferencesUrl || process.env.SENDGRID_UNSUBSCRIBE_PREFERENCES_URL,
+      order_id: order.id,
+      customer_name: order.customerName,
+      order_total: formatPrice(order.total, order.currency),
+      items: items.map(item => {
+        const priceCentsValue =
+          typeof (item as any).priceCents === 'number' ? (item as any).priceCents : undefined
+        const productId = (item as any).productId || (item as any).id
+
+        let unitPriceAmount =
+          typeof item.price === 'number'
+            ? item.price
+            : priceCentsValue !== undefined
+              ? priceCentsValue / 100
+              : undefined
+
+        if (unitPriceAmount === undefined && productId) {
+          const product = (productsData as any[]).find(
+            (p: any) => String(p.id) === String(productId)
+          )
+          if (product?.priceCents) {
+            unitPriceAmount = product.priceCents / 100
+          }
+        }
+
+        if (unitPriceAmount === undefined) {
+          unitPriceAmount = 0
+        }
+
+        const lineTotalAmount = unitPriceAmount * (item.quantity || 0)
+
+        return {
+          name: item.name,
+          quantity: item.quantity,
+          unit_price: formatPrice(unitPriceAmount, order.currency),
+          line_total: formatPrice(lineTotalAmount, order.currency),
+        }
+      }),
+      tracking_number: order.trackingNumber,
+      shipping_name: `${shipping.firstName ?? ''} ${shipping.lastName ?? ''}`.trim() || undefined,
+      shipping_address: shipping.address,
+      shipping_address2: shipping.address2,
+      shipping_postal_code: shipping.postalCode,
+      shipping_city: shipping.city,
+      shipping_country: shipping.country,
+      shipping_phone: shipping.phone,
+      billing_name: `${billing.firstName ?? ''} ${billing.lastName ?? ''}`.trim() || undefined,
+      billing_address: billing.address,
+      billing_address2: billing.address2,
+      billing_postal_code: billing.postalCode,
+      billing_city: billing.city,
+      billing_country: billing.country,
+      billing_phone: billing.phone,
+      billing_email: billing.email,
+      track_order_url: TRACK_ORDER_URL,
+      receipt_url: order.receiptUrl,
+    }),
   })
 }
 
-export async function sendWelcomeEmail(email: string, name: string) {
-  const html = getWelcomeEmailTemplate({ name })
+export async function sendWelcomeEmail(email: string, name: string, logoUrl?: string) {
+  if (!WELCOME_TEMPLATE_ID) {
+    console.error('❌ SENDGRID_TEMPLATE_WELCOME non configuré')
+    return
+  }
+
   await sendEmail({
     to: email,
-    subject: '🌿 Bienvenue chez Garden Gold Green !',
-    html,
+    templateId: WELCOME_TEMPLATE_ID,
+    dynamicTemplateData: withBaseData({
+      logo_url: logoUrl || LOGO_URL,
+      customer_name: name,
+      products_url: PRODUCTS_URL,
+    }),
   })
 }
 
-export async function sendPasswordResetEmail(email: string, name: string, resetLink: string) {
-  const html = getPasswordResetTemplate(name, resetLink)
+export async function sendPasswordResetEmail(
+  email: string,
+  name: string,
+  resetLink: string,
+  logoUrl?: string
+) {
+  if (!PASSWORD_RESET_TEMPLATE_ID) {
+    console.error('❌ SENDGRID_TEMPLATE_PASSWORD_RESET non configuré')
+    return
+  }
+
   await sendEmail({
     to: email,
-    subject: '🔐 Réinitialisation de votre mot de passe',
-    html,
+    templateId: PASSWORD_RESET_TEMPLATE_ID,
+    dynamicTemplateData: withBaseData({
+      logo_url: logoUrl || LOGO_URL,
+      customer_name: name,
+      reset_link: resetLink,
+    }),
   })
 }
 
-export async function sendNewsletterWelcomeEmail(email: string) {
-  const html = getNewsletterWelcomeTemplate()
+export async function sendNewsletterWelcomeEmail(email: string, name: string, logoUrl?: string) {
+  if (!NEWSLETTER_WELCOME_TEMPLATE_ID) {
+    console.error('❌ SENDGRID_TEMPLATE_NEWSLETTER_WELCOME non configuré')
+    return
+  }
+
   await sendEmail({
     to: email,
-    subject: '📬 Bienvenue à notre newsletter !',
-    html,
+    templateId: NEWSLETTER_WELCOME_TEMPLATE_ID,
+    dynamicTemplateData: withBaseData({
+      logo_url: logoUrl || LOGO_URL,
+      customer_name: name,
+      products_url: PRODUCTS_URL,
+    }),
   })
 }
 
-export async function sendOrderShippedEmail(email: string, orderId: string, trackingNumber: string) {
-  const html = `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="UTF-8">
-        <title>Commande expédiée</title>
-      </head>
-      <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <div style="background: linear-gradient(135deg, #fbbf24 0%, #10b981 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-          <h1 style="color: #fff; margin: 0;">📦 Votre commande est expédiée !</h1>
-        </div>
-        
-        <div style="background: #fff; padding: 30px; border: 1px solid #ddd; border-top: none; border-radius: 0 0 10px 10px;">
-          <p>Bonjour,</p>
-          
-          <p>Excellente nouvelle ! Votre commande <strong>#${orderId}</strong> a été expédiée et est en route. 🚀</p>
-          
-          <div style="background: #dbeafe; border-left: 4px solid #3b82f6; padding: 15px; margin: 20px 0;">
-            <p style="margin: 0;">
-              <strong>📦 Numéro de suivi :</strong> ${trackingNumber}
-            </p>
-          </div>
-          
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/track-order" 
-               style="background: #fbbf24; color: #111827; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">
-              Suivre ma commande
-            </a>
-          </div>
-          
-          <p>À très bientôt,<br><strong>L'équipe Garden Gold Green 🌿</strong></p>
-        </div>
-      </body>
-    </html>
-  `
-  
+export async function sendOrderShippedEmail(payload: OrderShippedEmailPayload) {
+  if (!ORDER_SHIPPED_TEMPLATE_ID) {
+    console.error('❌ SENDGRID_TEMPLATE_ORDER_SHIPPED non configuré')
+    return
+  }
+
   await sendEmail({
-    to: email,
-    subject: `📦 Votre commande #${orderId} est expédiée`,
-    html,
+    to: payload.email,
+    templateId: ORDER_SHIPPED_TEMPLATE_ID,
+    dynamicTemplateData: withBaseData({
+      logo_url: payload.logoUrl || LOGO_URL,
+      unsubscribe: payload.unsubscribeUrl || process.env.SENDGRID_UNSUBSCRIBE_URL,
+      unsubscribe_preferences:
+        payload.unsubscribePreferencesUrl || process.env.SENDGRID_UNSUBSCRIBE_PREFERENCES_URL,
+      order_id: payload.orderId,
+      customer_name: payload.customerName || 'Client',
+      tracking_number: payload.trackingNumber,
+      track_order_url: payload.trackOrderUrl || TRACK_ORDER_URL,
+    }),
   })
 }
-
-
-
-
-
 
 

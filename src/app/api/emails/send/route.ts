@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { 
-  sendEmail, 
-  sendWelcomeEmail, 
-  sendPasswordResetEmail, 
+import {
+  sendEmail,
+  sendOrderConfirmationEmail,
+  sendWelcomeEmail,
+  sendPasswordResetEmail,
   sendNewsletterWelcomeEmail,
-  sendOrderShippedEmail 
+  sendOrderShippedEmail,
 } from '@/lib/email'
 
 export async function POST(request: NextRequest) {
@@ -14,19 +15,49 @@ export async function POST(request: NextRequest) {
 
     switch (type) {
       case 'welcome':
-        await sendWelcomeEmail(data.email, data.name)
+        await sendWelcomeEmail(data.email, data.name, data.logoUrl)
         break
 
       case 'password-reset':
-        await sendPasswordResetEmail(data.email, data.name, data.resetLink)
+        await sendPasswordResetEmail(data.email, data.name, data.resetLink, data.logoUrl)
         break
 
       case 'newsletter':
-        await sendNewsletterWelcomeEmail(data.email)
+        await sendNewsletterWelcomeEmail(
+          data.email,
+          data.name || data.firstName || 'Client Garden Gold Green',
+          data.logoUrl
+        )
+        break
+
+      case 'order-confirmation':
+        await sendOrderConfirmationEmail({
+          id: data.id || data.orderId,
+          customerEmail: data.customerEmail || data.email,
+          customerName: data.customerName || data.name || 'Client',
+          total: data.total,
+          currency: data.currency || 'EUR',
+          items: data.items || [],
+          shippingAddress: data.shippingAddress,
+          trackingNumber: data.trackingNumber,
+          receiptUrl: data.receiptUrl,
+          unsubscribeUrl: data.unsubscribeUrl,
+          unsubscribePreferencesUrl: data.unsubscribePreferencesUrl,
+          logoUrl: data.logoUrl,
+        })
         break
 
       case 'order-shipped':
-        await sendOrderShippedEmail(data.email, data.orderId, data.trackingNumber)
+        await sendOrderShippedEmail({
+          email: data.email,
+          orderId: data.orderId,
+          trackingNumber: data.trackingNumber,
+          customerName: data.customerName || data.name,
+          trackOrderUrl: data.trackOrderUrl,
+          unsubscribeUrl: data.unsubscribeUrl,
+          unsubscribePreferencesUrl: data.unsubscribePreferencesUrl,
+          logoUrl: data.logoUrl,
+        })
         break
 
       case 'custom':

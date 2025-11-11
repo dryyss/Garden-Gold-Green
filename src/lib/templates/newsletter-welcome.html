@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenue à la newsletter</title>
+    <style>
+      :root {
+        color-scheme: light;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #f5f5f7;
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+        color: #1f2933;
+      }
+      a {
+        color: #0f766e;
+        text-decoration: none;
+      }
+      .wrapper {
+        width: 100%;
+        background-color: #f5f5f7;
+        padding: 24px 12px;
+      }
+      .container {
+        width: 100%;
+        max-width: 640px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 18px 45px rgba(15, 118, 110, 0.12);
+      }
+      .hero {
+        background: linear-gradient(135deg, #fde68a 0%, #10b981 100%);
+        padding: 32px 28px;
+        text-align: center;
+      }
+      .hero h1 {
+        margin: 16px 0 0;
+        font-size: 28px;
+        color: #0f172a;
+        letter-spacing: 0.01em;
+      }
+      .logo {
+        width: 120px;
+        max-width: 40%;
+      }
+      .section {
+        padding: 32px;
+      }
+      .section p {
+        font-size: 15px;
+        color: #475569;
+        line-height: 1.7;
+      }
+      .list-card {
+        background: #f9fafb;
+        border-radius: 16px;
+        padding: 24px;
+        border: 1px solid #e5e7eb;
+        margin: 24px 0;
+      }
+      .list-card ul {
+        margin: 0;
+        padding-left: 20px;
+        color: #1f2937;
+      }
+      .cta {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 14px 32px;
+        border-radius: 999px;
+        background-color: #f59e0b;
+        color: #0f172a;
+        font-weight: 600;
+        text-decoration: none;
+        margin: 28px 0;
+        transition: background-color 0.2s ease-in-out;
+      }
+      .cta:hover {
+        background-color: #fbbf24;
+      }
+      .footer {
+        padding: 24px 32px 30px;
+        text-align: center;
+        font-size: 12px;
+        color: #6b7280;
+        line-height: 1.7;
+      }
+      .footer a {
+        color: #0f766e;
+      }
+      @media only screen and (max-width: 600px) {
+        .wrapper {
+          padding: 16px;
+        }
+        .container {
+          border-radius: 16px;
+          box-shadow: none;
+        }
+        .hero {
+          padding: 28px 20px;
+        }
+        .hero h1 {
+          font-size: 24px;
+        }
+        .section {
+          padding: 24px 20px;
+        }
+        .list-card {
+          padding: 20px;
+          margin: 20px 0;
+        }
+        .cta {
+          width: 100%;
+          margin: 24px 0 18px;
+        }
+        .footer {
+          padding: 20px 18px 26px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="container">
+        <div class="hero">
+          {{#logo_url}}
+          <img src="{{logo_url}}" alt="Garden Gold Green" class="logo" />
+          {{/logo_url}}
+          <h1>📬 Bienvenue dans la newsletter !</h1>
+        </div>
+
+        <div class="section">
+          <p style="margin: 0 0 20px;">Merci pour votre inscription, {{customer_name}} ! 🎉</p>
+          <p style="margin: 0 0 24px;">
+            Nous sommes ravis de vous compter parmi les passionnés de bien-être naturel. Voici ce qui vous attend dans votre boîte mail :
+          </p>
+
+          <div class="list-card">
+            <ul>
+              <li>✨ Inspirations bien-être et actualités CBD</li>
+              <li>🎁 Offres exclusives réservées aux abonnés</li>
+              <li>📚 Guides, conseils et recettes à base de CBD</li>
+              <li>🆕 Sorties de nouveaux produits en avant-première</li>
+            </ul>
+          </div>
+
+          <div style="text-align: center;">
+            <a href="{{products_url}}" class="cta">Découvrir nos produits</a>
+          </div>
+
+          <p style="margin: 28px 0 0;">
+            À très bientôt,<br><strong>L'équipe Garden Gold Green 🌿</strong>
+          </p>
+        </div>
+
+        <div class="footer">
+          <p style="margin: 0 0 12px;">Vous recevez cet email car vous êtes inscrit à la newsletter de <a href="{{app_url}}">Garden Gold Green</a>.</p>
+          <p style="margin: 0;">
+            <a class="unsubscribe-link" href="{{{unsubscribe}}}" target="_blank">Se désinscrire</a>
+            &nbsp;|&nbsp;
+            <a class="unsubscribe-preferences" href="{{{unsubscribe_preferences}}}" target="_blank">Gérer mes préférences</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+

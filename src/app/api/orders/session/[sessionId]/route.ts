@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { readOrdersMap } from '@/lib/orders-store'
 
 export async function GET(
   request: NextRequest,
@@ -17,13 +15,8 @@ export async function GET(
       )
     }
 
-    // Récupérer la commande depuis la base de données
-    const order = await prisma.order.findFirst({
-      where: { stripeSessionId: sessionId },
-      include: {
-        items: true,
-      },
-    })
+    const orders = await readOrdersMap()
+    const order = Object.values(orders).find(o => o.stripeSessionId === sessionId)
 
     if (!order) {
       return NextResponse.json(

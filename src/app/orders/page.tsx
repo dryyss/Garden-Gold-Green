@@ -33,6 +33,8 @@ interface Order {
   customerEmail?: string
   customerName?: string
   shippingAddress?: any
+  receiptUrl?: string | null
+  invoicePdf?: string | null
 }
 
 export default function OrdersPage() {
@@ -243,6 +245,16 @@ export default function OrdersPage() {
                   </div>
 
                   <div className="flex justify-end mt-4">
+                    {(order.invoicePdf || order.receiptUrl) && (
+                      <a
+                        href={order.invoicePdf || order.receiptUrl || '#'}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-brand-green hover:text-white transition-colors font-medium mr-4"
+                      >
+                        {order.invoicePdf ? 'Télécharger la facture PDF' : 'Voir le reçu'}
+                      </a>
+                    )}
                     <a
                       href={`/orders/${order.id}`}
                       className="text-brand-gold hover:text-white transition-colors text-sm font-medium"

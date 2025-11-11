@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { auth0 } from '@/lib/auth0'
+import { getUserById, upsertUser } from '@/lib/users-store'
+import { stripe as sharedStripe } from '@/lib/stripe'
 
 // Vérifier que la clé Stripe est présente
 if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error('STRIPE_SECRET_KEY manquant dans .env.local')
 }
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+const stripe = sharedStripe instanceof Stripe ? sharedStripe : new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: '2025-09-30.clover',
 })
 
@@ -62,12 +64,41 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // Pour l'instant, on utilise seulement les cartes
-    // Apple Pay et Google Pay nécessitent une configuration plus complexe
     const paymentMethodTypes: Stripe.Checkout.SessionCreateParams.PaymentMethodType[] = ['card']
+    if (process.env.STRIPE_ENABLE_PAYPAL === 'true') {
+      paymentMethodTypes.push('paypal')
+    }
 
-    // Créer la session Stripe Checkout
-    const checkoutSession = await stripe.checkout.sessions.create({
+    let stripeCustomerId: string | undefined
+    if (session?.user?.sub) {
+      const storedUser = await getUserById(session.user.sub)
+      if (storedUser?.stripeCustomerId) {
+        stripeCustomerId = storedUser.stripeCustomerId
+      } else {
+        const customer = await stripe.customers.create({
+          email: userEmail,
+          name: session.user.name || session.user.nickname,
+          metadata: {
+            auth0UserId: session.user.sub,
+          },
+        })
+        const saved = await upsertUser({
+          id: session.user.sub,
+          email: userEmail,
+          name: session.user.name || session.user.nickname,
+          stripeCustomerId: customer.id,
+        })
+        stripeCustomerId = saved.stripeCustomerId
+      }
+    }
+
+    const metadataItems = items.map((item: any) => ({
+      i: String(item.id),
+      q: Number(item.quantity) || 0,
+      pc: Math.round(item.price * 100),
+    }))
+
+    const checkoutParams: Stripe.Checkout.SessionCreateParams = {
       payment_method_types: paymentMethodTypes,
       line_items: lineItems,
       mode: 'payment',
@@ -76,10 +107,18 @@ export async function POST(request: NextRequest) {
       metadata: {
         userId: userId,
         userEmail: userEmail || '',
-        cartItems: JSON.stringify(items),
+        cartItems: JSON.stringify(metadataItems),
         paymentMethod: paymentMethod || 'stripe',
       },
-      customer_email: userEmail,
+      invoice_creation: {
+        enabled: true,
+        invoice_data: {
+          metadata: {
+            userId: userId || '',
+            userEmail: userEmail || '',
+          },
+        },
+      },
       shipping_address_collection: {
         allowed_countries: ['FR', 'BE', 'LU', 'CH', 'DE', 'ES', 'IT', 'NL'],
       },
@@ -87,7 +126,19 @@ export async function POST(request: NextRequest) {
       phone_number_collection: {
         enabled: true,
       },
-    })
+    }
+
+    if (stripeCustomerId) {
+      checkoutParams.customer = stripeCustomerId
+    } else if (userEmail) {
+      checkoutParams.customer_email = userEmail
+    }
+
+    if (session?.user?.sub) {
+      checkoutParams.client_reference_id = session.user.sub
+    }
+
+    const checkoutSession = await stripe.checkout.sessions.create(checkoutParams)
 
     return NextResponse.json({ sessionId: checkoutSession.id, url: checkoutSession.url })
   } catch (error: any) {

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commande expédiée</title>
+    <style>
+      :root {
+        color-scheme: light;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #f5f5f7;
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+        color: #1f2933;
+      }
+      a {
+        color: #0f766e;
+        text-decoration: none;
+      }
+      .wrapper {
+        width: 100%;
+        background-color: #f5f5f7;
+        padding: 24px 12px;
+      }
+      .container {
+        width: 100%;
+        max-width: 640px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 18px 45px rgba(15, 118, 110, 0.12);
+      }
+      .hero {
+        background: linear-gradient(135deg, #fde68a 0%, #10b981 100%);
+        padding: 32px 28px;
+        text-align: center;
+      }
+      .hero h1 {
+        margin: 16px 0 0;
+        font-size: 26px;
+        color: #0f172a;
+        letter-spacing: 0.01em;
+      }
+      .logo {
+        width: 120px;
+        max-width: 40%;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        font-size: 13px;
+        font-weight: 600;
+        color: #0f766e;
+        background-color: rgba(16, 185, 129, 0.12);
+        border-radius: 999px;
+        padding: 6px 16px;
+        margin-bottom: 12px;
+      }
+      .section {
+        padding: 32px;
+      }
+      .info-card {
+        border-radius: 16px;
+        border: 1px solid #e5e7eb;
+        padding: 18px 20px;
+        margin: 24px 0;
+      }
+      .info-card.tracking {
+        background: linear-gradient(120deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.02));
+        border-left: 4px solid #3b82f6;
+      }
+      .info-card p {
+        margin: 0;
+        font-size: 15px;
+        line-height: 1.5;
+        color: #1f2937;
+      }
+      .cta {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 14px 32px;
+        border-radius: 999px;
+        background-color: #f59e0b;
+        color: #0f172a;
+        font-weight: 600;
+        text-decoration: none;
+        margin: 32px 0;
+        transition: background-color 0.2s ease-in-out;
+      }
+      .cta:hover {
+        background-color: #fbbf24;
+      }
+      .footer {
+        padding: 24px 32px 30px;
+        text-align: center;
+        font-size: 12px;
+        color: #6b7280;
+        line-height: 1.7;
+      }
+      .footer a {
+        color: #0f766e;
+      }
+      @media only screen and (max-width: 600px) {
+        .wrapper {
+          padding: 16px;
+        }
+        .container {
+          border-radius: 16px;
+          box-shadow: none;
+        }
+        .hero {
+          padding: 28px 20px;
+        }
+        .hero h1 {
+          font-size: 22px;
+        }
+        .section {
+          padding: 24px 20px;
+        }
+        .cta {
+          width: 100%;
+          margin: 24px 0 16px;
+        }
+        .info-card {
+          margin: 20px 0;
+        }
+        .footer {
+          padding: 20px 18px 26px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="container">
+        <div class="hero">
+          {{#logo_url}}
+          <img src="{{logo_url}}" alt="Garden Gold Green" class="logo" />
+          {{/logo_url}}
+          <div class="badge">Commande #{{order_id}}</div>
+          <h1>📦 Votre commande est expédiée !</h1>
+        </div>
+
+        <div class="section">
+          <p style="margin: 0 0 18px; font-size: 16px;">Bonjour {{customer_name}},</p>
+          <p style="margin: 0 0 24px; font-size: 15px; color: #475569;">
+            Excellente nouvelle ! Votre commande <strong>#{{order_id}}</strong> vient de quitter notre atelier et arrive bientôt chez vous. 🚀
+          </p>
+
+          <div class="info-card tracking">
+            <p><strong>📦 Numéro de suivi :</strong> {{tracking_number}}</p>
+          </div>
+
+          <div style="text-align: center;">
+            <a href="{{track_order_url}}" class="cta">Suivre ma commande</a>
+          </div>
+
+          <p style="margin: 24px 0 0; font-size: 15px; color: #475569;">
+            Besoin d'aide ? Notre équipe support est disponible pour vous accompagner.
+          </p>
+
+          <p style="margin: 24px 0 0; font-size: 15px; color: #475569;">
+            À très bientôt,<br><strong>L'équipe Garden Gold Green 🌿</strong>
+          </p>
+        </div>
+
+        <div class="footer">
+          <p style="margin: 0 0 12px;">Vous avez reçu cet email car vous avez passé une commande sur <a href="{{app_url}}">Garden Gold Green</a>.</p>
+          <p style="margin: 0;">
+            <a class="unsubscribe-link" href="{{{unsubscribe}}}" target="_blank">Se désinscrire</a>
+            &nbsp;|&nbsp;
+            <a class="unsubscribe-preferences" href="{{{unsubscribe_preferences}}}" target="_blank">Gérer mes préférences</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

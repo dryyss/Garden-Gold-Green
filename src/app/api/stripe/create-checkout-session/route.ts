@@ -53,8 +53,14 @@ export async function POST(request: NextRequest) {
     }))
 
     // Métadonnées pour le webhook
+    const metadataItems = items.map((item: any) => ({
+      i: String(item.id),
+      q: Number(item.quantity) || 0,
+      pc: Math.round(item.price * 100),
+    }))
+
     const metadata: any = {
-      cartItems: JSON.stringify(items),
+      cartItems: JSON.stringify(metadataItems),
     }
 
     // Ajouter l'ID utilisateur si connecté

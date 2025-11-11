@@ -19,7 +19,7 @@ import {
   faMapMarkerAlt
 } from '@fortawesome/free-solid-svg-icons'
 import { ReturnRequest } from '@/components/ReturnRequest'
-// import { useUser } from '@auth0/nextjs-auth0/client' // Temporairement commenté
+import { useUser } from '@auth0/nextjs-auth0/client'
 
 interface OrderItem {
   id: string
@@ -63,9 +63,7 @@ interface Order {
 export default function OrderDetailPage() {
   const params = useParams()
   const router = useRouter()
-  // const { user, isLoading: authLoading } = useUser() // Temporairement commenté
-  const user = null // Placeholder temporaire
-  const authLoading = false // Placeholder temporaire
+  const { user, isLoading: authLoading } = useUser()
   const [order, setOrder] = useState<Order | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -79,10 +77,10 @@ export default function OrderDetailPage() {
   }, [user, authLoading, router])
 
   useEffect(() => {
-    if (user && params.id) {
+    if (!authLoading && user && params.id) {
       fetchOrder()
     }
-  }, [user, params.id])
+  }, [user, params.id, authLoading])
 
   const fetchOrder = async () => {
     try {

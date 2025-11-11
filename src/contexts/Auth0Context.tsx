@@ -88,51 +88,51 @@ export function Auth0Provider({ children }: { children: React.ReactNode }) {
       console.log('🔍 isAdminUser:', isAdminUser)
       console.log('🔍 isUserRole:', isUserRole)
       
-      // Vérifier si l'utilisateur n'a aucun rôle et assigner le rôle par défaut
-      if (roles.length === 0 && auth0User.sub) {
-        console.log('ℹ️ Utilisateur sans rôles détecté, assignation du rôle par défaut...')
-        console.log('🔍 User ID:', auth0User.sub)
-        
-        fetch('/api/auth/assign-default-role', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-          .then(res => {
-            console.log('🔍 Status de la réponse:', res.status)
-            if (!res.ok) {
-              return res.text().then(text => {
-                console.error('❌ Erreur HTTP:', res.status, text)
-                throw new Error(`HTTP ${res.status}: ${text}`)
-              })
-            }
-            return res.json()
-          })
-          .then(data => {
-            console.log('✅ Réponse API assign-default-role:', data)
-            if (data.message === 'Default role assigned successfully') {
-              // Recharger la page pour obtenir le nouveau token avec les rôles
-              console.log('🔄 Rechargement de la page pour obtenir le nouveau token...')
-              setTimeout(() => {
-                window.location.reload()
-              }, 1000)
-            } else if (data.message === 'User already has roles') {
-              console.log('ℹ️ Utilisateur a déjà des rôles via API:', data.roles)
-              // Recharger quand même pour obtenir les rôles dans le token
-              setTimeout(() => {
-                window.location.reload()
-              }, 1000)
-            } else {
-              console.warn('⚠️ Réponse inattendue:', data)
-            }
-          })
-          .catch(error => {
-            console.error('❌ Erreur lors de l\'assignation du rôle:', error)
-            console.error('❌ Détails de l\'erreur:', error.message)
-            // Ne pas recharger en cas d'erreur pour éviter une boucle
-          })
-      }
+      // Désactivation temporaire de l'assignation automatique du rôle par défaut
+      // if (roles.length === 0 && auth0User.sub) {
+      //   console.log('ℹ️ Utilisateur sans rôles détecté, assignation du rôle par défaut...')
+      //   console.log('🔍 User ID:', auth0User.sub)
+      //   
+      //   fetch('/api/auth/assign-default-role', {
+      //     method: 'POST',
+      //     headers: {
+      //       'Content-Type': 'application/json',
+      //     },
+      //   })
+      //     .then(res => {
+      //       console.log('🔍 Status de la réponse:', res.status)
+      //       if (!res.ok) {
+      //         return res.text().then(text => {
+      //           console.error('❌ Erreur HTTP:', res.status, text)
+      //           throw new Error(`HTTP ${res.status}: ${text}`)
+      //         })
+      //       }
+      //       return res.json()
+      //     })
+      //     .then(data => {
+      //       console.log('✅ Réponse API assign-default-role:', data)
+      //       if (data.message === 'Default role assigned successfully') {
+      //         // Recharger la page pour obtenir le nouveau token avec les rôles
+      //         console.log('🔄 Rechargement de la page pour obtenir le nouveau token...')
+      //         setTimeout(() => {
+      //           window.location.reload()
+      //         }, 1000)
+      //       } else if (data.message === 'User already has roles') {
+      //         console.log('ℹ️ Utilisateur a déjà des rôles via API:', data.roles)
+      //         // Recharger quand même pour obtenir les rôles dans le token
+      //         setTimeout(() => {
+      //           window.location.reload()
+      //         }, 1000)
+      //       } else {
+      //         console.warn('⚠️ Réponse inattendue:', data)
+      //       }
+      //     })
+      //     .catch(error => {
+      //       console.error('❌ Erreur lors de l\'assignation du rôle:', error)
+      //       console.error('❌ Détails de l\'erreur:', error.message)
+      //       // Ne pas recharger en cas d'erreur pour éviter une boucle
+      //     })
+      // }
       
       // Déterminer le rôle (owner > admin > user)
       let userRole: 'user' | 'admin' | 'owner' = 'user'

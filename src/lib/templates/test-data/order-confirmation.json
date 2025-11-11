@@ -1,0 +1,32 @@
+{
+  "app_url": "https://gardengoldgreen.com",
+  "logo_url": "https://gardengoldgreen.com/assets/email/logo.png",
+  "order_id": "GGG-2025-00541",
+  "customer_name": "Léa Dupont",
+  "items": [
+    {
+      "name": "Huile CBD 15% 30ml",
+      "quantity": 1,
+      "unit_price": "49,90 €",
+      "line_total": "49,90 €"
+    },
+    {
+      "name": "Infusion Relax Nuit",
+      "quantity": 2,
+      "unit_price": "12,90 €",
+      "line_total": "25,80 €"
+    }
+  ],
+  "order_total": "75,70 €",
+  "tracking_number": "COLISSIMO123456789FR",
+  "shipping_name": "Léa Dupont",
+  "shipping_address": "24 rue des Fleurs",
+  "shipping_postal_code": "75011",
+  "shipping_city": "Paris",
+  "shipping_country": "France",
+  "track_order_url": "https://gardengoldgreen.com/track-order?order=GGG-2025-00541",
+  "receipt_url": "https://gardengoldgreen.com/invoices/GGG-2025-00541.pdf",
+  "unsubscribe": "https://gardengoldgreen.com/email/unsubscribe",
+  "unsubscribe_preferences": "https://gardengoldgreen.com/email/preferences"
+}
+

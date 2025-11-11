@@ -1,15 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
 import { auth0 } from '@/lib/auth0'
+import { getOrderById, upsertOrder, deleteOrder } from '@/lib/orders-store'
 
-const prisma = new PrismaClient()
+function isAuthorizedFromAction(request: NextRequest): boolean {
+  const header = request.headers.get('authorization') || ''
+  const secret = process.env.AUTH0_ACTION_WEBHOOK_SECRET
+  if (!secret) return false
+  return header === `Bearer ${secret}`
+}
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Récupérer la session utilisateur
     const session = await auth0.getSession(request)
     
     if (!session?.user) {
@@ -22,28 +26,9 @@ export async function GET(
     const userId = session.user.sub
     const { id: orderId } = await params
 
-    // Récupérer la commande spécifique
-    const order = await prisma.order.findFirst({
-      where: {
-        id: orderId,
-        userId: userId, // S'assurer que l'utilisateur ne peut voir que ses commandes
-      },
-      include: {
-        items: {
-          include: {
-            product: {
-              select: {
-                id: true,
-                title: true,
-                images: true,
-              }
-            }
-          }
-        }
-      }
-    })
+    const order = await getOrderById(orderId)
 
-    if (!order) {
+    if (!order || order.userId !== userId) {
       return NextResponse.json(
         { error: 'Commande non trouvée' },
         { status: 404 }
@@ -52,29 +37,7 @@ export async function GET(
 
     return NextResponse.json({
       success: true,
-      order: {
-        id: order.id,
-        status: order.status,
-        totalCents: order.totalCents,
-        currency: order.currency,
-        items: order.items.map(item => ({
-          id: item.id,
-          productId: item.productId,
-          name: item.name,
-          priceCents: item.priceCents,
-          quantity: item.quantity,
-          product: item.product
-        })),
-        createdAt: order.createdAt.toISOString(),
-        updatedAt: order.updatedAt.toISOString(),
-        deliveredAt: order.deliveredAt?.toISOString(),
-        customerEmail: order.customerEmail,
-        customerName: order.customerName,
-        customerPhone: order.customerPhone,
-        shippingAddress: order.shippingAddress,
-        paymentIntentId: order.paymentIntentId,
-        stripeSessionId: order.stripeSessionId
-      }
+      order,
     })
 
   } catch (error) {
@@ -105,68 +68,24 @@ export async function PATCH(
     const body = await request.json()
     const { status, deliveredAt } = body
 
-    // Vérifier que la commande appartient à l'utilisateur
-    const existingOrder = await prisma.order.findFirst({
-      where: {
-        id: orderId,
-        userId: userId,
-      }
-    })
+    const existingOrder = await getOrderById(orderId)
 
-    if (!existingOrder) {
+    if (!existingOrder || existingOrder.userId !== userId) {
       return NextResponse.json(
         { error: 'Commande non trouvée' },
         { status: 404 }
       )
     }
 
-    // Mettre à jour la commande
-    const updatedOrder = await prisma.order.update({
-      where: { id: orderId },
-      data: {
-        ...(status && { status }),
-        ...(deliveredAt && { deliveredAt: new Date(deliveredAt) }),
-      },
-      include: {
-        items: {
-          include: {
-            product: {
-              select: {
-                id: true,
-                title: true,
-                images: true,
-              }
-            }
-          }
-        }
-      }
+    const updated = await upsertOrder({
+      ...existingOrder,
+      status: status || existingOrder.status,
+      deliveredAt: deliveredAt || existingOrder.deliveredAt,
     })
 
     return NextResponse.json({
       success: true,
-      order: {
-        id: updatedOrder.id,
-        status: updatedOrder.status,
-        totalCents: updatedOrder.totalCents,
-        currency: updatedOrder.currency,
-        items: updatedOrder.items.map(item => ({
-          id: item.id,
-          productId: item.productId,
-          name: item.name,
-          priceCents: item.priceCents,
-          quantity: item.quantity,
-          product: item.product
-        })),
-        createdAt: updatedOrder.createdAt.toISOString(),
-        updatedAt: updatedOrder.updatedAt.toISOString(),
-        deliveredAt: updatedOrder.deliveredAt?.toISOString(),
-        customerEmail: updatedOrder.customerEmail,
-        customerName: updatedOrder.customerName,
-        customerPhone: updatedOrder.customerPhone,
-        shippingAddress: updatedOrder.shippingAddress,
-        paymentIntentId: updatedOrder.paymentIntentId,
-        stripeSessionId: updatedOrder.stripeSessionId
-      }
+      order: updated,
     })
 
   } catch (error) {
@@ -175,5 +94,24 @@ export async function PATCH(
       { error: 'Erreur interne du serveur' },
       { status: 500 }
     )
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params
+  try {
+    // Suppression stricte: requiert le secret de l'Action Auth0
+    if (!isAuthorizedFromAction(request)) {
+      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
+    }
+    const ok = await deleteOrder(id)
+    if (!ok) return NextResponse.json({ error: 'Commande introuvable' }, { status: 404 })
+    return NextResponse.json({ success: true })
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Erreur'
+    return NextResponse.json({ error: message }, { status: 500 })
   }
 }

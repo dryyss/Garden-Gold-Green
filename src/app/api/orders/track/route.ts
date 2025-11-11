@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { readOrdersMap } from '@/lib/orders-store'
 
 // Route publique pour suivre une commande avec ID et email
 export async function POST(request: NextRequest) {
@@ -16,26 +14,11 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Récupérer la commande avec vérification de l'email
-    const order = await prisma.order.findFirst({
-      where: {
-        id: orderId,
-        customerEmail: email.toLowerCase().trim(), // Vérifier que l'email correspond
-      },
-      include: {
-        items: {
-          include: {
-            product: {
-              select: {
-                id: true,
-                title: true,
-                images: true,
-              }
-            }
-          }
-        }
-      }
-    })
+    const orders = await readOrdersMap()
+    const normalizedEmail = email.toLowerCase().trim()
+    const order = Object.values(orders).find(o =>
+      o.id === orderId && (o.customerEmail?.toLowerCase().trim() === normalizedEmail)
+    )
 
     if (!order) {
       return NextResponse.json(
@@ -44,32 +27,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Retourner les informations de la commande
-    return NextResponse.json({
-      success: true,
-      order: {
-        id: order.id,
-        status: order.status,
-        totalCents: order.totalCents,
-        currency: order.currency,
-        items: order.items.map(item => ({
-          id: item.id,
-          productId: item.productId,
-          name: item.name,
-          priceCents: item.priceCents,
-          quantity: item.quantity,
-          product: item.product
-        })),
-        createdAt: order.createdAt.toISOString(),
-        updatedAt: order.updatedAt.toISOString(),
-        deliveredAt: order.deliveredAt?.toISOString(),
-        customerEmail: order.customerEmail,
-        customerName: order.customerName,
-        shippingAddress: order.shippingAddress,
-        paymentIntentId: order.paymentIntentId,
-        stripeSessionId: order.stripeSessionId
-      }
-    })
+    return NextResponse.json({ success: true, order })
 
   } catch (error) {
     console.error('Erreur lors du suivi de la commande:', error)
