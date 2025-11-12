@@ -53,11 +53,12 @@ export async function POST(request: NextRequest) {
           let receiptUrl: string | null = null
           let invoicePdf: string | null = null
           let paymentIntentId: string | undefined
+          let paymentIntentObj: Stripe.PaymentIntent | null = null
 
           if (expandedSession.payment_intent) {
             const paymentIntentRaw = expandedSession.payment_intent
             try {
-              const paymentIntentObj =
+              paymentIntentObj =
                 typeof paymentIntentRaw === 'string'
                   ? await stripe.paymentIntents.retrieve(paymentIntentRaw, { expand: ['charges'] })
                   : (paymentIntentRaw as Stripe.PaymentIntent)
@@ -126,6 +127,22 @@ export async function POST(request: NextRequest) {
             }
           })
 
+          const subtotalCents = expandedSession.amount_subtotal ?? null
+          const sessionShippingCents =
+            expandedSession.total_details?.amount_shipping ??
+            expandedSession.shipping_cost?.amount_total ??
+            null
+          const paymentIntentShippingCents =
+            (paymentIntentObj?.amount_details as any)?.shipping?.amount ?? null
+          const shippingCents =
+            sessionShippingCents ?? paymentIntentShippingCents ?? null
+
+          const taxCents =
+            expandedSession.total_details?.amount_tax ??
+            ((paymentIntentObj?.amount_details as any)?.tax?.amount ?? null)
+
+          const discountCents = expandedSession.total_details?.amount_discount ?? null
+
           const orderRecord = await upsertOrder({
             id: orderNumber,
             userId: userId || null,
@@ -134,6 +151,10 @@ export async function POST(request: NextRequest) {
             totalCents: expandedSession.amount_total || 0,
             currency: expandedSession.currency?.toUpperCase() || 'EUR',
             status: 'paid',
+            subtotalCents,
+            shippingCents,
+            taxCents,
+            discountCents,
             customerEmail: userEmail || '',
             customerName: expandedSession.customer_details?.name || '',
             customerPhone: expandedSession.customer_details?.phone || '',
@@ -215,19 +236,7 @@ export async function POST(request: NextRequest) {
       }
 
       case 'charge.refunded': {
-        const charge = event.data.object as Stripe.Charge
-
-        // Mettre à jour le statut de la commande
-        try {
-          const paymentIntentId = charge.payment_intent as string
-          await prisma.order.updateMany({
-            where: { paymentIntentId: paymentIntentId },
-            data: { status: 'refunded' },
-          })
-        } catch (dbError) {
-          console.error('❌ Erreur mise à jour remboursement:', dbError)
-        }
-
+        // Mise à jour du statut gérée côté commandes JSON si nécessaire
         break
       }
 

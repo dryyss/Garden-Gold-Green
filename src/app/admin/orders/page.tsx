@@ -43,6 +43,10 @@ type Order = {
     quantity: number
     priceCents: number
   }>
+  subtotalCents?: number | null
+  shippingCents?: number | null
+  taxCents?: number | null
+  discountCents?: number | null
 }
 
 const statusOptions = [

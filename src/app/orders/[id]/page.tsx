@@ -69,6 +69,10 @@ interface Order {
     status: string
     message?: string
   }>
+  subtotalCents?: number | null
+  shippingCents?: number | null
+  taxCents?: number | null
+  discountCents?: number | null
 }
 
 export default function OrderDetailPage() {
@@ -192,6 +196,21 @@ export default function OrderDetailPage() {
       (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
     )
   }, [order?.shippingHistory])
+
+  const subtotalCents = useMemo(() => {
+    if (!order) return 0
+    return (
+      order.subtotalCents ??
+      order.items.reduce((sum, item) => sum + item.priceCents * item.quantity, 0)
+    )
+  }, [order])
+
+  const taxCents = order?.taxCents ?? 0
+  const discountCents = order?.discountCents ?? 0
+  const computedShipping = order
+    ? order.totalCents - subtotalCents - taxCents + discountCents
+    : 0
+  const shippingCents = order?.shippingCents ?? Math.max(computedShipping, 0)
 
   const canReturn = (order: Order) => {
     if (order.status !== 'delivered') return false
@@ -322,7 +341,29 @@ export default function OrderDetailPage() {
               </div>
               
               <div className="border-t border-white/10 pt-4 mt-6">
-                <div className="flex justify-between items-center text-xl font-bold text-white">
+                <div className="space-y-2 text-sm text-gray-300">
+                  <div className="flex justify-between">
+                    <span>Sous-total</span>
+                    <span>€{formatPrice(subtotalCents)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Livraison</span>
+                    <span>{shippingCents > 0 ? `€${formatPrice(shippingCents)}` : 'Offert'}</span>
+                  </div>
+                  {taxCents > 0 && (
+                    <div className="flex justify-between">
+                      <span>Taxes</span>
+                      <span>€{formatPrice(taxCents)}</span>
+                    </div>
+                  )}
+                  {discountCents > 0 && (
+                    <div className="flex justify-between">
+                      <span>Remises</span>
+                      <span>-€{formatPrice(discountCents)}</span>
+                    </div>
+                  )}
+                </div>
+                <div className="flex justify-between items-center text-xl font-bold text-white border-t border-white/10 pt-3 mt-3">
                   <span>Total de la commande</span>
                   <span>€{formatPrice(order.totalCents)}</span>
                 </div>

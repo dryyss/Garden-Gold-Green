@@ -25,6 +25,10 @@ export interface OrderRecord {
   createdAt: string
   updatedAt: string
   deliveredAt?: string | null
+  subtotalCents?: number | null
+  shippingCents?: number | null
+  taxCents?: number | null
+  discountCents?: number | null
   customerEmail?: string
   customerName?: string
   customerPhone?: string
@@ -110,6 +114,20 @@ export async function upsertOrder(
     updatedAt: now,
     deliveredAt:
       order.deliveredAt !== undefined ? order.deliveredAt : existing?.deliveredAt,
+    subtotalCents:
+      order.subtotalCents !== undefined
+        ? order.subtotalCents
+        : existing?.subtotalCents ?? null,
+    shippingCents:
+      order.shippingCents !== undefined
+        ? order.shippingCents
+        : existing?.shippingCents ?? null,
+    taxCents:
+      order.taxCents !== undefined ? order.taxCents : existing?.taxCents ?? null,
+    discountCents:
+      order.discountCents !== undefined
+        ? order.discountCents
+        : existing?.discountCents ?? null,
     customerEmail: order.customerEmail ?? existing?.customerEmail,
     customerName: order.customerName ?? existing?.customerName,
     customerPhone: order.customerPhone ?? existing?.customerPhone,

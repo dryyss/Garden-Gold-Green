@@ -54,6 +54,10 @@ interface Order {
     status: string
     message?: string
   }>
+  subtotalCents?: number | null
+  shippingCents?: number | null
+  taxCents?: number | null
+  discountCents?: number | null
 }
 
 export default function TrackOrderPage() {
@@ -147,6 +151,14 @@ export default function TrackOrderPage() {
       minute: '2-digit'
     })
   }
+
+  const subtotalCents = order
+    ? order.subtotalCents ?? order.items.reduce((sum, item) => sum + item.priceCents * item.quantity, 0)
+    : 0
+  const taxCents = order?.taxCents ?? 0
+  const discountCents = order?.discountCents ?? 0
+  const computedShipping = order ? order.totalCents - subtotalCents - taxCents + discountCents : 0
+  const shippingCents = order?.shippingCents ?? Math.max(computedShipping, 0)
 
   const shippingHistory = order?.shippingHistory
     ? [...order.shippingHistory].sort(
@@ -314,8 +326,11 @@ export default function TrackOrderPage() {
               <div className="mb-8">
                 <h3 className="text-white font-semibold mb-4">Articles commandés</h3>
                 <div className="space-y-3">
-                  {order.items.map((item) => (
-                    <div key={item.id} className="flex items-center justify-between py-3 border-b border-white/10 last:border-0">
+                  {order.items.map((item, index) => (
+                    <div
+                      key={item.id || item.productId || `${item.name}-${index}`}
+                      className="flex items-center justify-between py-3 border-b border-white/10 last:border-0"
+                    >
                       <div className="flex items-center gap-4">
                         {item.product?.images && (
                           <img
@@ -358,12 +373,26 @@ export default function TrackOrderPage() {
               <div className="bg-brand-black/50 rounded-lg p-6">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-gray-400">Sous-total</span>
-                  <span className="text-white font-medium">{formatPrice(order.totalCents)} {order.currency}</span>
+                  <span className="text-white font-medium">{formatPrice(subtotalCents)} {order.currency}</span>
                 </div>
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-gray-400">Livraison</span>
-                  <span className="text-white font-medium">Gratuite</span>
+                  <span className="text-white font-medium">
+                    {shippingCents > 0 ? `€${formatPrice(shippingCents)}` : 'Offert'}
+                  </span>
                 </div>
+                {taxCents > 0 && (
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-gray-400">Taxes</span>
+                    <span className="text-white font-medium">€{formatPrice(taxCents)}</span>
+                  </div>
+                )}
+                {discountCents > 0 && (
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-gray-400">Remises</span>
+                    <span className="text-white font-medium">-€{formatPrice(discountCents)}</span>
+                  </div>
+                )}
                 <div className="pt-4 border-t border-white/10 flex items-center justify-between">
                   <span className="text-white font-bold text-lg">Total</span>
                   <span className="text-brand-gold font-bold text-lg">

@@ -1,0 +1,447 @@
+[1mdiff --git a/src/app/admin/orders/page.tsx b/src/app/admin/orders/page.tsx[m
+[1mnew file mode 100644[m
+[1mindex 0000000..41827b2[m
+[1m--- /dev/null[m
+[1m+++ b/src/app/admin/orders/page.tsx[m
+[36m@@ -0,0 +1,557 @@[m
+[32m+[m[32m"use client"[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32mimport { useEffect, useMemo, useState } from 'react'[m[41m[m
+[32m+[m[32mimport { AdminGuard } from '@/components/AdminGuard'[m[41m[m
+[32m+[m[32mimport { FontAwesomeIcon } from '@fortawesome/react-fontawesome'[m[41m[m
+[32m+[m[32mimport {[m[41m[m
+[32m+[m[32m  faBox,[m[41m[m
+[32m+[m[32m  faCheckCircle,[m[41m[m
+[32m+[m[32m  faClock,[m[41m[m
+[32m+[m[32m  faPaperPlane,[m[41m[m
+[32m+[m[32m  faRefresh,[m[41m[m
+[32m+[m[32m  faSearch,[m[41m[m
+[32m+[m[32m  faTruck,[m[41m[m
+[32m+[m[32m  faUser,[m[41m[m
+[32m+[m[32m} from '@fortawesome/free-solid-svg-icons'[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32mtype ShippingHistoryEntry = {[m[41m[m
+[32m+[m[32m  date: string[m[41m[m
+[32m+[m[32m  status: string[m[41m[m
+[32m+[m[32m  message?: string[m[41m[m
+[32m+[m[32m}[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32mtype Order = {[m[41m[m
+[32m+[m[32m  id: string[m[41m[m
+[32m+[m[32m  status: string[m[41m[m
+[32m+[m[32m  totalCents: number[m[41m[m
+[32m+[m[32m  currency: string[m[41m[m
+[32m+[m[32m  customerEmail?: string | null[m[41m[m
+[32m+[m[32m  customerName?: string | null[m[41m[m
+[32m+[m[32m  customerPhone?: string | null[m[41m[m
+[32m+[m[32m  trackingNumber?: string | null[m[41m[m
+[32m+[m[32m  carrier?: string | null[m[41m[m
+[32m+[m[32m  carrierTrackingUrl?: string | null[m[41m[m
+[32m+[m[32m  shippingStatus?: string | null[m[41m[m
+[32m+[m[32m  shippedAt?: string | null[m[41m[m
+[32m+[m[32m  deliveredAt?: string | null[m[41m[m
+[32m+[m[32m  estimatedDeliveryDate?: string | null[m[41m[m
+[32m+[m[32m  shippingHistory?: ShippingHistoryEntry[][m[41m[m
+[32m+[m[32m  createdAt: string[m[41m[m
+[32m+[m[32m  items: Array<{[m[41m[m
+[32m+[m[32m    productId: string[m[41m[m
+[32m+[m[32m    name: string[m[41m[m
+[32m+[m[32m    quantity: number[m[41m[m
+[32m+[m[32m    priceCents: number[m[41m[m
+[32m+[m[32m  }>[m[41m[m
+[32m+[m[32m}[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32mconst statusOptions = [[m[41m[m
+[32m+[m[32m  { value: 'pending', label: 'En attente' },[m[41m[m
+[32m+[m[32m  { value: 'paid', label: 'Payée' },[m[41m[m
+[32m+[m[32m  { value: 'processing', label: 'En préparation' },[m[41m[m
+[32m+[m[32m  { value: 'shipped', label: 'Expédiée' },[m[41m[m
+[32m+[m[32m  { value: 'delivered', label: 'Livrée' },[m[41m[m
+[32m+[m[32m  { value: 'cancelled', label: 'Annulée' },[m[41m[m
+[32m+[m[32m  { value: 'refunded', label: 'Remboursée' },[m[41m[m
+[32m+[m[32m][m[41m[m
+[32m+[m[41m[m
+[32m+[m[32mconst carriers = [[m[41m[m
+[32m+[m[32m  { value: '', label: 'Non défini' },[m[41m[m
+[32m+[m[32m  { value: 'La Poste', label: 'La Poste / Colissimo' },[m[41m[m
+[32m+[m[32m  { value: 'Chronopost', label: 'Chronopost' },[m[41m[m
+[32m+[m[32m  { value: 'DHL', label: 'DHL' },[m[41m[m
+[32m+[m[32m  { value: 'UPS', label: 'UPS' },[m[41m[m
+[32m+[m[32m  { value: 'FedEx', label: 'FedEx' },[m[41m[m
+[32m+[m[32m  { value: 'Mondial Relay', label: 'Mondial Relay' },[m[41m[m
+[32m+[m[32m][m[41m[m
+[32m+[m[41m[m
+[32m+[m[32mtype FormState = {[m[41m[m
+[32m+[m[32m  status: string[m[41m[m
+[32m+[m[32m  trackingNumber: string[m[41m[m
+[32m+[m[32m  carrier: string[m[41m[m
+[32m+[m[32m  carrierTrackingUrl: string[m[41m[m
+[32m+[m[32m  shippingStatus: string[m[41m[m
+[32m+[m[32m  shippedAt: string[m[41m[m
+[32m+[m[32m  deliveredAt: string[m[41m[m
+[32m+[m[32m  estimatedDeliveryDate: string[m[41m[m
+[32m+[m[32m  historyStatus: string[m[41m[m
+[32m+[m[32m  historyMessage: string[m[41m[m
+[32m+[m[32m}[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32mconst emptyFormState: FormState = {[m[41m[m
+[32m+[m[32m  status: 'processing',[m[41m[m
+[32m+[m[32m  trackingNumber: '',[m[41m[m
+[32m+[m[32m  carrier: '',[m[41m[m
+[32m+[m[32m  carrierTrackingUrl: '',[m[41m[m
+[32m+[m[32m  shippingStatus: '',[m[41m[m
+[32m+[m[32m  shippedAt: '',[m[41m[m
+[32m+[m[32m  deliveredAt: '',[m[41m[m
+[32m+[m[32m  estimatedDeliveryDate: '',[m[41m[m
+[32m+[m[32m  historyStatus: '',[m[41m[m
+[32m+[m[32m  historyMessage: '',[m[41m[m
+[32m+[m[32m}[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32mfunction formatDateInput(value?: string | null) {[m[41m[m
+[32m+[m[32m  if (!value) return ''[m[41m[m
+[32m+[m[32m  return value.slice(0, 16)[m[41m[m
+[32m+[m[32m}[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32mfunction formatCurrency(cents: number, currency: string) {[m[41m[m
+[32m+[m[32m  try {[m[41m[m
+[32m+[m[32m    return new Intl.NumberFormat('fr-FR', {[m[41m[m
+[32m+[m[32m      style: 'currency',[m[41m[m
+[32m+[m[32m      currency,[m[41m[m
+[32m+[m[32m    }).format(cents / 100)[m[41m[m
+[32m+[m[32m  } catch {[m[41m[m
+[32m+[m[32m    return `${(cents / 100).toFixed(2)} ${currency}`[m[41m[m
+[32m+[m[32m  }[m[41m[m
+[32m+[m[32m}[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32mfunction sortHistory(entries: ShippingHistoryEntry[] = []) {[m[41m[m
+[32m+[m[32m  return [...entries].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())[m[41m[m
+[32m+[m[32m}[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32mexport default function AdminOrdersPage() {[m[41m[m
+[32m+[m[32m  const [orders, setOrders] = useState<Order[]>([])[m[41m[m
+[32m+[m[32m  const [filteredOrders, setFilteredOrders] = useState<Order[]>([])[m[41m[m
+[32m+[m[32m  const [forms, setForms] = useState<Record<string, FormState>>({})[m[41m[m
+[32m+[m[32m  const [search, setSearch] = useState('')[m[41m[m
+[32m+[m[32m  const [statusFilter, setStatusFilter] = useState('all')[m[41m[m
+[32m+[m[32m  const [isLoading, setIsLoading] = useState(false)[m[41m[m
+[32m+[m[32m  const [message, setMessage] = useState<string | null>(null)[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32m  useEffect(() => {[m[41m[m
+[32m+[m[32m    const load = async () => {[m[41m[m
+[32m+[m[32m      setIsLoading(true)[m[41m[m
+[32m+[m[32m      try {[m[41m[m
+[32m+[m[32m        const res = await fetch('/api/orders/admin?limit=100')[m[41m[m
+[32m+[m[32m        const data = await res.json()[m[41m[m
+[32m+[m[32m        if (data.success) {[m[41m[m
+[32m+[m[32m          setOrders(data.orders)[m[41m[m
+[32m+[m[32m          setFilteredOrders(data.orders)[m[41m[m
+[32m+[m[32m          const initialForms: Record<string, FormState> = {}[m[41m[m
+[32m+[m[32m          data.orders.forEach((order: Order) => {[m[41m[m
+[32m+[m[32m            initialForms[order.id] = {[m[41m[m
+[32m+[m[32m              status: order.status,[m[41m[m
+[32m+[m[32m              trackingNumber: order.trackingNumber || '',[m[41m[m
+[32m+[m[32m              carrier: order.carrier || '',[m[41m[m
+[32m+[m[32m              carrierTrackingUrl: order.carrierTrackingUrl || '',[m[41m[m
+[32m+[m[32m              shippingStatus: order.shippingStatus || '',[m[41m[m
+[32m+[m[32m              shippedAt: formatDateInput(order.shippedAt),[m[41m[m
+[32m+[m[32m              deliveredAt: formatDateInput(order.deliveredAt),[m[41m[m
+[32m+[m[32m              estimatedDeliveryDate: formatDateInput(order.estimatedDeliveryDate),[m[41m[m
+[32m+[m[32m              historyStatus: '',[m[41m[m
+[32m+[m[32m              historyMessage: '',[m[41m[m
+[32m+[m[32m            }[m[41m[m
+[32m+[m[32m          })[m[41m[m
+[32m+[m[32m          setForms(initialForms)[m[41m[m
+[32m+[m[32m        }[m[41m[m
+[32m+[m[32m      } catch (error) {[m[41m[m
+[32m+[m[32m        console.error('Erreur chargement commandes admin:', error)[m[41m[m
+[32m+[m[32m        setMessage("Impossible de charger les commandes.")[m[41m[m
+[32m+[m[32m      } finally {[m[41m[m
+[32m+[m[32m        setIsLoading(false)[m[41m[m
+[32m+[m[32m      }[m[41m[m
+[32m+[m[32m    }[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32m    load()[m[41m[m
+[32m+[m[32m  }, [])[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32m  useEffect(() => {[m[41m[m
+[32m+[m[32m    const lower = search.toLowerCase()[m[41m[m
+[32m+[m[32m    const result = orders.filter(order => {[m[41m[m
+[32m+[m[32m      const matchesSearch =[m[41m[m
+[32m+[m[32m        !lower ||[m[41m[m
+[32m+[m[32m        order.id.toLowerCase().includes(lower) ||[m[41m[m
+[32m+[m[32m        (order.customerEmail?.toLowerCase().includes(lower) ?? false) ||[m[41m[m
+[32m+[m[32m        (order.customerName?.toLowerCase().includes(lower) ?? false)[m[41m[m
+[32m+[m[32m      const matchesStatus = statusFilter === 'all' || order.status === statusFilter[m[41m[m
+[32m+[m[32m      return matchesSearch && matchesStatus[m[41m[m
+[32m+[m[32m    })[m[41m[m
+[32m+[m[32m    setFilteredOrders(result)[m[41m[m
+[32m+[m[32m  }, [orders, search, statusFilter])[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32m  const handleInputChange = (orderId: string, field: keyof FormState, value: string) => {[m[41m[m
+[32m+[m[32m    setForms(prev => ({[m[41m[m
+[32m+[m[32m      ...prev,[m[41m[m
+[32m+[m[32m      [orderId]: {[m[41m[m
+[32m+[m[32m        ...(prev[orderId] || emptyFormState),[m[41m[m
+[32m+[m[32m        [field]: value,[m[41m[m
+[32m+[m[32m      },[m[41m[m
+[32m+[m[32m    }))[m[41m[m
+[32m+[m[32m  }[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32m  const handleResetHistory = (orderId: string) => {[m[41m[m
+[32m+[m[32m    setForms(prev => ({[m[41m[m
+[32m+[m[32m      ...prev,[m[41m[m
+[32m+[m[32m      [orderId]: {[m[41m[m
+[32m+[m[32m        ...(prev[orderId] || emptyFormState),[m[41m[m
+[32m+[m[32m        historyStatus: '',[m[41m[m
+[32m+[m[32m        historyMessage: '',[m[41m[m
+[32m+[m[32m      },[m[41m[m
+[32m+[m[32m    }))[m[41m[m
+[32m+[m[32m  }[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32m  const handleSave = async (order: Order) => {[m[41m[m
+[32m+[m[32m    const form = forms[order.id] || emptyFormState[m[41m[m
+[32m+[m[32m    setIsLoading(true)[m[41m[m
+[32m+[m[32m    setMessage(null)[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32m    try {[m[41m[m
+[32m+[m[32m      const payload: Record<string, unknown> = {[m[41m[m
+[32m+[m[32m        orderId: order.id,[m[41m[m
+[32m+[m[32m        status: form.status,[m[41m[m
+[32m+[m[32m        trackingNumber: form.trackingNumber || null,[m[41m[m
+[32m+[m[32m        carrier: form.carrier || null,[m[41m[m
+[32m+[m[32m        carrierTrackingUrl: form.carrierTrackingUrl || null,[m[41m[m
+[32m+[m[32m        shippingStatus: form.shippingStatus || null,[m[41m[m
+[32m+[m[32m        shippedAt: form.shippedAt ? new Date(form.shippedAt).toISOString() : null,[m[41m[m
+[32m+[m[32m        deliveredAt: form.deliveredAt ? new Date(form.deliveredAt).toISOString() : null,[m[41m[m
+[32m+[m[32m        estimatedDeliveryDate: form.estimatedDeliveryDate[m[41m[m
+[32m+[m[32m          ? new Date(form.estimatedDeliveryDate).toISOString()[m[41m[m
+[32m+[m[32m          : null,[m[41m[m
+[32m+[m[32m      }[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32m      if (form.historyStatus) {[m[41m[m
+[32m+[m[32m        payload.shippingHistoryEntry = {[m[41m[m
+[32m+[m[32m          status: form.historyStatus,[m[41m[m
+[32m+[m[32m          message: form.historyMessage,[m[41m[m
+[32m+[m[32m        }[m[41m[m
+[32m+[m[32m      }[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32m      const res = await fetch('/api/orders/admin', {[m[41m[m
+[32m+[m[32m        method: 'PATCH',[m[41m[m
+[32m+[m[32m        headers: {[m[41m[m
+[32m+[m[32m          'Content-Type': 'application/json',[m[41m[m
+[32m+[m[32m        },[m[41m[m
+[32m+[m[32m        body: JSON.stringify(payload),[m[41m[m
+[32m+[m[32m      })[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32m      if (!res.ok) {[m[41m[m
+[32m+[m[32m        const data = await res.json()[m[41m[m
+[32m+[m[32m        throw new Error(data.error || 'Erreur serveur')[m[41m[m
+[32m+[m[32m      }[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32m      const data = await res.json()[m[41m[m
+[32m+[m[32m      const updatedOrder: Order = data.order[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32m      setOrders(prev => prev.map(current => (current.id === updatedOrder.id ? updatedOrder : current)))[m[41m[m
+[32m+[m[32m      setMessage('Commande mise à jour avec succès.')[m[41m[m
+[32m+[m[32m      handleResetHistory(order.id)[m[41m[m
+[32m+[m[32m    } catch (error) {[m[41m[m
+[32m+[m[32m      console.error('Erreur mise à jour commande:', error)[m[41m[m
+[32m+[m[32m      setMessage(error instanceof Error ? error.message : 'Erreur inconnue')[m[41m[m
+[32m+[m[32m    } finally {[m[41m[m
+[32m+[m[32m      setIsLoading(false)[m[41m[m
+[32m+[m[32m    }[m[41m[m
+[32m+[m[32m  }[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32m  const shippingTimeline = (order: Order) => {[m[41m[m
+[32m+[m[32m    return sortHistory(order.shippingHistory || []).map((entry, index) => ([m[41m[m
+[32m+[m[32m      <div key={`${order.id}-history-${index}`} className="relative pl-8 pb-6">[m[41m[m
+[32m+[m[32m        <span className="absolute left-0 top-1 flex h-4 w-4 -translate-x-1/2 items-center justify-center">[m[41m[m
+[32m+[m[32m          <span className="h-3 w-3 rounded-full bg-brand-gold"></span>[m[41m[m
+[32m+[m[32m        </span>[m[41m[m
+[32m+[m[32m        <p className="text-sm text-white font-medium">{entry.status}</p>[m[41m[m
+[32m+[m[32m        <p className="text-xs text-gray-400">{new Date(entry.date).toLocaleString('fr-FR')}</p>[m[41m[m
+[32m+[m[32m        {entry.message && <p className="text-sm text-gray-300 mt-1">{entry.message}</p>}[m[41m[m
+[32m+[m[32m      </div>[m[41m[m
+[32m+[m[32m    ))[m[41m[m
+[32m+[m[32m  }[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32m  const totalOrders = useMemo(() => filteredOrders.length, [filteredOrders])[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32m  return ([m[41m[m
+[32m+[m[32m    <AdminGuard>[m[41m[m
+[32m+[m[32m      <div className="min-h-screen bg-brand-black text-white pt-24 pb-16">[m[41m[m
+[32m+[m[32m        <div className="container mx-auto px-6">[m[41m[m
+[32m+[m[32m          <header className="mb-10">[m[41m[m
+[32m+[m[32m            <h1 className="text-3xl font-bold mb-2 flex items-center gap-3">[m[41m[m
+[32m+[m[32m              <FontAwesomeIcon icon={faTruck} className="text-brand-gold" />[m[41m[m
+[32m+[m[32m              Gestion des expéditions[m[41m[m
+[32m+[m[32m            </h1>[m[41m[m
+[32m+[m[32m            <p className="text-gray-400 max-w-2xl">[m[41m[m
+[32m+[m[32m              Consultez et mettez à jour le suivi des commandes. Ajoutez un numéro de suivi, un[m[41m[m
+[32m+[m[32m              transporteur, un statut d’expédition et des notes d’historique pour informer vos clients en[m[41m[m
+[32m+[m[32m              temps réel.[m[41m[m
+[32m+[m[32m            </p>[m[41m[m
+[32m+[m[32m          </header>[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32m          <section className="card-bg rounded-2xl p-6 mb-8">[m[41m[m
+[32m+[m[32m            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">[m[41m[m
+[32m+[m[32m              <div>[m[41m[m
+[32m+[m[32m                <label className="block text-sm text-gray-400 mb-2">Rechercher</label>[m[41m[m
+[32m+[m[32m                <div className="relative">[m[41m[m
+[32m+[m[32m                  <FontAwesomeIcon[m[41m[m
+[32m+[m[32m                    icon={faSearch}[m[41m[m
+[32m+[m[32m                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"[m[41m[m
+[32m+[m[32m                  />[m[41m[m
+[32m+[m[32m                  <input[m[41m[m
+[32m+[m[32m                    value={search}[m[41m[m
+[32m+[m[32m                    onChange={event => setSearch(event.target.value)}[m[41m[m
+[32m+[m[32m                    placeholder="Commande, email, client…"[m[41m[m
+[32m+[m[32m                    className="w-full pl-10 pr-4 py-2 bg-black/30 border border-white/10 rounded-lg focus:outline-none focus:border-brand-gold"[m[41m[m
+[32m+[m[32m                  />[m[41m[m
+[32m+[m[32m                </div>[m[41m[m
+[32m+[m[32m              </div>[m[41m[m
+[32m+[m[32m              <div>[m[41m[m
+[32m+[m[32m                <label className="block text-sm text-gray-400 mb-2">Statut</label>[m[41m[m
+[32m+[m[32m                <select[m[41m[m
+[32m+[m[32m                  value={statusFilter}[m[41m[m
+[32m+[m[32m                  onChange={event => setStatusFilter(event.target.value)}[m[41m[m
+[32m+[m[32m                  className="w-full px-4 py-2 bg-black/30 border border-white/10 rounded-lg focus:outline-none focus:border-brand-gold"[m[41m[m
+[32m+[m[32m                >[m[41m[m
+[32m+[m[32m                  <option value="all">Tous les statuts</option>[m[41m[m
+[32m+[m[32m                  {statusOptions.map(option => ([m[41m[m
+[32m+[m[32m                    <option key={option.value} value={option.value}>[m[41m[m
+[32m+[m[32m                      {option.label}[m[41m[m
+[32m+[m[32m                    </option>[m[41m[m
+[32m+[m[32m                  ))}[m[41m[m
+[32m+[m[32m                </select>[m[41m[m
+[32m+[m[32m              </div>[m[41m[m
+[32m+[m[32m              <div className="flex items-end">[m[41m[m
+[32m+[m[32m                <div className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-3 text-sm text-gray-300 flex items-center gap-2">[m[41m[m
+[32m+[m[32m                  <FontAwesomeIcon icon={faBox} />[m[41m[m
+[32m+[m[32m                  <span>[m[41m[m
+[32m+[m[32m                    {totalOrders} commande{totalOrders > 1 ? 's' : ''} affichée{totalOrders > 1 ? 's' : ''}[m[41m[m
+[32m+[m[32m                  </span>[m[41m[m
+[32m+[m[32m                </div>[m[41m[m
+[32m+[m[32m              </div>[m[41m[m
+[32m+[m[32m            </div>[m[41m[m
+[32m+[m[32m          </section>[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32m          {message && ([m[41m[m
+[32m+[m[32m            <div className="mb-6 rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-gray-200">[m[41m[m
+[32m+[m[32m              {message}[m[41m[m
+[32m+[m[32m            </div>[m[41m[m
+[32m+[m[32m          )}[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32m          {isLoading && ([m[41m[m
+[32m+[m[32m            <div className="mb-6 rounded-lg border border-white/10 bg-black/40 px-4 py-4 flex items-center gap-3">[m[41m[m
+[32m+[m[32m              <FontAwesomeIcon icon={faRefresh} className="animate-spin text-brand-gold" />[m[41m[m
+[32m+[m[32m              <span>Mise à jour en cours…</span>[m[41m[m
+[32m+[m[32m            </div>[m[41m[m
+[32m+[m[32m          )}[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32m          <div className="space-y-6">[m[41m[m
+[32m+[m[32m            {filteredOrders.map(order => {[m[41m[m
+[32m+[m[32m              const form = forms[order.id] || emptyFormState[m[41m[m
+[32m+[m[32m              return ([m[41m[m
+[32m+[m[32m                <div key={order.id} className="card-bg rounded-2xl p-6 border border-white/5">[m[41m[m
+[32m+[m[32m                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">[m[41m[m
+[32m+[m[32m                    <div>[m[41m[m
+[32m+[m[32m                      <p className="text-sm text-gray-400">Commande</p>[m[41m[m
+[32m+[m[32m                      <p className="text-xl font-semibold">{order.id}</p>[m[41m[m
+[32m+[m[32m                    </div>[m[41m[m
+[32m+[m[32m                    <div className="flex flex-wrap gap-3">[m[41m[m
+[32m+[m[32m                      <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-sm">[m[41m[m
+[32m+[m[32m                        <FontAwesomeIcon icon={faUser} />[m[41m[m
+[32m+[m[32m                        <span>{order.customerName || 'Client'}</span>[m[41m[m
+[32m+[m[32m                      </span>[m[41m[m
+[32m+[m[32m                      {order.customerEmail && ([m[41m[m
+[32m+[m[32m                        <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-sm">[m[41m[m
+[32m+[m[32m                          {order.customerEmail}[m[41m[m
+[32m+[m[32m                        </span>[m[41m[m
+[32m+[m[32m                      )}[m[41m[m
+[32m+[m[32m                      <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-sm">[m[41m[m
+[32m+[m[32m                        <FontAwesomeIcon icon={faClock} />[m[41m[m
+[32m+[m[32m                        <span>{new Date(order.createdAt).toLocaleString('fr-FR')}</span>[m[41m[m
+[32m+[m[32m                      </span>[m[41m[m
+[32m+[m[32m                    </div>[m[41m[m
+[32m+[m[32m                  </div>[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32m                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">[m[41m[m
+[32m+[m[32m                    <div className="space-y-4">[m[41m[m
+[32m+[m[32m                      <div>[m[41m[m
+[32m+[m[32m                        <label className="block text-sm text-gray-400 mb-2">Statut de commande</label>[m[41m[m
+[32m+[m[32m                        <select[m[41m[m
+[32m+[m[32m                          value={form.status}[m[41m[m
+[32m+[m[32m                          onChange={event => handleInputChange(order.id, 'status', event.target.value)}[m[41m[m
+[32m+[m[32m                          className="w-full px-4 py-2 bg-black/30 border border-white/10 rounded-lg focus:outline-none focus:border-brand-gold"[m[41m[m
+[32m+[m[32m                        >[m[41m[m
+[32m+[m[32m                          {statusOptions.map(option => ([m[41m[m
+[32m+[m[32m                            <option key={option.value} value={option.value}>[m[41m[m
+[32m+[m[32m                              {option.label}[m[41m[m
+[32m+[m[32m                            </option>[m[41m[m
+[32m+[m[32m                          ))}[m[41m[m
+[32m+[m[32m                        </select>[m[41m[m
+[32m+[m[32m                      </div>[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32m                      <div>[m[41m[m
+[32m+[m[32m                        <label className="block text-sm text-gray-400 mb-2">Transporteur</label>[m[41m[m
+[32m+[m[32m                        <select[m[41m[m
+[32m+[m[32m                          value={form.carrier}[m[41m[m
+[32m+[m[32m                          onChange={event => handleInputChange(order.id, 'carrier', event.target.value)}[m[41m[m
+[32m+[m[32m                          className="w-full px-4 py-2 bg-black/30 border border-white/10 rounded-lg focus:outline-none focus:border-brand-gold"[m[41m[m
+[32m+[m[32m                        >[m[41m[m
+[32m+[m[32m                          {carriers.map(option => ([m[41m[m
+[32m+[m[32m                            <option key={option.value} value={option.value}>[m[41m[m
+[32m+[m[32m                              {option.label}[m[41m[m
+[32m+[m[32m                            </option>[m[41m[m
+[32m+[m[32m                          ))}[m[41m[m
+[32m+[m[32m                        </select>[m[41m[m
+[32m+[m[32m                      </div>[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32m                      <div>[m[41m[m
+[32m+[m[32m                        <label className="block text-sm text-gray-400 mb-2">Numéro de suivi</label>[m[41m[m
+[32m+[m[32m                        <input[m[41m[m
+[32m+[m[32m                          value={form.trackingNumber}[m[41m[m
+[32m+[m[32m                          onChange={event => handleInputChange(order.id, 'trackingNumber', event.target.value)}[m[41m[m
+[32m+[m[32m                          placeholder="6A1234567890"[m[41m[m
+[32m+[m[32m                          className="w-full px-4 py-2 bg-black/30 border border-white/10 rounded-lg focus:outline-none focus:border-brand-gold"[m[41m[m
+[32m+[m[32m                        />[m[41m[m
+[32m+[m[32m                        <p className="text-xs text-gray-500 mt-1">[m[41m[m
+[32m+[m[32m                          Sera inclus automatiquement dans l’email d’expédition.[m[41m[m
+[32m+[m[32m                        </p>[m[41m[m
+[32m+[m[32m                      </div>[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32m                      <div>[m[41m[m
+[32m+[m[32m                        <label className="block text-sm text-gray-400 mb-2">Lien de suivi</label>[m[41m[m
+[32m+[m[32m                        <input[m[41m[m
+[32m+[m[32m                          value={form.carrierTrackingUrl}[m[41m[m
+[32m+[m[32m                          onChange={event => handleInputChange(order.id, 'carrierTrackingUrl', event.target.value)}[m[41m[m
+[32m+[m[32m                          placeholder="https://…"[m[41m[m
+[32m+[m[32m                          className="w-full px-4 py-2 bg-black/30 border border-white/10 rounded-lg focus:outline-none focus:border-brand-gold"[m[41m[m
+[32m+[m[32m                        />[m[41m[m
+[32m+[m[32m                      </div>[m[41m[m
+[32m+[m[32m                    </div>[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32m                    <div className="space-y-4">[m[41m[m
+[32m+[m[32m                      <div>[m[41m[m
+[32m+[m[32m                        <label className="block text-sm text-gray-400 mb-2">Statut d’expédition</label>[m[41m[m
+[32m+[m[32m                        <input[m[41m[m
+[32m+[m[32m                          value={form.shippingStatus}[m[41m[m
+[32m+[m[32m                          onChange={event => handleInputChange(order.id, 'shippingStatus', event.target.value)}[m[41m[m
+[32m+[m[32m                          placeholder="En transit, En préparation…"[m[41m[m
+[32m+[m[32m                          className="w-full px-4 py-2 bg-black/30 border border-white/10 rounded-lg focus:outline-none focus:border-brand-gold"[m[41m[m
+[32m+[m[32m                        />[m[41m[m
+[32m+[m[32m                      </div>[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32m                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">[m[41m[m
+[32m+[m[32m                        <div>[m[41m[m
+[32m+[m[32m                          <label className="block text-sm text-gray-400 mb-2">Date d’expédition</label>[m[41m[m
+[32m+[m[32m                          <input[m[41m[m
+[32m+[m[32m                            type="datetime-local"[m[41m[m
+[32m+[m[32m                            value={form.shippedAt}[m[41m[m
+[32m+[m[32m                            onChange={event => handleInputChange(order.id, 'shippedAt', event.target.value)}[m[41m[m
+[32m+[m[32m                            className="w-full px-3 py-2 bg-black/30 border border-white/10 rounded-lg focus:outline-none focus:border-brand-gold"[m[41m[m
+[32m+[m[32m                          />[m[41m[m
+[32m+[m[32m                        </div>[m[41m[m
+[32m+[m[32m                        <div>[m[41m[m
+[32m+[m[32m                          <label className="block text-sm text-gray-400 mb-2">Dat

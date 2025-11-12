@@ -72,6 +72,7 @@ model Order {
   items         OrderItem[]
   returns       ReturnRequest[]
   shippingAddress Json?
+  shippingInfo   Json?          // Informations de suivi (transporteur, numéro, historique horodaté)
   paymentIntentId String?
   stripeSessionId String?      @unique
   customerEmail String?

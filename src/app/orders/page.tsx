@@ -46,6 +46,10 @@ interface Order {
     status: string
     message?: string
   }>
+  subtotalCents?: number | null
+  shippingCents?: number | null
+  taxCents?: number | null
+  discountCents?: number | null
 }
 
 export default function OrdersPage() {
@@ -238,142 +242,184 @@ export default function OrdersPage() {
                 </a>
               </div>
             ) : (
-              orders.map((order) => (
-                <ResponsiveCard key={order.id} variant="glass" padding="md">
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                    <div>
-                      <h3 className="text-lg font-semibold text-white">Commande #{order.id}</h3>
-                      <p className="text-gray-400">
-                        Passée le {new Date(order.createdAt).toLocaleDateString('fr-FR')}
-                      </p>
-                    </div>
-                    <div className="flex items-center space-x-4 mt-2 md:mt-0">
-                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}>
-                        {getStatusIcon(order.status)}
-                        <span className="ml-2">{getStatusText(order.status)}</span>
-                      </span>
-                      <span className="text-xl font-bold text-white">
-                        €{formatPrice(order.totalCents)}
-                      </span>
-                    </div>
-                  </div>
+              orders.map(order => {
+                const subtotalCents =
+                  order.subtotalCents ??
+                  order.items.reduce((sum, item) => sum + item.priceCents * item.quantity, 0)
+                const taxCents = order.taxCents ?? 0
+                const discountCents = order.discountCents ?? 0
+                const computedShipping =
+                  order.totalCents - subtotalCents - taxCents + discountCents
+                const shippingCents = order.shippingCents ?? Math.max(computedShipping, 0)
 
-                  <div className="border-t border-white/10 pt-4">
-                    <h4 className="text-sm font-medium text-gray-300 mb-3">Articles commandés :</h4>
-                    <div className="space-y-2">
-                      {order.items.map((item, index) => (
-                        <div key={index} className="flex justify-between items-center text-sm">
-                          <span className="text-gray-300">
-                            {item.quantity}x {item.name}
-                          </span>
-                          <span className="text-white font-medium">
-                            €{formatPrice(item.priceCents)}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="flex justify-end mt-4">
-                    {(order.invoicePdf || order.receiptUrl) && (
-                      <a
-                        href={order.invoicePdf || order.receiptUrl || '#'}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm text-brand-green hover:text-white transition-colors font-medium mr-4"
-                      >
-                        {order.invoicePdf ? 'Télécharger la facture PDF' : 'Voir le reçu'}
-                      </a>
-                    )}
-                    <a
-                      href={`/orders/${order.id}`}
-                      className="text-brand-gold hover:text-white transition-colors text-sm font-medium"
-                    >
-                      Voir les détails
-                    </a>
-                  </div>
-
-                  <div className="mt-6 border-t border-white/10 pt-4">
-                    <h4 className="text-sm font-medium text-gray-300 mb-3">Suivi de livraison</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                      <div className="space-y-2">
+                return (
+                  <ResponsiveCard key={order.id} variant="glass" padding="md">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                      <div>
+                        <h3 className="text-lg font-semibold text-white">Commande #{order.id}</h3>
                         <p className="text-gray-400">
-                          Statut livraison :{' '}
-                          <span className="text-white font-medium">
-                            {order.shippingStatus || getStatusText(order.status)}
-                          </span>
+                          Passée le {new Date(order.createdAt).toLocaleDateString('fr-FR')}
                         </p>
-                        {order.trackingNumber && (
-                          <p className="text-gray-400">
-                            Numéro de suivi :{' '}
-                            <span className="text-white font-mono">{order.trackingNumber}</span>
-                          </p>
-                        )}
-                        {order.carrier && (
-                          <p className="text-gray-400">
-                            Transporteur : <span className="text-white">{order.carrier}</span>
-                          </p>
-                        )}
-                        {order.shippedAt && (
-                          <p className="text-gray-400">
-                            Expédiée le :{' '}
-                            <span className="text-white">{formatDateTime(order.shippedAt)}</span>
-                          </p>
-                        )}
-                        {order.estimatedDeliveryDate && (
-                          <p className="text-gray-400">
-                            Livraison estimée :{' '}
-                            <span className="text-white">{formatDateTime(order.estimatedDeliveryDate)}</span>
-                          </p>
-                        )}
-                        {order.deliveredAt && (
-                          <p className="text-gray-400">
-                            Livrée le :{' '}
-                            <span className="text-white">{formatDateTime(order.deliveredAt)}</span>
-                          </p>
-                        )}
-                        <div className="flex gap-3 pt-2">
-                          <a
-                            href={order.carrierTrackingUrl || `/track-order?orderId=${order.id}&email=${encodeURIComponent(order.customerEmail || '')}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-xs text-brand-gold hover:text-white transition-colors"
-                          >
-                            Consulter le suivi détaillé
-                          </a>
-                          <a
-                            href={`/track-order?orderId=${order.id}&email=${encodeURIComponent(order.customerEmail || '')}`}
-                            className="text-xs text-gray-400 hover:text-white"
-                          >
-                            Historique complet
-                          </a>
-                        </div>
                       </div>
+                      <div className="flex items-center space-x-4 mt-2 md:mt-0">
+                        <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}>
+                          {getStatusIcon(order.status)}
+                          <span className="ml-2">{getStatusText(order.status)}</span>
+                        </span>
+                        <span className="text-xl font-bold text-white">
+                          €{formatPrice(order.totalCents)}
+                        </span>
+                      </div>
+                    </div>
 
-                      <div className="relative">
-                        <div className="absolute left-2 top-0 bottom-0 w-px bg-white/10" />
-                        <div className="ml-6 space-y-3">
-                          {getShippingHistory(order).map((entry, index) => (
-                            <div key={`${order.id}-shipping-${index}`} className="relative">
-                              <span className="absolute -left-6 top-1 h-3 w-3 rounded-full bg-brand-gold"></span>
-                              <p className="text-white text-sm font-semibold">{entry.status}</p>
-                              <p className="text-xs text-gray-400">{formatDateTime(entry.date)}</p>
-                              {entry.message && (
-                                <p className="text-xs text-gray-300 mt-1">{entry.message}</p>
-                              )}
-                            </div>
-                          ))}
-                          {(!order.shippingHistory || order.shippingHistory.length === 0) && (
-                            <p className="text-xs text-gray-500">
-                              Les informations de suivi seront affichées ici dès qu’elles seront disponibles.
+                    <div className="border-t border-white/10 pt-4">
+                      <h4 className="text-sm font-medium text-gray-300 mb-3">Articles commandés :</h4>
+                      <div className="space-y-2">
+                        {order.items.map((item, index) => (
+                          <div key={index} className="flex justify-between items-center text-sm">
+                            <span className="text-gray-300">
+                              {item.quantity}x {item.name}
+                            </span>
+                            <span className="text-white font-medium">
+                              €{formatPrice(item.priceCents)}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="border-t border-white/10 pt-4 mt-4 space-y-2 text-sm">
+                      <div className="flex justify-between text-gray-300">
+                        <span>Sous-total</span>
+                        <span>€{formatPrice(subtotalCents)}</span>
+                      </div>
+                      <div className="flex justify-between text-gray-300">
+                        <span>Livraison</span>
+                        <span>
+                          {shippingCents > 0
+                            ? `€${formatPrice(shippingCents)}`
+                            : 'Offert'}
+                        </span>
+                      </div>
+                      {taxCents > 0 && (
+                        <div className="flex justify-between text-gray-300">
+                          <span>Taxes</span>
+                          <span>€{formatPrice(taxCents)}</span>
+                        </div>
+                      )}
+                      {discountCents > 0 && (
+                        <div className="flex justify-between text-gray-300">
+                          <span>Remises</span>
+                          <span>-€{formatPrice(discountCents)}</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between items-center text-base font-semibold text-white border-t border-white/10 pt-2 mt-2">
+                        <span>Total</span>
+                        <span>€{formatPrice(order.totalCents)}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end mt-4">
+                      {(order.invoicePdf || order.receiptUrl) && (
+                        <a
+                          href={order.invoicePdf || order.receiptUrl || '#'}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm text-brand-green hover:text-white transition-colors font-medium mr-4"
+                        >
+                          {order.invoicePdf ? 'Télécharger la facture PDF' : 'Voir le reçu'}
+                        </a>
+                      )}
+                      <a
+                        href={`/orders/${order.id}`}
+                        className="text-brand-gold hover:text-white transition-colors text-sm font-medium"
+                      >
+                        Voir les détails
+                      </a>
+                    </div>
+
+                    <div className="mt-6 border-t border-white/10 pt-4">
+                      <h4 className="text-sm font-medium text-gray-300 mb-3">Suivi de livraison</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div className="space-y-2">
+                          <p className="text-gray-400">
+                            Statut livraison :{' '}
+                            <span className="text-white font-medium">
+                              {order.shippingStatus || getStatusText(order.status)}
+                            </span>
+                          </p>
+                          {order.trackingNumber && (
+                            <p className="text-gray-400">
+                              Numéro de suivi :{' '}
+                              <span className="text-white font-mono">{order.trackingNumber}</span>
                             </p>
                           )}
+                          {order.carrier && (
+                            <p className="text-gray-400">
+                              Transporteur : <span className="text-white">{order.carrier}</span>
+                            </p>
+                          )}
+                          {order.shippedAt && (
+                            <p className="text-gray-400">
+                              Expédiée le :{' '}
+                              <span className="text-white">{formatDateTime(order.shippedAt)}</span>
+                            </p>
+                          )}
+                          {order.estimatedDeliveryDate && (
+                            <p className="text-gray-400">
+                              Livraison estimée :{' '}
+                              <span className="text-white">{formatDateTime(order.estimatedDeliveryDate)}</span>
+                            </p>
+                          )}
+                          {order.deliveredAt && (
+                            <p className="text-gray-400">
+                              Livrée le :{' '}
+                              <span className="text-white">{formatDateTime(order.deliveredAt)}</span>
+                            </p>
+                          )}
+                          <div className="flex gap-3 pt-2">
+                            <a
+                              href={order.carrierTrackingUrl || `/track-order?orderId=${order.id}&email=${encodeURIComponent(order.customerEmail || '')}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-brand-gold hover:text-white transition-colors"
+                            >
+                              Consulter le suivi détaillé
+                            </a>
+                            <a
+                              href={`/track-order?orderId=${order.id}&email=${encodeURIComponent(order.customerEmail || '')}`}
+                              className="text-xs text-gray-400 hover:text-white"
+                            >
+                              Historique complet
+                            </a>
+                          </div>
+                        </div>
+
+                        <div className="relative">
+                          <div className="absolute left-2 top-0 bottom-0 w-px bg-white/10" />
+                          <div className="ml-6 space-y-3">
+                            {getShippingHistory(order).map((entry, index) => (
+                              <div key={`${order.id}-shipping-${index}`} className="relative">
+                                <span className="absolute -left-6 top-1 h-3 w-3 rounded-full bg-brand-gold"></span>
+                                <p className="text-white text-sm font-semibold">{entry.status}</p>
+                                <p className="text-xs text-gray-400">{formatDateTime(entry.date)}</p>
+                                {entry.message && (
+                                  <p className="text-xs text-gray-300 mt-1">{entry.message}</p>
+                                )}
+                              </div>
+                            ))}
+                            {(!order.shippingHistory || order.shippingHistory.length === 0) && (
+                              <p className="text-xs text-gray-500">
+                                Les informations de suivi seront affichées ici dès qu’elles seront disponibles.
+                              </p>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </ResponsiveCard>
-              ))
+                  </ResponsiveCard>
+                )
+              })
             )}
           </div>
         </div>

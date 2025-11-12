@@ -15,6 +15,7 @@ export function useOrderNotifications() {
   const displayedNotificationsRef = useRef<Set<string>>(new Set())
 
   const hasHydratedRef = useRef(false)
+  const lastCheckedUserRef = useRef<string | null>(null)
 
   const getUserScopedKey = useCallback(
     (suffix: string) => {
@@ -138,19 +139,20 @@ export function useOrderNotifications() {
   }, [addNotification, hydrateFromStorage, persistDisplayedNotifications, persistLastChecked, user?.sub])
 
   useEffect(() => {
-    if (!user) return
+    if (!user) {
+      lastCheckedUserRef.current = null
+      return
+    }
 
     hydrateFromStorage()
 
-    // Vérifier les mises à jour des commandes toutes les 30 secondes
-    const interval = setInterval(() => {
-      checkOrderUpdates()
-    }, 30000)
+    const currentUserId = user.sub ?? 'anonymous'
+    if (lastCheckedUserRef.current === currentUserId) {
+      return
+    }
 
-    // Vérifier immédiatement au chargement
+    lastCheckedUserRef.current = currentUserId
     checkOrderUpdates()
-
-    return () => clearInterval(interval)
   }, [checkOrderUpdates, hydrateFromStorage, user])
 
   return {
