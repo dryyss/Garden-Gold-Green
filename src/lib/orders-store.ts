@@ -9,6 +9,12 @@ export interface OrderItemRecord {
   image?: string
 }
 
+export interface ShippingHistoryEntry {
+  date: string
+  status: string
+  message?: string
+}
+
 export interface OrderRecord {
   id: string
   userId?: string | null
@@ -28,6 +34,13 @@ export interface OrderRecord {
   paymentIntentId?: string
   receiptUrl?: string | null
   invoicePdf?: string | null
+  trackingNumber?: string | null
+  carrier?: string | null
+  carrierTrackingUrl?: string | null
+  shippingStatus?: string | null
+  shippedAt?: string | null
+  estimatedDeliveryDate?: string | null
+  shippingHistory?: ShippingHistoryEntry[]
   metadata?: Record<string, unknown>
 }
 
@@ -95,7 +108,8 @@ export async function upsertOrder(
     items: order.items ?? existing?.items ?? [],
     createdAt: existing?.createdAt || now,
     updatedAt: now,
-    deliveredAt: order.deliveredAt ?? existing?.deliveredAt,
+    deliveredAt:
+      order.deliveredAt !== undefined ? order.deliveredAt : existing?.deliveredAt,
     customerEmail: order.customerEmail ?? existing?.customerEmail,
     customerName: order.customerName ?? existing?.customerName,
     customerPhone: order.customerPhone ?? existing?.customerPhone,
@@ -105,6 +119,31 @@ export async function upsertOrder(
     paymentIntentId: order.paymentIntentId ?? existing?.paymentIntentId,
     receiptUrl: order.receiptUrl ?? existing?.receiptUrl,
     invoicePdf: order.invoicePdf ?? existing?.invoicePdf,
+    trackingNumber:
+      order.trackingNumber !== undefined
+        ? order.trackingNumber
+        : existing?.trackingNumber ?? null,
+    carrier:
+      order.carrier !== undefined ? order.carrier : existing?.carrier ?? null,
+    carrierTrackingUrl:
+      order.carrierTrackingUrl !== undefined
+        ? order.carrierTrackingUrl
+        : existing?.carrierTrackingUrl ?? null,
+    shippingStatus:
+      order.shippingStatus !== undefined
+        ? order.shippingStatus
+        : existing?.shippingStatus ?? null,
+    shippedAt:
+      order.shippedAt !== undefined ? order.shippedAt : existing?.shippedAt ?? null,
+    estimatedDeliveryDate:
+      order.estimatedDeliveryDate !== undefined
+        ? order.estimatedDeliveryDate
+        : existing?.estimatedDeliveryDate ?? null,
+    shippingHistory: order.shippingHistory
+      ? [...order.shippingHistory]
+      : existing?.shippingHistory
+        ? [...existing.shippingHistory]
+        : [],
     metadata: {
       ...(existing?.metadata || {}),
       ...(order.metadata || {}),

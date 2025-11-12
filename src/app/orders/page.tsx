@@ -35,6 +35,17 @@ interface Order {
   shippingAddress?: any
   receiptUrl?: string | null
   invoicePdf?: string | null
+  trackingNumber?: string | null
+  carrier?: string | null
+  carrierTrackingUrl?: string | null
+  shippingStatus?: string | null
+  shippedAt?: string | null
+  estimatedDeliveryDate?: string | null
+  shippingHistory?: Array<{
+    date: string
+    status: string
+    message?: string
+  }>
 }
 
 export default function OrdersPage() {
@@ -136,6 +147,25 @@ export default function OrdersPage() {
 
   const formatPrice = (cents: number) => {
     return (cents / 100).toFixed(2)
+  }
+
+  const formatDateTime = (dateString?: string | null) => {
+    if (!dateString) return null
+    const date = new Date(dateString)
+    return date.toLocaleString('fr-FR', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+  }
+
+  const getShippingHistory = (order: Order) => {
+    if (!order.shippingHistory || order.shippingHistory.length === 0) return []
+    return [...order.shippingHistory].sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    )
   }
 
   if (authLoading || isLoading) {
@@ -261,6 +291,86 @@ export default function OrdersPage() {
                     >
                       Voir les détails
                     </a>
+                  </div>
+
+                  <div className="mt-6 border-t border-white/10 pt-4">
+                    <h4 className="text-sm font-medium text-gray-300 mb-3">Suivi de livraison</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                      <div className="space-y-2">
+                        <p className="text-gray-400">
+                          Statut livraison :{' '}
+                          <span className="text-white font-medium">
+                            {order.shippingStatus || getStatusText(order.status)}
+                          </span>
+                        </p>
+                        {order.trackingNumber && (
+                          <p className="text-gray-400">
+                            Numéro de suivi :{' '}
+                            <span className="text-white font-mono">{order.trackingNumber}</span>
+                          </p>
+                        )}
+                        {order.carrier && (
+                          <p className="text-gray-400">
+                            Transporteur : <span className="text-white">{order.carrier}</span>
+                          </p>
+                        )}
+                        {order.shippedAt && (
+                          <p className="text-gray-400">
+                            Expédiée le :{' '}
+                            <span className="text-white">{formatDateTime(order.shippedAt)}</span>
+                          </p>
+                        )}
+                        {order.estimatedDeliveryDate && (
+                          <p className="text-gray-400">
+                            Livraison estimée :{' '}
+                            <span className="text-white">{formatDateTime(order.estimatedDeliveryDate)}</span>
+                          </p>
+                        )}
+                        {order.deliveredAt && (
+                          <p className="text-gray-400">
+                            Livrée le :{' '}
+                            <span className="text-white">{formatDateTime(order.deliveredAt)}</span>
+                          </p>
+                        )}
+                        <div className="flex gap-3 pt-2">
+                          <a
+                            href={order.carrierTrackingUrl || `/track-order?orderId=${order.id}&email=${encodeURIComponent(order.customerEmail || '')}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-brand-gold hover:text-white transition-colors"
+                          >
+                            Consulter le suivi détaillé
+                          </a>
+                          <a
+                            href={`/track-order?orderId=${order.id}&email=${encodeURIComponent(order.customerEmail || '')}`}
+                            className="text-xs text-gray-400 hover:text-white"
+                          >
+                            Historique complet
+                          </a>
+                        </div>
+                      </div>
+
+                      <div className="relative">
+                        <div className="absolute left-2 top-0 bottom-0 w-px bg-white/10" />
+                        <div className="ml-6 space-y-3">
+                          {getShippingHistory(order).map((entry, index) => (
+                            <div key={`${order.id}-shipping-${index}`} className="relative">
+                              <span className="absolute -left-6 top-1 h-3 w-3 rounded-full bg-brand-gold"></span>
+                              <p className="text-white text-sm font-semibold">{entry.status}</p>
+                              <p className="text-xs text-gray-400">{formatDateTime(entry.date)}</p>
+                              {entry.message && (
+                                <p className="text-xs text-gray-300 mt-1">{entry.message}</p>
+                              )}
+                            </div>
+                          ))}
+                          {(!order.shippingHistory || order.shippingHistory.length === 0) && (
+                            <p className="text-xs text-gray-500">
+                              Les informations de suivi seront affichées ici dès qu’elles seront disponibles.
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </ResponsiveCard>
               ))

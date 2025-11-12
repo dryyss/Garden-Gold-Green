@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -58,6 +58,17 @@ interface Order {
   }
   paymentIntentId?: string
   stripeSessionId?: string
+  trackingNumber?: string | null
+  carrier?: string | null
+  carrierTrackingUrl?: string | null
+  shippingStatus?: string | null
+  shippedAt?: string | null
+  estimatedDeliveryDate?: string | null
+  shippingHistory?: Array<{
+    date: string
+    status: string
+    message?: string
+  }>
 }
 
 export default function OrderDetailPage() {
@@ -162,6 +173,25 @@ export default function OrderDetailPage() {
   const formatPrice = (cents: number) => {
     return (cents / 100).toFixed(2)
   }
+
+  const formatDateTime = (value?: string | null) => {
+    if (!value) return null
+    const date = new Date(value)
+    return date.toLocaleString('fr-FR', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+  }
+
+  const sortedHistory = useMemo(() => {
+    if (!order?.shippingHistory) return []
+    return [...order.shippingHistory].sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    )
+  }, [order?.shippingHistory])
 
   const canReturn = (order: Order) => {
     if (order.status !== 'delivered') return false

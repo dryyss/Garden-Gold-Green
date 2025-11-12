@@ -43,6 +43,17 @@ interface Order {
     postalCode?: string
     country?: string
   }
+  trackingNumber?: string | null
+  carrier?: string | null
+  carrierTrackingUrl?: string | null
+  shippingStatus?: string | null
+  shippedAt?: string | null
+  estimatedDeliveryDate?: string | null
+  shippingHistory?: Array<{
+    date: string
+    status: string
+    message?: string
+  }>
 }
 
 export default function TrackOrderPage() {
@@ -136,6 +147,12 @@ export default function TrackOrderPage() {
       minute: '2-digit'
     })
   }
+
+  const shippingHistory = order?.shippingHistory
+    ? [...order.shippingHistory].sort(
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+      )
+    : []
 
   return (
     <div className="min-h-screen bg-brand-black pt-24 pb-16">
