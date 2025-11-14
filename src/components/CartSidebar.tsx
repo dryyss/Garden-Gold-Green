@@ -4,6 +4,7 @@ import React from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { useCart } from '@/contexts/CartContext'
 import { useAuth } from '@/contexts/AuthContext'
+import { useAuth0Context } from '@/contexts/Auth0Context'
 import Image from 'next/image'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -34,11 +35,20 @@ function CartSidebarContent() {
   const pathname = usePathname()
   const { state, dispatch } = useCart()
   const { state: authState } = useAuth()
+  const { state: auth0State } = useAuth0Context()
+  
+  // Utiliser Auth0 si disponible, sinon AuthContext
+  const isAuthenticated = auth0State.isAuthenticated || authState.isAuthenticated
   
   // Vérifier si on est sur la page panier
   const isOnCartPage = pathname === '/cart'
 
   const formatPrice = (price: number) => {
+    // Vérifier que le prix est valide
+    if (!price || isNaN(price) || !isFinite(price)) {
+      console.error('Invalid price:', price)
+      return '0,00 €'
+    }
     return new Intl.NumberFormat('fr-FR', {
       style: 'currency',
       currency: 'EUR',
@@ -66,16 +76,6 @@ function CartSidebarContent() {
     }
 
     try {
-      console.log('========================================')
-      console.log('🛒 DÉBUT CHECKOUT')
-      console.log('========================================')
-      console.log('📦 État du panier:', {
-        items: state.items,
-        totalItems: state.totalItems,
-        totalPrice: state.totalPrice,
-        isOpen: state.isOpen
-      })
-      
       // Préparer les items pour Stripe
       const items = state.items.map(item => ({
         name: item.name,
@@ -85,15 +85,7 @@ function CartSidebarContent() {
         cbdPercent: item.cbdPercent,
       }))
 
-      console.log('✅ Items préparés pour Stripe:', JSON.stringify(items, null, 2))
-      console.log('📊 Nombre d\'items:', items.length)
-
       // Créer une session Stripe Checkout
-      console.log('========================================')
-      console.log('🔄 APPEL API /api/checkout')
-      console.log('========================================')
-      console.log('📤 Body envoyé:', JSON.stringify({ items }, null, 2))
-      
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: {
@@ -101,63 +93,52 @@ function CartSidebarContent() {
         },
         body: JSON.stringify({ items }),
       })
-
-      console.log('========================================')
-      console.log('📡 RÉPONSE API REÇUE')
-      console.log('========================================')
-      console.log('📊 Status:', response.status)
-      console.log('📊 Status Text:', response.statusText)
-      console.log('📊 Headers:', Object.fromEntries(response.headers.entries()))
       
       if (!response.ok) {
-        const errorText = await response.text()
-        console.error('========================================')
-        console.error('❌ ERREUR HTTP')
-        console.error('========================================')
-        console.error('Status:', response.status)
-        console.error('Texte:', errorText)
-        alert(`Erreur ${response.status}: ${errorText}`)
+        const errorData = await response.json().catch(() => ({}))
+        
+        // Si l'email n'est pas vérifié, rediriger vers la page de vérification
+        if (errorData?.code === 'email_not_verified' && errorData?.redirectUrl) {
+          window.location.href = errorData.redirectUrl
+          return
+        }
+        
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Erreur checkout:', response.status, errorData)
+        }
+        alert(errorData?.error || `Erreur ${response.status}`)
         return
       }
 
       const data = await response.json()
-      console.log('========================================')
-      console.log('📄 DONNÉES JSON REÇUES')
-      console.log('========================================')
-      console.log('Données complètes:', JSON.stringify(data, null, 2))
 
       if (data.error) {
-        console.error('========================================')
-        console.error('❌ ERREUR DANS LA RÉPONSE')
-        console.error('========================================')
-        console.error('Erreur:', data.error)
+        // Si l'email n'est pas vérifié, rediriger vers la page de vérification
+        if (data?.code === 'email_not_verified' && data?.redirectUrl) {
+          window.location.href = data.redirectUrl
+          return
+        }
+        
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Erreur response:', data.error)
+        }
         alert(`Erreur: ${data.error}`)
         return
       }
 
       // Rediriger vers Stripe Checkout
       if (data.url) {
-        console.log('========================================')
-        console.log('✅ REDIRECTION VERS STRIPE')
-        console.log('========================================')
-        console.log('URL:', data.url)
-        console.log('Session ID:', data.sessionId)
         window.location.href = data.url
       } else {
-        console.error('========================================')
-        console.error('❌ PAS D\'URL DE REDIRECTION')
-        console.error('========================================')
-        console.error('Données reçues:', data)
-        alert('Erreur: pas d\'URL de redirection')
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Pas d\'URL de redirection')
+        }
+        alert('Erreur de configuration')
       }
     } catch (error) {
-      console.error('========================================')
-      console.error('❌ EXCEPTION CAPTURÉE')
-      console.error('========================================')
-      console.error('Type:', typeof error)
-      console.error('Message:', error instanceof Error ? error.message : 'Erreur inconnue')
-      console.error('Stack:', error instanceof Error ? error.stack : 'Pas de stack')
-      console.error('Objet complet:', error)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Exception checkout:', error)
+      }
       alert(`Erreur: ${error instanceof Error ? error.message : 'Erreur inconnue'}`)
     }
   }
@@ -283,7 +264,7 @@ function CartSidebarContent() {
                 {isOnCartPage ? (
                   <PaymentMethodSelector 
                     onPaymentSuccess={() => {
-                      console.log('Paiement réussi')
+                      // Paiement réussi
                     }}
                     onPaymentError={(error) => {
                       console.error('Erreur de paiement:', error)
@@ -300,10 +281,10 @@ function CartSidebarContent() {
                   </button>
                 )}
                 
-                {!authState.isAuthenticated && (
+                {!isAuthenticated && (
                   <p className="text-gray-400 text-xs text-center">
                     {t('cart.guestCheckout')}{' '}
-                    <Link href="/login" className="text-brand-gold hover:underline">
+                    <Link href="/auth/login" className="text-brand-gold hover:underline">
                       {t('cart.login')}
                     </Link>
                   </p>

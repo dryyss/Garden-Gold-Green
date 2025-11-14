@@ -371,7 +371,6 @@ export default function CheckoutPage() {
               {/* Payment Method Selector */}
               <PaymentMethodSelector 
                 onPaymentSuccess={() => {
-                  console.log('Paiement réussi')
                   // Rediriger vers la page de succès
                   router.push('/checkout/success')
                 }}

@@ -12,10 +12,6 @@ const paypalBaseUrl = paypalEnvironment === 'live'
 async function getPayPalAccessToken() {
   const auth = Buffer.from(`${paypalClientId}:${paypalClientSecret}`).toString('base64')
   
-  console.log('🔐 Tentative d\'authentification PayPal...')
-  console.log('🔗 URL:', `${paypalBaseUrl}/v1/oauth2/token`)
-  console.log('🔑 Auth header:', `Basic ${auth.substring(0, 20)}...`)
-  
   const response = await fetch(`${paypalBaseUrl}/v1/oauth2/token`, {
     method: 'POST',
     headers: {
@@ -25,8 +21,6 @@ async function getPayPalAccessToken() {
     body: 'grant_type=client_credentials',
   })
 
-  console.log('📥 Réponse auth PayPal:', response.status, response.statusText)
-
   if (!response.ok) {
     const errorText = await response.text()
     console.error('❌ Erreur auth PayPal:', errorText)
@@ -34,18 +28,11 @@ async function getPayPalAccessToken() {
   }
 
   const data = await response.json()
-  console.log('✅ Token PayPal obtenu avec succès')
   return data.access_token
 }
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('🔄 Création commande PayPal...')
-    console.log('🔑 PayPal Client ID:', paypalClientId ? 'Configuré' : 'Manquant')
-    console.log('🔐 PayPal Client Secret:', paypalClientSecret ? 'Configuré' : 'Manquant')
-    console.log('🌍 PayPal Environment:', paypalEnvironment)
-    console.log('🔗 PayPal Base URL:', paypalBaseUrl)
-    
     // Vérifier la configuration PayPal
     if (!paypalClientId || !paypalClientSecret) {
       console.error('❌ Configuration PayPal manquante')
@@ -59,7 +46,6 @@ export async function POST(request: NextRequest) {
     }
     
     const { items } = await request.json()
-    console.log('📦 Items reçus:', items)
 
     if (!items || items.length === 0) {
       return NextResponse.json(
@@ -72,8 +58,6 @@ export async function POST(request: NextRequest) {
     const subtotal = items.reduce((total: number, item: any) => total + (item.price * item.quantity), 0)
     const shipping = subtotal > 100 ? 0 : 9.90
     const total = subtotal + shipping
-
-    console.log('💰 Calculs PayPal:', { subtotal, shipping, total })
 
     // Créer les items pour PayPal
     const paypalItems = items.map((item: any) => ({
@@ -122,15 +106,10 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    console.log('📋 Commande PayPal:', JSON.stringify(orderRequest, null, 2))
-
     // Obtenir le token d'accès
-    console.log('🔑 Obtention du token PayPal...')
     const accessToken = await getPayPalAccessToken()
-    console.log('✅ Token PayPal obtenu:', accessToken ? 'Oui' : 'Non')
 
     // Créer la commande via l'API PayPal
-    console.log('📤 Envoi de la requête à PayPal...')
     const response = await fetch(`${paypalBaseUrl}/v2/checkout/orders`, {
       method: 'POST',
       headers: {
@@ -139,8 +118,6 @@ export async function POST(request: NextRequest) {
       },
       body: JSON.stringify(orderRequest),
     })
-
-    console.log('📥 Réponse PayPal reçue:', response.status, response.statusText)
 
     if (!response.ok) {
       const errorData = await response.text()
@@ -156,7 +133,6 @@ export async function POST(request: NextRequest) {
     }
 
     const order = await response.json()
-    console.log('✅ Commande PayPal créée:', order.id)
 
     // Trouver le lien d'approbation
     const approvalUrl = order.links?.find((link: any) => link.rel === 'approve')?.href

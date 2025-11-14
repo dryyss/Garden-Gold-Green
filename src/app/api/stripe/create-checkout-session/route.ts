@@ -8,9 +8,6 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(request: NextRequest) {
   try {
-    // Debug: Vérifier la configuration Stripe
-    console.log('STRIPE_SECRET_KEY:', process.env.STRIPE_SECRET_KEY ? 'Défini' : 'Non défini')
-    
     if (!process.env.STRIPE_SECRET_KEY) {
       console.error('❌ STRIPE_SECRET_KEY non définie')
       return NextResponse.json(
@@ -29,7 +26,6 @@ export async function POST(request: NextRequest) {
         user = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret')
       } catch (error) {
         // Utilisateur non authentifié, on continue quand même
-        console.log('Token JWT invalide ou manquant')
       }
     }
 
@@ -57,8 +53,14 @@ export async function POST(request: NextRequest) {
     }))
 
     // Métadonnées pour le webhook
+    const metadataItems = items.map((item: any) => ({
+      i: String(item.id),
+      q: Number(item.quantity) || 0,
+      pc: Math.round(item.price * 100),
+    }))
+
     const metadata: any = {
-      cartItems: JSON.stringify(items),
+      cartItems: JSON.stringify(metadataItems),
     }
 
     // Ajouter l'ID utilisateur si connecté

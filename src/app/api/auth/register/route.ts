@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import { sendWelcomeEmail } from '@/lib/email'
 
 const prisma = new PrismaClient()
 
@@ -47,6 +48,11 @@ export async function POST(request: NextRequest) {
         password: hashedPassword,
         role: 'customer'
       }
+    })
+
+    // Envoyer l'email de bienvenue (asynchrone)
+    sendWelcomeEmail(user.email, user.name || user.email.split('@')[0] || 'Client').catch(error => {
+      console.error('❌ Erreur lors de l\'envoi de l\'email de bienvenue:', error)
     })
 
     // Générer le token JWT

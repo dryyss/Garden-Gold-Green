@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-import { getAuthenticatedUser } from '@/lib/auth-utils'
-
-const prisma = new PrismaClient()
+import { auth0 } from '@/lib/auth0'
+import { listOrdersByUser, upsertOrder } from '@/lib/orders-store'
 
 export async function GET(request: NextRequest) {
   try {
     // Récupérer la session utilisateur
-    const session = await getSession()
+    const session = await auth0.getSession(request)
     
     if (!session?.user) {
       return NextResponse.json(
@@ -16,60 +14,38 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // Récupérer l'ID utilisateur depuis Auth0
     const userId = session.user.sub
-
-    // Récupérer les commandes de l'utilisateur
-    const orders = await prisma.order.findMany({
-      where: {
-        userId: userId,
-      },
-      include: {
-        items: {
-          include: {
-            product: {
-              select: {
-                id: true,
-                name: true,
-                image: true,
-              }
-            }
-          }
-        }
-      },
-      orderBy: {
-        createdAt: 'desc'
-      }
-    })
+    const userEmail = session.user.email || undefined
+    
+    console.log(`🔍 GET /api/orders - userId: "${userId}", email: "${userEmail}"`)
+    
+    // Récupérer les commandes par userId ET par email (au cas où userId ne serait pas défini dans la commande)
+    const orders = await listOrdersByUser(userId, userEmail)
+    
+    console.log(`📦 Retour de ${orders.length} commande(s)`)
 
     return NextResponse.json({
       success: true,
-      orders: orders.map(order => ({
-        id: order.id,
-        status: order.status,
-        totalCents: order.totalCents,
-        currency: order.currency,
-        items: order.items.map(item => ({
-          id: item.id,
-          productId: item.productId,
-          name: item.name,
-          priceCents: item.priceCents,
-          quantity: item.quantity,
-          product: item.product
-        })),
-        createdAt: order.createdAt.toISOString(),
-        updatedAt: order.updatedAt.toISOString(),
-        deliveredAt: order.deliveredAt?.toISOString(),
-        customerEmail: order.customerEmail,
-        customerName: order.customerName,
-        shippingAddress: order.shippingAddress
-      }))
+      orders,
     })
 
-  } catch (error) {
-    console.error('Erreur lors de la récupération des commandes:', error)
+  } catch (error: any) {
+    console.error('❌ Erreur lors de la récupération des commandes:', error)
+    
+    // Gérer spécifiquement les erreurs de connexion à la base de données
+    if (error?.code === 'P1001' || error?.code === 'P1000') {
+      return NextResponse.json(
+        { 
+          error: 'Service temporairement indisponible',
+          details: 'La connexion à la base de données n\'est pas disponible. Veuillez réessayer plus tard.',
+          orders: [] // Retourner un tableau vide pour éviter les erreurs côté client
+        },
+        { status: 503 }
+      )
+    }
+    
     return NextResponse.json(
-      { error: 'Erreur interne du serveur' },
+      { error: 'Erreur interne du serveur', orders: [] },
       { status: 500 }
     )
   }
@@ -77,7 +53,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getSession()
+    const session = await auth0.getSession(request)
     
     if (!session?.user) {
       return NextResponse.json(
@@ -90,7 +66,9 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { items, totalCents, shippingAddress, customerEmail, customerName, customerPhone } = body
 
-    // Validation des données
+    console.log(`📥 POST /api/orders - userId: ${userId}`)
+    console.log(`📦 Items reçus:`, JSON.stringify(items, null, 2))
+
     if (!items || items.length === 0) {
       return NextResponse.json(
         { error: 'Aucun article dans la commande' },
@@ -105,62 +83,50 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Créer la commande
-    const order = await prisma.order.create({
-      data: {
-        userId: userId,
-        totalCents: totalCents,
-        currency: 'EUR',
-        status: 'pending',
-        customerEmail: customerEmail || session.user.email || '',
-        customerName: customerName || session.user.name || '',
-        customerPhone: customerPhone || '',
-        shippingAddress: shippingAddress || {},
-        items: {
-          create: items.map((item: any) => ({
-            productId: item.productId,
-            name: item.name,
-            priceCents: item.priceCents,
-            quantity: item.quantity
-          }))
-        }
-      },
-      include: {
-        items: {
-          include: {
-            product: {
-              select: {
-                id: true,
-                name: true,
-                image: true,
-              }
-            }
-          }
-        }
+    // Formater les items pour Prisma
+    const formattedItems = items.map((item: any) => {
+      // Si l'item vient du panier, il peut avoir 'id' au lieu de 'productId'
+      const productId = item.productId || item.id
+      if (!productId) {
+        throw new Error(`Item sans productId ni id: ${JSON.stringify(item)}`)
       }
+      
+      // Si l'item a 'price' en euros, convertir en centimes
+      let priceCents = item.priceCents
+      if (!priceCents && typeof item.price === 'number') {
+        priceCents = Math.round(item.price * 100)
+      }
+      if (typeof priceCents !== 'number') {
+        throw new Error(`Item sans priceCents valide: ${JSON.stringify(item)}`)
+      }
+      
+      return {
+        productId: String(productId),
+        name: item.name || item.title || `Produit ${productId}`,
+        priceCents: priceCents,
+        quantity: item.quantity || 1
+      }
+    })
+
+    console.log(`✅ Items formatés:`, JSON.stringify(formattedItems, null, 2))
+
+    const nowId = `MAN-${Date.now()}`
+    const order = await upsertOrder({
+      id: nowId,
+      userId,
+      status: 'pending',
+      totalCents,
+      currency: 'EUR',
+      customerEmail: customerEmail || session.user.email || '',
+      customerName: customerName || session.user.name || '',
+      customerPhone: customerPhone || '',
+      shippingAddress: shippingAddress || {},
+      items: formattedItems,
     })
 
     return NextResponse.json({
       success: true,
-      order: {
-        id: order.id,
-        status: order.status,
-        totalCents: order.totalCents,
-        currency: order.currency,
-        items: order.items.map(item => ({
-          id: item.id,
-          productId: item.productId,
-          name: item.name,
-          priceCents: item.priceCents,
-          quantity: item.quantity,
-          product: item.product
-        })),
-        createdAt: order.createdAt.toISOString(),
-        updatedAt: order.updatedAt.toISOString(),
-        customerEmail: order.customerEmail,
-        customerName: order.customerName,
-        shippingAddress: order.shippingAddress
-      }
+      order,
     })
 
   } catch (error) {

@@ -24,7 +24,6 @@ import SubscriptionPlans from '@/components/SubscriptionPlans'
 import CreateSubscriptionModal from '@/components/CreateSubscriptionModal'
 import { useSubscriptions } from '@/hooks/useSubscriptions'
 import { SubscriptionPlanWithDetails } from '@/types/subscription'
-import productsData from '@/data/products.json'
 
 interface Product {
   id: string
@@ -143,10 +142,21 @@ export default function ProductDetailPage() {
 
   useEffect(() => {
     if (params.slug) {
-      const foundProduct = productsData.find(p => p.slug === params.slug)
-      if (foundProduct) {
-        setProduct(transformProduct(foundProduct))
+      const loadProduct = async () => {
+        try {
+          setLoading(true)
+          const response = await fetch(`/api/products?slug=${params.slug}`)
+          const data = await response.json()
+          if (data.success && data.product) {
+            setProduct(transformProduct(data.product))
+          }
+        } catch (error) {
+          console.error('Erreur lors du chargement du produit:', error)
+        } finally {
+          setLoading(false)
+        }
       }
+      loadProduct()
     }
   }, [params.slug])
 

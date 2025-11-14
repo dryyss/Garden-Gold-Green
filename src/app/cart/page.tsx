@@ -28,7 +28,6 @@ import { Breadcrumb } from '@/components/Breadcrumb'
 import { ImageWithLoading } from '@/components/ImageWithLoading'
 import { CartLoadingGuard } from '@/components/CartLoadingGuard'
 import { PaymentMethodSelector } from '@/components/PaymentMethodSelector'
-import productsData from '@/data/products.json'
 
 export default function CartPage() {
   return (
@@ -74,7 +73,6 @@ function CartPageContent() {
     
     // Logique pour ajouter aux favoris (à implémenter)
     const item = state.items.find(item => item.id === itemId)
-    console.log('Ajouter aux favoris:', item?.name)
     // TODO: Implémenter la logique de favoris
   }
 
@@ -201,7 +199,7 @@ function CartPageContent() {
                 <div key={item.id} className="bg-white/5 rounded-xl p-4 sm:p-6 hover:bg-white/10 transition-colors">
                   <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
                     {/* Image du produit */}
-                    <div className="w-16 h-16 sm:w-20 sm:h-20 relative flex-shrink-0 mx-auto sm:mx-0">
+                    <div className="w-24 h-24 sm:w-32 sm:h-32 relative flex-shrink-0 mx-auto sm:mx-0">
                       {item.slug ? (
                         <Link href={`/products/${item.slug}`}>
                           <ImageWithLoading
@@ -356,8 +354,7 @@ function CartPageContent() {
                 {/* Payment Method Selector */}
                 <PaymentMethodSelector 
                   onPaymentSuccess={() => {
-                    console.log('Paiement réussi')
-                    // Optionnel: rediriger vers une page de succès
+                    // Paiement réussi
                   }}
                   onPaymentError={(error) => {
                     console.error('Erreur de paiement:', error)

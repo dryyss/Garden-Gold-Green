@@ -320,10 +320,10 @@ export default function ContactPage() {
                     {t('contact.info.phone.title')}
                   </h3>
                   <p className="text-brand-gold text-lg font-medium mb-1">
-                    {safeT('contact.contactInfo.phone.value', '+33 7 78 82 38 40')}
+                    {safeT('contact.info.phone.number', '+33 7 78 82 38 40')}
                   </p>
                   <p className="text-gray-400 text-sm">
-                    {safeT('contact.contactInfo.phone.description', 'Lun-Ven 9h-18h')}
+                    {safeT('contact.info.phone.hours', 'Lun-Ven: 9h-18h')}
                   </p>
                 </div>
               </div>
@@ -338,10 +338,10 @@ export default function ContactPage() {
                     {t('contact.info.email.title')}
                   </h3>
                   <p className="text-brand-green text-lg font-medium mb-1">
-                    {safeT('contact.contactInfo.email.value', 'contact@gardengoldgreen.com')}
+                    {safeT('contact.info.email.address', 'contact@gardengoldgreen.com')}
                   </p>
                   <p className="text-gray-400 text-sm">
-                    {safeT('contact.contactInfo.email.description', 'Réponse sous 24h')}
+                    {safeT('contact.info.email.response', 'Réponse sous 24h')}
                   </p>
                 </div>
               </div>
@@ -356,10 +356,10 @@ export default function ContactPage() {
                     {t('contact.info.address.title')}
                   </h3>
                   <p className="text-gray-300 mb-1">
-                    {safeT('contact.contactInfo.address.value', '123 Rue du CBD')}
+                    {safeT('contact.info.address.street', '123 Rue du CBD')}
                   </p>
                   <p className="text-gray-300">
-                    {safeT('contact.contactInfo.address.description', '75001 Paris')}
+                    {safeT('contact.info.address.city', '75001 Paris, France')}
                   </p>
                 </div>
               </div>
@@ -374,7 +374,7 @@ export default function ContactPage() {
                     {t('contact.info.social.title')}
                   </h3>
                   <p className="text-gray-400 text-sm mb-4">
-                    {safeT('contact.contactInfo.hours.description', 'Suivez-nous sur nos réseaux sociaux')}
+                    {safeT('contact.info.social.follow', 'Suivez-nous pour les dernières actualités')}
                   </p>
                   <div className="flex space-x-4">
                     <a href="#" className="text-gray-400 hover:text-brand-gold transition-colors" aria-label="Instagram">

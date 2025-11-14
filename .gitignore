@@ -134,3 +134,10 @@ temp/
 # Prisma
 /prisma/dev.db
 /prisma/dev.db-journal
+/prisma/prisma/
+/messages/
+
+# Données sensibles - NE PAS COMMITER
+src/data/orders.json
+src/data/users.json
+src/data/products.json

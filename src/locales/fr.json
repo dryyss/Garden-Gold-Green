@@ -62,6 +62,7 @@
       "register": "Inscription",
       "profile": "Mon profil",
       "orders": "Mes commandes",
+      "trackOrder": "Suivre ma commande",
       "logout": "Se déconnecter"
     },
     "cart": "Panier"

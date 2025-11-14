@@ -1,0 +1,630 @@
+{
+  "CMD-20251111-6541": {
+    "id": "CMD-20251111-6541",
+    "userId": "auth0|69132f944aaebe27a82e7c74",
+    "status": "paid",
+    "totalCents": 3980,
+    "currency": "EUR",
+    "items": [
+      {
+        "productId": "1",
+        "name": "3G Gold Standard CBD Oil 10%",
+        "quantity": 1,
+        "priceCents": 2990,
+        "image": "/products/cbd-oil-10.svg"
+      }
+    ],
+    "createdAt": "2025-11-11T13:57:47.544Z",
+    "updatedAt": "2025-11-11T13:57:47.544Z",
+    "customerEmail": "melo@gmail.com",
+    "customerName": "andrys magar",
+    "customerPhone": "+33641598688",
+    "shippingAddress": {
+      "firstName": "andrys",
+      "lastName": "magar",
+      "email": "melo@gmail.com",
+      "phone": "+33641598688",
+      "address": "",
+      "city": "",
+      "postalCode": "",
+      "country": ""
+    },
+    "stripeSessionId": "cs_test_b1IATtHaOQXVlyW1jrYX5PXdNDgBmm0pdGrIby0MWgTXuo1T6j7kZOjvO1",
+    "paymentIntentId": "pi_3SSI4oQfe0IoO1Bo0qKwiews",
+    "metadata": {
+      "userId": "auth0|69132f944aaebe27a82e7c74",
+      "paymentMethod": "stripe"
+    }
+  },
+  "CMD-20251111-2570": {
+    "id": "CMD-20251111-2570",
+    "userId": "auth0|69134a0fc21036492a17e46b",
+    "status": "paid",
+    "totalCents": 25440,
+    "currency": "EUR",
+    "items": [
+      {
+        "productId": "10",
+        "name": "CBD Pet Treats Small Dogs",
+        "quantity": 1,
+        "priceCents": 2490,
+        "image": "/products/pet-treats.svg"
+      },
+      {
+        "productId": "1",
+        "name": "3G Gold Standard CBD Oil 10%",
+        "quantity": 1,
+        "priceCents": 2990,
+        "image": "/products/cbd-oil-10.svg"
+      },
+      {
+        "productId": "100",
+        "name": "CBD Gel Caps 1%",
+        "quantity": 4,
+        "priceCents": 4990,
+        "image": "/products/default.svg"
+      }
+    ],
+    "createdAt": "2025-11-11T14:40:22.573Z",
+    "updatedAt": "2025-11-11T14:40:22.573Z",
+    "customerEmail": "andrys.magar@hotmail.fr",
+    "customerName": "andrys magar",
+    "customerPhone": "+33641598688",
+    "shippingAddress": {
+      "firstName": "andrys",
+      "lastName": "magar",
+      "email": "andrys.magar@hotmail.fr",
+      "phone": "+33641598688",
+      "address": "",
+      "city": "",
+      "postalCode": "",
+      "country": ""
+    },
+    "stripeSessionId": "cs_test_b1KthrXt54V0eVQPmaxAnAzKncUK2g0kZtymScTkRiGdTkXM4nUYYQvqLX",
+    "paymentIntentId": {
+      "id": "pi_3SSIk4Qfe0IoO1Bo09iFaDdk",
+      "object": "payment_intent",
+      "amount": 25440,
+      "amount_capturable": 0,
+      "amount_details": {
+        "shipping": {
+          "amount": 0,
+          "from_postal_code": null,
+          "to_postal_code": null
+        },
+        "tax": {
+          "total_tax_amount": 0
+        },
+        "tip": {}
+      },
+      "amount_received": 25440,
+      "application": null,
+      "application_fee_amount": null,
+      "automatic_payment_methods": null,
+      "canceled_at": null,
+      "cancellation_reason": null,
+      "capture_method": "automatic_async",
+      "client_secret": "pi_3SSIk4Qfe0IoO1Bo09iFaDdk_secret_USjfWdnVyDhiNd4ohMeX3Gqa9",
+      "confirmation_method": "automatic",
+      "created": 1762872020,
+      "currency": "eur",
+      "customer": "cus_TP6uGP00x2vSW8",
+      "description": null,
+      "excluded_payment_method_types": null,
+      "last_payment_error": null,
+      "latest_charge": "ch_3SSIk4Qfe0IoO1Bo0xIdmo8x",
+      "livemode": false,
+      "metadata": {},
+      "next_action": null,
+      "on_behalf_of": null,
+      "payment_details": {
+        "customer_reference": null,
+        "order_reference": "prod_TLJ0tmqqaenFHY"
+      },
+      "payment_method": "pm_1SSIk4Qfe0IoO1BoGmRjKXH1",
+      "payment_method_configuration_details": null,
+      "payment_method_options": {
+        "card": {
+          "installments": null,
+          "mandate_options": null,
+          "network": null,
+          "request_three_d_secure": "automatic"
+        }
+      },
+      "payment_method_types": [
+        "card"
+      ],
+      "processing": null,
+      "receipt_email": null,
+      "review": null,
+      "setup_future_usage": null,
+      "shipping": {
+        "address": {
+          "city": "Stains",
+          "country": "FR",
+          "line1": "1 Rue René Dumont",
+          "line2": null,
+          "postal_code": "93240",
+          "state": null
+        },
+        "carrier": null,
+        "name": "andrys magar",
+        "phone": null,
+        "tracking_number": null
+      },
+      "source": null,
+      "statement_descriptor": null,
+      "statement_descriptor_suffix": null,
+      "status": "succeeded",
+      "transfer_data": null,
+      "transfer_group": null
+    },
+    "metadata": {
+      "userId": "auth0|69134a0fc21036492a17e46b",
+      "paymentMethod": "stripe"
+    }
+  },
+  "CMD-20251111-8520": {
+    "id": "CMD-20251111-8520",
+    "userId": "auth0|69134a0fc21036492a17e46b",
+    "status": "paid",
+    "totalCents": 3480,
+    "currency": "EUR",
+    "items": [
+      {
+        "productId": "10",
+        "name": "CBD Pet Treats Small Dogs",
+        "quantity": 1,
+        "priceCents": 2490,
+        "image": "/products/pet-treats.svg"
+      }
+    ],
+    "createdAt": "2025-11-11T15:22:48.528Z",
+    "updatedAt": "2025-11-11T15:22:48.528Z",
+    "customerEmail": "andrys.magar@hotmail.fr",
+    "customerName": "andrys magar",
+    "customerPhone": "+33641598688",
+    "shippingAddress": {
+      "firstName": "andrys",
+      "lastName": "magar",
+      "email": "andrys.magar@hotmail.fr",
+      "phone": "+33641598688",
+      "address": "",
+      "city": "",
+      "postalCode": "",
+      "country": ""
+    },
+    "stripeSessionId": "cs_test_b1P6v7A8CIH20Kechn0hPsW6eB09MZU2kdLYcJFhYJe3mQJ8DHGgomBwdq",
+    "paymentIntentId": "pi_3SSJOtQfe0IoO1Bo0GKcXcQk",
+    "metadata": {
+      "userId": "auth0|69134a0fc21036492a17e46b",
+      "paymentMethod": "stripe"
+    }
+  },
+  "CMD-20251111-2407": {
+    "id": "CMD-20251111-2407",
+    "userId": "auth0|69134a0fc21036492a17e46b",
+    "status": "paid",
+    "totalCents": 19440,
+    "currency": "EUR",
+    "items": [
+      {
+        "productId": "100",
+        "name": "CBD Gel Caps 1%",
+        "quantity": 1,
+        "priceCents": 4990,
+        "image": "/products/default.svg"
+      },
+      {
+        "productId": "10",
+        "name": "CBD Pet Treats Small Dogs",
+        "quantity": 1,
+        "priceCents": 2490,
+        "image": "/products/pet-treats.svg"
+      },
+      {
+        "productId": "1",
+        "name": "3G Gold Standard CBD Oil 10%",
+        "quantity": 4,
+        "priceCents": 2990,
+        "image": "/products/cbd-oil-10.svg"
+      }
+    ],
+    "createdAt": "2025-11-11T15:37:22.682Z",
+    "updatedAt": "2025-11-11T15:37:22.682Z",
+    "customerEmail": "andrys.magar@hotmail.fr",
+    "customerName": "andrys magar",
+    "customerPhone": "+33641598688",
+    "shippingAddress": {
+      "firstName": "andrys",
+      "lastName": "magar",
+      "email": "andrys.magar@hotmail.fr",
+      "phone": "+33641598688",
+      "address": "",
+      "city": "",
+      "postalCode": "",
+      "country": ""
+    },
+    "stripeSessionId": "cs_test_b1dh1m000SHigtmU3tMvXJlVWruPQgigjcrvqoRO66493fHu2NcLPk2LSh",
+    "paymentIntentId": "pi_3SSJdCQfe0IoO1Bo1qI0Pcfh",
+    "metadata": {
+      "userId": "auth0|69134a0fc21036492a17e46b",
+      "paymentMethod": "stripe"
+    }
+  },
+  "CMD-20251111-5111": {
+    "id": "CMD-20251111-5111",
+    "userId": "auth0|69134a0fc21036492a17e46b",
+    "status": "paid",
+    "totalCents": 71880,
+    "currency": "EUR",
+    "items": [
+      {
+        "productId": "11",
+        "name": "CBD Tincture 10%",
+        "quantity": 4,
+        "priceCents": null
+      },
+      {
+        "productId": "12",
+        "name": "CBD Vape Juice 20%",
+        "quantity": 4,
+        "priceCents": null
+      },
+      {
+        "productId": "13",
+        "name": "CBD Vape Juice 25%",
+        "quantity": 4,
+        "priceCents": null
+      }
+    ],
+    "createdAt": "2025-11-11T15:44:05.335Z",
+    "updatedAt": "2025-11-11T15:44:05.335Z",
+    "customerEmail": "andrys.magar@hotmail.fr",
+    "customerName": "andrys magar",
+    "customerPhone": "+33641598688",
+    "shippingAddress": {
+      "firstName": "andrys",
+      "lastName": "magar",
+      "email": "andrys.magar@hotmail.fr",
+      "phone": "+33641598688",
+      "address": "",
+      "city": "",
+      "postalCode": "",
+      "country": ""
+    },
+    "stripeSessionId": "cs_test_b1DRsZNpWVrj7NQ5t5hAPzKehZGQjMT2AXPNT8Uj5TlOEbK3gdkWicGSGY",
+    "paymentIntentId": "pi_3SSJjiQfe0IoO1Bo0CWiiYR8",
+    "metadata": {
+      "userId": "auth0|69134a0fc21036492a17e46b",
+      "paymentMethod": "stripe"
+    }
+  },
+  "CMD-20251111-6576": {
+    "id": "CMD-20251111-6576",
+    "userId": "auth0|69134a0fc21036492a17e46b",
+    "status": "paid",
+    "totalCents": 12960,
+    "currency": "EUR",
+    "items": [
+      {
+        "productId": "10",
+        "name": "CBD Pet Treats Small Dogs",
+        "quantity": 2,
+        "priceCents": null
+      },
+      {
+        "productId": "1",
+        "name": "3G Gold Standard CBD Oil 10%",
+        "quantity": 1,
+        "priceCents": null
+      },
+      {
+        "productId": "100",
+        "name": "CBD Gel Caps 1%",
+        "quantity": 1,
+        "priceCents": null
+      }
+    ],
+    "createdAt": "2025-11-11T19:26:27.834Z",
+    "updatedAt": "2025-11-11T19:26:27.834Z",
+    "customerEmail": "andrys.magar@hotmail.fr",
+    "customerName": "andrys magar",
+    "customerPhone": "+33641598688",
+    "shippingAddress": {
+      "firstName": "andrys",
+      "lastName": "magar",
+      "email": "andrys.magar@hotmail.fr",
+      "phone": "+33641598688",
+      "address": "",
+      "city": "",
+      "postalCode": "",
+      "country": ""
+    },
+    "stripeSessionId": "cs_test_b14ISbhy46vdUuQ3drzxIFe95lH5DetEbfyQEQnOnBbt0sb6D2xbgXJ2mg",
+    "paymentIntentId": "pi_3SSNClQfe0IoO1Bo0gZoNWmj",
+    "metadata": {
+      "userId": "auth0|69134a0fc21036492a17e46b",
+      "paymentMethod": "stripe"
+    }
+  },
+  "CMD-20251111-9710": {
+    "id": "CMD-20251111-9710",
+    "userId": "auth0|69134a0fc21036492a17e46b",
+    "status": "paid",
+    "totalCents": 10980,
+    "currency": "EUR",
+    "items": [
+      {
+        "productId": "5",
+        "name": "Premium CBD Capsules 15mg",
+        "quantity": 1,
+        "priceCents": 5990,
+        "image": "/products/cbd-capsules.svg"
+      },
+      {
+        "productId": "100",
+        "name": "CBD Gel Caps 1%",
+        "quantity": 1,
+        "priceCents": 4990,
+        "image": "/products/default.svg"
+      }
+    ],
+    "createdAt": "2025-11-11T20:11:01.618Z",
+    "updatedAt": "2025-11-11T20:11:01.618Z",
+    "customerEmail": "andrys.magar@hotmail.fr",
+    "customerName": "andrys magar",
+    "customerPhone": "+33641598688",
+    "shippingAddress": {
+      "firstName": "andrys",
+      "lastName": "magar",
+      "email": "andrys.magar@hotmail.fr",
+      "phone": "+33641598688",
+      "address": "",
+      "city": "",
+      "postalCode": "",
+      "country": ""
+    },
+    "stripeSessionId": "cs_test_b1ozsdnyLnu7eixNqlvIZuhnkKGLAtMB6Ne7TlzZ10hEdb4giERynrRP7n",
+    "paymentIntentId": "pi_3SSNtoQfe0IoO1Bo1msUV5HY",
+    "metadata": {
+      "userId": "auth0|69134a0fc21036492a17e46b",
+      "paymentMethod": "stripe"
+    }
+  },
+  "CMD-20251111-8129": {
+    "id": "CMD-20251111-8129",
+    "userId": "auth0|69134a0fc21036492a17e46b",
+    "status": "paid",
+    "totalCents": 6470,
+    "currency": "EUR",
+    "items": [
+      {
+        "productId": "10",
+        "name": "CBD Pet Treats Small Dogs",
+        "quantity": 1,
+        "priceCents": 2490,
+        "image": "/products/pet-treats.svg"
+      },
+      {
+        "productId": "1",
+        "name": "3G Gold Standard CBD Oil 10%",
+        "quantity": 1,
+        "priceCents": 2990,
+        "image": "/products/cbd-oil-10.svg"
+      }
+    ],
+    "createdAt": "2025-11-11T21:01:08.321Z",
+    "updatedAt": "2025-11-11T21:01:08.321Z",
+    "customerEmail": "andrys.magar@hotmail.fr",
+    "customerName": "andrys magar",
+    "customerPhone": "+33641598688",
+    "shippingAddress": {
+      "firstName": "andrys",
+      "lastName": "magar",
+      "email": "andrys.magar@hotmail.fr",
+      "phone": "+33641598688",
+      "address": "1 Rue René Dumont",
+      "address2": "",
+      "city": "Stains",
+      "postalCode": "93240",
+      "country": "FR"
+    },
+    "billingAddress": {
+      "firstName": "andrys",
+      "lastName": "magar",
+      "email": "andrys.magar@hotmail.fr",
+      "phone": "+33641598688",
+      "address": "1 Rue René Dumont",
+      "address2": "",
+      "city": "Stains",
+      "postalCode": "93240",
+      "country": "FR"
+    },
+    "stripeSessionId": "cs_test_b1rxhTyI9dAF954q0XvZ1IG4DvKj39M0OzKE9GOinDmLIZ85EA5hF3MrlC",
+    "paymentIntentId": {
+      "id": "pi_3SSOgVQfe0IoO1Bo0Ha4vYoU",
+      "object": "payment_intent",
+      "amount": 6470,
+      "amount_capturable": 0,
+      "amount_details": {
+        "shipping": {
+          "amount": 0,
+          "from_postal_code": null,
+          "to_postal_code": null
+        },
+        "tax": {
+          "total_tax_amount": 0
+        },
+        "tip": {}
+      },
+      "amount_received": 6470,
+      "application": null,
+      "application_fee_amount": null,
+      "automatic_payment_methods": null,
+      "canceled_at": null,
+      "cancellation_reason": null,
+      "capture_method": "automatic_async",
+      "client_secret": "pi_3SSOgVQfe0IoO1Bo0Ha4vYoU_secret_wMWbRAacc3HJ3oJFwL4k6SWJ7",
+      "confirmation_method": "automatic",
+      "created": 1762894863,
+      "currency": "eur",
+      "customer": "cus_TP6uGP00x2vSW8",
+      "description": null,
+      "excluded_payment_method_types": null,
+      "last_payment_error": null,
+      "latest_charge": "ch_3SSOgVQfe0IoO1Bo0fdDiKsN",
+      "livemode": false,
+      "metadata": {},
+      "next_action": null,
+      "on_behalf_of": null,
+      "payment_details": {
+        "customer_reference": null,
+        "order_reference": "prod_TLJ0tmqqaenFHY"
+      },
+      "payment_method": "pm_1SSOgVQfe0IoO1Bo0pTEVanX",
+      "payment_method_configuration_details": null,
+      "payment_method_options": {
+        "card": {
+          "installments": null,
+          "mandate_options": null,
+          "network": null,
+          "request_three_d_secure": "automatic"
+        }
+      },
+      "payment_method_types": [
+        "card"
+      ],
+      "processing": null,
+      "receipt_email": null,
+      "review": null,
+      "setup_future_usage": null,
+      "shipping": {
+        "address": {
+          "city": "Stains",
+          "country": "FR",
+          "line1": "1 Rue René Dumont",
+          "line2": null,
+          "postal_code": "93240",
+          "state": null
+        },
+        "carrier": null,
+        "name": "andrys magar",
+        "phone": null,
+        "tracking_number": null
+      },
+      "source": null,
+      "statement_descriptor": null,
+      "statement_descriptor_suffix": null,
+      "status": "succeeded",
+      "transfer_data": null,
+      "transfer_group": null
+    },
+    "metadata": {
+      "userId": "auth0|69134a0fc21036492a17e46b",
+      "paymentMethod": "stripe"
+    }
+  },
+  "CMD-20251111-7031": {
+    "id": "CMD-20251111-7031",
+    "userId": "auth0|69134a0fc21036492a17e46b",
+    "status": "paid",
+    "totalCents": 3980,
+    "currency": "EUR",
+    "items": [
+      {
+        "productId": "1",
+        "name": "3G Gold Standard CBD Oil 10%",
+        "quantity": 1,
+        "priceCents": 2990,
+        "image": "/products/cbd-oil-10.svg"
+      }
+    ],
+    "createdAt": "2025-11-11T21:04:17.033Z",
+    "updatedAt": "2025-11-11T21:04:17.033Z",
+    "customerEmail": "andrys.magar@hotmail.fr",
+    "customerName": "andrys magar",
+    "customerPhone": "+33641598688",
+    "shippingAddress": {
+      "firstName": "andrys",
+      "lastName": "magar",
+      "email": "andrys.magar@hotmail.fr",
+      "phone": "+33641598688",
+      "address": "1 Rue René Dumont",
+      "address2": "",
+      "city": "Stains",
+      "postalCode": "93240",
+      "country": "FR"
+    },
+    "billingAddress": {
+      "firstName": "andrys",
+      "lastName": "magar",
+      "email": "andrys.magar@hotmail.fr",
+      "phone": "+33641598688",
+      "address": "1 Rue René Dumont",
+      "address2": "",
+      "city": "Stains",
+      "postalCode": "93240",
+      "country": "FR"
+    },
+    "stripeSessionId": "cs_test_b1L2BB1XBZB8zqTm2zGkHlhSRo4nXrQOaSK9py2mE8HfsV5bF3Dg2Uv8M9",
+    "paymentIntentId": "pi_3SSOjYQfe0IoO1Bo12vORBwG",
+    "receiptUrl": "https://invoice.stripe.com/i/acct_1SFEUKQfe0IoO1Bo/test_YWNjdF8xU0ZFVUtRZmUwSW9PMUJvLF9UUEQ5cVRhcWYyVlRRQkI0VDl0MFhKQW8xYlBWdDFULDE1MzQzNTg1Ng02007aLArz6W?s=ap",
+    "invoicePdf": "https://pay.stripe.com/invoice/acct_1SFEUKQfe0IoO1Bo/test_YWNjdF8xU0ZFVUtRZmUwSW9PMUJvLF9UUEQ5cVRhcWYyVlRRQkI0VDl0MFhKQW8xYlBWdDFULDE1MzQzNTg1Ng02007aLArz6W/pdf?s=ap",
+    "metadata": {
+      "userId": "auth0|69134a0fc21036492a17e46b",
+      "paymentMethod": "stripe"
+    }
+  },
+  "CMD-20251111-0424": {
+    "id": "CMD-20251111-0424",
+    "userId": "auth0|69134a0fc21036492a17e46b",
+    "status": "paid",
+    "totalCents": 6970,
+    "currency": "EUR",
+    "items": [
+      {
+        "productId": "1",
+        "name": "3G Gold Standard CBD Oil 10%",
+        "quantity": 2,
+        "priceCents": 2990,
+        "image": "/products/cbd-oil-10.svg"
+      }
+    ],
+    "createdAt": "2025-11-11T21:15:40.427Z",
+    "updatedAt": "2025-11-11T21:15:40.427Z",
+    "customerEmail": "andrys.magar@hotmail.fr",
+    "customerName": "andrys magar",
+    "customerPhone": "+33641598688",
+    "shippingAddress": {
+      "firstName": "andrys",
+      "lastName": "magar",
+      "email": "andrys.magar@hotmail.fr",
+      "phone": "+33641598688",
+      "address": "1 Rue René Dumont",
+      "address2": "",
+      "city": "Stains",
+      "postalCode": "93240",
+      "country": "FR"
+    },
+    "billingAddress": {
+      "firstName": "andrys",
+      "lastName": "magar",
+      "email": "andrys.magar@hotmail.fr",
+      "phone": "+33641598688",
+      "address": "1 Rue René Dumont",
+      "address2": "",
+      "city": "Stains",
+      "postalCode": "93240",
+      "country": "FR"
+    },
+    "stripeSessionId": "cs_test_b1ya1wmalse7HYSvETXFBQ7zqhTFpL352JMz8KFFT8tkPXZ7kGABfMI7R5",
+    "paymentIntentId": "pi_3SSOuZQfe0IoO1Bo0f8yarn4",
+    "receiptUrl": "https://invoice.stripe.com/i/acct_1SFEUKQfe0IoO1Bo/test_YWNjdF8xU0ZFVUtRZmUwSW9PMUJvLF9UUERMTWNIU2pHdzA3SVhFbmRXRDlycjVqVkV6WlNiLDE1MzQzNjU0MA0200QLLCOikk?s=ap",
+    "invoicePdf": "https://pay.stripe.com/invoice/acct_1SFEUKQfe0IoO1Bo/test_YWNjdF8xU0ZFVUtRZmUwSW9PMUJvLF9UUERMTWNIU2pHdzA3SVhFbmRXRDlycjVqVkV6WlNiLDE1MzQzNjU0MA0200QLLCOikk/pdf?s=ap",
+    "metadata": {
+      "userId": "auth0|69134a0fc21036492a17e46b",
+      "paymentMethod": "stripe"
+    }
+  }
+}

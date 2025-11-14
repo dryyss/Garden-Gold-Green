@@ -1,0 +1,46 @@
+{
+  "auth0|5f7c8ec7c33c6c004bbafe82": {
+    "id": "auth0|5f7c8ec7c33c6c004bbafe82",
+    "email": "j+smith@example.com",
+    "name": "John Smith",
+    "stripeCustomerId": "cus_TOqvm7Ki9Q57TL",
+    "createdAt": "2025-11-10T22:06:05.024Z",
+    "updatedAt": "2025-11-10T22:06:05.024Z"
+  },
+  "auth0|69126914121b4bf68dada5cc": {
+    "id": "auth0|69126914121b4bf68dada5cc",
+    "email": "andryddds@hotmail.fr",
+    "stripeCustomerId": "cus_TOrQoLrYxY3meV",
+    "createdAt": "2025-11-10T22:37:09.796Z",
+    "updatedAt": "2025-11-10T22:37:09.796Z"
+  },
+  "auth0|691310bc274b2c92a0c39d5a": {
+    "id": "auth0|691310bc274b2c92a0c39d5a",
+    "email": "andrys9721@gmail.com",
+    "stripeCustomerId": "cus_TP2yiUF7d87A3u",
+    "createdAt": "2025-11-11T10:32:30.688Z",
+    "updatedAt": "2025-11-11T10:32:30.688Z"
+  },
+  "google-oauth2|107186122065528122563": {
+    "id": "google-oauth2|107186122065528122563",
+    "email": "gardengoldgreen@gmail.com",
+    "name": "gardengoldgreen",
+    "stripeCustomerId": "cus_TP3I5gChgL1uV3",
+    "createdAt": "2025-11-11T10:53:08.405Z",
+    "updatedAt": "2025-11-11T10:53:08.405Z"
+  },
+  "auth0|69132f944aaebe27a82e7c74": {
+    "id": "auth0|69132f944aaebe27a82e7c74",
+    "email": "melo@gmail.com",
+    "stripeCustomerId": "cus_TP55Ryo27PMfM7",
+    "createdAt": "2025-11-11T12:44:07.986Z",
+    "updatedAt": "2025-11-11T12:44:07.986Z"
+  },
+  "auth0|69134a0fc21036492a17e46b": {
+    "id": "auth0|69134a0fc21036492a17e46b",
+    "email": "andrys.magar@hotmail.fr",
+    "stripeCustomerId": "cus_TP6uGP00x2vSW8",
+    "createdAt": "2025-11-11T14:37:09.593Z",
+    "updatedAt": "2025-11-11T14:37:09.593Z"
+  }
+}

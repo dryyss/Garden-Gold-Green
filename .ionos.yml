@@ -1,0 +1,15 @@
+# Configuration IONOS Deploy Now
+# Note: IONOS Deploy Now ne supporte que les sites statiques
+# Ce projet Next.js utilise SSR et API routes, ce qui n'est pas compatible
+
+build:
+  command: npm run build
+  output: .next
+
+deploy:
+  command: npm run start
+  port: 3000
+
+# Variables d'environnement nécessaires (à configurer dans le dashboard IONOS)
+# Voir env.example pour la liste complète
+

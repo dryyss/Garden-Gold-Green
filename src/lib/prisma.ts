@@ -7,10 +7,19 @@ const globalForPrisma = globalThis as unknown as {
 export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
-    log: ['query'],
+    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+    errorFormat: 'pretty',
   })
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+// Connecter Prisma au démarrage en production
+if (process.env.NODE_ENV !== 'production') {
+  globalForPrisma.prisma = prisma
+} else {
+  // En production, tester la connexion au démarrage
+  prisma.$connect().catch((error) => {
+    console.error('❌ Erreur de connexion à la base de données:', error)
+  })
+}
 
 
 

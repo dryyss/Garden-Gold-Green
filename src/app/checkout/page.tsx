@@ -4,9 +4,9 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useCart } from '@/contexts/CartContext'
 import { useAuth } from '@/contexts/AuthContext'
+import { useAuth0Context } from '@/contexts/Auth0Context'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
-  faLock, 
   faTruck, 
   faShieldAlt,
   faCheckCircle,
@@ -26,10 +26,6 @@ interface CheckoutForm {
   zipCode: string
   country: string
   phone: string
-  cardNumber: string
-  expiryDate: string
-  cvv: string
-  cardName: string
   saveInfo: boolean
   newsletter: boolean
 }
@@ -38,20 +34,31 @@ export default function CheckoutPage() {
   const router = useRouter()
   const { state: cartState } = useCart()
   const { state: authState } = useAuth()
+  const { state: auth0State } = useAuth0Context()
+  const auth0User = auth0State.user
+  const getLegacyField = (field: string): string => {
+    const user = authState.user
+    if (user && typeof user === 'object' && Object.prototype.hasOwnProperty.call(user, field)) {
+      const record = user as unknown as Record<string, unknown>
+      const value = record[field]
+      return typeof value === 'string' ? value : ''
+    }
+    return ''
+  }
+  const defaultEmail = auth0User?.email || getLegacyField('email')
+  const fullName = auth0User?.name || getLegacyField('name')
+  const [defaultFirstName = '', ...restName] = fullName.split(' ')
+  const defaultLastName = restName.join(' ')
   const [form, setForm] = useState<CheckoutForm>({
-    email: authState.user?.email || '',
-    firstName: authState.user?.firstName || '',
-    lastName: authState.user?.lastName || '',
+    email: defaultEmail,
+    firstName: defaultFirstName,
+    lastName: defaultLastName,
     address: '',
     city: '',
     state: '',
     zipCode: '',
     country: 'US',
     phone: '',
-    cardNumber: '',
-    expiryDate: '',
-    cvv: '',
-    cardName: '',
     saveInfo: false,
     newsletter: false
   })
@@ -91,33 +98,16 @@ export default function CheckoutPage() {
     if (!form.state) newErrors.state = 'State is required'
     if (!form.zipCode) newErrors.zipCode = 'ZIP code is required'
     if (!form.phone) newErrors.phone = 'Phone number is required'
-    if (!form.cardNumber) newErrors.cardNumber = 'Card number is required'
-    if (!form.expiryDate) newErrors.expiryDate = 'Expiry date is required'
-    if (!form.cvv) newErrors.cvv = 'CVV is required'
-    if (!form.cardName) newErrors.cardName = 'Cardholder name is required'
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSavePrefs = (e: React.FormEvent) => {
     e.preventDefault()
-    
     if (!validateForm()) return
-
     setIsProcessing(true)
-    
-    try {
-      // Simulate payment processing
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      
-      // Redirect to success page
-      router.push('/checkout/success')
-    } catch (error) {
-      console.error('Payment error:', error)
-    } finally {
-      setIsProcessing(false)
-    }
+    setTimeout(() => setIsProcessing(false), 500)
   }
 
   const subtotal = cartState.totalPrice
@@ -146,7 +136,7 @@ export default function CheckoutPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Checkout Form */}
           <div>
-            <form onSubmit={handleSubmit} className="space-y-8">
+            <form onSubmit={handleSavePrefs} className="space-y-8">
               {/* Contact Information */}
               <div className="card-bg rounded-xl p-6">
                 <h2 className="text-2xl font-bold text-white mb-6">Contact Information</h2>
@@ -295,83 +285,46 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              {/* Payment Information */}
-              <div className="card-bg rounded-xl p-6">
-                <h2 className="text-2xl font-bold text-white mb-6">Payment Information</h2>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-gray-300 text-sm font-medium mb-2">
-                      Cardholder Name *
-                    </label>
-                    <input
-                      type="text"
-                      name="cardName"
-                      value={form.cardName}
-                      onChange={handleInputChange}
-                      className={`w-full bg-white/5 border rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold transition-all duration-300 ${
-                        errors.cardName ? 'border-red-500' : 'border-white/20'
-                      }`}
-                      placeholder="John Doe"
-                    />
-                    {errors.cardName && <p className="text-red-400 text-sm mt-1">{errors.cardName}</p>}
-                  </div>
-                  <div>
-                    <label className="block text-gray-300 text-sm font-medium mb-2">
-                      Card Number *
-                    </label>
-                    <input
-                      type="text"
-                      name="cardNumber"
-                      value={form.cardNumber}
-                      onChange={handleInputChange}
-                      className={`w-full bg-white/5 border rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold transition-all duration-300 ${
-                        errors.cardNumber ? 'border-red-500' : 'border-white/20'
-                      }`}
-                      placeholder="1234 5678 9012 3456"
-                    />
-                    {errors.cardNumber && <p className="text-red-400 text-sm mt-1">{errors.cardNumber}</p>}
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-gray-300 text-sm font-medium mb-2">
-                        Expiry Date *
-                      </label>
-                      <input
-                        type="text"
-                        name="expiryDate"
-                        value={form.expiryDate}
-                        onChange={handleInputChange}
-                        className={`w-full bg-white/5 border rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold transition-all duration-300 ${
-                          errors.expiryDate ? 'border-red-500' : 'border-white/20'
-                        }`}
-                        placeholder="MM/YY"
-                      />
-                      {errors.expiryDate && <p className="text-red-400 text-sm mt-1">{errors.expiryDate}</p>}
-                    </div>
-                    <div>
-                      <label className="block text-gray-300 text-sm font-medium mb-2">
-                        CVV *
-                      </label>
-                      <input
-                        type="text"
-                        name="cvv"
-                        value={form.cvv}
-                        onChange={handleInputChange}
-                        className={`w-full bg-white/5 border rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold transition-all duration-300 ${
-                          errors.cvv ? 'border-red-500' : 'border-white/20'
-                        }`}
-                        placeholder="123"
-                      />
-                      {errors.cvv && <p className="text-red-400 text-sm mt-1">{errors.cvv}</p>}
-                    </div>
-                  </div>
-                </div>
+              {/* Preferences */}
+              <div className="card-bg rounded-xl p-6 space-y-4">
+                <h2 className="text-2xl font-bold text-white">Préférences</h2>
+                <p className="text-gray-400 text-sm">
+                  Le paiement s’effectuera sur la page sécurisée Stripe. Les cartes, Apple Pay, Google Pay et PayPal (si activé) seront proposés automatiquement.
+                </p>
+                <label className="flex items-start gap-3 text-gray-300 text-sm">
+                  <input
+                    type="checkbox"
+                    name="saveInfo"
+                    checked={form.saveInfo}
+                    onChange={handleInputChange}
+                    className="mt-1 w-5 h-5 text-brand-gold border-white/20 rounded bg-white/5 focus:ring-brand-gold"
+                  />
+                  <span>Enregistrer mes informations de livraison pour un prochain achat</span>
+                </label>
+                <label className="flex items-start gap-3 text-gray-300 text-sm">
+                  <input
+                    type="checkbox"
+                    name="newsletter"
+                    checked={form.newsletter}
+                    onChange={handleInputChange}
+                    className="mt-1 w-5 h-5 text-brand-gold border-white/20 rounded bg-white/5 focus:ring-brand-gold"
+                  />
+                  <span>Recevoir les offres exclusives et actualités par e-mail</span>
+                </label>
+                <button
+                  type="submit"
+                  disabled={isProcessing}
+                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-white/20 text-sm font-semibold transition ${
+                    isProcessing ? 'bg-white/10 text-gray-400 cursor-not-allowed' : 'bg-white/10 text-white hover:bg-white/20'
+                  }`}
+                >
+                  {isProcessing ? 'Sauvegarde...' : 'Sauvegarder mes préférences'}
+                </button>
               </div>
 
               {/* Payment Method Selector */}
               <PaymentMethodSelector 
                 onPaymentSuccess={() => {
-                  console.log('Paiement réussi')
                   // Rediriger vers la page de succès
                   router.push('/checkout/success')
                 }}

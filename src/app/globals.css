@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
 /* Variables du thème Garden Gold Green */
@@ -558,4 +557,20 @@ body {
     transform: translateY(var(--velocity-y, 200px)) translateX(var(--velocity-x, 0px)) rotate(720deg);
     opacity: 0;
   }
+}
+
+/* Animation pour dropdown menu */
+@keyframes dropdown-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-dropdown {
+  animation: dropdown-fade-in 0.2s ease-out forwards;
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import { useAuth } from '@/contexts/AuthContext'
+import { useAuth0Context } from '@/contexts/Auth0Context'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -15,7 +16,10 @@ import Image from 'next/image'
 
 export default function FavoritesPage() {
   const { state: authState } = useAuth()
+  const { state: auth0State } = useAuth0Context()
   const router = useRouter()
+  
+  const isAuthenticated = auth0State.isAuthenticated || authState.isAuthenticated
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -45,12 +49,10 @@ export default function FavoritesPage() {
 
   const handleAddToCart = (product: any) => {
     // Ici vous pourriez intégrer avec le contexte du panier
-    console.log('Ajouter au panier:', product)
   }
 
   const handleRemoveFavorite = (productId: string) => {
     // Ici vous pourriez intégrer avec un contexte de favoris
-    console.log('Retirer des favoris:', productId)
   }
 
   if (!isAuthenticated) {

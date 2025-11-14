@@ -10,7 +10,6 @@ import {
   faSpinner
 } from '@fortawesome/free-solid-svg-icons'
 import { usePaymentSuccess } from '@/hooks/usePaymentSuccess'
-import { CartDebugInfo } from '@/components/CartDebugInfo'
 
 export default function CheckoutSuccessPage() {
   const searchParams = useSearchParams()
@@ -27,7 +26,7 @@ export default function CheckoutSuccessPage() {
     sessionId,
     orderId: effectiveOrderId,
     onSuccess: () => {
-      console.log('✅ Paiement traité avec succès, panier vidé')
+      // Paiement traité avec succès
     },
     onError: (error) => {
       console.error('❌ Erreur lors du traitement du paiement:', error)
@@ -53,7 +52,6 @@ export default function CheckoutSuccessPage() {
 
   return (
     <div className="min-h-screen bg-brand-black pt-32 pb-16">
-      <CartDebugInfo />
       <div className="container mx-auto px-6">
         <div className="max-w-2xl mx-auto">
           <div className="card-bg rounded-2xl p-12 text-center">

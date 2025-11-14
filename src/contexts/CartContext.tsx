@@ -1,6 +1,7 @@
 'use client'
 
 import { createContext, useContext, useReducer, useEffect, useState, useRef } from 'react'
+import { trackAddToCart as trackAddToCartGA } from '@/lib/analytics'
 
 interface CartItem {
   id: string
@@ -20,7 +21,7 @@ interface CartState {
 }
 
 type CartAction =
-  | { type: 'ADD_ITEM'; payload: Omit<CartItem, 'quantity'> }
+  | { type: 'ADD_ITEM'; payload: CartItem }
   | { type: 'REMOVE_ITEM'; payload: string }
   | { type: 'UPDATE_QUANTITY'; payload: { id: string; quantity: number } }
   | { type: 'CLEAR_CART' }
@@ -39,25 +40,33 @@ function cartReducer(state: CartState, action: CartAction): CartState {
     case 'ADD_ITEM': {
       const existingItem = state.items.find(item => item.id === action.payload.id)
       
+      // Track GA
+      trackAddToCartGA({
+        itemId: action.payload.id,
+        itemName: action.payload.name,
+        price: action.payload.price,
+        quantity: action.payload.quantity,
+        itemCategory: 'CBD Products',
+      })
+      
       if (existingItem) {
         const updatedItems = state.items.map(item =>
           item.id === action.payload.id
-            ? { ...item, quantity: item.quantity + 1 }
+            ? { ...item, quantity: item.quantity + action.payload.quantity }
             : item
         )
         return {
           ...state,
           items: updatedItems,
-          totalItems: state.totalItems + 1,
-          totalPrice: state.totalPrice + action.payload.price
+          totalItems: state.totalItems + action.payload.quantity,
+          totalPrice: state.totalPrice + (action.payload.price * action.payload.quantity)
         }
       } else {
-        const newItem = { ...action.payload, quantity: 1 }
         return {
           ...state,
-          items: [...state.items, newItem],
-          totalItems: state.totalItems + 1,
-          totalPrice: state.totalPrice + action.payload.price
+          items: [...state.items, action.payload],
+          totalItems: state.totalItems + action.payload.quantity,
+          totalPrice: state.totalPrice + (action.payload.price * action.payload.quantity)
         }
       }
     }
@@ -97,8 +106,6 @@ function cartReducer(state: CartState, action: CartAction): CartState {
     }
 
     case 'CLEAR_CART':
-      console.log('🗑️ CLEAR_CART action received, clearing cart...')
-      console.log('📊 Cart before clear:', { items: state.items.length, totalItems: state.totalItems, totalPrice: state.totalPrice })
       const clearedState = {
         ...state,
         items: [],
@@ -106,7 +113,6 @@ function cartReducer(state: CartState, action: CartAction): CartState {
         totalPrice: 0,
         isOpen: false
       }
-      console.log('✅ Cart cleared:', { items: clearedState.items.length, totalItems: clearedState.totalItems, totalPrice: clearedState.totalPrice })
       return clearedState
 
     case 'TOGGLE_CART':
@@ -195,17 +201,28 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         const items = Array.isArray(parsed) ? parsed : Array.isArray(parsed?.items) ? parsed.items : []
         const updatedAt: string | undefined = Array.isArray(parsed) ? undefined : parsed?.updatedAt
 
+        // Nettoyer les items avec des prix invalides
+        const validItems = items.filter((item: any) => {
+          const isValid = item && item.price && !isNaN(item.price) && isFinite(item.price) && item.price > 0
+          if (!isValid && process.env.NODE_ENV === 'development') {
+            console.warn('Item avec prix invalide supprimé:', item)
+          }
+          return isValid
+        })
+
         if (updatedAt && isExpired(updatedAt)) {
           // Expiré: purge
           localStorage.removeItem(CART_STORAGE_KEY)
           dispatch({ type: 'CLEAR_CART' })
         } else {
-          dispatch({ type: 'LOAD_CART', payload: items })
+          dispatch({ type: 'LOAD_CART', payload: validItems })
           // Programmer l'expiration si disponible
           scheduleExpiry(updatedAt)
         }
       } catch (error) {
-        console.error('Erreur lors du chargement du panier:', error)
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Erreur lors du chargement du panier:', error)
+        }
       }
     }
     

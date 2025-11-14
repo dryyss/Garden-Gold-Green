@@ -6,12 +6,13 @@ const prisma = new PrismaClient()
 // GET - Récupérer les commentaires d'un produit
 export async function GET(
   request: NextRequest,
-  { params }: { params: { productId: string } }
+  { params }: { params: Promise<{ productId: string }> }
 ) {
   try {
+    const { productId } = await params
     const comments = await prisma.comment.findMany({
       where: {
-        productId: params.productId,
+        productId,
       },
       orderBy: {
         createdAt: 'desc',
@@ -50,9 +51,10 @@ export async function GET(
 // POST - Créer un nouveau commentaire
 export async function POST(
   request: NextRequest,
-  { params }: { params: { productId: string } }
+  { params }: { params: Promise<{ productId: string }> }
 ) {
   try {
+    const { productId } = await params
     const body = await request.json()
     const { rating, comment } = body
 
@@ -74,7 +76,7 @@ export async function POST(
         status: 'delivered',
         items: {
           some: {
-            productId: params.productId,
+            productId,
           },
         },
       },

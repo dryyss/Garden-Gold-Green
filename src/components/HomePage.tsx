@@ -1,5 +1,6 @@
 'use client'
 
+import { lazy, Suspense } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -22,12 +23,13 @@ import {
   faShoppingBag,
   faGift
 } from '@fortawesome/free-solid-svg-icons'
-import { Newsletter } from '@/components/Newsletter'
-import { ProductCard } from '@/components/ProductCard'
-import { ProductGridCarousel } from '@/components/ProductGridCarousel'
 import { HeroLogo } from '@/components/HeroLogo'
 import { useTranslation } from '@/contexts/TranslationContext'
-import productsData from '@/data/products.json'
+import { useState, useEffect } from 'react'
+
+// Lazy load des composants lourds
+const ProductGridCarousel = lazy(() => import('@/components/ProductGridCarousel').then(m => ({ default: m.ProductGridCarousel })))
+const Newsletter = lazy(() => import('@/components/Newsletter').then(m => ({ default: m.Newsletter })))
 
 // Transformer les données de l'ancienne structure vers la nouvelle
 function transformProduct(product: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -38,29 +40,46 @@ function transformProduct(product: any) { // eslint-disable-line @typescript-esl
     image: product.images?.[0] || '/logo2.png',
     category: product.categories?.[0]?.name || 'CBD Products',
     rating: 4.5, // Valeur par défaut
-    reviewCount: Math.floor(Math.random() * 100) + 10, // Valeur aléatoire
+    reviewCount: 50, // Valeur fixe pour éviter l'erreur d'hydratation
     inStock: product.totalStock > 0 || product.stock > 0,
     totalStock: product.totalStock || product.stock || 0,
-    isNew: Math.random() > 0.7, // 30% de chance d'être nouveau
-    isBestSeller: Math.random() > 0.8 // 20% de chance d'être best seller
+    isNew: false, // Valeur fixe pour éviter l'erreur d'hydratation
+    isBestSeller: false // Valeur fixe pour éviter l'erreur d'hydratation
   }
 }
 
 export default function HomePage() {
   const { t } = useTranslation()
+  const [allProducts, setAllProducts] = useState<any[]>([])
+
+  // Charger les produits depuis l'API
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const response = await fetch('/api/products/all')
+        const data = await response.json()
+        if (data.success && data.products) {
+          setAllProducts(data.products)
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement des produits:', error)
+      }
+    }
+    loadProducts()
+  }, [])
 
   // Récupérer les produits les plus populaires
-  const featuredProducts = productsData
+  const featuredProducts = allProducts
     .filter(product => product.published)
     .slice(0, 6)
     .map(transformProduct)
 
-  const bestSellers = productsData
+  const bestSellers = allProducts
     .filter(product => product.published)
     .slice(6, 12)
     .map(transformProduct)
 
-  const newProducts = productsData
+  const newProducts = allProducts
     .filter(product => product.published)
     .slice(12, 18)
     .map(transformProduct)
@@ -72,7 +91,7 @@ export default function HomePage() {
         <div className="absolute inset-0 hero-bg"></div>
         <div className="absolute inset-0 hero-overlay"></div>
         <div className="relative z-10 flex flex-col items-center px-4">
-          <div className="mb-8">
+          <div className="mb-8 pt-8 sm:pt-12 md:pt-16">
             <HeroLogo />
           </div>
           <h1 className="text-5xl md:text-7xl font-bold text-white mb-4 tracking-tight">
@@ -121,14 +140,16 @@ export default function HomePage() {
             <h2 className="text-4xl font-bold mb-2 gold-text-gradient">{t('home.featuredProducts.title')}</h2>
             <p className="text-lg text-gray-400">{t('home.featuredProducts.subtitle')}</p>
           </div>
-          <ProductGridCarousel
-            products={featuredProducts}
-            itemsPerView={{ mobile: 1, tablet: 2, desktop: 3 }}
-            showNavigation={true}
-            showDots={true}
-            autoPlay={true}
-            autoPlayInterval={4000}
-          />
+          <Suspense fallback={<div className="h-96 flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-gold"></div></div>}>
+            <ProductGridCarousel
+              products={featuredProducts}
+              itemsPerView={{ mobile: 1, tablet: 2, desktop: 3 }}
+              showNavigation={true}
+              showDots={true}
+              autoPlay={true}
+              autoPlayInterval={4000}
+            />
+          </Suspense>
           <div className="text-center mt-12">
             <Link href="/products" className="btn-gold text-black font-semibold py-3 px-8 rounded-full shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300 inline-flex items-center">
               {t('home.featuredProducts.viewAll')}
@@ -185,14 +206,16 @@ export default function HomePage() {
             <h2 className="text-4xl font-bold mb-2 gold-text-gradient">{t('home.bestSellers.title')}</h2>
             <p className="text-lg text-gray-400">{t('home.bestSellers.subtitle')}</p>
           </div>
-          <ProductGridCarousel
-            products={bestSellers}
-            itemsPerView={{ mobile: 1, tablet: 2, desktop: 3 }}
-            showNavigation={true}
-            showDots={true}
-            autoPlay={true}
-            autoPlayInterval={5000}
-          />
+          <Suspense fallback={<div className="h-96 flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-gold"></div></div>}>
+            <ProductGridCarousel
+              products={bestSellers}
+              itemsPerView={{ mobile: 1, tablet: 2, desktop: 3 }}
+              showNavigation={true}
+              showDots={true}
+              autoPlay={true}
+              autoPlayInterval={5000}
+            />
+          </Suspense>
         </div>
       </section>
 
@@ -368,14 +391,16 @@ export default function HomePage() {
             <h2 className="text-4xl font-bold mb-2 gold-text-gradient">{t('home.newProducts.title')}</h2>
             <p className="text-lg text-gray-400">{t('home.newProducts.subtitle')}</p>
           </div>
-          <ProductGridCarousel
-            products={newProducts}
-            itemsPerView={{ mobile: 1, tablet: 2, desktop: 3 }}
-            showNavigation={true}
-            showDots={true}
-            autoPlay={true}
-            autoPlayInterval={6000}
-          />
+          <Suspense fallback={<div className="h-96 flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-gold"></div></div>}>
+            <ProductGridCarousel
+              products={newProducts}
+              itemsPerView={{ mobile: 1, tablet: 2, desktop: 3 }}
+              showNavigation={true}
+              showDots={true}
+              autoPlay={true}
+              autoPlayInterval={6000}
+            />
+          </Suspense>
         </div>
       </section>
 
@@ -492,7 +517,9 @@ export default function HomePage() {
       {/* CTA Section */}
       <section className="py-24 bg-brand-black">
         <div className="container mx-auto px-6">
-          <Newsletter variant="hero" />
+          <Suspense fallback={<div className="h-64 flex items-center justify-center"><div className="animate-pulse text-gray-400">Chargement...</div></div>}>
+            <Newsletter variant="hero" />
+          </Suspense>
         </div>
       </section>
     </div>

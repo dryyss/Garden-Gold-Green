@@ -49,32 +49,56 @@ export function ProductGridCarousel({
 }: ProductGridCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isHovered, setIsHovered] = useState(false)
+  const [currentItemsPerView, setCurrentItemsPerView] = useState(itemsPerView.mobile)
+
+  // Détecter la taille d'écran et adapter le nombre d'items visibles
+  useEffect(() => {
+    const updateItemsPerView = () => {
+      const width = window.innerWidth
+      if (width >= 1024) { // lg (desktop)
+        setCurrentItemsPerView(itemsPerView.desktop)
+      } else if (width >= 640) { // sm (tablet)
+        setCurrentItemsPerView(itemsPerView.tablet)
+      } else { // mobile
+        setCurrentItemsPerView(itemsPerView.mobile)
+      }
+    }
+
+    updateItemsPerView()
+    window.addEventListener('resize', updateItemsPerView)
+    return () => window.removeEventListener('resize', updateItemsPerView)
+  }, [itemsPerView.desktop, itemsPerView.tablet, itemsPerView.mobile])
+
+  // Réinitialiser l'index quand le nombre d'items change
+  useEffect(() => {
+    setCurrentIndex(0)
+  }, [currentItemsPerView])
 
   // Auto-play functionality
   useEffect(() => {
-    if (!autoPlay || isHovered || products.length <= itemsPerView.desktop) return
+    if (!autoPlay || isHovered || products.length <= currentItemsPerView) return
 
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => {
-        const maxIndex = Math.max(0, products.length - itemsPerView.desktop)
+        const maxIndex = Math.max(0, products.length - currentItemsPerView)
         return prevIndex >= maxIndex ? 0 : prevIndex + 1
       })
     }, autoPlayInterval)
 
     return () => clearInterval(interval)
-  }, [autoPlay, autoPlayInterval, products.length, itemsPerView.desktop, isHovered])
+  }, [autoPlay, autoPlayInterval, products.length, currentItemsPerView, isHovered])
 
   const goToPrevious = () => {
     setCurrentIndex(Math.max(0, currentIndex - 1))
   }
 
   const goToNext = () => {
-    const maxIndex = Math.max(0, products.length - itemsPerView.desktop)
+    const maxIndex = Math.max(0, products.length - currentItemsPerView)
     setCurrentIndex(Math.min(maxIndex, currentIndex + 1))
   }
 
   const canGoPrevious = currentIndex > 0
-  const canGoNext = currentIndex < Math.max(0, products.length - itemsPerView.desktop)
+  const canGoNext = currentIndex < Math.max(0, products.length - currentItemsPerView)
 
   if (products.length === 0) return null
 
@@ -87,7 +111,7 @@ export function ProductGridCarousel({
             {title}
           </h3>
           
-          {showNavigation && products.length > itemsPerView.desktop && (
+          {showNavigation && products.length > currentItemsPerView && (
             <div className="flex items-center space-x-2">
               <button
                 onClick={goToPrevious}
@@ -119,14 +143,14 @@ export function ProductGridCarousel({
         <div 
           className="flex transition-transform duration-500 ease-in-out"
           style={{
-            transform: `translateX(-${currentIndex * (100 / itemsPerView.desktop)}%)`,
+            transform: `translateX(-${currentIndex * (100 / currentItemsPerView)}%)`,
           }}
         >
           {products.map((product) => (
             <div
               key={product.id}
-              className="flex-shrink-0 px-2"
-              style={{ width: `${100 / itemsPerView.desktop}%` }}
+              className={`flex-shrink-0 ${currentItemsPerView === 1 ? 'px-0 sm:px-2' : 'px-2'}`}
+              style={{ width: `${100 / currentItemsPerView}%` }}
             >
               <div className="h-full">
                 <ProductCard product={product} />
@@ -137,16 +161,16 @@ export function ProductGridCarousel({
       </div>
 
       {/* Dots Indicator */}
-      {showDots && products.length > itemsPerView.desktop && (
+      {showDots && products.length > currentItemsPerView && (
         <div className="flex justify-center mt-6 space-x-2">
           {Array.from({ 
-            length: Math.ceil(products.length / itemsPerView.desktop) 
+            length: Math.ceil(products.length / currentItemsPerView) 
           }).map((_, index) => (
             <button
               key={index}
-              onClick={() => setCurrentIndex(index)}
+              onClick={() => setCurrentIndex(index * currentItemsPerView)}
               className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                index === Math.floor(currentIndex / itemsPerView.desktop)
+                Math.floor(currentIndex / currentItemsPerView) === index
                   ? 'bg-brand-gold scale-125' 
                   : 'bg-white/30 hover:bg-white/50'
               }`}

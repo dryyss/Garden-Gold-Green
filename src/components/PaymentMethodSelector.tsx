@@ -1,11 +1,10 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { 
-  faPaypal
-} from '@fortawesome/free-brands-svg-icons'
-import { faCreditCard as faCard, faSpinner, faCheck } from '@fortawesome/free-solid-svg-icons'
+import { faApplePay, faGooglePay, faPaypal } from '@fortawesome/free-brands-svg-icons'
+import { faCreditCard as faCard, faSpinner, faCheck, faWallet } from '@fortawesome/free-solid-svg-icons'
 import { useCart } from '@/contexts/CartContext'
 import { useNotifications } from '@/contexts/NotificationContext'
 import { useTranslation } from '@/contexts/TranslationContext'
@@ -23,11 +22,14 @@ export function PaymentMethodSelector({
   onPaymentSuccess,
   onPaymentError 
 }: PaymentMethodSelectorProps) {
+  const router = useRouter()
   const { t } = useTranslation()
   const { state } = useCart()
   const { addNotification } = useNotifications()
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>('stripe')
   const [isProcessing, setIsProcessing] = useState(false)
+
+  const isPayPalEnabled = process.env.NEXT_PUBLIC_STRIPE_ENABLE_PAYPAL === 'true'
 
   const paymentMethods = [
     {
@@ -38,14 +40,18 @@ export function PaymentMethodSelector({
       color: 'bg-blue-600',
       textColor: 'text-white'
     },
-    {
-      id: 'paypal' as PaymentMethod,
-      name: 'PayPal',
-      icon: faPaypal,
-      description: t('checkout.paypalDescription'),
-      color: 'bg-blue-500',
-      textColor: 'text-white'
-    }
+    ...(isPayPalEnabled
+      ? [
+          {
+            id: 'paypal' as PaymentMethod,
+            name: 'PayPal',
+            icon: faPaypal,
+            description: t('checkout.paypalDescription'),
+            color: 'bg-blue-500',
+            textColor: 'text-white'
+          },
+        ]
+      : []),
   ]
 
   const handlePayment = async () => {
@@ -61,16 +67,7 @@ export function PaymentMethodSelector({
     setIsProcessing(true)
 
     try {
-      switch (selectedMethod) {
-        case 'stripe':
-          await handleStripePayment()
-          break
-        case 'paypal':
-          await handlePayPalPayment()
-          break
-        default:
-          throw new Error('Méthode de paiement non supportée')
-      }
+      await handleStripeCheckout(selectedMethod)
     } catch (error) {
       console.error('Erreur de paiement:', error)
       const errorMessage = error instanceof Error ? error.message : 'Erreur de paiement'
@@ -85,7 +82,7 @@ export function PaymentMethodSelector({
     }
   }
 
-  const handleStripePayment = async () => {
+  const handleStripeCheckout = async (preferredMethod: PaymentMethod) => {
     const response = await fetch('/api/checkout', {
       method: 'POST',
       headers: {
@@ -93,36 +90,24 @@ export function PaymentMethodSelector({
       },
       body: JSON.stringify({
         items: state.items,
-        paymentMethod: 'stripe'
+        paymentMethod: preferredMethod
       }),
     })
 
     if (!response.ok) {
-      throw new Error('Erreur lors de la création de la session Stripe')
+      const error = await response.json().catch(() => ({}))
+      
+      // Si l'email n'est pas vérifié, rediriger vers la page de vérification
+      if (error?.code === 'email_not_verified' && error?.redirectUrl) {
+        router.push(error.redirectUrl)
+        return
+      }
+      
+      throw new Error(error?.error || 'Erreur lors de la création de la session Stripe')
     }
 
     const { url } = await response.json()
     window.location.href = url
-  }
-
-  const handlePayPalPayment = async () => {
-    const response = await fetch('/api/paypal/create-order', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        items: state.items,
-        paymentMethod: 'paypal'
-      }),
-    })
-
-    if (!response.ok) {
-      throw new Error('Erreur lors de la création de la commande PayPal')
-    }
-
-    const { approvalUrl } = await response.json()
-    window.location.href = approvalUrl
   }
 
 
@@ -191,9 +176,16 @@ export function PaymentMethodSelector({
       </button>
 
       {/* Informations de sécurité */}
-      <div className="text-center text-sm text-gray-400">
-        <p>🔒 Paiement 100% sécurisé et crypté</p>
-        <p>Vos données sont protégées par un chiffrement SSL</p>
+      <div className="text-center text-sm text-gray-400 space-y-1">
+        <p>🔒 Paiement 100% sécurisé et crypté via Stripe Checkout</p>
+        <p className="flex items-center justify-center gap-2 text-xs text-gray-500">
+          <FontAwesomeIcon icon={faCard} />
+          <FontAwesomeIcon icon={faApplePay} />
+          <FontAwesomeIcon icon={faGooglePay} />
+          {isPayPalEnabled && <FontAwesomeIcon icon={faPaypal} />}
+          <FontAwesomeIcon icon={faWallet} />
+        </p>
+        <p>Apple Pay et Google Pay s’affichent automatiquement si disponibles sur votre appareil.</p>
       </div>
     </div>
   )

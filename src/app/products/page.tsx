@@ -12,7 +12,6 @@ import {
   faArrowLeft,
   faXmark
 } from '@fortawesome/free-solid-svg-icons'
-import productsData from '@/data/products.json'
 
 // Type extension pour window
 declare global {
@@ -21,23 +20,60 @@ declare global {
   }
 }
 
-// Transformer les données de l'ancienne structure vers la nouvelle
-function transformProduct(product: any): any {
-  return {
-    ...product,
-    name: product.title,
-    price: product.priceCents / 100, // Convertir les centimes en euros
-    image: product.images?.[0] || '/logo2.png',
-    category: product.categories?.[0]?.name || 'CBD Products',
-    rating: 4.5, // Valeur par défaut
-    reviewCount: Math.floor(Math.random() * 100) + 10, // Valeur aléatoire
-    inStock: product.stock > 0,
-    isNew: Math.random() > 0.7, // 30% de chance d'être nouveau
-    isBestSeller: Math.random() > 0.8 // 20% de chance d'être best seller
-  }
+interface TransformedProduct {
+  id: string
+  name: string
+  price: number
+  originalPrice?: number
+  image: string
+  category: string
+  description: string
+  rating: number
+  reviewCount: number
+  inStock: boolean
+  isNew?: boolean
+  isBestSeller?: boolean
+  slug?: string
+  cbdPercent?: number
+  variants?: Array<{
+    id: string
+    weight: number
+    unit: string
+    priceCents: number
+    stock: number
+    sku: string
+    isDefault: boolean
+  }>
+  totalStock?: number
 }
 
-function getProducts(searchParams: URLSearchParams) {
+// Transformer les données de l'ancienne structure vers la nouvelle
+function transformProduct(product: Record<string, unknown>): TransformedProduct {
+  // Utiliser un ID stable pour générer des valeurs déterministes
+  const productId = String(product.id || '')
+  const hash = productId.split('').reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0)
+  const reviewCount = 10 + (hash % 90) // Entre 10 et 99
+  const isNew = hash % 10 < 3 // 30% de chance
+  const isBestSeller = hash % 10 < 2 // 20% de chance
+  
+  return {
+    ...product,
+    name: String((product as { title?: string }).title || ''),
+    price: (Number((product as { priceCents?: number }).priceCents) || 0) / 100, // Convertir les centimes en euros
+    image: String(((product as { images?: string[] }).images?.[0]) || '/logo2.png'),
+    category: String(((product as { categories?: Array<{ name?: string }> }).categories?.[0]?.name) || 'CBD Products'),
+    rating: 4.5, // Valeur par défaut
+    reviewCount, // Valeur déterministe basée sur l'ID
+    inStock: Number((product as { stock?: number }).stock) > 0,
+    isNew, // Valeur déterministe
+    isBestSeller, // Valeur déterministe
+  } as TransformedProduct
+}
+
+function filterAndSortProducts(
+  allProducts: TransformedProduct[],
+  searchParams: URLSearchParams
+) {
   const category = searchParams.get('category')
   const search = searchParams.get('search')
   const sort = searchParams.get('sort') || 'newest'
@@ -46,7 +82,7 @@ function getProducts(searchParams: URLSearchParams) {
   const page = parseInt(searchParams.get('page') || '1')
   const limit = 12
   
-  let products = productsData.map(transformProduct)
+  let products = [...allProducts]
   
   // Filtrage par catégorie
   if (category && category !== 'all') {
@@ -99,7 +135,8 @@ function getProducts(searchParams: URLSearchParams) {
       break
     case 'newest':
     default:
-      products.sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
+      // Tri par ID (ordre par défaut)
+      products.sort((a, b) => a.id.localeCompare(b.id))
       break
   }
   
@@ -116,11 +153,11 @@ function getProducts(searchParams: URLSearchParams) {
   }
 }
 
-function getCategories() {
+function getCategories(products: TransformedProduct[]) {
   const categories = new Set<string>()
-  productsData.forEach(product => {
-    if (product.categories && product.categories.length > 0) {
-      product.categories.forEach((cat: any) => categories.add(cat.name))
+  products.forEach((product) => {
+    if (product.category) {
+      categories.add(product.category)
     }
   })
   return Array.from(categories).map((name: string) => ({
@@ -135,14 +172,36 @@ export default function ProductsPage() {
   const [search, setSearch] = useState(searchParams.get('search') || '')
   const [showFilters, setShowFilters] = useState(false)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const [allProducts, setAllProducts] = useState<TransformedProduct[]>([])
+  const [loading, setLoading] = useState(true)
+  
+  // Charger les produits depuis l'API
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch('/api/products/all')
+        const data = await response.json()
+        if (data.success && data.products) {
+          const transformed = data.products.map(transformProduct)
+          setAllProducts(transformed)
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement des produits:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadProducts()
+  }, [])
   
   // Mettre à jour la recherche quand les paramètres URL changent
   useEffect(() => {
     setSearch(searchParams.get('search') || '')
   }, [searchParams])
   
-  const { products, total, totalPages, currentPage } = getProducts(searchParams)
-  const categories = getCategories()
+  const { products, total, totalPages, currentPage } = filterAndSortProducts(allProducts, searchParams)
+  const categories = getCategories(allProducts)
   const handleSearch = (value: string) => {
     setSearch(value)
     
@@ -182,6 +241,17 @@ export default function ProductsPage() {
     const params = new URLSearchParams(searchParams.toString())
     params.set('page', page.toString())
     router.push(`/products?${params.toString()}`)
+  }
+  
+  if (loading) {
+    return (
+      <main className="bg-brand-black min-h-screen pt-2 sm:pt-6 lg:pt-10 xl:pt-14 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-gold mx-auto mb-4"></div>
+          <p className="text-white">Chargement des produits...</p>
+        </div>
+      </main>
+    )
   }
   
   return (

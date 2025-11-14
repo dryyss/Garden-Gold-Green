@@ -2,7 +2,7 @@
 
 import { useUser } from '@auth0/nextjs-auth0'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faShoppingCart, faBox, faTruck, faCheckCircle, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { ResponsiveContainer } from '@/components/ResponsiveContainer'
@@ -16,8 +16,8 @@ interface OrderItem {
   quantity: number
   product?: {
     id: string
-    name: string
-    image: string
+    title: string
+    images: string
   }
 }
 
@@ -33,6 +33,23 @@ interface Order {
   customerEmail?: string
   customerName?: string
   shippingAddress?: any
+  receiptUrl?: string | null
+  invoicePdf?: string | null
+  trackingNumber?: string | null
+  carrier?: string | null
+  carrierTrackingUrl?: string | null
+  shippingStatus?: string | null
+  shippedAt?: string | null
+  estimatedDeliveryDate?: string | null
+  shippingHistory?: Array<{
+    date: string
+    status: string
+    message?: string
+  }>
+  subtotalCents?: number | null
+  shippingCents?: number | null
+  taxCents?: number | null
+  discountCents?: number | null
 }
 
 export default function OrdersPage() {
@@ -42,20 +59,7 @@ export default function OrdersPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (!authLoading && !user) {
-      router.push('/api/auth/login')
-      return
-    }
-  }, [user, authLoading, router])
-
-  useEffect(() => {
-    if (user) {
-      fetchOrders()
-    }
-  }, [user])
-
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     try {
       setIsLoading(true)
       setErrorMessage(null)
@@ -67,11 +71,18 @@ export default function OrdersPage() {
         },
       })
 
+      const data = await response.json()
+
       if (!response.ok) {
-        throw new Error('Erreur lors du chargement des commandes')
+        // Si c'est une erreur 503 (Service Unavailable), afficher le message spécifique
+        if (response.status === 503) {
+          setErrorMessage(data.details || data.error || 'Service temporairement indisponible')
+          setOrders(data.orders || []) // Utiliser le tableau vide de la réponse
+          return
+        }
+        throw new Error(data.error || data.details || 'Erreur lors du chargement des commandes')
       }
 
-      const data = await response.json()
       setOrders(data.orders || [])
     } catch (error) {
       console.error('Erreur lors du chargement des commandes:', error)
@@ -79,7 +90,20 @@ export default function OrdersPage() {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/auth/login')
+      return
+    }
+  }, [user, authLoading, router])
+
+  useEffect(() => {
+    if (user) {
+      fetchOrders()
+    }
+  }, [user, fetchOrders])
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -136,6 +160,25 @@ export default function OrdersPage() {
     return (cents / 100).toFixed(2)
   }
 
+  const formatDateTime = (dateString?: string | null) => {
+    if (!dateString) return null
+    const date = new Date(dateString)
+    return date.toLocaleString('fr-FR', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+  }
+
+  const getShippingHistory = (order: Order) => {
+    if (!order.shippingHistory || order.shippingHistory.length === 0) return []
+    return [...order.shippingHistory].sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    )
+  }
+
   if (authLoading || isLoading) {
     return (
       <div className="min-h-screen bg-brand-black flex items-center justify-center">
@@ -173,9 +216,9 @@ export default function OrdersPage() {
       <ResponsiveContainer size="lg" padding="lg">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
-          <div className="mb-8 text-center sm:text-left">
-            <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Mes Commandes</h1>
-            <p className="text-gray-400">Suivez l&apos;état de vos commandes</p>
+          <div className="mb-10 sm:mb-12 text-center sm:text-left">
+            <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">Mes Commandes</h1>
+            <p className="text-gray-300 text-base sm:text-lg">Suivez l&apos;état de vos commandes</p>
           </div>
 
           {/* Error Message */}
@@ -194,64 +237,201 @@ export default function OrdersPage() {
           {/* Orders List */}
           <div className="space-y-6">
             {orders.length === 0 ? (
-              <div className="text-center py-12">
-                <FontAwesomeIcon icon={faShoppingCart} className="icon-2xl text-gray-600 mb-4" />
-                <h3 className="text-xl font-semibold text-white mb-2">Aucune commande</h3>
-                <p className="text-gray-400 mb-6">Vous n&apos;avez pas encore passé de commande</p>
+              <div className="text-center py-16 sm:py-20">
+                <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-6 border-2 border-white/10">
+                  <FontAwesomeIcon icon={faShoppingCart} className="text-4xl sm:text-5xl text-brand-gold/60" />
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-bold text-white mb-3">Aucune commande</h3>
+                <p className="text-gray-300 text-base sm:text-lg mb-8 max-w-md mx-auto">Vous n&apos;avez pas encore passé de commande</p>
                 <a
                   href="/products"
-                  className="inline-block bg-brand-gold text-brand-black px-6 py-3 rounded-lg hover:bg-brand-gold/90 transition-colors font-semibold"
+                  className="inline-block bg-brand-gold text-black font-extrabold px-8 py-4 rounded-lg hover:bg-brand-gold/90 transition-all text-base sm:text-lg shadow-lg hover:shadow-xl transform hover:scale-105 tracking-wide"
+                  style={{ textShadow: '0 1px 2px rgba(0,0,0,0.1)' }}
                 >
                   Découvrir nos produits
                 </a>
               </div>
             ) : (
-              orders.map((order) => (
-                <ResponsiveCard key={order.id} variant="glass" padding="md">
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                    <div>
-                      <h3 className="text-lg font-semibold text-white">Commande #{order.id}</h3>
-                      <p className="text-gray-400">
-                        Passée le {new Date(order.createdAt).toLocaleDateString('fr-FR')}
-                      </p>
-                    </div>
-                    <div className="flex items-center space-x-4 mt-2 md:mt-0">
-                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}>
-                        {getStatusIcon(order.status)}
-                        <span className="ml-2">{getStatusText(order.status)}</span>
-                      </span>
-                      <span className="text-xl font-bold text-white">
-                        €{formatPrice(order.totalCents)}
-                      </span>
-                    </div>
-                  </div>
+              orders.map(order => {
+                const subtotalCents =
+                  order.subtotalCents ??
+                  order.items.reduce((sum, item) => sum + item.priceCents * item.quantity, 0)
+                const taxCents = order.taxCents ?? 0
+                const discountCents = order.discountCents ?? 0
+                const computedShipping =
+                  order.totalCents - subtotalCents - taxCents + discountCents
+                const shippingCents = order.shippingCents ?? Math.max(computedShipping, 0)
 
-                  <div className="border-t border-white/10 pt-4">
-                    <h4 className="text-sm font-medium text-gray-300 mb-3">Articles commandés :</h4>
-                    <div className="space-y-2">
-                      {order.items.map((item, index) => (
-                        <div key={index} className="flex justify-between items-center text-sm">
-                          <span className="text-gray-300">
-                            {item.quantity}x {item.name}
-                          </span>
-                          <span className="text-white font-medium">
-                            €{formatPrice(item.priceCents)}
-                          </span>
+                return (
+                  <ResponsiveCard key={order.id} variant="glass" padding="md">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-base sm:text-lg font-semibold text-white break-words">Commande #{order.id}</h3>
+                        <p className="text-gray-400 text-sm sm:text-base">
+                          Passée le {new Date(order.createdAt).toLocaleDateString('fr-FR')}
+                        </p>
+                      </div>
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:space-x-4">
+                        <span className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium ${getStatusColor(order.status)} inline-flex items-center`}>
+                          {getStatusIcon(order.status)}
+                          <span className="ml-1 sm:ml-2">{getStatusText(order.status)}</span>
+                        </span>
+                        <span className="text-lg sm:text-xl font-bold text-white">
+                          €{formatPrice(order.totalCents)}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="border-t border-white/10 pt-4">
+                      <h4 className="text-xs sm:text-sm font-medium text-gray-300 mb-3">Articles commandés :</h4>
+                      <div className="space-y-2">
+                        {order.items.map((item, index) => (
+                          <div key={index} className="flex justify-between items-start sm:items-center gap-2 text-xs sm:text-sm">
+                            <span className="text-gray-300 flex-1 min-w-0 break-words">
+                              {item.quantity}x {item.name}
+                            </span>
+                            <span className="text-white font-medium whitespace-nowrap">
+                              €{formatPrice(item.priceCents)}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="border-t border-white/10 pt-4 mt-4 space-y-2 text-xs sm:text-sm">
+                      <div className="flex justify-between text-gray-300">
+                        <span>Sous-total</span>
+                        <span className="font-medium">€{formatPrice(subtotalCents)}</span>
+                      </div>
+                      <div className="flex justify-between text-gray-300">
+                        <span>Livraison</span>
+                        <span className="font-medium">
+                          {shippingCents > 0
+                            ? `€${formatPrice(shippingCents)}`
+                            : 'Offert'}
+                        </span>
+                      </div>
+                      {taxCents > 0 && (
+                        <div className="flex justify-between text-gray-300">
+                          <span>Taxes</span>
+                          <span className="font-medium">€{formatPrice(taxCents)}</span>
                         </div>
-                      ))}
+                      )}
+                      {discountCents > 0 && (
+                        <div className="flex justify-between text-gray-300">
+                          <span>Remises</span>
+                          <span className="font-medium">-€{formatPrice(discountCents)}</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between items-center text-sm sm:text-base font-semibold text-white border-t border-white/10 pt-2 mt-2">
+                        <span>Total</span>
+                        <span>€{formatPrice(order.totalCents)}</span>
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="flex justify-end mt-4">
-                    <a
-                      href={`/orders/${order.id}`}
-                      className="text-brand-gold hover:text-white transition-colors text-sm font-medium"
-                    >
-                      Voir les détails
-                    </a>
-                  </div>
-                </ResponsiveCard>
-              ))
+                    <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-0 mt-4">
+                      {(order.invoicePdf || order.receiptUrl) && (
+                        <a
+                          href={order.invoicePdf || order.receiptUrl || '#'}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs sm:text-sm text-brand-green hover:text-white transition-colors font-medium sm:mr-4 text-center sm:text-left"
+                        >
+                          <span className="hidden sm:inline">{order.invoicePdf ? 'Télécharger la facture PDF' : 'Voir le reçu'}</span>
+                          <span className="sm:hidden">{order.invoicePdf ? 'Facture PDF' : 'Reçu'}</span>
+                        </a>
+                      )}
+                      <a
+                        href={`/orders/${order.id}`}
+                        className="text-brand-gold hover:text-white transition-colors text-xs sm:text-sm font-medium text-center sm:text-left"
+                      >
+                        Voir les détails
+                      </a>
+                    </div>
+
+                    <div className="mt-6 border-t border-white/10 pt-4">
+                      <h4 className="text-xs sm:text-sm font-medium text-gray-300 mb-3">Suivi de livraison</h4>
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 text-xs sm:text-sm">
+                        <div className="space-y-2">
+                          <p className="text-gray-400">
+                            Statut livraison :{' '}
+                            <span className="text-white font-medium">
+                              {order.shippingStatus || getStatusText(order.status)}
+                            </span>
+                          </p>
+                          {order.trackingNumber && (
+                            <p className="text-gray-400">
+                              Numéro de suivi :{' '}
+                              <span className="text-white font-mono">{order.trackingNumber}</span>
+                            </p>
+                          )}
+                          {order.carrier && (
+                            <p className="text-gray-400">
+                              Transporteur : <span className="text-white">{order.carrier}</span>
+                            </p>
+                          )}
+                          {order.shippedAt && (
+                            <p className="text-gray-400">
+                              Expédiée le :{' '}
+                              <span className="text-white">{formatDateTime(order.shippedAt)}</span>
+                            </p>
+                          )}
+                          {order.estimatedDeliveryDate && (
+                            <p className="text-gray-400">
+                              Livraison estimée :{' '}
+                              <span className="text-white">{formatDateTime(order.estimatedDeliveryDate)}</span>
+                            </p>
+                          )}
+                          {order.deliveredAt && (
+                            <p className="text-gray-400">
+                              Livrée le :{' '}
+                              <span className="text-white">{formatDateTime(order.deliveredAt)}</span>
+                            </p>
+                          )}
+                          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-2">
+                            <a
+                              href={order.carrierTrackingUrl || `/track-order?orderId=${order.id}&email=${encodeURIComponent(order.customerEmail || '')}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-brand-gold hover:text-white transition-colors break-all sm:break-normal"
+                            >
+                              <span className="hidden sm:inline">Consulter le suivi détaillé</span>
+                              <span className="sm:hidden">Suivi détaillé</span>
+                            </a>
+                            <a
+                              href={`/track-order?orderId=${order.id}&email=${encodeURIComponent(order.customerEmail || '')}`}
+                              className="text-xs text-gray-400 hover:text-white"
+                            >
+                              Historique complet
+                            </a>
+                          </div>
+                        </div>
+
+                        <div className="relative">
+                          <div className="absolute left-2 top-0 bottom-0 w-px bg-white/10" />
+                          <div className="ml-6 space-y-3">
+                            {getShippingHistory(order).map((entry, index) => (
+                              <div key={`${order.id}-shipping-${index}`} className="relative">
+                                <span className="absolute -left-6 top-1 h-3 w-3 rounded-full bg-brand-gold"></span>
+                                <p className="text-white text-sm font-semibold">{entry.status}</p>
+                                <p className="text-xs text-gray-400">{formatDateTime(entry.date)}</p>
+                                {entry.message && (
+                                  <p className="text-xs text-gray-300 mt-1">{entry.message}</p>
+                                )}
+                              </div>
+                            ))}
+                            {(!order.shippingHistory || order.shippingHistory.length === 0) && (
+                              <p className="text-xs text-gray-500">
+                                Les informations de suivi seront affichées ici dès qu’elles seront disponibles.
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </ResponsiveCard>
+                )
+              })
             )}
           </div>
         </div>

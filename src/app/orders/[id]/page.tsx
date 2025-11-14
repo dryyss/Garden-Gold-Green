@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -19,7 +19,7 @@ import {
   faMapMarkerAlt
 } from '@fortawesome/free-solid-svg-icons'
 import { ReturnRequest } from '@/components/ReturnRequest'
-// import { useUser } from '@auth0/nextjs-auth0/client' // Temporairement commenté
+import { useUser } from '@auth0/nextjs-auth0/client'
 
 interface OrderItem {
   id: string
@@ -29,8 +29,8 @@ interface OrderItem {
   quantity: number
   product?: {
     id: string
-    name: string
-    image: string
+    title: string
+    images: string
   }
 }
 
@@ -58,14 +58,27 @@ interface Order {
   }
   paymentIntentId?: string
   stripeSessionId?: string
+  trackingNumber?: string | null
+  carrier?: string | null
+  carrierTrackingUrl?: string | null
+  shippingStatus?: string | null
+  shippedAt?: string | null
+  estimatedDeliveryDate?: string | null
+  shippingHistory?: Array<{
+    date: string
+    status: string
+    message?: string
+  }>
+  subtotalCents?: number | null
+  shippingCents?: number | null
+  taxCents?: number | null
+  discountCents?: number | null
 }
 
 export default function OrderDetailPage() {
   const params = useParams()
   const router = useRouter()
-  // const { user, isLoading: authLoading } = useUser() // Temporairement commenté
-  const user = null // Placeholder temporaire
-  const authLoading = false // Placeholder temporaire
+  const { user, isLoading: authLoading } = useUser()
   const [order, setOrder] = useState<Order | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -73,16 +86,16 @@ export default function OrderDetailPage() {
 
   useEffect(() => {
     if (!authLoading && !user) {
-      router.push('/api/auth/login')
+      router.push('/auth/login')
       return
     }
   }, [user, authLoading, router])
 
   useEffect(() => {
-    if (user && params.id) {
+    if (!authLoading && user && params.id) {
       fetchOrder()
     }
-  }, [user, params.id])
+  }, [user, params.id, authLoading])
 
   const fetchOrder = async () => {
     try {
@@ -164,6 +177,40 @@ export default function OrderDetailPage() {
   const formatPrice = (cents: number) => {
     return (cents / 100).toFixed(2)
   }
+
+  const formatDateTime = (value?: string | null) => {
+    if (!value) return null
+    const date = new Date(value)
+    return date.toLocaleString('fr-FR', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+  }
+
+  const sortedHistory = useMemo(() => {
+    if (!order?.shippingHistory) return []
+    return [...order.shippingHistory].sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    )
+  }, [order?.shippingHistory])
+
+  const subtotalCents = useMemo(() => {
+    if (!order) return 0
+    return (
+      order.subtotalCents ??
+      order.items.reduce((sum, item) => sum + item.priceCents * item.quantity, 0)
+    )
+  }, [order])
+
+  const taxCents = order?.taxCents ?? 0
+  const discountCents = order?.discountCents ?? 0
+  const computedShipping = order
+    ? order.totalCents - subtotalCents - taxCents + discountCents
+    : 0
+  const shippingCents = order?.shippingCents ?? Math.max(computedShipping, 0)
 
   const canReturn = (order: Order) => {
     if (order.status !== 'delivered') return false
@@ -294,7 +341,29 @@ export default function OrderDetailPage() {
               </div>
               
               <div className="border-t border-white/10 pt-4 mt-6">
-                <div className="flex justify-between items-center text-xl font-bold text-white">
+                <div className="space-y-2 text-sm text-gray-300">
+                  <div className="flex justify-between">
+                    <span>Sous-total</span>
+                    <span>€{formatPrice(subtotalCents)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Livraison</span>
+                    <span>{shippingCents > 0 ? `€${formatPrice(shippingCents)}` : 'Offert'}</span>
+                  </div>
+                  {taxCents > 0 && (
+                    <div className="flex justify-between">
+                      <span>Taxes</span>
+                      <span>€{formatPrice(taxCents)}</span>
+                    </div>
+                  )}
+                  {discountCents > 0 && (
+                    <div className="flex justify-between">
+                      <span>Remises</span>
+                      <span>-€{formatPrice(discountCents)}</span>
+                    </div>
+                  )}
+                </div>
+                <div className="flex justify-between items-center text-xl font-bold text-white border-t border-white/10 pt-3 mt-3">
                   <span>Total de la commande</span>
                   <span>€{formatPrice(order.totalCents)}</span>
                 </div>

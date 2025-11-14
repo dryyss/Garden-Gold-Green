@@ -1,140 +1,200 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
 import { requireAdmin } from '@/lib/auth-utils'
+import {
+  OrderRecord,
+  ShippingHistoryEntry,
+  readOrdersMap,
+  upsertOrder,
+} from '@/lib/orders-store'
+import { sendOrderShippedEmail } from '@/lib/email'
 
-const prisma = new PrismaClient()
+function filterOrders(
+  orders: OrderRecord[],
+  {
+    status,
+    search,
+  }: { status?: string | null; search?: string | null }
+): OrderRecord[] {
+  return orders.filter(order => {
+    const statusOk = status ? order.status === status : true
+    if (!statusOk) return false
+    if (!search) return true
+
+    const lower = search.toLowerCase()
+    const matchesId = order.id.toLowerCase().includes(lower)
+    const matchesEmail = order.customerEmail?.toLowerCase().includes(lower)
+    const matchesName = order.customerName?.toLowerCase().includes(lower)
+    return matchesId || matchesEmail || matchesName
+  })
+}
+
+function paginate<T>(items: T[], page: number, limit: number) {
+  const total = items.length
+  const totalPages = Math.max(1, Math.ceil(total / limit))
+  const currentPage = Math.min(Math.max(page, 1), totalPages)
+  const start = (currentPage - 1) * limit
+  const end = start + limit
+  return {
+    entries: items.slice(start, end),
+    pagination: {
+      page: currentPage,
+      limit,
+      total,
+      totalPages,
+    },
+  }
+}
 
 export const GET = requireAdmin(async (request: NextRequest) => {
   try {
     const { searchParams } = new URL(request.url)
     const status = searchParams.get('status')
-    const page = parseInt(searchParams.get('page') || '1')
-    const limit = parseInt(searchParams.get('limit') || '20')
-    const skip = (page - 1) * limit
+    const search = searchParams.get('search')
+    const page = parseInt(searchParams.get('page') || '1', 10)
+    const limit = parseInt(searchParams.get('limit') || '20', 10)
 
-    const whereClause: any = {}
-    if (status) {
-      whereClause.status = status
-    }
+    const map = await readOrdersMap()
+    const allOrders = Object.values(map).sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
 
-    const [orders, total] = await Promise.all([
-      prisma.order.findMany({
-        where: whereClause,
-        include: {
-          items: {
-            include: {
-              product: {
-                select: {
-                  id: true,
-                  name: true,
-                  image: true,
-                }
-              }
-            }
-          }
-        },
-        orderBy: { createdAt: 'desc' },
-        skip,
-        take: limit
-      }),
-      prisma.order.count({ where: whereClause })
-    ])
+    const filtered = filterOrders(allOrders, { status, search })
+    const { entries, pagination } = paginate(filtered, page, limit)
 
     return NextResponse.json({
       success: true,
-      orders: orders.map(order => ({
-        id: order.id,
-        status: order.status,
-        totalCents: order.totalCents,
-        currency: order.currency,
-        customerEmail: order.customerEmail,
-        customerName: order.customerName,
-        customerPhone: order.customerPhone,
-        shippingAddress: order.shippingAddress,
-        items: order.items.map(item => ({
-          id: item.id,
-          productId: item.productId,
-          name: item.name,
-          priceCents: item.priceCents,
-          quantity: item.quantity,
-          product: item.product
-        })),
-        createdAt: order.createdAt.toISOString(),
-        updatedAt: order.updatedAt.toISOString(),
-        deliveredAt: order.deliveredAt?.toISOString(),
-        paymentIntentId: order.paymentIntentId,
-        stripeSessionId: order.stripeSessionId
-      })),
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit)
-      }
+      orders: entries,
+      pagination,
     })
-  } catch (error) {
-    console.error('Erreur lors de la récupération des commandes admin:', error)
-    return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 })
+  } catch (error: any) {
+    console.error('❌ Erreur lors de la récupération des commandes admin:', error)
+    
+    // Gérer spécifiquement les erreurs de connexion à la base de données
+    if (error?.code === 'P1001' || error?.code === 'P1000') {
+      return NextResponse.json(
+        { 
+          success: false,
+          error: 'Service temporairement indisponible',
+          details: 'La connexion à la base de données n\'est pas disponible. Veuillez réessayer plus tard.',
+          orders: [],
+          pagination: { page: 1, limit: 20, total: 0, totalPages: 0 }
+        },
+        { status: 503 }
+      )
+    }
+    
+    return NextResponse.json(
+      { 
+        success: false,
+        error: 'Erreur interne du serveur',
+        orders: [],
+        pagination: { page: 1, limit: 20, total: 0, totalPages: 0 }
+      },
+      { status: 500 }
+    )
   }
 })
 
 export const PATCH = requireAdmin(async (request: NextRequest) => {
   try {
     const body = await request.json()
-    const { orderId, status, deliveredAt, trackingNumber } = body
+    const {
+      orderId,
+      status,
+      deliveredAt,
+      shippedAt,
+      trackingNumber,
+      carrier,
+      carrierTrackingUrl,
+      shippingStatus,
+      estimatedDeliveryDate,
+      shippingHistory,
+      shippingHistoryEntry,
+    } = body
 
-    if (!orderId || !status) {
-      return NextResponse.json({ error: 'ID de commande et statut requis' }, { status: 400 })
+    if (!orderId) {
+      return NextResponse.json(
+        { error: 'ID de commande requis' },
+        { status: 400 }
+      )
     }
 
-    const updatedOrder = await prisma.order.update({
-      where: { id: orderId },
-      data: {
-        status,
-        ...(deliveredAt && { deliveredAt: new Date(deliveredAt) }),
-        ...(trackingNumber && {
-          shippingAddress: {
-            ...(await prisma.order.findUnique({ where: { id: orderId } }))?.shippingAddress as any,
-            trackingNumber
-          }
-        })
-      },
-      include: {
-        items: {
-          include: {
-            product: {
-              select: { id: true, name: true, image: true }
-            }
-          }
-        }
-      }
+    const map = await readOrdersMap()
+    const existing = map[orderId]
+
+    if (!existing) {
+      return NextResponse.json(
+        { error: 'Commande non trouvée' },
+        { status: 404 }
+      )
+    }
+
+    const previousStatus = existing.status
+
+    let history: ShippingHistoryEntry[] = existing.shippingHistory
+      ? [...existing.shippingHistory]
+      : []
+
+    if (Array.isArray(shippingHistory)) {
+      history = shippingHistory
+        .filter((entry: ShippingHistoryEntry) => entry && entry.date && entry.status)
+        .map(entry => ({
+          date: entry.date,
+          status: entry.status,
+          message: entry.message,
+        }))
+    }
+
+    if (shippingHistoryEntry && shippingHistoryEntry.status) {
+      history = [
+        ...history,
+        {
+          date: shippingHistoryEntry.date || new Date().toISOString(),
+          status: shippingHistoryEntry.status,
+          message: shippingHistoryEntry.message,
+        },
+      ]
+    }
+
+    history.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+
+    const updated = await upsertOrder({
+      ...existing,
+      id: orderId,
+      status: status ?? existing.status,
+      deliveredAt: deliveredAt ?? existing.deliveredAt,
+      shippedAt: shippedAt ?? existing.shippedAt,
+      trackingNumber: trackingNumber ?? existing.trackingNumber ?? null,
+      carrier: carrier ?? existing.carrier ?? null,
+      carrierTrackingUrl: carrierTrackingUrl ?? existing.carrierTrackingUrl ?? null,
+      shippingStatus: shippingStatus ?? existing.shippingStatus ?? null,
+      estimatedDeliveryDate: estimatedDeliveryDate ?? existing.estimatedDeliveryDate ?? null,
+      shippingHistory: history,
     })
+
+    if (
+      updated.status === 'shipped' &&
+      previousStatus !== 'shipped' &&
+      updated.customerEmail
+    ) {
+      try {
+        await sendOrderShippedEmail({
+          email: updated.customerEmail,
+          orderId: updated.id,
+          trackingNumber: updated.trackingNumber || '',
+          customerName: updated.customerName || 'Client',
+          trackOrderUrl: `${process.env.NEXT_PUBLIC_APP_URL || 'https://gardengoldgreen.com'}/track-order?orderId=${encodeURIComponent(
+            updated.id
+          )}&email=${encodeURIComponent(updated.customerEmail)}`,
+        })
+      } catch (emailError) {
+        console.error('⚠️ Erreur envoi email expédition:', emailError)
+      }
+    }
 
     return NextResponse.json({
       success: true,
-      order: {
-        id: updatedOrder.id,
-        status: updatedOrder.status,
-        totalCents: updatedOrder.totalCents,
-        currency: updatedOrder.currency,
-        customerEmail: updatedOrder.customerEmail,
-        customerName: updatedOrder.customerName,
-        customerPhone: updatedOrder.customerPhone,
-        shippingAddress: updatedOrder.shippingAddress,
-        items: updatedOrder.items.map(item => ({
-          id: item.id,
-          productId: item.productId,
-          name: item.name,
-          priceCents: item.priceCents,
-          quantity: item.quantity,
-          product: item.product
-        })),
-        createdAt: updatedOrder.createdAt.toISOString(),
-        updatedAt: updatedOrder.updatedAt.toISOString(),
-        deliveredAt: updatedOrder.deliveredAt?.toISOString(),
-        paymentIntentId: updatedOrder.paymentIntentId,
-        stripeSessionId: updatedOrder.stripeSessionId
-      }
+      order: updated,
     })
   } catch (error) {
     console.error('Erreur lors de la mise à jour de la commande admin:', error)

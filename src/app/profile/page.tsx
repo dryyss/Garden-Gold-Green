@@ -4,7 +4,7 @@ import { useUser } from '@auth0/nextjs-auth0'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUser, faEnvelope, faPhone, faMapMarkerAlt, faEdit } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faEnvelope, faPhone, faMapMarkerAlt, faEdit, faCreditCard } from '@fortawesome/free-solid-svg-icons'
 import { ResponsiveContainer } from '@/components/ResponsiveContainer'
 import { ResponsiveCard } from '@/components/ResponsiveCard'
 import { ResponsiveButton } from '@/components/ResponsiveButton'
@@ -15,6 +15,7 @@ export default function ProfilePage() {
   const router = useRouter()
   const [isEditing, setIsEditing] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
+  const [isPortalLoading, setIsPortalLoading] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -29,7 +30,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (!isLoading && !user) {
-      router.push('/api/auth/login')
+      router.push('/auth/login')
       return
     }
 
@@ -95,6 +96,31 @@ export default function ProfilePage() {
       alert('Erreur lors de la mise à jour du profil')
     } finally {
       setIsSaving(false)
+    }
+  }
+
+  const handleOpenStripePortal = async () => {
+    setIsPortalLoading(true)
+    try {
+      const response = await fetch('/api/billing/portal', {
+        method: 'POST',
+      })
+
+      if (!response.ok) {
+        const error = await response.text()
+        throw new Error(error || 'Erreur lors de la création du portail Stripe')
+      }
+
+      const data = await response.json()
+      if (!data.url) {
+        throw new Error("URL du portail manquante dans la réponse Stripe")
+      }
+      window.location.href = data.url
+    } catch (error) {
+      console.error('Erreur ouverture portail Stripe:', error)
+      alert("Impossible d'ouvrir le portail Stripe. Réessaie plus tard.")
+    } finally {
+      setIsPortalLoading(false)
     }
   }
 
@@ -233,6 +259,24 @@ export default function ProfilePage() {
               )}
             </form>
           </ResponsiveCard>
+
+          <div className="mt-6">
+            <ResponsiveCard variant="glass" padding="lg">
+              <h2 className="text-xl font-semibold text-white mb-4">Gestion des paiements</h2>
+              <p className="text-gray-400 mb-6">
+                Accédez au portail Stripe pour consulter votre historique d’achats, gérer vos moyens de paiement ou mettre à jour vos abonnements.
+              </p>
+              <ResponsiveButton
+                onClick={handleOpenStripePortal}
+                variant="primary"
+                disabled={isPortalLoading}
+                loading={isPortalLoading}
+              >
+                <FontAwesomeIcon icon={faCreditCard} className="icon-sm mr-2" />
+                {isPortalLoading ? 'Ouverture du portail…' : 'Ouvrir le portail Stripe'}
+              </ResponsiveButton>
+            </ResponsiveCard>
+          </div>
         </div>
       </ResponsiveContainer>
     </div>
