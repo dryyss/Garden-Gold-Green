@@ -1,7 +1,7 @@
 {
   "build": {
     "type": "nodejs",
-    "buildCommand": "npm run build"
+    "buildCommand": "npm run build:production"
   },
   "deploy": {
     "startCommand": "npm start"
