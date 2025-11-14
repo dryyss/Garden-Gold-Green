@@ -1,11 +1,16 @@
 import { NextRequest } from 'next/server'
 import jwt from 'jsonwebtoken'
+import {
+  mapToBackofficeRoles,
+  resolvePrimaryRole,
+  type BackofficeRole,
+} from '@/lib/roles'
 
 export interface AuthenticatedUser {
   id: string
   email?: string
   name?: string
-  role?: 'admin' | 'customer' | 'owner'
+  role?: BackofficeRole
 }
 
 const bypassAdminSecurity = process.env.BYPASS_ADMIN_SECURITY !== 'false'
@@ -16,19 +21,31 @@ function extractBearerToken(request: NextRequest): string | null {
   return authHeader.substring(7)
 }
 
-export async function getAuthenticatedUser(request: NextRequest): Promise<AuthenticatedUser | null> {
+export async function getAuthenticatedUser(
+  request: NextRequest
+): Promise<AuthenticatedUser | null> {
   try {
     const token = extractBearerToken(request)
     if (!token) return null
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret-key') as any
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET || 'fallback-secret-key'
+    ) as Record<string, any>
 
-    // Le token généré par /api/auth/login contient { userId, email, role }
+    const roles = [
+      ...mapToBackofficeRoles(decoded.roles),
+      ...mapToBackofficeRoles(decoded.role),
+      ...mapToBackofficeRoles(decoded.roleName),
+    ]
+    const primaryRole =
+      resolvePrimaryRole(decoded.role, roles) ?? 'customer'
+
     return {
       id: decoded.userId || decoded.sub || '',
       email: decoded.email,
       name: decoded.name,
-      role: decoded.role
+      role: primaryRole,
     }
   } catch (error) {
     console.error('Erreur lors de la validation du token:', error)
@@ -69,7 +86,7 @@ export function requireAdmin(
   }
 
   return requireAuth(async (request, user, ...args) => {
-    if (user.role !== 'admin' && user.role !== 'owner') {
+    if (!user.role || (user.role !== 'admin' && user.role !== 'owner')) {
       return new Response(
         JSON.stringify({ error: 'Accès non autorisé' }),
         {

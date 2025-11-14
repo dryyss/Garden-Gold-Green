@@ -3,6 +3,7 @@ import { requireAdmin, isOwner, getAuthenticatedUser } from '@/lib/auth-utils'
 import { getAuth0UserRoles, assignSingleRole, getAllAuth0Roles } from '@/lib/auth0-management'
 import { PrismaClient } from '@prisma/client'
 import { getSession } from '@auth0/nextjs-auth0'
+import { mapToBackofficeRoles } from '@/lib/roles'
 
 const prisma = new PrismaClient()
 
@@ -115,8 +116,9 @@ export async function POST(request: NextRequest) {
         )
       }
 
-      // Valider le rôle
-      if (!['admin', 'customer', 'owner'].includes(role)) {
+      const normalizedRole = mapToBackofficeRoles(role)[0]
+
+      if (!normalizedRole) {
         return NextResponse.json(
           { error: 'Rôle invalide' },
           { status: 400 }
@@ -150,12 +152,12 @@ export async function POST(request: NextRequest) {
       }
 
       // Mettre à jour dans Auth0
-      await assignSingleRole(auth0UserId, role)
+      await assignSingleRole(auth0UserId, normalizedRole)
 
       // Mettre à jour dans Prisma
       const updatedUser = await prisma.user.update({
         where: { id: userId },
-        data: { role },
+        data: { role: normalizedRole },
         select: {
           id: true,
           email: true,
@@ -167,7 +169,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         success: true,
         user: updatedUser,
-        message: 'Rôle synchronisé avec succès entre Auth0 et Prisma'
+        message: `Rôle ${normalizedRole} synchronisé avec succès entre Auth0 et Prisma`
       })
     } catch (error: any) {
       console.error('Erreur lors de la synchronisation:', error)

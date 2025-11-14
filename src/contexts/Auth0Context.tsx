@@ -3,6 +3,14 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useUser } from '@auth0/nextjs-auth0/client'
 import { useRouter } from 'next/navigation'
+import {
+  extractRolesFromAuth0User,
+  isAdminRole,
+  isOwnerRole,
+  toFrontRole,
+  type BackofficeRole,
+  type FrontRole,
+} from '@/lib/roles'
 
 interface User {
   id: string
@@ -11,7 +19,9 @@ interface User {
   firstName: string
   lastName: string
   phone?: string
-  role: 'user' | 'admin' | 'owner'
+  role: FrontRole
+  backofficeRole: BackofficeRole
+  roles: FrontRole[]
   address?: {
     street: string
     city: string
@@ -45,7 +55,7 @@ export function Auth0Provider({ children }: { children: React.ReactNode }) {
     user: null,
     isAuthenticated: false,
     isLoading: true,
-    error: null
+    error: null,
   })
 
   useEffect(() => {
@@ -59,136 +69,153 @@ export function Auth0Provider({ children }: { children: React.ReactNode }) {
         user: null,
         isAuthenticated: false,
         isLoading: false,
-        error: auth0Error.message
+        error: auth0Error.message,
       })
       return
     }
 
     if (auth0User) {
-      // Transformer l'utilisateur Auth0 en notre format
-      const firstName = auth0User.given_name || auth0User.name?.split(' ')[0] || ''
-      const lastName = auth0User.family_name || auth0User.name?.split(' ').slice(1).join(' ') || ''
-      const name = `${firstName} ${lastName}`.trim() || auth0User.name || auth0User.email || ''
-      
-      // DEBUG: Log pour vérifier les rôles
-      console.log('🔍 Auth0 User:', auth0User)
-      console.log('🔍 Roles claim:', auth0User['https://gardengoldgreen.com/roles'])
-      console.log('🔍 All claims:', Object.keys(auth0User))
-      
-      const roles = auth0User['https://gardengoldgreen.com/roles'] as string[] || []
-      console.log('🔍 Roles array:', roles)
-      console.log('🔍 Roles length:', roles.length)
-      console.log('🔍 Roles types:', roles.map(r => ({ value: r, lower: r?.toLowerCase(), type: typeof r })))
-      
-      const isOwnerUser = roles?.some(r => r && r.toLowerCase() === 'owner')
-      const isAdminUser = roles?.some(r => r && r.toLowerCase() === 'admin')
-      const isUserRole = roles?.some(r => r && r.toLowerCase() === 'user')
-      
-      console.log('🔍 isOwnerUser:', isOwnerUser)
-      console.log('🔍 isAdminUser:', isAdminUser)
-      console.log('🔍 isUserRole:', isUserRole)
-      
-      // Désactivation temporaire de l'assignation automatique du rôle par défaut
-      // if (roles.length === 0 && auth0User.sub) {
-      //   console.log('ℹ️ Utilisateur sans rôles détecté, assignation du rôle par défaut...')
-      //   console.log('🔍 User ID:', auth0User.sub)
-      //   
-      //   fetch('/api/auth/assign-default-role', {
-      //     method: 'POST',
-      //     headers: {
-      //       'Content-Type': 'application/json',
-      //     },
-      //   })
-      //     .then(res => {
-      //       console.log('🔍 Status de la réponse:', res.status)
-      //       if (!res.ok) {
-      //         return res.text().then(text => {
-      //           console.error('❌ Erreur HTTP:', res.status, text)
-      //           throw new Error(`HTTP ${res.status}: ${text}`)
-      //         })
-      //       }
-      //       return res.json()
-      //     })
-      //     .then(data => {
-      //       console.log('✅ Réponse API assign-default-role:', data)
-      //       if (data.message === 'Default role assigned successfully') {
-      //         // Recharger la page pour obtenir le nouveau token avec les rôles
-      //         console.log('🔄 Rechargement de la page pour obtenir le nouveau token...')
-      //         setTimeout(() => {
-      //           window.location.reload()
-      //         }, 1000)
-      //       } else if (data.message === 'User already has roles') {
-      //         console.log('ℹ️ Utilisateur a déjà des rôles via API:', data.roles)
-      //         // Recharger quand même pour obtenir les rôles dans le token
-      //         setTimeout(() => {
-      //           window.location.reload()
-      //         }, 1000)
-      //       } else {
-      //         console.warn('⚠️ Réponse inattendue:', data)
-      //       }
-      //     })
-      //     .catch(error => {
-      //       console.error('❌ Erreur lors de l\'assignation du rôle:', error)
-      //       console.error('❌ Détails de l\'erreur:', error.message)
-      //       // Ne pas recharger en cas d'erreur pour éviter une boucle
-      //     })
-      // }
-      
-      // Déterminer le rôle (owner > admin > user)
-      let userRole: 'user' | 'admin' | 'owner' = 'user'
-      if (isOwnerUser) {
-        userRole = 'owner'
-      } else if (isAdminUser) {
-        userRole = 'admin'
-      } else if (isUserRole) {
-        userRole = 'user'
+      const namespace = process.env.NEXT_PUBLIC_AUTH0_ROLE_NAMESPACE || 'https://gardengoldgreen.com'
+      const rolesClaimKey = `${namespace}/roles`
+      const roleClaimKey = `${namespace}/role`
+
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('🔐 Auth0 user payload:', auth0User)
+        console.log('🔐 Namespace:', namespace)
+        console.log('🔐 Claims roles:', auth0User[rolesClaimKey])
+        console.log('🔐 Claim role:', auth0User[roleClaimKey])
+        console.log('🔐 Authorization roles:', auth0User.authorization?.roles)
+        console.log('🔐 All user keys:', Object.keys(auth0User))
       }
-      
-      console.log('🔍 Final role:', userRole)
-      
+
+      const firstName =
+        auth0User.given_name || auth0User.name?.split(' ')[0] || ''
+      const lastName =
+        auth0User.family_name ||
+        auth0User.name?.split(' ').slice(1).join(' ') ||
+        ''
+      const name =
+        `${firstName} ${lastName}`.trim() ||
+        auth0User.name ||
+        auth0User.email ||
+        ''
+
+      const { roles: backofficeRoles, primaryRole } = extractRolesFromAuth0User(
+        auth0User as Record<string, unknown>
+      )
+
+      const effectivePrimaryRole: BackofficeRole = primaryRole || 'customer'
+      const role = toFrontRole(effectivePrimaryRole)
+      const roles =
+        backofficeRoles.length > 0
+          ? Array.from(new Set(backofficeRoles.map(toFrontRole)))
+          : [role]
+
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('🔐 Rôles finaux:', {
+          backofficeRoles,
+          primaryRole: effectivePrimaryRole,
+          frontRole: role,
+          roles,
+        })
+      }
+
       const user: User = {
         id: auth0User.sub || '',
         email: auth0User.email || '',
         name,
         firstName,
         lastName,
-        role: userRole,
+        role,
+        backofficeRole: effectivePrimaryRole,
+        roles,
         picture: auth0User.picture,
         createdAt: auth0User.created_at || new Date().toISOString(),
-        updatedAt: auth0User.updated_at || new Date().toISOString()
+        updatedAt: auth0User.updated_at || new Date().toISOString(),
       }
 
       setState({
         user,
         isAuthenticated: true,
         isLoading: false,
-        error: null
+        error: null,
       })
+
+      // Fallback: Si aucun rôle trouvé dans les claims, récupérer depuis l'API
+      if (backofficeRoles.length === 0 && auth0User.sub) {
+        if (process.env.NODE_ENV !== 'production') {
+          console.log('⚠️ Aucun rôle trouvé dans les claims, récupération depuis API...')
+        }
+        
+        fetch('/api/auth/user-roles')
+          .then(async (response) => {
+            if (response.ok) {
+              const data = await response.json()
+              if (data.success && data.roles && data.roles.length > 0) {
+                if (process.env.NODE_ENV !== 'production') {
+                  console.log('✅ Rôles récupérés depuis API:', data.roles)
+                }
+                const mappedRoles = data.roles
+                  .map((r: string) => {
+                    const normalized = r.trim().toLowerCase()
+                    if (normalized === 'owner') return 'owner' as BackofficeRole
+                    if (normalized === 'admin') return 'admin' as BackofficeRole
+                    return 'customer' as BackofficeRole
+                  })
+                  .filter((r: BackofficeRole) => r !== 'customer')
+                
+                const newBackofficeRoles = mappedRoles.length > 0 ? mappedRoles : ['customer']
+                const newPrimaryRole = newBackofficeRoles.includes('owner') 
+                  ? 'owner' 
+                  : newBackofficeRoles.includes('admin') 
+                    ? 'admin' 
+                    : 'customer'
+                
+                const newRole = toFrontRole(newPrimaryRole)
+                const newRoles: FrontRole[] = newBackofficeRoles.length > 0
+                  ? (Array.from(new Set(newBackofficeRoles.map(toFrontRole))) as FrontRole[])
+                  : [newRole]
+
+                setState(prev => ({
+                  ...prev,
+                  user: prev.user ? {
+                    ...prev.user,
+                    role: newRole,
+                    backofficeRole: newPrimaryRole,
+                    roles: newRoles,
+                  } : null,
+                }))
+              }
+            } else {
+              const errorText = await response.text()
+              if (process.env.NODE_ENV !== 'production') {
+                console.warn('⚠️ Impossible de récupérer les rôles depuis API:', errorText)
+              }
+            }
+          })
+          .catch((error) => {
+            if (process.env.NODE_ENV !== 'production') {
+              console.warn('⚠️ Erreur lors de la récupération des rôles:', error)
+            }
+          })
+      }
     } else {
       setState({
         user: null,
         isAuthenticated: false,
         isLoading: false,
-        error: null
+        error: null,
       })
     }
-  }, [auth0User, auth0Error, auth0Loading])
+  }, [auth0Error, auth0Loading, auth0User])
 
   const logout = () => {
     router.push('/auth/logout')
   }
 
-  const isAdmin = () => {
-    return state.user?.role === 'admin' || state.user?.role === 'owner'
-  }
-
-  const isOwner = () => {
-    return state.user?.role === 'owner'
-  }
-
-  const isAdminOrOwner = () => {
-    return state.user?.role === 'admin' || state.user?.role === 'owner'
-  }
+  const isAdmin = () => isAdminRole(state.user?.backofficeRole)
+  const isOwner = () => isOwnerRole(state.user?.backofficeRole)
+  const isAdminOrOwner = () => isAdminRole(state.user?.backofficeRole)
 
   return (
     <Auth0Context.Provider value={{ state, logout, isAdmin, isOwner, isAdminOrOwner }}>
@@ -204,3 +231,4 @@ export function useAuth0Context() {
   }
   return context
 }
+

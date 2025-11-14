@@ -95,17 +95,30 @@ function CartSidebarContent() {
       })
       
       if (!response.ok) {
-        const errorText = await response.text()
-        if (process.env.NODE_ENV === 'development') {
-          console.error('Erreur checkout:', response.status, errorText)
+        const errorData = await response.json().catch(() => ({}))
+        
+        // Si l'email n'est pas vérifié, rediriger vers la page de vérification
+        if (errorData?.code === 'email_not_verified' && errorData?.redirectUrl) {
+          window.location.href = errorData.redirectUrl
+          return
         }
-        alert(`Erreur ${response.status}`)
+        
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Erreur checkout:', response.status, errorData)
+        }
+        alert(errorData?.error || `Erreur ${response.status}`)
         return
       }
 
       const data = await response.json()
 
       if (data.error) {
+        // Si l'email n'est pas vérifié, rediriger vers la page de vérification
+        if (data?.code === 'email_not_verified' && data?.redirectUrl) {
+          window.location.href = data.redirectUrl
+          return
+        }
+        
         if (process.env.NODE_ENV === 'development') {
           console.error('Erreur response:', data.error)
         }

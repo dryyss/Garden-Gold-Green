@@ -1,0 +1,28 @@
+[
+  {
+    "id": "cat-huiles",
+    "name": "Huiles CBD",
+    "slug": "huiles-cbd"
+  },
+  {
+    "id": "cat-fleurs",
+    "name": "Fleurs CBD",
+    "slug": "fleurs-cbd"
+  },
+  {
+    "id": "cat-cosmetiques",
+    "name": "Cosmétiques CBD",
+    "slug": "cosmetiques-cbd"
+  },
+  {
+    "id": "cat-capsules",
+    "name": "Capsules CBD",
+    "slug": "capsules-cbd"
+  },
+  {
+    "id": "cat-vape",
+    "name": "Vape CBD",
+    "slug": "vape-cbd"
+  }
+]
+

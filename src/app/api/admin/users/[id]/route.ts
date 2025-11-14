@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 import { requireAdmin, isOwner, getAuthenticatedUser } from '@/lib/auth-utils'
+import { assignSingleRole } from '@/lib/auth0-management'
+import { mapToBackofficeRoles } from '@/lib/roles'
 
 const prisma = new PrismaClient()
 
@@ -91,7 +93,13 @@ export async function PATCH(
       const isOwnerUser = currentUser && isOwner(currentUser)
 
       // Ne pas permettre de supprimer le dernier admin (sauf pour owner)
-      if (role === 'customer' && existingUser.role === 'admin' && !isOwnerUser) {
+      const normalizedRole = role ? mapToBackofficeRoles(role)[0] : undefined
+
+      if (
+        normalizedRole === 'customer' &&
+        existingUser.role === 'admin' &&
+        !isOwnerUser
+      ) {
         const adminCount = await prisma.user.count({
           where: { role: 'admin' }
         })
@@ -105,7 +113,11 @@ export async function PATCH(
       }
 
       // Owner peut modifier les rôles admin, mais pas les supprimer complètement si c'est le dernier
-      if (isOwnerUser && role === 'customer' && existingUser.role === 'admin') {
+      if (
+        isOwnerUser &&
+        normalizedRole === 'customer' &&
+        existingUser.role === 'admin'
+      ) {
         const adminCount = await prisma.user.count({
           where: { role: 'admin' }
         })
@@ -123,7 +135,7 @@ export async function PATCH(
       }
 
       // Valider le rôle
-      if (role && !['admin', 'customer', 'owner'].includes(role)) {
+      if (role && !normalizedRole) {
         return NextResponse.json(
           { error: 'Rôle invalide' },
           { status: 400 }
@@ -131,7 +143,7 @@ export async function PATCH(
       }
 
       // Seul owner peut créer/modifier un owner
-      if (role === 'owner' && !isOwnerUser) {
+      if (normalizedRole === 'owner' && !isOwnerUser) {
         return NextResponse.json(
           { error: 'Seul le propriétaire peut créer ou modifier un owner' },
           { status: 403 }
@@ -140,7 +152,7 @@ export async function PATCH(
 
       // Mettre à jour l'utilisateur dans Prisma
       const updateData: any = {}
-      if (role) updateData.role = role
+      if (normalizedRole) updateData.role = normalizedRole
       if (name !== undefined) updateData.name = name
 
       const updatedUser = await prisma.user.update({
@@ -156,7 +168,7 @@ export async function PATCH(
       })
 
       // Synchroniser avec Auth0 si le rôle a changé
-      if (role && role !== existingUser.role) {
+      if (normalizedRole && normalizedRole !== existingUser.role) {
         try {
           // Trouver l'Auth0 user ID depuis l'email
           // Note: L'ID Prisma peut être différent de l'Auth0 ID
@@ -180,8 +192,8 @@ export async function PATCH(
 
           // Si on a un Auth0 ID, synchroniser
           if (auth0UserId) {
-            await assignSingleRole(auth0UserId, role)
-            console.log(`✅ Rôle ${role} synchronisé avec Auth0 pour ${email}`)
+            await assignSingleRole(auth0UserId, normalizedRole)
+            console.log(`✅ Rôle ${normalizedRole} synchronisé avec Auth0 pour ${email}`)
           } else {
             console.warn(`⚠️ Impossible de synchroniser Auth0: ID non trouvé pour ${email}`)
             // Ne pas faire échouer la requête, on continue quand même

@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
 import { requireAdmin } from '@/lib/auth-utils'
+import { getProductById, getProductBySlug, upsertProduct, deleteProduct } from '@/lib/products-store'
+import ordersData from '@/data/orders.json'
 
-const prisma = new PrismaClient()
-
-// GET - Récupérer un produit spécifique
+// GET - Récupérer un produit spécifique depuis le fichier JSON
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -13,23 +12,7 @@ export async function GET(
     try {
       const { id } = await params
 
-      const product = await prisma.product.findUnique({
-        where: { id },
-        include: {
-          categories: true,
-          variants: true,
-          orderItems: {
-            where: {
-              order: {
-                status: { in: ['delivered', 'shipped'] }
-              }
-            },
-            include: {
-              order: true
-            }
-          }
-        }
-      })
+      const product = await getProductById(id)
 
       if (!product) {
         return NextResponse.json(
@@ -38,12 +21,24 @@ export async function GET(
         )
       }
 
-      // Calculer les statistiques
-      const totalSales = product.orderItems.reduce((sum, item) => sum + item.quantity, 0)
-      const totalRevenue = product.orderItems.reduce(
-        (sum, item) => sum + item.priceCents * item.quantity,
-        0
-      )
+      // Calculer les statistiques depuis orders.json
+      const ordersMap = typeof ordersData === 'object' && !Array.isArray(ordersData) 
+        ? ordersData as Record<string, any>
+        : {}
+      
+      let totalSales = 0
+      let totalRevenue = 0
+
+      Object.values(ordersMap).forEach((order: any) => {
+        if (order.status === 'delivered' || order.status === 'shipped') {
+          order.items?.forEach((item: any) => {
+            if (item.productId === product.id) {
+              totalSales += item.quantity || 0
+              totalRevenue += (item.priceCents || 0) * (item.quantity || 0)
+            }
+          })
+        }
+      })
 
       return NextResponse.json({
         success: true,
@@ -51,21 +46,22 @@ export async function GET(
           ...product,
           sales: totalSales,
           revenue: totalRevenue,
-          images: typeof product.images === 'string' 
-            ? JSON.parse(product.images) 
-            : product.images
+          images: Array.isArray(product.images) 
+            ? product.images 
+            : (typeof product.images === 'string' ? JSON.parse(product.images) : [])
         }
       })
-    } catch (error) {
-      console.error('Erreur lors de la récupération du produit:', error)
-      return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 })
-    } finally {
-      await prisma.$disconnect()
+    } catch (error: any) {
+      console.error('❌ Erreur lors de la récupération du produit:', error)
+      return NextResponse.json({ 
+        error: 'Erreur interne du serveur',
+        details: error?.message || 'Une erreur est survenue lors de la récupération du produit'
+      }, { status: 500 })
     }
   })(request)
 }
 
-// PATCH - Mettre à jour un produit
+// PATCH - Mettre à jour un produit dans le fichier JSON
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -87,13 +83,12 @@ export async function PATCH(
         images,
         categoryIds,
         published,
-        isFeatured
+        isFeatured,
+        variants
       } = body
 
       // Vérifier si le produit existe
-      const existingProduct = await prisma.product.findUnique({
-        where: { id }
-      })
+      const existingProduct = await getProductById(id)
 
       if (!existingProduct) {
         return NextResponse.json(
@@ -104,9 +99,8 @@ export async function PATCH(
 
       // Vérifier si le slug est modifié et s'il existe déjà
       if (slug && slug !== existingProduct.slug) {
-        const slugExists = await prisma.product.findUnique({
-          where: { slug }
-        })
+        const { getProductBySlug } = await import('@/lib/products-store')
+        const slugExists = await getProductBySlug(slug)
 
         if (slugExists) {
           return NextResponse.json(
@@ -117,7 +111,10 @@ export async function PATCH(
       }
 
       // Préparer les données à mettre à jour
-      const updateData: any = {}
+      const updateData: any = {
+        id,
+        ...existingProduct
+      }
       
       if (title !== undefined) updateData.title = title
       if (slug !== undefined) updateData.slug = slug
@@ -128,51 +125,44 @@ export async function PATCH(
       if (sku !== undefined) updateData.sku = sku
       if (stock !== undefined) updateData.stock = parseInt(stock)
       if (images !== undefined) {
-        updateData.images = typeof images === 'string' 
-          ? images 
-          : JSON.stringify(images)
+        updateData.images = Array.isArray(images) ? images : (typeof images === 'string' ? [images] : [])
       }
       if (published !== undefined) updateData.published = published
       if (isFeatured !== undefined) updateData.isFeatured = isFeatured
+      if (categoryIds !== undefined) updateData.categoryIds = categoryIds
+      if (variants !== undefined) {
+        updateData.variants = variants.map((variant: any, index: number) => ({
+          id: variant.id || `${id}-v${index + 1}`,
+          title: variant.title,
+          priceCents: Math.round(parseFloat(variant.priceCents) * 100),
+          stock: parseInt(variant.stock) || 0
+        }))
+      }
 
       // Mettre à jour le produit
-      const updatedProduct = await prisma.product.update({
-        where: { id },
-        data: {
-          ...updateData,
-          ...(categoryIds !== undefined && {
-            categories: categoryIds.length > 0 ? {
-              set: categoryIds.map((catId: string) => ({ id: catId }))
-            } : {
-              set: []
-            }
-          })
-        },
-        include: {
-          categories: true,
-          variants: true
-        }
-      })
+      const { upsertProduct } = await import('@/lib/products-store')
+      const updatedProduct = await upsertProduct(updateData)
 
       return NextResponse.json({
         success: true,
         product: {
           ...updatedProduct,
-          images: typeof updatedProduct.images === 'string' 
-            ? JSON.parse(updatedProduct.images) 
-            : updatedProduct.images
+          images: Array.isArray(updatedProduct.images) 
+            ? updatedProduct.images 
+            : (typeof updatedProduct.images === 'string' ? JSON.parse(updatedProduct.images) : [])
         }
       })
-    } catch (error) {
-      console.error('Erreur lors de la mise à jour du produit:', error)
-      return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 })
-    } finally {
-      await prisma.$disconnect()
+    } catch (error: any) {
+      console.error('❌ Erreur lors de la mise à jour du produit:', error)
+      return NextResponse.json({ 
+        error: 'Erreur interne du serveur',
+        details: error?.message || 'Une erreur est survenue lors de la mise à jour du produit'
+      }, { status: 500 })
     }
   })(request)
 }
 
-// DELETE - Supprimer un produit
+// DELETE - Supprimer un produit du fichier JSON
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -182,12 +172,7 @@ export async function DELETE(
       const { id } = await params
 
       // Vérifier si le produit existe
-      const product = await prisma.product.findUnique({
-        where: { id },
-        include: {
-          orderItems: true
-        }
-      })
+      const product = await getProductById(id)
 
       if (!product) {
         return NextResponse.json(
@@ -196,8 +181,19 @@ export async function DELETE(
         )
       }
 
-      // Ne pas permettre la suppression si le produit a des commandes
-      if (product.orderItems.length > 0) {
+      // Vérifier si le produit a des commandes associées
+      const ordersMap = typeof ordersData === 'object' && !Array.isArray(ordersData) 
+        ? ordersData as Record<string, any>
+        : {}
+      
+      let hasOrders = false
+      Object.values(ordersMap).forEach((order: any) => {
+        if (order.items?.some((item: any) => item.productId === id)) {
+          hasOrders = true
+        }
+      })
+
+      if (hasOrders) {
         return NextResponse.json(
           { error: 'Impossible de supprimer un produit avec des commandes associées' },
           { status: 400 }
@@ -205,19 +201,26 @@ export async function DELETE(
       }
 
       // Supprimer le produit
-      await prisma.product.delete({
-        where: { id }
-      })
+      const { deleteProduct } = await import('@/lib/products-store')
+      const deleted = await deleteProduct(id)
+
+      if (!deleted) {
+        return NextResponse.json(
+          { error: 'Produit non trouvé' },
+          { status: 404 }
+        )
+      }
 
       return NextResponse.json({
         success: true,
         message: 'Produit supprimé avec succès'
       })
-    } catch (error) {
-      console.error('Erreur lors de la suppression du produit:', error)
-      return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 })
-    } finally {
-      await prisma.$disconnect()
+    } catch (error: any) {
+      console.error('❌ Erreur lors de la suppression du produit:', error)
+      return NextResponse.json({ 
+        error: 'Erreur interne du serveur',
+        details: error?.message || 'Une erreur est survenue lors de la suppression du produit'
+      }, { status: 500 })
     }
   })(request)
 }

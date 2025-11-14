@@ -15,17 +15,37 @@ export async function GET(request: NextRequest) {
     }
 
     const userId = session.user.sub
-    const orders = await listOrdersByUser(userId)
+    const userEmail = session.user.email || undefined
+    
+    console.log(`🔍 GET /api/orders - userId: "${userId}", email: "${userEmail}"`)
+    
+    // Récupérer les commandes par userId ET par email (au cas où userId ne serait pas défini dans la commande)
+    const orders = await listOrdersByUser(userId, userEmail)
+    
+    console.log(`📦 Retour de ${orders.length} commande(s)`)
 
     return NextResponse.json({
       success: true,
       orders,
     })
 
-  } catch (error) {
-    console.error('Erreur lors de la récupération des commandes:', error)
+  } catch (error: any) {
+    console.error('❌ Erreur lors de la récupération des commandes:', error)
+    
+    // Gérer spécifiquement les erreurs de connexion à la base de données
+    if (error?.code === 'P1001' || error?.code === 'P1000') {
+      return NextResponse.json(
+        { 
+          error: 'Service temporairement indisponible',
+          details: 'La connexion à la base de données n\'est pas disponible. Veuillez réessayer plus tard.',
+          orders: [] // Retourner un tableau vide pour éviter les erreurs côté client
+        },
+        { status: 503 }
+      )
+    }
+    
     return NextResponse.json(
-      { error: 'Erreur interne du serveur' },
+      { error: 'Erreur interne du serveur', orders: [] },
       { status: 500 }
     )
   }

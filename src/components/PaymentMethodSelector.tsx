@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faApplePay, faGooglePay, faPaypal } from '@fortawesome/free-brands-svg-icons'
 import { faCreditCard as faCard, faSpinner, faCheck, faWallet } from '@fortawesome/free-solid-svg-icons'
@@ -21,6 +22,7 @@ export function PaymentMethodSelector({
   onPaymentSuccess,
   onPaymentError 
 }: PaymentMethodSelectorProps) {
+  const router = useRouter()
   const { t } = useTranslation()
   const { state } = useCart()
   const { addNotification } = useNotifications()
@@ -94,6 +96,13 @@ export function PaymentMethodSelector({
 
     if (!response.ok) {
       const error = await response.json().catch(() => ({}))
+      
+      // Si l'email n'est pas vérifié, rediriger vers la page de vérification
+      if (error?.code === 'email_not_verified' && error?.redirectUrl) {
+        router.push(error.redirectUrl)
+        return
+      }
+      
       throw new Error(error?.error || 'Erreur lors de la création de la session Stripe')
     }
 

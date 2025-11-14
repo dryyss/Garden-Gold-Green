@@ -181,10 +181,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem('user', JSON.stringify(data.user))
 
       if (process.env.NODE_ENV === 'development') {
-        console.log('🔐 Connexion réussie:', {
-          tokenPreview: `${data.token?.slice(0, 10)}...`,
-          user: data.user
-        })
+        console.log('🔐 Connexion réussie - Auth token complet:', data.token)
+        console.log('🔐 Connexion réussie - Utilisateur:', data.user)
       }
 
       dispatch({ type: 'LOGIN_SUCCESS', payload: data.user })
@@ -218,10 +216,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem('user', JSON.stringify(data.user))
 
       if (process.env.NODE_ENV === 'development') {
-        console.log('🆕 Inscription réussie:', {
-          tokenPreview: `${data.token?.slice(0, 10)}...`,
-          user: data.user
-        })
+        console.log('🆕 Inscription réussie - Auth token complet:', data.token)
+        console.log('🆕 Inscription réussie - Utilisateur:', data.user)
       }
 
       dispatch({ type: 'REGISTER_SUCCESS', payload: data.user })

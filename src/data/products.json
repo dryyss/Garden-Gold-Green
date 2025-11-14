@@ -2503,42 +2503,16 @@
       "/products/default.svg"
     ],
     "published": true,
+    "isFeatured": false,
     "categories": [
       {
         "name": "Cosmétiques CBD",
         "slug": "cosmetiques-cbd"
       }
     ],
-    "variants": [
-      {
-        "id": "47-v1",
-        "weight": 10,
-        "unit": "ml",
-        "priceCents": 7490,
-        "stock": 104,
-        "sku": "GG-CO-047-10",
-        "isDefault": true
-      },
-      {
-        "id": "47-v2",
-        "weight": 30,
-        "unit": "ml",
-        "priceCents": 18725,
-        "stock": 26,
-        "sku": "GG-CO-047-30",
-        "isDefault": false
-      },
-      {
-        "id": "47-v3",
-        "weight": 50,
-        "unit": "ml",
-        "priceCents": 29960,
-        "stock": 40,
-        "sku": "GG-CO-047-50",
-        "isDefault": false
-      }
-    ],
-    "totalStock": 170
+    "variants": [],
+    "createdAt": "2025-11-14T17:31:18.561Z",
+    "updatedAt": "2025-11-14T17:31:18.561Z"
   },
   {
     "id": "48",
@@ -5325,6 +5299,3 @@
     "totalStock": 175
   }
 ]
-
-
-

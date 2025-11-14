@@ -66,9 +66,32 @@ export const GET = requireAdmin(async (request: NextRequest) => {
       orders: entries,
       pagination,
     })
-  } catch (error) {
-    console.error('Erreur lors de la récupération des commandes admin:', error)
-    return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 })
+  } catch (error: any) {
+    console.error('❌ Erreur lors de la récupération des commandes admin:', error)
+    
+    // Gérer spécifiquement les erreurs de connexion à la base de données
+    if (error?.code === 'P1001' || error?.code === 'P1000') {
+      return NextResponse.json(
+        { 
+          success: false,
+          error: 'Service temporairement indisponible',
+          details: 'La connexion à la base de données n\'est pas disponible. Veuillez réessayer plus tard.',
+          orders: [],
+          pagination: { page: 1, limit: 20, total: 0, totalPages: 0 }
+        },
+        { status: 503 }
+      )
+    }
+    
+    return NextResponse.json(
+      { 
+        success: false,
+        error: 'Erreur interne du serveur',
+        orders: [],
+        pagination: { page: 1, limit: 20, total: 0, totalPages: 0 }
+      },
+      { status: 500 }
+    )
   }
 })
 

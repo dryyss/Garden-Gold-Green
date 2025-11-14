@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { auth0 } from '@/lib/auth0'
+import { getAuth0User } from '@/lib/auth0-management'
 import { getUserById, upsertUser } from '@/lib/users-store'
 import { stripe as sharedStripe } from '@/lib/stripe'
 
@@ -24,10 +25,49 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Récupérer l'utilisateur Auth0 si connecté
+    // Récupérer l'utilisateur Auth0 et vérifier son statut
     const session = await auth0.getSession(request)
-    const userId = session?.user?.sub || 'guest'
-    const userEmail = session?.user?.email || undefined
+
+    if (!session?.user?.sub) {
+      return NextResponse.json(
+        { error: 'Authentification requise pour procéder au paiement', code: 'auth_required' },
+        { status: 401 }
+      )
+    }
+
+    const userId = session.user.sub
+
+    let auth0User: Awaited<ReturnType<typeof getAuth0User>> | null = null
+    try {
+      auth0User = await getAuth0User(userId)
+    } catch (error) {
+      console.error('❌ Impossible de récupérer les informations Auth0:', error)
+      return NextResponse.json(
+        { error: 'Impossible de vérifier votre compte pour le paiement', code: 'user_lookup_failed' },
+        { status: 500 }
+      )
+    }
+
+    const emailVerified = Boolean(
+      auth0User?.email_verified ?? (session.user as any).email_verified ?? false
+    )
+    const userEmail = auth0User?.email || session.user.email || undefined
+
+
+    if (!emailVerified) {
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+      const verifyEmailUrl = `${baseUrl}/verify-email`
+      
+      return NextResponse.json(
+        {
+          error: 'Veuillez vérifier votre adresse email avant de finaliser le paiement.',
+          code: 'email_not_verified',
+          redirectUrl: verifyEmailUrl,
+        },
+        { status: 403 }
+      )
+    }
+
 
     // Calculer le sous-total et les frais de livraison
     const subtotal = items.reduce((total: number, item: any) => total + (item.price * item.quantity), 0)

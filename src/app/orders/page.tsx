@@ -71,11 +71,18 @@ export default function OrdersPage() {
         },
       })
 
+      const data = await response.json()
+
       if (!response.ok) {
-        throw new Error('Erreur lors du chargement des commandes')
+        // Si c'est une erreur 503 (Service Unavailable), afficher le message spécifique
+        if (response.status === 503) {
+          setErrorMessage(data.details || data.error || 'Service temporairement indisponible')
+          setOrders(data.orders || []) // Utiliser le tableau vide de la réponse
+          return
+        }
+        throw new Error(data.error || data.details || 'Erreur lors du chargement des commandes')
       }
 
-      const data = await response.json()
       setOrders(data.orders || [])
     } catch (error) {
       console.error('Erreur lors du chargement des commandes:', error)
@@ -254,33 +261,33 @@ export default function OrdersPage() {
 
                 return (
                   <ResponsiveCard key={order.id} variant="glass" padding="md">
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                      <div>
-                        <h3 className="text-lg font-semibold text-white">Commande #{order.id}</h3>
-                        <p className="text-gray-400">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-base sm:text-lg font-semibold text-white break-words">Commande #{order.id}</h3>
+                        <p className="text-gray-400 text-sm sm:text-base">
                           Passée le {new Date(order.createdAt).toLocaleDateString('fr-FR')}
                         </p>
                       </div>
-                      <div className="flex items-center space-x-4 mt-2 md:mt-0">
-                        <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}>
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:space-x-4">
+                        <span className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium ${getStatusColor(order.status)} inline-flex items-center`}>
                           {getStatusIcon(order.status)}
-                          <span className="ml-2">{getStatusText(order.status)}</span>
+                          <span className="ml-1 sm:ml-2">{getStatusText(order.status)}</span>
                         </span>
-                        <span className="text-xl font-bold text-white">
+                        <span className="text-lg sm:text-xl font-bold text-white">
                           €{formatPrice(order.totalCents)}
                         </span>
                       </div>
                     </div>
 
                     <div className="border-t border-white/10 pt-4">
-                      <h4 className="text-sm font-medium text-gray-300 mb-3">Articles commandés :</h4>
+                      <h4 className="text-xs sm:text-sm font-medium text-gray-300 mb-3">Articles commandés :</h4>
                       <div className="space-y-2">
                         {order.items.map((item, index) => (
-                          <div key={index} className="flex justify-between items-center text-sm">
-                            <span className="text-gray-300">
+                          <div key={index} className="flex justify-between items-start sm:items-center gap-2 text-xs sm:text-sm">
+                            <span className="text-gray-300 flex-1 min-w-0 break-words">
                               {item.quantity}x {item.name}
                             </span>
-                            <span className="text-white font-medium">
+                            <span className="text-white font-medium whitespace-nowrap">
                               €{formatPrice(item.priceCents)}
                             </span>
                           </div>
@@ -288,14 +295,14 @@ export default function OrdersPage() {
                       </div>
                     </div>
 
-                    <div className="border-t border-white/10 pt-4 mt-4 space-y-2 text-sm">
+                    <div className="border-t border-white/10 pt-4 mt-4 space-y-2 text-xs sm:text-sm">
                       <div className="flex justify-between text-gray-300">
                         <span>Sous-total</span>
-                        <span>€{formatPrice(subtotalCents)}</span>
+                        <span className="font-medium">€{formatPrice(subtotalCents)}</span>
                       </div>
                       <div className="flex justify-between text-gray-300">
                         <span>Livraison</span>
-                        <span>
+                        <span className="font-medium">
                           {shippingCents > 0
                             ? `€${formatPrice(shippingCents)}`
                             : 'Offert'}
@@ -304,43 +311,44 @@ export default function OrdersPage() {
                       {taxCents > 0 && (
                         <div className="flex justify-between text-gray-300">
                           <span>Taxes</span>
-                          <span>€{formatPrice(taxCents)}</span>
+                          <span className="font-medium">€{formatPrice(taxCents)}</span>
                         </div>
                       )}
                       {discountCents > 0 && (
                         <div className="flex justify-between text-gray-300">
                           <span>Remises</span>
-                          <span>-€{formatPrice(discountCents)}</span>
+                          <span className="font-medium">-€{formatPrice(discountCents)}</span>
                         </div>
                       )}
-                      <div className="flex justify-between items-center text-base font-semibold text-white border-t border-white/10 pt-2 mt-2">
+                      <div className="flex justify-between items-center text-sm sm:text-base font-semibold text-white border-t border-white/10 pt-2 mt-2">
                         <span>Total</span>
                         <span>€{formatPrice(order.totalCents)}</span>
                       </div>
                     </div>
 
-                    <div className="flex justify-end mt-4">
+                    <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-0 mt-4">
                       {(order.invoicePdf || order.receiptUrl) && (
                         <a
                           href={order.invoicePdf || order.receiptUrl || '#'}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-sm text-brand-green hover:text-white transition-colors font-medium mr-4"
+                          className="text-xs sm:text-sm text-brand-green hover:text-white transition-colors font-medium sm:mr-4 text-center sm:text-left"
                         >
-                          {order.invoicePdf ? 'Télécharger la facture PDF' : 'Voir le reçu'}
+                          <span className="hidden sm:inline">{order.invoicePdf ? 'Télécharger la facture PDF' : 'Voir le reçu'}</span>
+                          <span className="sm:hidden">{order.invoicePdf ? 'Facture PDF' : 'Reçu'}</span>
                         </a>
                       )}
                       <a
                         href={`/orders/${order.id}`}
-                        className="text-brand-gold hover:text-white transition-colors text-sm font-medium"
+                        className="text-brand-gold hover:text-white transition-colors text-xs sm:text-sm font-medium text-center sm:text-left"
                       >
                         Voir les détails
                       </a>
                     </div>
 
                     <div className="mt-6 border-t border-white/10 pt-4">
-                      <h4 className="text-sm font-medium text-gray-300 mb-3">Suivi de livraison</h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                      <h4 className="text-xs sm:text-sm font-medium text-gray-300 mb-3">Suivi de livraison</h4>
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 text-xs sm:text-sm">
                         <div className="space-y-2">
                           <p className="text-gray-400">
                             Statut livraison :{' '}
@@ -377,14 +385,15 @@ export default function OrdersPage() {
                               <span className="text-white">{formatDateTime(order.deliveredAt)}</span>
                             </p>
                           )}
-                          <div className="flex gap-3 pt-2">
+                          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-2">
                             <a
                               href={order.carrierTrackingUrl || `/track-order?orderId=${order.id}&email=${encodeURIComponent(order.customerEmail || '')}`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-xs text-brand-gold hover:text-white transition-colors"
+                              className="text-xs text-brand-gold hover:text-white transition-colors break-all sm:break-normal"
                             >
-                              Consulter le suivi détaillé
+                              <span className="hidden sm:inline">Consulter le suivi détaillé</span>
+                              <span className="sm:hidden">Suivi détaillé</span>
                             </a>
                             <a
                               href={`/track-order?orderId=${order.id}&email=${encodeURIComponent(order.customerEmail || '')}`}

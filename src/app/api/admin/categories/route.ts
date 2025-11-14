@@ -1,58 +1,64 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
 import { requireAdmin } from '@/lib/auth-utils'
+import categoriesData from '@/data/categories.json'
+import productsData from '@/data/products.json'
 
-const prisma = new PrismaClient()
-
-// GET - Récupérer toutes les catégories
+// GET - Récupérer toutes les catégories depuis le fichier JSON
 export const GET = requireAdmin(async (request: NextRequest) => {
   try {
     const { searchParams } = new URL(request.url)
     const includeProducts = searchParams.get('includeProducts') === 'true'
     const includeCount = searchParams.get('includeCount') === 'true'
 
-    const categories = await prisma.category.findMany({
-      include: includeProducts ? {
-        products: true
-      } : undefined,
-      orderBy: { name: 'asc' }
-    })
+    let categories = [...categoriesData]
 
     // Ajouter le nombre de produits si demandé
     let categoriesWithCount = categories
     if (includeCount) {
-      categoriesWithCount = await Promise.all(
-        categories.map(async (category) => {
-          const productCount = await prisma.product.count({
-            where: {
-              categories: {
-                some: {
-                  id: category.id
-                }
-              }
-            }
-          })
-          return {
-            ...category,
-            productCount
-          }
-        })
-      )
+      categoriesWithCount = categories.map((category) => {
+        const productCount = productsData.filter((product: any) => 
+          product.published && 
+          product.categories?.some((cat: any) => cat.slug === category.slug)
+        ).length
+        
+        return {
+          ...category,
+          productCount
+        }
+      })
+    }
+
+    // Ajouter les produits si demandé
+    if (includeProducts) {
+      categoriesWithCount = categories.map((category) => {
+        const categoryProducts = productsData.filter((product: any) =>
+          product.published &&
+          product.categories?.some((cat: any) => cat.slug === category.slug)
+        )
+        
+        return {
+          ...category,
+          products: categoryProducts
+        }
+      })
     }
 
     return NextResponse.json({
       success: true,
       categories: categoriesWithCount
     })
-  } catch (error) {
-    console.error('Erreur lors de la récupération des catégories:', error)
-    return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 })
-  } finally {
-    await prisma.$disconnect()
+  } catch (error: any) {
+    console.error('❌ Erreur lors de la récupération des catégories:', error)
+    return NextResponse.json({ 
+      error: 'Erreur interne du serveur',
+      details: error?.message || 'Une erreur est survenue lors de la récupération des catégories'
+    }, { status: 500 })
   }
 })
 
 // POST - Créer une nouvelle catégorie
+// Note: Avec les fichiers JSON, les nouvelles catégories ne sont pas persistées.
+// Pour ajouter une catégorie de manière permanente, modifiez directement categories.json
 export const POST = requireAdmin(async (request: NextRequest) => {
   try {
     const body = await request.json()
@@ -66,10 +72,10 @@ export const POST = requireAdmin(async (request: NextRequest) => {
       )
     }
 
-    // Vérifier si le slug existe déjà
-    const existingCategory = await prisma.category.findUnique({
-      where: { slug }
-    })
+    // Vérifier si le slug existe déjà dans le fichier JSON
+    const existingCategory = categoriesData.find(
+      (cat: any) => cat.slug === slug.toLowerCase().replace(/\s+/g, '-')
+    )
 
     if (existingCategory) {
       return NextResponse.json(
@@ -78,23 +84,32 @@ export const POST = requireAdmin(async (request: NextRequest) => {
       )
     }
 
-    // Créer la catégorie
-    const category = await prisma.category.create({
-      data: {
-        name,
-        slug: slug.toLowerCase().replace(/\s+/g, '-')
-      }
-    })
+    // Générer un ID unique
+    const newId = `cat-${slug.toLowerCase().replace(/\s+/g, '-')}`
+    const finalSlug = slug.toLowerCase().replace(/\s+/g, '-')
+
+    // Créer la catégorie (en mémoire uniquement, pas persistée)
+    const category = {
+      id: newId,
+      name,
+      slug: finalSlug
+    }
+
+    // Note: Pour persister, il faudrait écrire dans categories.json
+    // Ceci nécessiterait des permissions système et n'est pas recommandé en production
+    console.warn('⚠️ Nouvelle catégorie créée en mémoire uniquement. Pour la persister, modifiez categories.json manuellement.')
 
     return NextResponse.json({
       success: true,
-      category
+      category,
+      warning: 'La catégorie a été créée en mémoire uniquement. Pour la persister, modifiez categories.json manuellement.'
     }, { status: 201 })
-  } catch (error) {
-    console.error('Erreur lors de la création de la catégorie:', error)
-    return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 })
-  } finally {
-    await prisma.$disconnect()
+  } catch (error: any) {
+    console.error('❌ Erreur lors de la création de la catégorie:', error)
+    return NextResponse.json({ 
+      error: 'Erreur interne du serveur',
+      details: error?.message || 'Une erreur est survenue lors de la création de la catégorie'
+    }, { status: 500 })
   }
 })
 

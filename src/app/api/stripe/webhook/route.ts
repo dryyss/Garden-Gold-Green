@@ -16,15 +16,20 @@ const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('📥 Webhook Stripe reçu')
     const body = await request.text()
     const signature = request.headers.get('stripe-signature')!
+    
+    console.log(`📋 Signature webhook: ${signature ? 'présente' : 'manquante'}`)
 
     let event: Stripe.Event
 
     try {
       event = stripe.webhooks.constructEvent(body, signature, webhookSecret)
-    } catch (err) {
+      console.log(`✅ Webhook vérifié: type ${event.type}`)
+    } catch (err: any) {
       console.error('❌ Erreur vérification webhook:', err)
+      console.error('❌ Détails:', err.message)
       return NextResponse.json(
         { error: 'Signature webhook invalide' },
         { status: 400 }
@@ -32,6 +37,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Traiter les événements Stripe
+    console.log(`📥 Traitement événement Stripe: ${event.type}`)
     switch (event.type) {
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session
@@ -143,6 +149,8 @@ export async function POST(request: NextRequest) {
 
           const discountCents = expandedSession.total_details?.amount_discount ?? null
 
+          console.log(`📝 Création commande ${orderNumber} - userId: "${userId}", email: "${userEmail}"`)
+          
           const orderRecord = await upsertOrder({
             id: orderNumber,
             userId: userId || null,
@@ -216,8 +224,11 @@ export async function POST(request: NextRequest) {
             console.warn('⚠️ Email client manquant, confirmation non envoyée pour', orderRecord.id)
           }
 
-        } catch (err) {
+        } catch (err: any) {
           console.error('❌ Erreur sauvegarde commande:', err)
+          console.error('❌ Détails de l\'erreur:', err?.message)
+          console.error('❌ Stack trace:', err?.stack)
+          // Ne pas bloquer la réponse au webhook, mais loguer l'erreur
         }
 
         break

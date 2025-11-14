@@ -2,6 +2,7 @@
  * Fonctions utilitaires pour interagir avec l'API Management d'Auth0
  * Utilise l'API REST directement car le package 'auth0' n'est pas installé
  */
+import { mapToBackofficeRoles } from '@/lib/roles'
 
 const AUTH0_DOMAIN = process.env.AUTH0_DOMAIN?.replace('https://', '') || 'dev-1tkaqeynik4yy714.us.auth0.com'
 const AUTH0_M2M_CLIENT_ID = process.env.AUTH0_M2M_CLIENT_ID || ''
@@ -11,6 +12,73 @@ const AUTH0_M2M_AUDIENCE =
 
 // Cache du token d'accès (valide 24h)
 let cachedToken: { token: string; expiresAt: number } | null = null
+
+/**
+ * Fonction utilitaire pour retry avec backoff exponentiel
+ */
+async function retryWithBackoff<T>(
+  fn: () => Promise<T>,
+  maxRetries: number = 3,
+  baseDelay: number = 1000
+): Promise<T> {
+  let lastError: Error | null = null
+  
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn()
+    } catch (error: any) {
+      lastError = error
+      
+      // Si c'est une erreur 429 (Too Many Requests), on retry avec backoff
+      const isRateLimitError = error.message?.includes('429') || 
+                               error.message?.includes('Too Many Requests')
+      
+      if (isRateLimitError && attempt < maxRetries) {
+        // Backoff exponentiel : 1s, 2s, 4s, etc.
+        const delay = baseDelay * Math.pow(2, attempt)
+        console.warn(`Rate limit atteint, retry dans ${delay}ms (tentative ${attempt + 1}/${maxRetries + 1})`)
+        await new Promise(resolve => setTimeout(resolve, delay))
+        continue
+      }
+      
+      // Si ce n'est pas une erreur de rate limit ou qu'on a épuisé les retries, on throw
+      throw error
+    }
+  }
+  
+  throw lastError || new Error('Erreur inconnue lors du retry')
+}
+
+/**
+ * Limite le nombre de requêtes parallèles avec une queue
+ */
+async function limitConcurrency<T>(
+  tasks: (() => Promise<T>)[],
+  concurrency: number = 5
+): Promise<T[]> {
+  const results: T[] = new Array(tasks.length)
+  let currentIndex = 0
+  
+  async function processNext(): Promise<void> {
+    while (currentIndex < tasks.length) {
+      const taskIndex = currentIndex++
+      try {
+        results[taskIndex] = await tasks[taskIndex]()
+      } catch (error) {
+        // Laisser la tâche gérer l'erreur elle-même
+        throw error
+      }
+    }
+  }
+  
+  // Lancer jusqu'à 'concurrency' workers en parallèle
+  const workers = Array(Math.min(concurrency, tasks.length))
+    .fill(null)
+    .map(() => processNext())
+  
+  await Promise.all(workers)
+  return results
+}
 
 /**
  * Obtient un token d'accès pour l'API Management Auth0
@@ -57,34 +125,63 @@ async function getManagementToken(): Promise<string> {
  * @param auth0UserId - L'ID Auth0 de l'utilisateur (commence par auth0| ou google-oauth2|)
  */
 export async function getAuth0UserRoles(auth0UserId: string): Promise<string[]> {
-  try {
-    const token = await getManagementToken()
-    const response = await fetch(
-      `https://${AUTH0_DOMAIN}/api/v2/users/${encodeURIComponent(auth0UserId)}/roles`,
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      }
-    )
+  return retryWithBackoff(async () => {
+    try {
+      const token = await getManagementToken()
+      const response = await fetch(
+        `https://${AUTH0_DOMAIN}/api/v2/users/${encodeURIComponent(auth0UserId)}/roles`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      )
 
-    if (!response.ok) {
-      if (response.status === 404) {
-        // Utilisateur non trouvé dans Auth0, retourner un tableau vide
-        return []
+      if (!response.ok) {
+        if (response.status === 404) {
+          // Utilisateur non trouvé dans Auth0, retourner un tableau vide
+          return []
+        }
+        
+        // Si erreur 429, le retry sera géré par retryWithBackoff
+        const errorText = await response.text()
+        const error = new Error(`Failed to get Auth0 roles: ${errorText}`)
+        ;(error as any).status = response.status
+        throw error
       }
-      const errorText = await response.text()
-      throw new Error(`Failed to get Auth0 roles: ${errorText}`)
+
+      const roles = await response.json()
+      return roles.map((r: any) => r.name || r.id)
+    } catch (error) {
+      console.error('Erreur lors de la récupération des rôles Auth0:', error)
+      throw error
     }
+  })
+}
 
-    const roles = await response.json()
-    return roles.map((r: any) => r.name || r.id)
-  } catch (error) {
-    console.error('Erreur lors de la récupération des rôles Auth0:', error)
-    throw error
-  }
+/**
+ * Récupère les rôles de plusieurs utilisateurs avec limitation de concurrence
+ * @param auth0UserIds - Liste des IDs Auth0
+ * @param concurrency - Nombre maximum de requêtes parallèles (défaut: 5)
+ */
+export async function getAuth0UserRolesBatch(
+  auth0UserIds: string[],
+  concurrency: number = 5
+): Promise<Map<string, string[]>> {
+  const tasks = auth0UserIds.map((userId) => async () => {
+    try {
+      const roles = await getAuth0UserRoles(userId)
+      return { userId, roles }
+    } catch (error) {
+      console.warn(`Impossible de récupérer les rôles pour ${userId}:`, error)
+      return { userId, roles: [] }
+    }
+  })
+
+  const results = await limitConcurrency(tasks, concurrency)
+  return new Map(results.map((r) => [r.userId, r.roles]))
 }
 
 /**
@@ -117,8 +214,10 @@ export async function getAllAuth0Roles(): Promise<Array<{ id: string; name: stri
  * Trouve l'ID d'un rôle par son nom
  */
 export async function getRoleIdByName(roleName: string): Promise<string | null> {
+  const normalized = mapToBackofficeRoles(roleName)[0]
+  if (!normalized) return null
   const roles = await getAllAuth0Roles()
-  const role = roles.find((r) => r.name === roleName)
+  const role = roles.find((r) => r.name.toLowerCase() === normalized)
   return role?.id || null
 }
 
@@ -139,7 +238,12 @@ export async function updateAuth0UserRoles(
     const roleIds: string[] = []
 
     for (const roleName of roleNames) {
-      const role = allRoles.find((r) => r.name === roleName)
+      const normalized = mapToBackofficeRoles(roleName)[0]
+      if (!normalized) {
+        console.warn(`⚠️ Rôle "${roleName}" non reconnu`)
+        continue
+      }
+      const role = allRoles.find((r) => r.name.toLowerCase() === normalized)
       if (role) {
         roleIds.push(role.id)
       } else {
@@ -291,6 +395,43 @@ interface Auth0UserRaw {
   created_at: string
   last_login?: string
   logins_count?: number
+}
+
+export interface Auth0UserDetails extends Auth0UserRaw {
+  email_verified?: boolean
+  phone_number?: string
+  phone_verified?: boolean
+  user_metadata?: Record<string, any>
+  app_metadata?: Record<string, any>
+}
+
+export async function getAuth0User(auth0UserId: string): Promise<Auth0UserDetails | null> {
+  if (!auth0UserId) {
+    throw new Error('Auth0 user id requis pour getAuth0User')
+  }
+
+  const token = await getManagementToken()
+  const response = await fetch(
+    `https://${AUTH0_DOMAIN}/api/v2/users/${encodeURIComponent(auth0UserId)}`,
+    {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    }
+  )
+
+  if (response.status === 404) {
+    return null
+  }
+
+  if (!response.ok) {
+    const errorText = await response.text()
+    throw new Error(`Failed to get Auth0 user: ${errorText}`)
+  }
+
+  return (await response.json()) as Auth0UserDetails
 }
 
 export interface ListAuth0UsersOptions {

@@ -27,6 +27,7 @@ import {
 import Image from 'next/image'
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Area, AreaChart } from 'recharts'
 import { Breadcrumb } from '@/components/Breadcrumb'
+import { ImageUploader } from '@/components/ImageUploader'
 
 interface Order {
   id: string
@@ -42,6 +43,18 @@ interface Order {
     quantity: number
     price: number
   }>
+  customerName?: string | null
+  customerEmail?: string | null
+  customerPhone?: string | null
+  shippingAddress?: {
+    firstName?: string
+    lastName?: string
+    address?: string
+    city?: string
+    postalCode?: string
+    country?: string
+    phone?: string
+  } | null
 }
 
 interface Product {
@@ -53,6 +66,7 @@ interface Product {
   image: string
   status: 'active' | 'inactive'
   sales: number
+  sku?: string
 }
 
 interface User {
@@ -86,6 +100,8 @@ function AdminContent() {
   const [orderSearch, setOrderSearch] = useState('')
   const [orderStatusFilter, setOrderStatusFilter] = useState('all')
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
+  const [fullOrderDetails, setFullOrderDetails] = useState<any | null>(null)
+  const [isLoadingOrderDetails, setIsLoadingOrderDetails] = useState(false)
   const [showOrderModal, setShowOrderModal] = useState(false)
   const [showAddProductModal, setShowAddProductModal] = useState(false)
   const [showEditProductModal, setShowEditProductModal] = useState(false)
@@ -105,6 +121,8 @@ function AdminContent() {
     published: true,
     isFeatured: false
   })
+  const [newProductImages, setNewProductImages] = useState<string[]>([])
+  const [newProductMainImageIndex, setNewProductMainImageIndex] = useState(0)
   const [editingProduct, setEditingProduct] = useState({
     id: '',
     title: '',
@@ -121,6 +139,8 @@ function AdminContent() {
     isFeatured: false,
     variants: [] as Array<{ id?: string; title: string; priceCents: string; stock: string }>
   })
+  const [editingProductImages, setEditingProductImages] = useState<string[]>([])
+  const [editingProductMainImageIndex, setEditingProductMainImageIndex] = useState(0)
   const [newProductVariants, setNewProductVariants] = useState<Array<{ title: string; priceCents: string; stock: string }>>([])
   const [periodFilter, setPeriodFilter] = useState('30days') // 7days, 30days, 3months, year, all
   const [chartData, setChartData] = useState<any[]>([])
@@ -128,11 +148,62 @@ function AdminContent() {
   const isAdminOwnerUser = auth0State.user ? isAdminOrOwner() : false
   const isBypassMode = process.env.NEXT_PUBLIC_FORCE_ADMIN_BYPASS !== 'false'
 
+  // Fonction pour générer automatiquement le SKU
+  const generateSKU = useCallback((title: string, categoryIds: string[], cbdPercent?: string) => {
+    if (!title) return ''
+    
+    // Récupérer les catégories sélectionnées
+    const selectedCategories = categories.filter(cat => categoryIds.includes(cat.id))
+    
+    // Partie catégorie (3 premières lettres de la première catégorie en majuscules)
+    let categoryPart = 'PROD'
+    if (selectedCategories.length > 0) {
+      const firstCategory = selectedCategories[0].name
+        .toUpperCase()
+        .replace(/[^A-Z]/g, '')
+        .substring(0, 3)
+        .padEnd(3, 'X')
+      categoryPart = firstCategory
+    }
+    
+    // Partie titre (prendre les mots clés principaux)
+    const titleWords = title
+      .toUpperCase()
+      .replace(/[^A-Z0-9\s]/g, '')
+      .split(/\s+/)
+      .filter(word => word.length > 2)
+      .slice(0, 2)
+      .map(word => word.substring(0, 4))
+      .join('')
+    
+    const titlePart = titleWords.substring(0, 6).padEnd(2, 'X')
+    
+    // Partie CBD (si disponible)
+    let cbdPart = ''
+    if (cbdPercent && parseFloat(cbdPercent) > 0) {
+      const cbdValue = Math.round(parseFloat(cbdPercent))
+      cbdPart = `-${cbdValue.toString().padStart(2, '0')}`
+    }
+    
+    // Format final : CAT-TITLE-CBD ou CAT-TITLE
+    return `${categoryPart}-${titlePart}${cbdPart}`.substring(0, 20).toUpperCase()
+  }, [categories])
+
   // Filtrer les commandes
   const filteredOrders = orders.filter(order => {
-    const matchesSearch = order.orderNumber.toLowerCase().includes(orderSearch.toLowerCase()) ||
-                         order.customer.toLowerCase().includes(orderSearch.toLowerCase()) ||
-                         order.email.toLowerCase().includes(orderSearch.toLowerCase())
+    if (!orderSearch.trim()) {
+      // Si pas de recherche, appliquer seulement le filtre de statut
+      const matchesStatus = orderStatusFilter === 'all' || order.status === orderStatusFilter
+      return matchesStatus
+    }
+    
+    const searchLower = orderSearch.toLowerCase().trim()
+    const matchesSearch = 
+      (order.orderNumber?.toLowerCase().includes(searchLower) ?? false) ||
+      (order.customer?.toLowerCase().includes(searchLower) ?? false) ||
+      (order.email?.toLowerCase().includes(searchLower) ?? false) ||
+      (order.id?.toLowerCase().includes(searchLower) ?? false)
+    
     const matchesStatus = orderStatusFilter === 'all' || order.status === orderStatusFilter
     return matchesSearch && matchesStatus
   })
@@ -192,23 +263,30 @@ function AdminContent() {
           const images = typeof product.images === 'string' ? JSON.parse(product.images) : product.images
           return {
             id: product.id,
-            name: product.title,
+            name: product.title || '',
             price: (product.priceCents / 100),
             stock: product.stock || 0,
             category: product.categories?.[0]?.name || 'Non catégorisé',
             image: Array.isArray(images) && images.length > 0 ? images[0] : '/products/default.svg',
             status: product.published ? 'active' : 'inactive',
-            sales: product.sales || 0
+            sales: product.sales || 0,
+            sku: product.sku || ''
           }
         })
         setProducts(formattedProducts)
       }
 
-      // Charger les catégories
-      const categoriesResponse = await fetch('/api/admin/categories')
-      const categoriesData = await categoriesResponse.json()
-      if (categoriesData.success && categoriesData.categories) {
-        setCategories(categoriesData.categories)
+      // Charger les catégories depuis le fichier JSON
+      try {
+        const categoriesResponse = await fetch('/api/admin/categories')
+        const categoriesData = await categoriesResponse.json()
+        if (categoriesData.success && categoriesData.categories) {
+          setCategories(categoriesData.categories)
+        } else {
+          console.error('Erreur chargement catégories:', categoriesData.error)
+        }
+      } catch (error) {
+        console.error('Erreur chargement catégories:', error)
       }
     
       // Charger les utilisateurs Auth0 (admin/owner ou mode bypass)
@@ -237,7 +315,7 @@ function AdminContent() {
       <div className="bg-brand-black min-h-screen flex items-center justify-center pt-24">
         <div className="text-center">
           <div className="spinner mx-auto mb-4"></div>
-          <p className="text-gray-400">Loading dashboard...</p>
+          <p className="text-gray-400">Chargement du tableau de bord...</p>
         </div>
       </div>
     )
@@ -255,9 +333,9 @@ function AdminContent() {
 
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">Admin Dashboard</h1>
+          <h1 className="text-4xl font-bold text-white mb-2">Tableau de bord Admin</h1>
           <p className="text-gray-400">
-            Welcome back, {auth0State.user?.name || authState.user?.firstName || auth0State.user?.email || 'Admin'}
+            Bon retour, {auth0State.user?.name || authState.user?.firstName || auth0State.user?.email || 'Admin'}
             {auth0State.user?.backofficeRole === 'owner' && (
               <span className="ml-2 text-yellow-400">
                 <FontAwesomeIcon icon={faCrown} className="mr-1" />
@@ -277,9 +355,9 @@ function AdminContent() {
         <div className="card-bg rounded-xl p-2 mb-8">
           <div className="flex space-x-1 flex-wrap items-center gap-2">
             {[
-              { id: 'dashboard', name: 'Dashboard', icon: faChartLine },
-              { id: 'orders', name: 'Orders', icon: faShoppingBag },
-              { id: 'products', name: 'Products', icon: faBox },
+              { id: 'dashboard', name: 'Tableau de bord', icon: faChartLine },
+              { id: 'orders', name: 'Commandes', icon: faShoppingBag },
+              { id: 'products', name: 'Produits', icon: faBox },
               { id: 'customers', name: 'Utilisateurs', icon: faUserShield },
             ].map(tab => (
               <button
@@ -356,9 +434,9 @@ function AdminContent() {
               <div className="card-bg rounded-xl p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-400 text-sm">Total Products</p>
+                    <p className="text-gray-400 text-sm">Total Produits</p>
                     <p className="text-3xl font-bold text-white">{stats.totalProducts}</p>
-                    <p className="text-gray-400 text-sm">Active products</p>
+                    <p className="text-gray-400 text-sm">Produits actifs</p>
                   </div>
                   <div className="w-12 h-12 bg-brand-gold/20 rounded-full flex items-center justify-center">
                     <FontAwesomeIcon icon={faBox} className="text-brand-gold text-xl" />
@@ -446,9 +524,9 @@ function AdminContent() {
             {/* Recent Orders */}
             <div className="card-bg rounded-xl p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-white">Recent Orders</h2>
+                <h2 className="text-2xl font-bold text-white">Commandes récentes</h2>
                 <button className="text-brand-gold hover:text-brand-gold/80 transition-colors">
-                  View All
+                  Voir tout
                 </button>
               </div>
               <div className="space-y-4">
@@ -461,7 +539,7 @@ function AdminContent() {
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-white font-semibold">${order.total.toFixed(2)}</p>
+                      <p className="text-white font-semibold">€{order.total.toFixed(2)}</p>
                       <p className="text-gray-400 text-sm">{order.date}</p>
                     </div>
                     <div className={`px-3 py-1 rounded-full text-sm ${
@@ -483,7 +561,7 @@ function AdminContent() {
         {activeTab === 'orders' && (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-3xl font-bold text-white">Orders</h2>
+              <h2 className="text-3xl font-bold text-white">Commandes</h2>
               <div className="flex items-center gap-4">
                 <div className="relative">
                   <FontAwesomeIcon 
@@ -492,7 +570,7 @@ function AdminContent() {
                   />
                   <input
                     type="text"
-                    placeholder="Search orders..."
+                    placeholder="Rechercher une commande..."
                     value={orderSearch}
                     onChange={(e) => setOrderSearch(e.target.value)}
                     className="bg-white/5 border border-white/20 rounded-lg pl-10 pr-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold"
@@ -503,39 +581,40 @@ function AdminContent() {
                   onChange={(e) => setOrderStatusFilter(e.target.value)}
                   className="bg-white/5 border border-white/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-brand-gold"
                 >
-                  <option value="all">All Status</option>
-                  <option value="pending">Pending</option>
-                  <option value="paid">Paid</option>
-                  <option value="processing">Processing</option>
-                  <option value="shipped">Shipped</option>
-                  <option value="delivered">Delivered</option>
-                  <option value="cancelled">Cancelled</option>
+                  <option value="all">Tous les statuts</option>
+                  <option value="pending">En attente</option>
+                  <option value="paid">Payé</option>
+                  <option value="processing">En traitement</option>
+                  <option value="shipped">Expédié</option>
+                  <option value="delivered">Livré</option>
+                  <option value="cancelled">Annulé</option>
                 </select>
                 <button className="btn-gold text-black font-semibold py-2 px-4 rounded-lg">
                   <FontAwesomeIcon icon={faDownload} className="mr-2" />
-                  Export
+                  Exporter
                 </button>
               </div>
             </div>
 
             <div className="card-bg rounded-xl overflow-hidden">
-              <div className="overflow-x-auto">
+              {/* Version desktop : tableau */}
+              <div className="hidden lg:block overflow-x-auto">
                 <table className="w-full">
                   <thead className="bg-white/5">
                     <tr>
-                      <th className="px-6 py-4 text-left text-gray-400 font-medium">Order</th>
-                      <th className="px-6 py-4 text-left text-gray-400 font-medium">Customer</th>
-                      <th className="px-6 py-4 text-left text-gray-400 font-medium">Date</th>
-                      <th className="px-6 py-4 text-left text-gray-400 font-medium">Status</th>
-                      <th className="px-6 py-4 text-left text-gray-400 font-medium">Total</th>
-                      <th className="px-6 py-4 text-left text-gray-400 font-medium">Actions</th>
+                      <th className="px-4 xl:px-6 py-3 xl:py-4 text-left text-gray-400 font-medium text-sm xl:text-base">Commande</th>
+                      <th className="px-4 xl:px-6 py-3 xl:py-4 text-left text-gray-400 font-medium text-sm xl:text-base">Client</th>
+                      <th className="px-4 xl:px-6 py-3 xl:py-4 text-left text-gray-400 font-medium text-sm xl:text-base">Date</th>
+                      <th className="px-4 xl:px-6 py-3 xl:py-4 text-left text-gray-400 font-medium text-sm xl:text-base">Statut</th>
+                      <th className="px-4 xl:px-6 py-3 xl:py-4 text-left text-gray-400 font-medium text-sm xl:text-base">Total</th>
+                      <th className="px-4 xl:px-6 py-3 xl:py-4 text-left text-gray-400 font-medium text-sm xl:text-base">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {filteredOrders.length === 0 ? (
                       <tr>
                         <td colSpan={6} className="px-6 py-8 text-center text-gray-400">
-                          Aucune commande trouvée
+                          {orderSearch.trim() ? `Aucune commande trouvée pour "${orderSearch}"` : 'Aucune commande disponible'}
                         </td>
                       </tr>
                     ) : (
@@ -565,25 +644,35 @@ function AdminContent() {
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-2">
                             <button 
-                              onClick={() => {
+                              onClick={async () => {
                                 setSelectedOrder(order)
+                                setIsLoadingOrderDetails(true)
                                 setShowOrderModal(true)
+                                try {
+                                  // Charger les détails complets de la commande
+                                  const response = await fetch(`/api/orders/admin?search=${encodeURIComponent(order.id)}&limit=1`)
+                                  const data = await response.json()
+                                  if (data.success && data.orders && data.orders.length > 0) {
+                                    setFullOrderDetails(data.orders[0])
+                                  }
+                                } catch (error) {
+                                  console.error('Erreur lors du chargement des détails:', error)
+                                } finally {
+                                  setIsLoadingOrderDetails(false)
+                                }
                               }}
                               className="text-gray-400 hover:text-brand-gold transition-colors"
-                              title="Voir détails"
+                              title="Voir et modifier les détails"
                             >
                               <FontAwesomeIcon icon={faEye} />
                             </button>
-                            <button 
-                              onClick={() => {
-                                setSelectedOrder(order)
-                                setShowOrderModal(true)
-                              }}
+                            <Link
+                              href={`/admin/orders/${order.id}`}
                               className="text-gray-400 hover:text-brand-gold transition-colors"
-                              title="Modifier"
+                              title="Gestion complète"
                             >
                               <FontAwesomeIcon icon={faEdit} />
-                            </button>
+                            </Link>
                           </div>
                         </td>
                       </tr>
@@ -592,6 +681,80 @@ function AdminContent() {
                   </tbody>
                 </table>
               </div>
+              
+              {/* Version mobile : cartes pour les commandes */}
+              <div className="lg:hidden space-y-4 mt-4">
+                {filteredOrders.length === 0 ? (
+                  <div className="card-bg rounded-xl p-8 text-center text-gray-400">
+                    {orderSearch.trim() ? `Aucune commande trouvée pour "${orderSearch}"` : 'Aucune commande disponible'}
+                  </div>
+                ) : (
+                  filteredOrders.map(order => (
+                    <div key={order.id} className="card-bg rounded-xl p-4 space-y-3">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-white font-semibold text-base">#{order.orderNumber}</p>
+                          <p className="text-gray-300 text-sm mt-1">{order.customer}</p>
+                          {order.email && (
+                            <p className="text-gray-400 text-xs mt-1 break-all">{order.email}</p>
+                          )}
+                        </div>
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          order.status === 'delivered' ? 'bg-green-400/20 text-green-400' :
+                          order.status === 'shipped' ? 'bg-blue-400/20 text-blue-400' :
+                          order.status === 'processing' ? 'bg-yellow-400/20 text-yellow-400' :
+                          'bg-gray-400/20 text-gray-400'
+                        }`}>
+                          {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                        </span>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-3 text-sm">
+                        <div>
+                          <p className="text-gray-400 text-xs">Date</p>
+                          <p className="text-gray-300">{order.date}</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-400 text-xs">Total</p>
+                          <p className="text-white font-semibold">${order.total.toFixed(2)}</p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 pt-3 border-t border-white/10">
+                        <button 
+                          onClick={async () => {
+                            setSelectedOrder(order)
+                            setIsLoadingOrderDetails(true)
+                            setShowOrderModal(true)
+                            try {
+                              const response = await fetch(`/api/orders/admin?search=${encodeURIComponent(order.id)}&limit=1`)
+                              const data = await response.json()
+                              if (data.success && data.orders && data.orders.length > 0) {
+                                setFullOrderDetails(data.orders[0])
+                              }
+                            } catch (error) {
+                              console.error('Erreur lors du chargement des détails:', error)
+                            } finally {
+                              setIsLoadingOrderDetails(false)
+                            }
+                          }}
+                          className="flex-1 text-center py-2 rounded-lg bg-brand-gold/20 text-brand-gold hover:bg-brand-gold/30 transition-colors text-sm font-medium"
+                        >
+                          <FontAwesomeIcon icon={faEye} className="mr-2" />
+                          Voir détails
+                        </button>
+                        <Link
+                          href={`/admin/orders/${order.id}`}
+                          className="flex-1 text-center py-2 rounded-lg border border-white/20 text-white hover:border-brand-gold transition-colors text-sm font-medium"
+                        >
+                          <FontAwesomeIcon icon={faEdit} className="mr-2" />
+                          Modifier
+                        </Link>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
           </div>
         )}
@@ -599,9 +762,9 @@ function AdminContent() {
         {/* Products Tab */}
         {activeTab === 'products' && (
           <div className="space-y-6">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-              <h2 className="text-3xl font-bold text-white">Products</h2>
-              <div className="flex items-center gap-3">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 sm:gap-4">
+              <h2 className="text-2xl sm:text-3xl font-bold text-white">Produits</h2>
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
                 {/* Barre de recherche */}
                 <div className="relative flex-1 md:max-w-md">
                   <FontAwesomeIcon 
@@ -621,26 +784,33 @@ function AdminContent() {
                     console.log('Bouton Add Product cliqué')
                     setShowAddProductModal(true)
                   }}
-                  className="btn-gold text-black font-semibold py-2 px-4 rounded-lg hover:bg-yellow-500 transition-colors"
+                  className="btn-gold text-black font-semibold py-2 px-3 sm:px-4 rounded-lg hover:bg-yellow-500 transition-colors text-sm sm:text-base whitespace-nowrap"
                 >
-                  <FontAwesomeIcon icon={faPlus} className="mr-2" />
-                  Add Product
+                  <FontAwesomeIcon icon={faPlus} className="mr-1 sm:mr-2" />
+                  <span className="hidden sm:inline">Ajouter un produit</span>
+                  <span className="sm:hidden">Ajouter</span>
                 </button>
               </div>
             </div>
 
             {/* Liste des produits filtrés */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {products
-                .filter(product => 
-                  productSearch === '' || 
-                  product.name.toLowerCase().includes(productSearch.toLowerCase()) ||
-                  product.category.toLowerCase().includes(productSearch.toLowerCase())
-                )
+                .filter(product => {
+                  if (!productSearch.trim()) return true
+                  
+                  const searchLower = productSearch.toLowerCase().trim()
+                  return (
+                    (product.name?.toLowerCase().includes(searchLower) ?? false) ||
+                    (product.category?.toLowerCase().includes(searchLower) ?? false) ||
+                    (product.id?.toLowerCase().includes(searchLower) ?? false) ||
+                    (product.sku?.toLowerCase().includes(searchLower) ?? false)
+                  )
+                })
                 .map(product => (
-                <div key={product.id} className="card-bg rounded-xl p-6 hover:border-brand-gold/50 transition-colors">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-16 h-16 rounded-lg overflow-hidden bg-white/5">
+                <div key={product.id} className="card-bg rounded-xl p-4 sm:p-6 hover:border-brand-gold/50 transition-colors">
+                  <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg overflow-hidden bg-white/5 flex-shrink-0">
                       <Image
                         src={product.image || '/products/default.svg'}
                         alt={product.name}
@@ -649,33 +819,33 @@ function AdminContent() {
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <div className="flex-1">
-                      <h3 className="text-white font-semibold line-clamp-2">{product.name}</h3>
-                      <p className="text-gray-400 text-sm">{product.category}</p>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-white font-semibold line-clamp-2 text-sm sm:text-base">{product.name}</h3>
+                      <p className="text-gray-400 text-xs sm:text-sm">{product.category}</p>
                     </div>
                   </div>
                   
-                  <div className="space-y-2 mb-4">
+                  <div className="space-y-1.5 sm:space-y-2 mb-3 sm:mb-4 text-xs sm:text-sm">
                     <div className="flex justify-between">
-                      <span className="text-gray-400">Price:</span>
+                      <span className="text-gray-400">Prix :</span>
                       <span className="text-white font-semibold">€{product.price.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-400">Stock:</span>
+                      <span className="text-gray-400">Stock :</span>
                       <span className={`font-semibold ${
                         product.stock > 10 ? 'text-green-400' : 
                         product.stock > 0 ? 'text-yellow-400' : 'text-red-400'
                       }`}>
-                        {product.stock} units
+                        {product.stock} unités
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-400">Sales:</span>
+                      <span className="text-gray-400">Ventes :</span>
                       <span className="text-white font-semibold">{product.sales}</span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 pt-4 border-t border-white/10">
+                  <div className="flex items-center gap-1.5 sm:gap-2 pt-3 sm:pt-4 border-t border-white/10">
                     <button 
                       onClick={async () => {
                         // Charger les détails du produit
@@ -684,7 +854,20 @@ function AdminContent() {
                           const data = await response.json()
                           if (data.success && data.product) {
                             const prod = data.product
-                            const images = typeof prod.images === 'string' ? JSON.parse(prod.images) : (prod.images || [])
+                            let images = []
+                            try {
+                              if (typeof prod.images === 'string') {
+                                images = prod.images ? JSON.parse(prod.images) : []
+                              } else if (Array.isArray(prod.images)) {
+                                images = prod.images
+                              } else if (prod.images) {
+                                images = [prod.images]
+                              }
+                            } catch (e) {
+                              // Si ce n'est pas du JSON, traiter comme une chaîne simple
+                              images = prod.images ? [prod.images] : []
+                            }
+                            const imagesArray = Array.isArray(images) ? images.filter(Boolean) : []
                             setEditingProduct({
                               id: prod.id,
                               title: prod.title || '',
@@ -694,8 +877,8 @@ function AdminContent() {
                               cbdPercent: prod.cbdPercent?.toString() || '',
                               sku: prod.sku || '',
                               stock: prod.stock?.toString() || '0',
-                              mainImage: images[0] || '',
-                              secondaryImages: images.slice(1).join(', '),
+                              mainImage: imagesArray[0] || '',
+                              secondaryImages: imagesArray.slice(1).join(', '),
                               categoryIds: prod.categories?.map((c: any) => c.id) || [],
                               published: prod.published ?? true,
                               isFeatured: prod.isFeatured ?? false,
@@ -706,6 +889,8 @@ function AdminContent() {
                                 stock: v.stock?.toString() || '0'
                               })) || []
                             })
+                            setEditingProductImages(imagesArray)
+                            setEditingProductMainImageIndex(0)
                             setSelectedProduct(product)
                             setShowEditProductModal(true)
                           }
@@ -714,10 +899,10 @@ function AdminContent() {
                           alert('Erreur lors du chargement du produit')
                         }
                       }}
-                      className="flex-1 text-gray-400 hover:text-brand-gold transition-colors p-2 rounded hover:bg-white/5"
+                      className="flex-1 text-gray-400 hover:text-brand-gold transition-colors p-1.5 sm:p-2 rounded hover:bg-white/5 text-xs sm:text-sm"
                       title="Modifier"
                     >
-                      <FontAwesomeIcon icon={faEdit} />
+                      <FontAwesomeIcon icon={faEdit} className="text-sm sm:text-base" />
                     </button>
                     <button 
                       onClick={async () => {
@@ -739,29 +924,34 @@ function AdminContent() {
                           }
                         }
                       }}
-                      className="flex-1 text-gray-400 hover:text-red-400 transition-colors p-2 rounded hover:bg-white/5"
+                      className="flex-1 text-gray-400 hover:text-red-400 transition-colors p-1.5 sm:p-2 rounded hover:bg-white/5 text-xs sm:text-sm"
                       title="Supprimer"
                     >
-                      <FontAwesomeIcon icon={faTrash} />
+                      <FontAwesomeIcon icon={faTrash} className="text-sm sm:text-base" />
                     </button>
                     <button 
                       onClick={() => window.open(`/products/${product.id}`, '_blank')}
-                      className="flex-1 text-gray-400 hover:text-brand-gold transition-colors p-2 rounded hover:bg-white/5"
+                      className="flex-1 text-gray-400 hover:text-brand-gold transition-colors p-1.5 sm:p-2 rounded hover:bg-white/5 text-xs sm:text-sm"
                       title="Voir"
                     >
-                      <FontAwesomeIcon icon={faEye} />
+                      <FontAwesomeIcon icon={faEye} className="text-sm sm:text-base" />
                     </button>
                   </div>
                 </div>
               ))}
-              {products.filter(product => 
-                productSearch === '' || 
-                product.name.toLowerCase().includes(productSearch.toLowerCase()) ||
-                product.category.toLowerCase().includes(productSearch.toLowerCase())
-              ).length === 0 && (
+              {products.filter(product => {
+                if (!productSearch.trim()) return true
+                const searchLower = productSearch.toLowerCase().trim()
+                return (
+                  (product.name?.toLowerCase().includes(searchLower) ?? false) ||
+                  (product.category?.toLowerCase().includes(searchLower) ?? false) ||
+                  (product.id?.toLowerCase().includes(searchLower) ?? false) ||
+                  (product.sku?.toLowerCase().includes(searchLower) ?? false)
+                )
+              }).length === 0 && (
                 <div className="col-span-full text-center py-12">
                   <p className="text-gray-400 text-lg">
-                    {productSearch ? 'Aucun produit trouvé pour votre recherche' : 'Aucun produit disponible'}
+                    {productSearch.trim() ? `Aucun produit trouvé pour "${productSearch}"` : 'Aucun produit disponible'}
                   </p>
                 </div>
               )}
@@ -944,15 +1134,18 @@ function AdminContent() {
 
         {/* Modal de détails de commande */}
         {showOrderModal && selectedOrder && (
-          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="card-bg rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="p-6 border-b border-white/10">
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4">
+            <div className="card-bg rounded-xl max-w-3xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+              <div className="p-4 sm:p-6 border-b border-white/10">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-2xl font-bold text-white">
+                  <h3 className="text-xl sm:text-2xl font-bold text-white">
                     Commande #{selectedOrder.orderNumber}
                   </h3>
                   <button
-                    onClick={() => setShowOrderModal(false)}
+                    onClick={() => {
+                      setShowOrderModal(false)
+                      setFullOrderDetails(null)
+                    }}
                     className="text-gray-400 hover:text-white transition-colors"
                   >
                     <FontAwesomeIcon icon={faXmark} className="text-2xl" />
@@ -960,116 +1153,179 @@ function AdminContent() {
                 </div>
               </div>
 
-              <div className="p-6 space-y-6">
-                {/* Informations client */}
-                <div>
-                  <h4 className="text-lg font-semibold text-white mb-3">Informations client</h4>
-                  <div className="space-y-2 text-gray-300">
-                    <p><span className="text-gray-400">Nom:</span> {selectedOrder.customer}</p>
-                    <p><span className="text-gray-400">Email:</span> {selectedOrder.email}</p>
-                    <p><span className="text-gray-400">Date:</span> {selectedOrder.date}</p>
+              {isLoadingOrderDetails ? (
+                <div className="p-6 text-center">
+                  <div className="spinner mx-auto mb-4"></div>
+                  <p className="text-gray-400">Chargement des détails...</p>
+                </div>
+              ) : (
+                <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+                  {/* Informations client */}
+                  <div>
+                    <h4 className="text-base sm:text-lg font-semibold text-white mb-2 sm:mb-3">Informations client</h4>
+                    <div className="space-y-2 text-gray-300">
+                      <p>
+                        <span className="text-gray-400">Nom:</span>{' '}
+                        {fullOrderDetails?.customerName || selectedOrder.customerName || selectedOrder.customer || 'Non renseigné'}
+                      </p>
+                      <p>
+                        <span className="text-gray-400">Email:</span>{' '}
+                        {fullOrderDetails?.customerEmail || selectedOrder.customerEmail || selectedOrder.email || 'Non renseigné'}
+                      </p>
+                      {fullOrderDetails?.customerPhone && (
+                        <p>
+                          <span className="text-gray-400">Téléphone:</span> {fullOrderDetails.customerPhone}
+                        </p>
+                      )}
+                      <p>
+                        <span className="text-gray-400">Date de commande:</span> {selectedOrder.date}
+                      </p>
+                    </div>
                   </div>
-                </div>
 
-                {/* Statut de la commande */}
-                <div>
-                  <h4 className="text-lg font-semibold text-white mb-3">Statut</h4>
-                  <select
-                    value={selectedOrder.status}
-                    onChange={async (e) => {
-                      const newStatus = e.target.value
-                      try {
-                        const response = await fetch('/api/orders/admin', {
-                          method: 'PATCH',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ 
-                            orderId: selectedOrder.id, 
-                            status: newStatus 
-                          })
-                        })
-                        const data = await response.json()
-                        if (data.success) {
-                          setOrders(orders.map(o => 
-                            o.id === selectedOrder.id ? { ...o, status: newStatus as any } : o
-                          ))
-                          setSelectedOrder({ ...selectedOrder, status: newStatus as any })
-                          alert('Statut mis à jour avec succès!')
-                        } else {
-                          alert('Erreur lors de la mise à jour du statut')
-                        }
-                      } catch (error) {
-                        console.error('Erreur:', error)
-                        alert('Erreur lors de la mise à jour')
-                      }
-                    }}
-                    className="bg-white/5 border border-white/20 rounded-lg px-4 py-2 text-white w-full focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                  >
-                    <option value="pending">Pending</option>
-                    <option value="paid">Paid</option>
-                    <option value="processing">Processing</option>
-                    <option value="shipped">Shipped</option>
-                    <option value="delivered">Delivered</option>
-                    <option value="cancelled">Cancelled</option>
-                  </select>
-                </div>
-
-                {/* Articles de la commande */}
-                <div>
-                  <h4 className="text-lg font-semibold text-white mb-3">Articles</h4>
-                  <div className="space-y-3">
-                    {selectedOrder.items.map(item => (
-                      <div key={item.id} className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
-                        <div>
-                          <p className="text-white font-medium">{item.name}</p>
-                          <p className="text-gray-400 text-sm">Quantité: {item.quantity}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-white font-semibold">${item.price.toFixed(2)}</p>
-                          <p className="text-gray-400 text-sm">Total: ${(item.price * item.quantity).toFixed(2)}</p>
-                        </div>
+                  {/* Adresse de livraison */}
+                  {fullOrderDetails?.shippingAddress && (
+                    <div>
+                      <h4 className="text-lg font-semibold text-white mb-3">Adresse de livraison</h4>
+                      <div className="space-y-2 text-gray-300 bg-white/5 rounded-lg p-4">
+                        {fullOrderDetails.shippingAddress.firstName || fullOrderDetails.shippingAddress.lastName ? (
+                          <p className="text-white font-medium">
+                            {fullOrderDetails.shippingAddress.firstName} {fullOrderDetails.shippingAddress.lastName}
+                          </p>
+                        ) : null}
+                        {fullOrderDetails.shippingAddress.address && (
+                          <p>{fullOrderDetails.shippingAddress.address}</p>
+                        )}
+                        {(fullOrderDetails.shippingAddress.postalCode || fullOrderDetails.shippingAddress.city) && (
+                          <p>
+                            {fullOrderDetails.shippingAddress.postalCode} {fullOrderDetails.shippingAddress.city}
+                          </p>
+                        )}
+                        {fullOrderDetails.shippingAddress.country && (
+                          <p>{fullOrderDetails.shippingAddress.country}</p>
+                        )}
+                        {fullOrderDetails.shippingAddress.phone && (
+                          <p className="text-sm text-gray-400 mt-2">
+                            <span className="text-gray-500">Tél:</span> {fullOrderDetails.shippingAddress.phone}
+                          </p>
+                        )}
                       </div>
-                    ))}
+                    </div>
+                  )}
+
+                  {/* Statut de la commande */}
+                  <div>
+                    <h4 className="text-lg font-semibold text-white mb-3">Statut</h4>
+                    <select
+                      value={selectedOrder.status}
+                      onChange={async (e) => {
+                        const newStatus = e.target.value
+                        try {
+                          const response = await fetch('/api/orders/admin', {
+                            method: 'PATCH',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ 
+                              orderId: selectedOrder.id, 
+                              status: newStatus 
+                            })
+                          })
+                          const data = await response.json()
+                          if (data.success) {
+                            setOrders(orders.map(o => 
+                              o.id === selectedOrder.id ? { ...o, status: newStatus as any } : o
+                            ))
+                            setSelectedOrder({ ...selectedOrder, status: newStatus as any })
+                            alert('Statut mis à jour avec succès!')
+                          } else {
+                            alert('Erreur lors de la mise à jour du statut')
+                          }
+                        } catch (error) {
+                          console.error('Erreur:', error)
+                          alert('Erreur lors de la mise à jour')
+                        }
+                      }}
+                      className="bg-white/5 border border-white/20 rounded-lg px-4 py-2 text-white w-full focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                    >
+                      <option value="pending">En attente</option>
+                      <option value="paid">Payé</option>
+                      <option value="processing">En traitement</option>
+                      <option value="shipped">Expédié</option>
+                      <option value="delivered">Livré</option>
+                      <option value="cancelled">Annulé</option>
+                    </select>
+                  </div>
+
+                  {/* Articles de la commande */}
+                  <div>
+                    <h4 className="text-lg font-semibold text-white mb-3">Articles</h4>
+                    <div className="space-y-3">
+                      {selectedOrder.items.map(item => (
+                        <div key={item.id} className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+                          <div>
+                            <p className="text-white font-medium">{item.name}</p>
+                            <p className="text-gray-400 text-sm">Quantité: {item.quantity}</p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-white font-semibold">€{item.price.toFixed(2)}</p>
+                            <p className="text-gray-400 text-sm">Total : €{(item.price * item.quantity).toFixed(2)}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Total */}
+                  <div className="border-t border-white/10 pt-4">
+                    <div className="flex items-center justify-between text-xl">
+                      <span className="text-white font-bold">Total</span>
+                      <span className="text-brand-gold font-bold">€{selectedOrder.total.toFixed(2)}</span>
+                    </div>
+                  </div>
+
+                  {/* Boutons d'action */}
+                  <div className="border-t border-white/10 pt-4 flex flex-col sm:flex-row gap-2 sm:gap-3">
+                    <button
+                      onClick={() => {
+                        setShowOrderModal(false)
+                        setFullOrderDetails(null)
+                      }}
+                      className="flex-1 bg-white/10 text-white font-semibold py-2 px-4 rounded-lg hover:bg-white/20 transition-colors text-sm sm:text-base"
+                    >
+                      Fermer
+                    </button>
+                    <Link
+                      href={`/admin/orders/${selectedOrder.id}`}
+                      className="flex-1 btn-gold text-black font-semibold py-2 px-4 rounded-lg text-center text-sm sm:text-base"
+                    >
+                      <FontAwesomeIcon icon={faEdit} className="mr-2" />
+                      <span className="hidden sm:inline">Modifier la commande</span>
+                      <span className="sm:hidden">Modifier</span>
+                    </Link>
+                    <button
+                      onClick={() => {
+                        // TODO: Générer facture PDF
+                        alert('Fonctionnalité de génération de facture à venir')
+                      }}
+                      className="flex-1 bg-white/10 text-white font-semibold py-2 px-4 rounded-lg hover:bg-white/20 transition-colors text-sm sm:text-base"
+                    >
+                      <FontAwesomeIcon icon={faDownload} className="mr-2" />
+                      <span className="hidden sm:inline">Facture</span>
+                      <span className="sm:hidden">PDF</span>
+                    </button>
                   </div>
                 </div>
-
-                {/* Total */}
-                <div className="border-t border-white/10 pt-4">
-                  <div className="flex items-center justify-between text-xl">
-                    <span className="text-white font-bold">Total</span>
-                    <span className="text-brand-gold font-bold">${selectedOrder.total.toFixed(2)}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="p-6 border-t border-white/10 flex gap-3">
-                <button
-                  onClick={() => setShowOrderModal(false)}
-                  className="flex-1 bg-white/10 text-white font-semibold py-2 px-4 rounded-lg hover:bg-white/20 transition-colors"
-                >
-                  Fermer
-                </button>
-                <button
-                  onClick={() => {
-                    // TODO: Générer facture PDF
-                    alert('Fonctionnalité de génération de facture à venir')
-                  }}
-                  className="flex-1 btn-gold text-black font-semibold py-2 px-4 rounded-lg"
-                >
-                  <FontAwesomeIcon icon={faDownload} className="mr-2" />
-                  Télécharger facture
-                </button>
-              </div>
+              )}
             </div>
           </div>
         )}
 
         {/* Modal Add Product */}
         {showAddProductModal && (
-          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="card-bg rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="p-6 border-b border-white/10">
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4">
+            <div className="card-bg rounded-xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+              <div className="p-4 sm:p-6 border-b border-white/10">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-2xl font-bold text-white">Ajouter un produit</h3>
+                  <h3 className="text-xl sm:text-2xl font-bold text-white">Ajouter un produit</h3>
                   <button
                     onClick={() => setShowAddProductModal(false)}
                     className="text-gray-400 hover:text-white transition-colors"
@@ -1084,9 +1340,10 @@ function AdminContent() {
                   e.preventDefault()
                   setIsLoading(true)
                   try {
-                    const mainImage = newProduct.images.split(',')[0]?.trim() || ''
-                    const secondaryImages = newProduct.images.split(',').slice(1).map((url) => url.trim()).filter(Boolean)
-                    const imagesArray = [mainImage, ...secondaryImages].filter(Boolean)
+                    // Utiliser les images du drag and drop ou fallback sur le champ texte
+                    const imagesArray = newProductImages.length > 0 
+                      ? newProductImages 
+                      : newProduct.images.split(',').map(url => url.trim()).filter(Boolean)
 
                     const response = await fetch('/api/admin/products', {
                       method: 'POST',
@@ -1118,15 +1375,23 @@ function AdminContent() {
                         published: true,
                         isFeatured: false
                       })
+                      setNewProductImages([])
+                      setNewProductMainImageIndex(0)
                       setNewProductVariants([])
                       // Recharger toutes les données (produits, stats, etc.)
                       await loadData()
                     } else {
-                      alert('Erreur: ' + (data.error || 'Erreur inconnue'))
+                      const errorMessage = data.details 
+                        ? `${data.error}\n${data.details}`
+                        : data.error || 'Erreur inconnue'
+                      alert(`Erreur: ${errorMessage}`)
                     }
                   } catch (error) {
                     console.error('Erreur:', error)
-                    alert('Erreur lors de la création du produit: ' + (error instanceof Error ? error.message : 'Erreur inconnue'))
+                    const errorMessage = error instanceof Error 
+                      ? error.message 
+                      : 'Erreur inconnue lors de la création du produit'
+                    alert(`Erreur: ${errorMessage}`)
                   } finally {
                     setIsLoading(false)
                   }
@@ -1149,7 +1414,18 @@ function AdminContent() {
                           .replace(/[\u0300-\u036f]/g, '')
                           .replace(/[^a-z0-9]+/g, '-')
                           .replace(/(^-|-$)/g, '')
-                        setNewProduct((prev) => ({ ...prev, title: newTitle, slug }))
+                        // Générer le SKU automatiquement (seulement si le SKU n'a pas été modifié manuellement)
+                        const autoGeneratedSku = generateSKU(newTitle, newProduct.categoryIds || [], newProduct.cbdPercent)
+                        const currentSku = newProduct.sku
+                        // Si le SKU actuel correspond au SKU auto-généré précédent ou est vide, on le régénère
+                        const shouldRegenerateSku = !currentSku || currentSku === generateSKU(newProduct.title || '', newProduct.categoryIds || [], newProduct.cbdPercent)
+                        
+                        setNewProduct((prev) => ({ 
+                          ...prev, 
+                          title: newTitle, 
+                          slug,
+                          sku: shouldRegenerateSku ? autoGeneratedSku : currentSku
+                        }))
                       }}
                       className="w-full px-4 py-2 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-gold"
                     />
@@ -1189,7 +1465,7 @@ function AdminContent() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-gray-400 mb-2">Stock</label>
+                    <label className="block text-xs sm:text-sm text-gray-400 mb-2">Stock</label>
                     <input
                       type="number"
                       value={newProduct.stock}
@@ -1203,84 +1479,106 @@ function AdminContent() {
                       type="number"
                       step="0.1"
                       value={newProduct.cbdPercent}
-                      onChange={(e) => setNewProduct({ ...newProduct, cbdPercent: e.target.value })}
+                      onChange={(e) => {
+                        const newCbdPercent = e.target.value
+                        // Régénérer le SKU si nécessaire
+                        const shouldRegenerateSku = !newProduct.sku || newProduct.sku === generateSKU(newProduct.title || '', newProduct.categoryIds || [], newProduct.cbdPercent)
+                        const newSku = shouldRegenerateSku ? generateSKU(newProduct.title || '', newProduct.categoryIds || [], newCbdPercent) : newProduct.sku
+                        setNewProduct({ ...newProduct, cbdPercent: newCbdPercent, sku: newSku })
+                      }}
                       className="w-full px-4 py-2 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-gold"
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                   <div>
-                    <label className="block text-sm text-gray-400 mb-2">SKU</label>
-                    <input
-                      type="text"
-                      value={newProduct.sku}
-                      onChange={(e) => setNewProduct({ ...newProduct, sku: e.target.value })}
-                      className="w-full px-4 py-2 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                    />
+                    <div>
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0 mb-2">
+                        <label className="block text-xs sm:text-sm text-gray-400">
+                          SKU
+                          <span className="hidden sm:inline text-xs text-gray-500 ml-2">(Stock Keeping Unit - Code produit unique)</span>
+                          <span className="sm:hidden text-xs text-gray-500 block mt-1">Code produit unique</span>
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const autoSku = generateSKU(newProduct.title || '', newProduct.categoryIds || [], newProduct.cbdPercent)
+                            setNewProduct({ ...newProduct, sku: autoSku })
+                          }}
+                          className="text-xs text-brand-gold hover:text-yellow-400 underline"
+                          disabled={!newProduct.title}
+                        >
+                          Régénérer
+                        </button>
+                      </div>
+                      <input
+                        type="text"
+                        value={newProduct.sku || ''}
+                        onChange={(e) => setNewProduct({ ...newProduct, sku: e.target.value })}
+                        placeholder="Généré automatiquement..."
+                        className="w-full px-4 py-2 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Code unique généré automatiquement à partir du titre, de la catégorie et du % CBD. Modifiable manuellement si nécessaire.
+                      </p>
+                    </div>
                   </div>
                   <div>
                     <label className="block text-sm text-gray-400 mb-2">Catégories</label>
-                    <select
-                      multiple
-                      value={newProduct.categoryIds}
-                      onChange={(e) => {
-                        const selected = Array.from(e.target.selectedOptions, (option) => option.value)
-                        setNewProduct({ ...newProduct, categoryIds: selected })
-                      }}
-                      className="w-full px-4 py-2 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                    >
-                      {categories.map((cat) => (
-                        <option key={cat.id} value={cat.id}>
-                          {cat.name}
-                        </option>
-                      ))}
-                    </select>
-                    <p className="text-xs text-gray-500 mt-1">Maintenez Ctrl/Cmd pour sélectionner plusieurs catégories</p>
+                    {categories.length > 0 ? (
+                      <select
+                        multiple
+                        value={newProduct.categoryIds || []}
+                        onChange={(e) => {
+                          const selected = Array.from(e.target.selectedOptions, (option) => option.value)
+                          // Régénérer le SKU si nécessaire
+                          const shouldRegenerateSku = !newProduct.sku || newProduct.sku === generateSKU(newProduct.title || '', newProduct.categoryIds || [], newProduct.cbdPercent)
+                          const newSku = shouldRegenerateSku ? generateSKU(newProduct.title || '', selected, newProduct.cbdPercent) : newProduct.sku
+                          setNewProduct({ ...newProduct, categoryIds: selected, sku: newSku })
+                        }}
+                        className="w-full px-4 py-2 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-gold min-h-[120px]"
+                        size={Math.min(categories.length, 5)}
+                      >
+                        {categories.map((cat) => (
+                          <option key={cat.id} value={cat.id}>
+                            {cat.name}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <div className="w-full px-4 py-2 bg-black/30 border border-white/10 rounded-lg text-gray-500 text-sm">
+                        Aucune catégorie disponible. Créez d'abord des catégories.
+                      </div>
+                    )}
+                    <p className="text-xs text-gray-500 mt-1">
+                      Maintenez Ctrl/Cmd pour sélectionner plusieurs catégories
+                    </p>
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm text-gray-400 mb-2">Image principale *</label>
-                  <input
-                    type="text"
-                    required
-                    value={newProduct.images.split(',')[0] || ''}
-                    onChange={(e) => {
-                      const mainImage = e.target.value
-                      const otherImages = newProduct.images.split(',').slice(1).join(',')
-                      setNewProduct({ ...newProduct, images: otherImages ? `${mainImage}, ${otherImages}` : mainImage })
-                    }}
-                    placeholder="/products/image1.jpg"
-                    className="w-full px-4 py-2 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                  />
-                  {newProduct.images.split(',')[0] && (
-                    <div className="mt-2">
-                      <Image
-                        src={newProduct.images.split(',')[0]}
-                        alt="Preview"
-                        width={200}
-                        height={200}
-                        className="rounded-lg border border-white/10"
-                      />
-                    </div>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm text-gray-400 mb-2">Images secondaires (URLs séparées par des virgules)</label>
-                  <input
-                    type="text"
-                    value={newProduct.images.split(',').slice(1).join(', ')}
-                    onChange={(e) => {
-                      const mainImage = newProduct.images.split(',')[0] || ''
-                      const secondaryImages = e.target.value
-                      setNewProduct({ ...newProduct, images: mainImage ? `${mainImage}, ${secondaryImages}` : secondaryImages })
-                    }}
-                    placeholder="/products/image2.jpg, /products/image3.jpg"
-                    className="w-full px-4 py-2 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                  />
-                </div>
+                {/* Upload d'images avec drag and drop */}
+                <ImageUploader
+                  images={newProductImages}
+                  onChange={(images) => {
+                    setNewProductImages(images)
+                    // Mettre à jour aussi le champ images pour compatibilité
+                    setNewProduct({ ...newProduct, images: images.join(',') })
+                  }}
+                  mainImageIndex={newProductMainImageIndex}
+                  onMainImageChange={(index) => {
+                    setNewProductMainImageIndex(index)
+                    // Réorganiser les images pour mettre la principale en premier
+                    const reordered = [...newProductImages]
+                    const [mainImage] = reordered.splice(index, 1)
+                    reordered.unshift(mainImage)
+                    setNewProductImages(reordered)
+                    setNewProductMainImageIndex(0)
+                    setNewProduct({ ...newProduct, images: reordered.join(',') })
+                  }}
+                  label="Images du produit"
+                  required
+                />
 
                 {/* Section Variants */}
                 <div className="border-t border-white/10 pt-4">
@@ -1428,10 +1726,12 @@ function AdminContent() {
                   e.preventDefault()
                   setIsLoading(true)
                   try {
-                    const secondaryImagesArray = editingProduct.secondaryImages
-                      ? editingProduct.secondaryImages.split(',').map((url) => url.trim()).filter(Boolean)
-                      : []
-                    const allImages = [editingProduct.mainImage, ...secondaryImagesArray].filter(Boolean)
+                    // Utiliser les images du drag and drop ou fallback sur les champs texte
+                    const allImages = editingProductImages.length > 0
+                      ? editingProductImages
+                      : [editingProduct.mainImage, ...(editingProduct.secondaryImages
+                          ? editingProduct.secondaryImages.split(',').map((url) => url.trim()).filter(Boolean)
+                          : [])].filter(Boolean)
 
                     const response = await fetch(`/api/admin/products/${editingProduct.id}`, {
                       method: 'PATCH',
@@ -1576,39 +1876,36 @@ function AdminContent() {
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm text-gray-400 mb-2">Image principale *</label>
-                  <input
-                    type="text"
-                    required
-                    value={editingProduct.mainImage}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, mainImage: e.target.value })}
-                    placeholder="/products/image1.jpg"
-                    className="w-full px-4 py-2 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                  />
-                  {editingProduct.mainImage && (
-                    <div className="mt-2">
-                      <Image
-                        src={editingProduct.mainImage}
-                        alt="Preview"
-                        width={200}
-                        height={200}
-                        className="rounded-lg border border-white/10"
-                      />
-                    </div>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm text-gray-400 mb-2">Images secondaires (URLs séparées par des virgules)</label>
-                  <input
-                    type="text"
-                    value={editingProduct.secondaryImages}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, secondaryImages: e.target.value })}
-                    placeholder="/products/image2.jpg, /products/image3.jpg"
-                    className="w-full px-4 py-2 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                  />
-                </div>
+                {/* Upload d'images avec drag and drop */}
+                <ImageUploader
+                  images={editingProductImages}
+                  onChange={(images) => {
+                    setEditingProductImages(images)
+                    // Mettre à jour aussi les champs pour compatibilité
+                    setEditingProduct({ 
+                      ...editingProduct, 
+                      mainImage: images[0] || '',
+                      secondaryImages: images.slice(1).join(', ')
+                    })
+                  }}
+                  mainImageIndex={editingProductMainImageIndex}
+                  onMainImageChange={(index) => {
+                    setEditingProductMainImageIndex(index)
+                    // Réorganiser les images pour mettre la principale en premier
+                    const reordered = [...editingProductImages]
+                    const [mainImage] = reordered.splice(index, 1)
+                    reordered.unshift(mainImage)
+                    setEditingProductImages(reordered)
+                    setEditingProductMainImageIndex(0)
+                    setEditingProduct({ 
+                      ...editingProduct, 
+                      mainImage: reordered[0] || '',
+                      secondaryImages: reordered.slice(1).join(', ')
+                    })
+                  }}
+                  label="Images du produit"
+                  required
+                />
 
                 {/* Section Variants */}
                 <div className="border-t border-white/10 pt-4">

@@ -27,8 +27,20 @@ export async function GET(
 
     return NextResponse.json(order)
 
-  } catch (error) {
-    console.error('Erreur récupération commande:', error)
+  } catch (error: any) {
+    console.error('❌ Erreur récupération commande:', error)
+    
+    // Gérer spécifiquement les erreurs de connexion à la base de données
+    if (error?.code === 'P1001' || error?.code === 'P1000') {
+      return NextResponse.json(
+        { 
+          error: 'Service temporairement indisponible',
+          details: 'La connexion à la base de données n\'est pas disponible. Veuillez réessayer plus tard.'
+        },
+        { status: 503 }
+      )
+    }
+    
     return NextResponse.json(
       { error: 'Erreur interne du serveur' },
       { status: 500 }

@@ -45,11 +45,18 @@ export default function OrdersPage() {
         },
       })
 
+      const data = await response.json()
+
       if (!response.ok) {
-        throw new Error('Erreur lors du chargement des commandes')
+        // Si c'est une erreur 503 (Service Unavailable), afficher le message spécifique
+        if (response.status === 503) {
+          setErrorMessage(data.details || data.error || 'Service temporairement indisponible')
+          setOrders(data.orders || []) // Utiliser le tableau vide de la réponse
+          return
+        }
+        throw new Error(data.error || data.details || 'Erreur lors du chargement des commandes')
       }
 
-      const data = await response.json()
       setOrders(data.orders || [])
     } catch (error) {
       console.error('Erreur lors du chargement des commandes:', error)

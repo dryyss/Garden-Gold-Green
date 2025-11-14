@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -12,8 +13,6 @@ import {
   faLock
 } from '@fortawesome/free-solid-svg-icons'
 import Image from 'next/image'
-import { loadStripe } from '@stripe/stripe-js'
-
 export default function AuthPage() {
   const router = useRouter()
   const { login, register, state } = useAuth()
@@ -26,8 +25,6 @@ export default function AuthPage() {
     phone: ''
   })
 
-  const stripePromise = loadStripe('your-publishable-key-from-stripe')
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
@@ -36,31 +33,13 @@ export default function AuthPage() {
         await login(formData.email, formData.password)
         router.push('/account')
       } else {
-        const stripe = await stripePromise
-
-        // Call your backend to create the customer and subscription
-        const response = await fetch('/api/auth/register', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
+        const fullName = `${formData.firstName} ${formData.lastName}`.trim()
+        await register({
             email: formData.email,
             password: formData.password,
-            firstName: formData.firstName,
-            lastName: formData.lastName,
-            phone: formData.phone
-          })
+          name: fullName,
         })
-
-        const data = await response.json()
-
-        if (response.ok) {
-          // Redirect to the checkout page
-          router.push(data.checkoutUrl)
-        } else {
-          console.error('Error registering:', data.message)
-        }
+        router.push('/account')
       }
     } catch (error) {
       console.error('Erreur d\'authentification:', error)
@@ -248,7 +227,7 @@ export default function AuthPage() {
             {/* Switch Mode */}
             <div className="text-center mt-6">
               <p className="text-gray-400">
-                {isLoginMode ? "Vous n'avez pas de compte ?" : "Vous avez déjà un compte ?"}
+                {isLoginMode ? 'Vous n&apos;avez pas de compte ?' : 'Vous avez déjà un compte ?'}
               </p>
               <button
                 onClick={() => setIsLoginMode(!isLoginMode)}
@@ -285,13 +264,13 @@ export default function AuthPage() {
           <div className="text-center mt-8">
             <p className="text-xs text-gray-500">
               En continuant, vous acceptez nos{' '}
-              <a href="/terms" className="text-brand-gold hover:text-yellow-300">
-                Conditions d'utilisation
-              </a>{' '}
+              <Link href="/terms" className="text-brand-gold hover:text-yellow-300">
+                Conditions d&apos;utilisation
+              </Link>{' '}
               et notre{' '}
-              <a href="/privacy" className="text-brand-gold hover:text-yellow-300">
+              <Link href="/privacy" className="text-brand-gold hover:text-yellow-300">
                 Politique de confidentialité
-              </a>
+              </Link>
             </p>
           </div>
         </div>

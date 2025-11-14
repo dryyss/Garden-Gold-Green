@@ -49,10 +49,11 @@ export function Header() {
   const [isNavigationOpen, setIsNavigationOpen] = useState(true)
   const { state, dispatch } = useCart()
   const { state: authState, logout, isAdmin: isAdminAuth } = useAuth()
-  const { state: auth0State, logout: logoutAuth0, isAdmin: isAdminAuth0 } = useAuth0Context()
+  const { state: auth0State, logout: logoutAuth0, isAdminOrOwner: isAdminOrOwnerAuth0 } = useAuth0Context()
   const { t } = useTranslation()
   const user = auth0State.user || authState.user
-  const isAdmin = auth0State.user ? isAdminAuth0() : isAdminAuth()
+  // Utiliser isAdminOrOwner pour Auth0 pour permettre aux owners d'accéder aussi
+  const isAdmin = auth0State.user ? isAdminOrOwnerAuth0() : isAdminAuth()
   
   // DEBUG: Log pour vérifier le rôle
   useEffect(() => {

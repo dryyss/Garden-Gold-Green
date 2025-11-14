@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useCart } from '@/contexts/CartContext'
+import { generateOrderNumber } from '@/lib/order-utils'
 
 interface UsePaymentSuccessProps {
   sessionId?: string | null
@@ -41,7 +42,7 @@ export function usePaymentSuccess({
 
         if (orderId) {
           // Commande PayPal ou autre - ID déjà disponible
-          setDisplayOrderId(orderId)
+          setDisplayOrderId(generateOrderNumber(orderId))
           setIsProcessing(false)
           onSuccess?.()
           return
@@ -53,14 +54,17 @@ export function usePaymentSuccess({
             const response = await fetch(`/api/orders/session/${sessionId}`)
             if (response.ok) {
               const order = await response.json()
-              setDisplayOrderId(order.id)
+              // Formater le numéro de commande même si c'est déjà un format valide
+              setDisplayOrderId(generateOrderNumber(order.id, order.createdAt))
             } else {
-              console.warn('Impossible de récupérer l\'ID de commande, utilisation du sessionId')
-              setDisplayOrderId(sessionId)
+              console.warn('Impossible de récupérer l\'ID de commande, formatage du sessionId')
+              // Si la commande n'est pas trouvée, formater le sessionId pour afficher un numéro propre
+              setDisplayOrderId(generateOrderNumber(sessionId))
             }
           } catch (error) {
-            console.warn('Erreur lors de la récupération de la commande, utilisation du sessionId:', error)
-            setDisplayOrderId(sessionId)
+            console.warn('Erreur lors de la récupération de la commande, formatage du sessionId:', error)
+            // Même en cas d'erreur, formater le sessionId pour afficher un numéro propre
+            setDisplayOrderId(generateOrderNumber(sessionId))
           }
         }
 
