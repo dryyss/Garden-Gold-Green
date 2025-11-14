@@ -12,14 +12,15 @@ import {
   faList,
   faArrowLeft
 } from '@fortawesome/free-solid-svg-icons'
-import productsData from '@/data/products.json'
-
-function getProducts(searchParams: URLSearchParams) {
+function filterProducts(
+  allProducts: any[],
+  searchParams: URLSearchParams
+) {
   const category = searchParams.get('category')
   const search = searchParams.get('search')
   const sort = searchParams.get('sort') || 'newest'
   
-  let filteredProducts = productsData.filter(product => product.published)
+  let filteredProducts = allProducts.filter(product => product.published)
   
   // Filtrer par catégorie
   if (category) {
@@ -57,29 +58,52 @@ function getProducts(searchParams: URLSearchParams) {
   return filteredProducts.slice(0, 12) // Limiter à 12 produits par page
 }
 
-function getCategories() {
+function getCategories(products: any[]) {
   // Extraire les catégories uniques des produits
   const categoriesMap = new Map()
-  productsData.forEach(product => {
-    product.categories.forEach(category => {
-      if (!categoriesMap.has(category.slug)) {
-        categoriesMap.set(category.slug, category)
-      }
-    })
+  products.forEach(product => {
+    if (product.categories) {
+      product.categories.forEach((category: any) => {
+        if (!categoriesMap.has(category.slug)) {
+          categoriesMap.set(category.slug, category)
+        }
+      })
+    }
   })
-  return Array.from(categoriesMap.values()).sort((a, b) => a.name.localeCompare(b.name))
+  return Array.from(categoriesMap.values()).sort((a: any, b: any) => a.name.localeCompare(b.name))
 }
 
 export default function ProductsPage() {
   const searchParams = useSearchParams()
-  const [products, setProducts] = useState(getProducts(searchParams))
-  const [categories] = useState(getCategories())
+  const [allProducts, setAllProducts] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '')
   const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'newest')
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || '')
 
+  // Charger les produits depuis l'API
   useEffect(() => {
-    setProducts(getProducts(searchParams))
+    const loadProducts = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch('/api/products/all')
+        const data = await response.json()
+        if (data.success && data.products) {
+          setAllProducts(data.products)
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement des produits:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadProducts()
+  }, [])
+
+  const products = filterProducts(allProducts, searchParams)
+  const categories = getCategories(allProducts)
+
+  useEffect(() => {
     setSearchTerm(searchParams.get('search') || '')
     setSortBy(searchParams.get('sort') || 'newest')
     setSelectedCategory(searchParams.get('category') || '')

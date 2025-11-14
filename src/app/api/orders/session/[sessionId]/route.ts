@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { readOrdersMap } from '@/lib/orders-store'
+import { prisma } from '@/lib/prisma'
 
 export async function GET(
   request: NextRequest,
@@ -15,8 +15,11 @@ export async function GET(
       )
     }
 
-    const orders = await readOrdersMap()
-    const order = Object.values(orders).find(o => o.stripeSessionId === sessionId)
+    // Chercher la commande par stripeSessionId
+    const order = await prisma.order.findFirst({
+      where: { stripeSessionId: sessionId },
+      include: { items: { include: { product: true } } }
+    })
 
     if (!order) {
       return NextResponse.json(
@@ -25,7 +28,27 @@ export async function GET(
       )
     }
 
-    return NextResponse.json(order)
+    // Convertir en format OrderRecord
+    const orderRecord = {
+      id: order.id,
+      userId: order.userId,
+      status: order.status,
+      totalCents: order.totalCents,
+      currency: order.currency,
+      items: order.items.map(item => ({
+        productId: item.productId,
+        name: item.name,
+        priceCents: item.priceCents,
+        quantity: item.quantity,
+      })),
+      createdAt: order.createdAt.toISOString(),
+      updatedAt: order.updatedAt?.toISOString() || order.createdAt.toISOString(),
+      customerEmail: order.customerEmail || undefined,
+      customerName: order.customerName || undefined,
+      stripeSessionId: order.stripeSessionId || undefined,
+    }
+
+    return NextResponse.json(orderRecord)
 
   } catch (error: any) {
     console.error('❌ Erreur récupération commande:', error)

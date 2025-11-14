@@ -1,5 +1,5 @@
 import sgMail, { MailDataRequired } from '@sendgrid/mail'
-import productsData from '@/data/products.json'
+import { getProductById } from '@/lib/products-store'
 
 type TemplateData = Record<string, unknown>
 
@@ -181,6 +181,40 @@ export async function sendOrderConfirmationEmail(order: OrderEmailPayload) {
     }
   }
 
+  // Préparer les items pour l'email
+  const emailItems = await Promise.all(items.map(async (item) => {
+    const priceCentsValue =
+      typeof (item as any).priceCents === 'number' ? (item as any).priceCents : undefined
+    const productId = (item as any).productId || (item as any).id
+
+    let unitPriceAmount =
+      typeof item.price === 'number'
+        ? item.price
+        : priceCentsValue !== undefined
+          ? priceCentsValue / 100
+          : undefined
+
+    if (unitPriceAmount === undefined && productId) {
+      const product = await getProductById(String(productId))
+      if (product?.priceCents) {
+        unitPriceAmount = product.priceCents / 100
+      }
+    }
+
+    if (unitPriceAmount === undefined) {
+      unitPriceAmount = 0
+    }
+
+    const lineTotalAmount = unitPriceAmount * (item.quantity || 0)
+
+    return {
+      name: item.name,
+      quantity: item.quantity,
+      unit_price: formatPrice(unitPriceAmount, order.currency),
+      line_total: formatPrice(lineTotalAmount, order.currency),
+    }
+  }))
+
   await sendEmail({
     to: order.customerEmail,
     templateId: ORDER_CONFIRMATION_TEMPLATE_ID,
@@ -193,40 +227,7 @@ export async function sendOrderConfirmationEmail(order: OrderEmailPayload) {
       order_id: order.id,
       customer_name: order.customerName,
       order_total: formatPrice(order.total, order.currency),
-      items: items.map(item => {
-        const priceCentsValue =
-          typeof (item as any).priceCents === 'number' ? (item as any).priceCents : undefined
-        const productId = (item as any).productId || (item as any).id
-
-        let unitPriceAmount =
-          typeof item.price === 'number'
-            ? item.price
-            : priceCentsValue !== undefined
-              ? priceCentsValue / 100
-              : undefined
-
-        if (unitPriceAmount === undefined && productId) {
-          const product = (productsData as any[]).find(
-            (p: any) => String(p.id) === String(productId)
-          )
-          if (product?.priceCents) {
-            unitPriceAmount = product.priceCents / 100
-          }
-        }
-
-        if (unitPriceAmount === undefined) {
-          unitPriceAmount = 0
-        }
-
-        const lineTotalAmount = unitPriceAmount * (item.quantity || 0)
-
-        return {
-          name: item.name,
-          quantity: item.quantity,
-          unit_price: formatPrice(unitPriceAmount, order.currency),
-          line_total: formatPrice(lineTotalAmount, order.currency),
-        }
-      }),
+      items: emailItems,
       tracking_number: order.trackingNumber,
       shipping_name: `${shipping.firstName ?? ''} ${shipping.lastName ?? ''}`.trim() || undefined,
       shipping_address: shipping.address,

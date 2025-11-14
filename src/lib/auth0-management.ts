@@ -13,6 +13,10 @@ const AUTH0_M2M_AUDIENCE =
 // Cache du token d'accès (valide 24h)
 let cachedToken: { token: string; expiresAt: number } | null = null
 
+// Cache des rôles utilisateurs (valide 5 minutes)
+const rolesCache = new Map<string, { roles: string[]; expiresAt: number }>()
+const ROLES_CACHE_TTL = 5 * 60 * 1000 // 5 minutes
+
 /**
  * Fonction utilitaire pour retry avec backoff exponentiel
  */
@@ -30,12 +34,15 @@ async function retryWithBackoff<T>(
       lastError = error
       
       // Si c'est une erreur 429 (Too Many Requests), on retry avec backoff
-      const isRateLimitError = error.message?.includes('429') || 
-                               error.message?.includes('Too Many Requests')
+      const status = error.status || (error as any).statusCode || 0
+      const isRateLimitError = status === 429 || 
+                               error.message?.includes('429') || 
+                               error.message?.includes('Too Many Requests') ||
+                               error.message?.includes('too_many_requests')
       
       if (isRateLimitError && attempt < maxRetries) {
-        // Backoff exponentiel : 1s, 2s, 4s, etc.
-        const delay = baseDelay * Math.pow(2, attempt)
+        // Backoff exponentiel plus long pour les rate limits : 2s, 4s, 8s, etc.
+        const delay = baseDelay * Math.pow(2, attempt + 1) // Commence à 2s au lieu de 1s
         console.warn(`Rate limit atteint, retry dans ${delay}ms (tentative ${attempt + 1}/${maxRetries + 1})`)
         await new Promise(resolve => setTimeout(resolve, delay))
         continue
@@ -125,40 +132,78 @@ async function getManagementToken(): Promise<string> {
  * @param auth0UserId - L'ID Auth0 de l'utilisateur (commence par auth0| ou google-oauth2|)
  */
 export async function getAuth0UserRoles(auth0UserId: string): Promise<string[]> {
-  return retryWithBackoff(async () => {
-    try {
-      const token = await getManagementToken()
-      const response = await fetch(
-        `https://${AUTH0_DOMAIN}/api/v2/users/${encodeURIComponent(auth0UserId)}/roles`,
-        {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      )
+  // Vérifier le cache
+  const cached = rolesCache.get(auth0UserId)
+  if (cached && cached.expiresAt > Date.now()) {
+    return cached.roles
+  }
 
-      if (!response.ok) {
-        if (response.status === 404) {
-          // Utilisateur non trouvé dans Auth0, retourner un tableau vide
-          return []
+  try {
+    return await retryWithBackoff(async () => {
+      try {
+        const token = await getManagementToken()
+        const response = await fetch(
+          `https://${AUTH0_DOMAIN}/api/v2/users/${encodeURIComponent(auth0UserId)}/roles`,
+          {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          }
+        )
+
+        if (!response.ok) {
+          if (response.status === 404) {
+            // Utilisateur non trouvé dans Auth0, retourner un tableau vide
+            const emptyRoles: string[] = []
+            rolesCache.set(auth0UserId, { roles: emptyRoles, expiresAt: Date.now() + ROLES_CACHE_TTL })
+            return emptyRoles
+          }
+          
+          // Si erreur 429 (rate limit global), retourner un tableau vide au lieu de throw
+          if (response.status === 429) {
+            console.warn(`⚠️ Rate limit global Auth0 atteint pour ${auth0UserId}, retour de rôles vides`)
+            const emptyRoles: string[] = []
+            // Mettre en cache avec un TTL plus court pour éviter de spammer
+            rolesCache.set(auth0UserId, { roles: emptyRoles, expiresAt: Date.now() + 60000 }) // 1 minute
+            return emptyRoles
+          }
+          
+          const errorText = await response.text()
+          const error = new Error(`Failed to get Auth0 roles: ${errorText}`)
+          ;(error as any).status = response.status
+          throw error
         }
+
+        const roles = await response.json()
+        const roleNames = roles.map((r: any) => r.name || r.id)
         
-        // Si erreur 429, le retry sera géré par retryWithBackoff
-        const errorText = await response.text()
-        const error = new Error(`Failed to get Auth0 roles: ${errorText}`)
-        ;(error as any).status = response.status
+        // Mettre en cache
+        rolesCache.set(auth0UserId, { 
+          roles: roleNames, 
+          expiresAt: Date.now() + ROLES_CACHE_TTL 
+        })
+        
+        return roleNames
+      } catch (error: any) {
+        // Si c'est une erreur 429 après retry, retourner un tableau vide
+        if (error.status === 429 || error.message?.includes('429') || error.message?.includes('too_many_requests')) {
+          console.warn(`⚠️ Rate limit Auth0 persistant pour ${auth0UserId}, retour de rôles vides`)
+          const emptyRoles: string[] = []
+          rolesCache.set(auth0UserId, { roles: emptyRoles, expiresAt: Date.now() + 60000 })
+          return emptyRoles
+        }
         throw error
       }
-
-      const roles = await response.json()
-      return roles.map((r: any) => r.name || r.id)
-    } catch (error) {
-      console.error('Erreur lors de la récupération des rôles Auth0:', error)
-      throw error
-    }
-  })
+    }, 2, 2000) // Réduire à 2 retries max avec 2s de base delay
+  } catch (error) {
+    console.error('Erreur lors de la récupération des rôles Auth0:', error)
+    // En cas d'erreur finale, retourner un tableau vide plutôt que de throw
+    const emptyRoles: string[] = []
+    rolesCache.set(auth0UserId, { roles: emptyRoles, expiresAt: Date.now() + 60000 })
+    return emptyRoles
+  }
 }
 
 /**
@@ -168,7 +213,7 @@ export async function getAuth0UserRoles(auth0UserId: string): Promise<string[]> 
  */
 export async function getAuth0UserRolesBatch(
   auth0UserIds: string[],
-  concurrency: number = 5
+  concurrency: number = 3 // Réduire la concurrence par défaut pour éviter les rate limits
 ): Promise<Map<string, string[]>> {
   const tasks = auth0UserIds.map((userId) => async () => {
     try {
@@ -500,5 +545,37 @@ export async function listAuth0Users(
     total,
     page,
     perPage,
+  }
+}
+
+/**
+ * Renvoie un email de vérification à un utilisateur Auth0
+ * @param auth0UserId - L'ID Auth0 de l'utilisateur
+ */
+export async function sendVerificationEmail(auth0UserId: string): Promise<void> {
+  try {
+    const token = await getManagementToken()
+    
+    const response = await fetch(`https://${AUTH0_DOMAIN}/api/v2/jobs/verification-email`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user_id: auth0UserId,
+      }),
+    })
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      throw new Error(`Failed to send verification email: ${errorText}`)
+    }
+
+    const job = await response.json()
+    console.log(`✅ Email de vérification envoyé pour l'utilisateur ${auth0UserId}, job ID: ${job.id}`)
+  } catch (error) {
+    console.error('❌ Erreur lors de l\'envoi de l\'email de vérification:', error)
+    throw error
   }
 }

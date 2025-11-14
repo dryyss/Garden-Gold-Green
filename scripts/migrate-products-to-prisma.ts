@@ -82,15 +82,25 @@ async function migrateProducts() {
 
     for (const product of products) {
       try {
-        // Vérifier si le produit existe déjà
-        const existing = await prisma.product.findUnique({
+        // Vérifier si le produit existe déjà (par ID ou slug)
+        const existingById = await prisma.product.findUnique({
           where: { id: product.id }
         })
 
-        if (existing) {
+        const existingBySlug = await prisma.product.findUnique({
+          where: { slug: product.slug }
+        })
+
+        if (existingById) {
           console.log(`⏭️  Produit ${product.id} déjà existant: ${product.title}`)
           skipCount++
           continue
+        }
+
+        if (existingBySlug) {
+          console.log(`⚠️  Produit ${product.id} a un slug déjà utilisé: ${product.slug}, modification du slug`)
+          // Modifier le slug pour éviter le conflit
+          product.slug = `${product.slug}-${product.id}`
         }
 
         // Convertir les images en JSON string

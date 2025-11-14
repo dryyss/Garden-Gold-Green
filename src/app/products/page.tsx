@@ -12,7 +12,6 @@ import {
   faArrowLeft,
   faXmark
 } from '@fortawesome/free-solid-svg-icons'
-import productsData from '@/data/products.json'
 
 // Type extension pour window
 declare global {
@@ -71,7 +70,10 @@ function transformProduct(product: Record<string, unknown>): TransformedProduct 
   } as TransformedProduct
 }
 
-function getProducts(searchParams: URLSearchParams) {
+function filterAndSortProducts(
+  allProducts: TransformedProduct[],
+  searchParams: URLSearchParams
+) {
   const category = searchParams.get('category')
   const search = searchParams.get('search')
   const sort = searchParams.get('sort') || 'newest'
@@ -80,7 +82,7 @@ function getProducts(searchParams: URLSearchParams) {
   const page = parseInt(searchParams.get('page') || '1')
   const limit = 12
   
-  let products = productsData.map(transformProduct)
+  let products = [...allProducts]
   
   // Filtrage par catégorie
   if (category && category !== 'all') {
@@ -151,14 +153,11 @@ function getProducts(searchParams: URLSearchParams) {
   }
 }
 
-function getCategories() {
+function getCategories(products: TransformedProduct[]) {
   const categories = new Set<string>()
-  productsData.forEach((product: Record<string, unknown>) => {
-    const cats = (product as { categories?: Array<{ name?: string }> }).categories
-    if (cats && cats.length > 0) {
-      cats.forEach((cat: { name?: string }) => {
-        if (cat.name) categories.add(cat.name)
-      })
+  products.forEach((product) => {
+    if (product.category) {
+      categories.add(product.category)
     }
   })
   return Array.from(categories).map((name: string) => ({
@@ -173,14 +172,36 @@ export default function ProductsPage() {
   const [search, setSearch] = useState(searchParams.get('search') || '')
   const [showFilters, setShowFilters] = useState(false)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const [allProducts, setAllProducts] = useState<TransformedProduct[]>([])
+  const [loading, setLoading] = useState(true)
+  
+  // Charger les produits depuis l'API
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch('/api/products/all')
+        const data = await response.json()
+        if (data.success && data.products) {
+          const transformed = data.products.map(transformProduct)
+          setAllProducts(transformed)
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement des produits:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadProducts()
+  }, [])
   
   // Mettre à jour la recherche quand les paramètres URL changent
   useEffect(() => {
     setSearch(searchParams.get('search') || '')
   }, [searchParams])
   
-  const { products, total, totalPages, currentPage } = getProducts(searchParams)
-  const categories = getCategories()
+  const { products, total, totalPages, currentPage } = filterAndSortProducts(allProducts, searchParams)
+  const categories = getCategories(allProducts)
   const handleSearch = (value: string) => {
     setSearch(value)
     
@@ -220,6 +241,17 @@ export default function ProductsPage() {
     const params = new URLSearchParams(searchParams.toString())
     params.set('page', page.toString())
     router.push(`/products?${params.toString()}`)
+  }
+  
+  if (loading) {
+    return (
+      <main className="bg-brand-black min-h-screen pt-2 sm:pt-6 lg:pt-10 xl:pt-14 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-gold mx-auto mb-4"></div>
+          <p className="text-white">Chargement des produits...</p>
+        </div>
+      </main>
+    )
   }
   
   return (

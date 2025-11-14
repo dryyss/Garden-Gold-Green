@@ -64,7 +64,19 @@ export function Auth0Provider({ children }: { children: React.ReactNode }) {
       return
     }
 
+    // Ignorer les erreurs 401 (non authentifié) - c'est normal si l'utilisateur n'est pas connecté
     if (auth0Error) {
+      // Ne pas afficher d'erreur si c'est juste une erreur d'authentification (utilisateur non connecté)
+      if (auth0Error.message?.includes('401') || auth0Error.message?.includes('Unauthorized')) {
+        setState({
+          user: null,
+          isAuthenticated: false,
+          isLoading: false,
+          error: null, // Pas d'erreur si l'utilisateur n'est simplement pas connecté
+        })
+        return
+      }
+      
       setState({
         user: null,
         isAuthenticated: false,

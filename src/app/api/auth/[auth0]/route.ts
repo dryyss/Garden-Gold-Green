@@ -1,18 +1,24 @@
-import { NextRequest } from 'next/server';
+import { handleAuth, handleLogin, handleLogout, handleCallback, handleProfile } from '@auth0/nextjs-auth0';
 
-// Dans Auth0 v4 avec Next.js 15, les routes sont gérées par le middleware
-// Cette route est un fallback pour assurer la compatibilité
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ auth0: string }> }
-) {
-  // Le middleware devrait avoir intercepté cette requête
-  // Si on arrive ici, retourner une erreur
-  return Response.json(
-    { error: 'Auth route not handled by middleware. Check your middleware configuration.' },
-    { status: 500 }
-  );
-}
+// Route Auth0 catch-all pour gérer toutes les routes d'authentification
+// Cela crée automatiquement les routes suivantes :
+// - /api/auth/login
+// - /api/auth/logout
+// - /api/auth/callback
+// - /api/auth/me (via handleProfile)
+export const GET = handleAuth({
+  login: handleLogin({
+    authorizationParams: {
+      audience: process.env.AUTH0_AUDIENCE,
+      scope: 'openid profile email',
+    },
+  }),
+  logout: handleLogout({
+    returnTo: process.env.AUTH0_BASE_URL || process.env.NEXT_PUBLIC_APP_URL || '/',
+  }),
+  callback: handleCallback(),
+  profile: handleProfile(),
+});
 
 
 

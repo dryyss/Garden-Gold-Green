@@ -2,15 +2,23 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { sendOrderConfirmationEmail } from '@/lib/email'
 import { upsertOrder, CartItemPayload } from '@/lib/orders-store'
-import productsData from '@/data/products.json'
+import { listProducts } from '@/lib/products-store'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2025-09-30.clover',
 })
 
-const productsMap = new Map(
-  (productsData as any[]).map(product => [String(product.id), product])
-)
+// Cache des produits (rechargé à chaque requête si nécessaire)
+let productsMapCache: Map<string, any> | null = null
+async function getProductsMap(): Promise<Map<string, any>> {
+  if (!productsMapCache) {
+    const products = await listProducts()
+    productsMapCache = new Map(
+      products.map(product => [String(product.id), product])
+    )
+  }
+  return productsMapCache
+}
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
 
@@ -38,6 +46,8 @@ export async function POST(request: NextRequest) {
 
     // Traiter les événements Stripe
     console.log(`📥 Traitement événement Stripe: ${event.type}`)
+    console.log(`📋 Event ID: ${event.id}`)
+    
     switch (event.type) {
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session
@@ -47,11 +57,16 @@ export async function POST(request: NextRequest) {
         })
 
         const metadata = expandedSession.metadata
+        console.log(`📋 Metadata de la session:`, JSON.stringify(metadata, null, 2))
+        
         const cartItems: CartItemPayload[] = metadata?.cartItems
           ? JSON.parse(metadata.cartItems)
           : []
         const userId = metadata?.userId
         const userEmail = expandedSession.customer_details?.email || metadata?.userEmail
+        
+        console.log(`📦 Cart items extraits: ${cartItems.length}`, JSON.stringify(cartItems.slice(0, 2), null, 2))
+        console.log(`👤 User ID: ${userId}, Email: ${userEmail}`)
 
         try {
           const orderNumber = `CMD-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Date.now().toString().slice(-4)}`
@@ -109,9 +124,59 @@ export async function POST(request: NextRequest) {
           const billingLastName = billingRest.join(' ')
           const billingPhone = expandedSession.customer_details?.phone || ''
 
-          const mappedItems = cartItems.map((item) => {
-            const productId = String(item.i ?? item.id ?? '')
-            const product = productId ? productsMap.get(productId) : undefined
+          if (cartItems.length === 0) {
+            console.error('❌ [WEBHOOK] Aucun item dans cartItems, impossible de créer la commande')
+            console.error('❌ [WEBHOOK] Metadata:', JSON.stringify(metadata, null, 2))
+            return NextResponse.json({ 
+              received: true, 
+              error: 'Aucun item dans la commande' 
+            }, { status: 200 })
+          }
+          
+          const productsMap = await getProductsMap()
+          console.log(`📦 [WEBHOOK] Produits disponibles dans la map: ${productsMap.size}`)
+          
+          // Récupérer tous les produits pour la recherche alternative
+          const allProducts = await listProducts()
+          
+          // Créer une map étendue avec plusieurs clés
+          const extendedProductsMap = new Map<string, any>()
+          allProducts.forEach(product => {
+            extendedProductsMap.set(String(product.id), product)
+            if (product.slug) {
+              extendedProductsMap.set(product.slug, product)
+            }
+            if (!isNaN(Number(product.id))) {
+              extendedProductsMap.set(String(Number(product.id)), product)
+            }
+          })
+          
+          const mappedItems = cartItems.map((item, index) => {
+            const productIdFromCart = String(item.i ?? item.id ?? '')
+            if (!productIdFromCart) {
+              console.error(`❌ [WEBHOOK] Item ${index} sans productId:`, item)
+            }
+            
+            // Chercher dans la map étendue
+            let product = extendedProductsMap.get(productIdFromCart)
+            
+            // Si pas trouvé, chercher par recherche alternative
+            if (!product) {
+              console.warn(`⚠️ [WEBHOOK] Produit "${productIdFromCart}" non trouvé dans la map`)
+              product = allProducts.find(p => 
+                p.slug === productIdFromCart || 
+                String(p.id) === productIdFromCart ||
+                (!isNaN(Number(productIdFromCart)) && !isNaN(Number(p.id)) && Number(p.id) === Number(productIdFromCart))
+              )
+              if (product) {
+                console.log(`✅ [WEBHOOK] Produit trouvé par recherche alternative: ${product.id}`)
+              } else {
+                console.error(`❌ [WEBHOOK] Produit "${productIdFromCart}" introuvable`)
+              }
+            }
+            
+            // Utiliser le vrai ID Prisma
+            const realProductId = product ? String(product.id) : productIdFromCart
             const quantity = item.q ?? item.quantity ?? 1
             const priceCents =
               typeof item.pc === 'number'
@@ -125,13 +190,33 @@ export async function POST(request: NextRequest) {
                       : 0
 
             return {
-              productId,
-              name: item.name || product?.title || product?.name || `Produit ${productId}`,
+              productId: realProductId, // Utiliser le vrai ID Prisma
+              name: item.name || product?.title || product?.name || `Produit ${realProductId}`,
               quantity,
               priceCents,
               image: item.image || product?.images?.[0],
             }
           })
+          
+          // Filtrer les items invalides
+          const validItems = mappedItems.filter(item => {
+            const product = allProducts.find(p => String(p.id) === item.productId)
+            if (!product) {
+              console.error(`❌ [WEBHOOK] Item avec productId invalide: ${item.productId}`)
+              return false
+            }
+            return true
+          })
+          
+          if (validItems.length === 0) {
+            console.error('❌ [WEBHOOK] Aucun item valide après validation')
+            return NextResponse.json({ 
+              received: true, 
+              error: 'Aucun produit valide dans la commande' 
+            }, { status: 200 })
+          }
+          
+          console.log(`✅ [WEBHOOK] Items valides: ${validItems.length}/${mappedItems.length}`)
 
           const subtotalCents = expandedSession.amount_subtotal ?? null
           const sessionShippingCents =
@@ -150,8 +235,10 @@ export async function POST(request: NextRequest) {
           const discountCents = expandedSession.total_details?.amount_discount ?? null
 
           console.log(`📝 Création commande ${orderNumber} - userId: "${userId}", email: "${userEmail}"`)
+          console.log(`📦 Items à sauvegarder (${mappedItems.length}):`, JSON.stringify(mappedItems.slice(0, 2), null, 2))
           
-          const orderRecord = await upsertOrder({
+          try {
+            const orderRecord = await upsertOrder({
             id: orderNumber,
             userId: userId || null,
             stripeSessionId: expandedSession.id,
@@ -188,7 +275,7 @@ export async function POST(request: NextRequest) {
               postalCode: billingAddressData?.postal_code || '',
               country: billingAddressData?.country || '',
             },
-            items: mappedItems,
+            items: validItems,
             receiptUrl,
             invoicePdf,
             metadata: {
@@ -197,9 +284,10 @@ export async function POST(request: NextRequest) {
             },
           })
 
-          console.log(`✅ Commande sauvegardée: ${orderRecord.id}`)
+            console.log(`✅ Commande sauvegardée: ${orderRecord.id}`)
+            console.log(`✅ Commande créée avec ${orderRecord.items.length} item(s)`)
 
-          if (orderRecord.customerEmail) {
+            if (orderRecord.customerEmail) {
             try {
               await sendOrderConfirmationEmail({
                 id: orderRecord.id,

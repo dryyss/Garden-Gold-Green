@@ -3,7 +3,6 @@
 import { useParams } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import ProductPage from '@/components/ProductPage'
-import productsData from '@/data/products.json'
 
 // Transformer les données de l'ancienne structure vers la nouvelle
 function transformProduct(product: any) {
@@ -53,16 +52,22 @@ export default function ProductPageWrapper() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Simuler un chargement
-    const timer = setTimeout(() => {
-      const foundProduct = productsData.find(p => p.slug === slug)
-      if (foundProduct) {
-        setProduct(transformProduct(foundProduct))
+    // Charger le produit depuis l'API
+    const loadProduct = async () => {
+      try {
+        const response = await fetch(`/api/products?slug=${slug}`)
+        const data = await response.json()
+        if (data.success && data.product) {
+          setProduct(transformProduct(data.product))
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement du produit:', error)
+      } finally {
+        setLoading(false)
       }
-      setLoading(false)
-    }, 500)
+    }
 
-    return () => clearTimeout(timer)
+    loadProduct()
   }, [slug])
 
   if (loading) {

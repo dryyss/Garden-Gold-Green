@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAdmin } from '@/lib/auth-utils'
 import categoriesData from '@/data/categories.json'
-import productsData from '@/data/products.json'
+import { listProducts } from '@/lib/products-store'
 
 // GET - Récupérer toutes les catégories depuis le fichier JSON
 export const GET = requireAdmin(async (request: NextRequest) => {
@@ -15,8 +15,9 @@ export const GET = requireAdmin(async (request: NextRequest) => {
     // Ajouter le nombre de produits si demandé
     let categoriesWithCount = categories
     if (includeCount) {
+      const products = await listProducts()
       categoriesWithCount = categories.map((category) => {
-        const productCount = productsData.filter((product: any) => 
+        const productCount = products.filter((product: any) => 
           product.published && 
           product.categories?.some((cat: any) => cat.slug === category.slug)
         ).length
@@ -30,8 +31,9 @@ export const GET = requireAdmin(async (request: NextRequest) => {
 
     // Ajouter les produits si demandé
     if (includeProducts) {
+      const products = await listProducts()
       categoriesWithCount = categories.map((category) => {
-        const categoryProducts = productsData.filter((product: any) =>
+        const categoryProducts = products.filter((product: any) =>
           product.published &&
           product.categories?.some((cat: any) => cat.slug === category.slug)
         )

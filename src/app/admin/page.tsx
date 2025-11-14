@@ -363,10 +363,10 @@ function AdminContent() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-lg transition-all duration-300 ${
                   activeTab === tab.id
-                    ? 'bg-brand-gold text-black font-semibold'
-                    : 'text-gray-400 hover:text-white hover:bg-white/10'
+                    ? 'bg-brand-gold text-black font-semibold shadow-gold-glow hover:shadow-gold-glow-lg scale-105'
+                    : 'text-gray-400 hover:text-white hover:bg-white/10 hover:scale-105 active:scale-95'
                 } ${(tab as any).ownerOnly ? 'border border-brand-gold/50' : ''}`}
               >
                 <FontAwesomeIcon icon={tab.icon} />
@@ -378,7 +378,7 @@ function AdminContent() {
             ))}
             <Link
               href="/admin/orders"
-              className="flex items-center gap-2 px-4 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors border border-white/20"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-300 border border-white/20 hover:border-brand-gold/50 hover:scale-105 active:scale-95 hover:shadow-lg hover:shadow-brand-gold/20"
               title="Gestion complète des expéditions"
             >
               <FontAwesomeIcon icon={faTruck} />
@@ -525,7 +525,7 @@ function AdminContent() {
             <div className="card-bg rounded-xl p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold text-white">Commandes récentes</h2>
-                <button className="text-brand-gold hover:text-brand-gold/80 transition-colors">
+                <button className="text-brand-gold hover:text-brand-gold/80 transition-all duration-300 px-3 py-1.5 rounded-lg hover:bg-brand-gold/10 hover:scale-105 active:scale-95">
                   Voir tout
                 </button>
               </div>
@@ -589,8 +589,8 @@ function AdminContent() {
                   <option value="delivered">Livré</option>
                   <option value="cancelled">Annulé</option>
                 </select>
-                <button className="btn-gold text-black font-semibold py-2 px-4 rounded-lg">
-                  <FontAwesomeIcon icon={faDownload} className="mr-2" />
+                <button className="btn-gold text-black font-semibold py-2.5 px-5 rounded-lg shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300 flex items-center gap-2 hover:scale-105 active:scale-95">
+                  <FontAwesomeIcon icon={faDownload} />
                   Exporter
                 </button>
               </div>
@@ -661,14 +661,14 @@ function AdminContent() {
                                   setIsLoadingOrderDetails(false)
                                 }
                               }}
-                              className="text-gray-400 hover:text-brand-gold transition-colors"
+                              className="text-gray-400 hover:text-brand-gold transition-all duration-300 p-2 rounded-lg hover:bg-white/10 hover:scale-110 active:scale-95"
                               title="Voir et modifier les détails"
                             >
                               <FontAwesomeIcon icon={faEye} />
                             </button>
                             <Link
                               href={`/admin/orders/${order.id}`}
-                              className="text-gray-400 hover:text-brand-gold transition-colors"
+                              className="text-gray-400 hover:text-brand-gold transition-all duration-300 p-2 rounded-lg hover:bg-white/10 hover:scale-110 active:scale-95 inline-block"
                               title="Gestion complète"
                             >
                               <FontAwesomeIcon icon={faEdit} />
@@ -784,9 +784,9 @@ function AdminContent() {
                     console.log('Bouton Add Product cliqué')
                     setShowAddProductModal(true)
                   }}
-                  className="btn-gold text-black font-semibold py-2 px-3 sm:px-4 rounded-lg hover:bg-yellow-500 transition-colors text-sm sm:text-base whitespace-nowrap"
+                  className="btn-gold text-black font-semibold py-2.5 px-4 sm:px-5 rounded-lg shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300 text-sm sm:text-base whitespace-nowrap flex items-center gap-2 hover:scale-105 active:scale-95"
                 >
-                  <FontAwesomeIcon icon={faPlus} className="mr-1 sm:mr-2" />
+                  <FontAwesomeIcon icon={faPlus} />
                   <span className="hidden sm:inline">Ajouter un produit</span>
                   <span className="sm:hidden">Ajouter</span>
                 </button>
@@ -899,7 +899,7 @@ function AdminContent() {
                           alert('Erreur lors du chargement du produit')
                         }
                       }}
-                      className="flex-1 text-gray-400 hover:text-brand-gold transition-colors p-1.5 sm:p-2 rounded hover:bg-white/5 text-xs sm:text-sm"
+                      className="flex-1 text-gray-400 hover:text-brand-gold transition-all duration-300 p-1.5 sm:p-2 rounded-lg hover:bg-white/10 text-xs sm:text-sm hover:scale-110 active:scale-95"
                       title="Modifier"
                     >
                       <FontAwesomeIcon icon={faEdit} className="text-sm sm:text-base" />
@@ -924,14 +924,14 @@ function AdminContent() {
                           }
                         }
                       }}
-                      className="flex-1 text-gray-400 hover:text-red-400 transition-colors p-1.5 sm:p-2 rounded hover:bg-white/5 text-xs sm:text-sm"
+                      className="flex-1 text-gray-400 hover:text-red-400 transition-all duration-300 p-1.5 sm:p-2 rounded-lg hover:bg-red-500/20 text-xs sm:text-sm hover:scale-110 active:scale-95"
                       title="Supprimer"
                     >
                       <FontAwesomeIcon icon={faTrash} className="text-sm sm:text-base" />
                     </button>
                     <button 
                       onClick={() => window.open(`/products/${product.id}`, '_blank')}
-                      className="flex-1 text-gray-400 hover:text-brand-gold transition-colors p-1.5 sm:p-2 rounded hover:bg-white/5 text-xs sm:text-sm"
+                      className="flex-1 text-gray-400 hover:text-brand-gold transition-all duration-300 p-1.5 sm:p-2 rounded-lg hover:bg-white/10 text-xs sm:text-sm hover:scale-110 active:scale-95"
                       title="Voir"
                     >
                       <FontAwesomeIcon icon={faEye} className="text-sm sm:text-base" />
@@ -1031,10 +1031,11 @@ function AdminContent() {
                         input.dispatchEvent(event)
                       }
                     }}
-                    className="btn-gold text-black font-semibold py-2 px-4 rounded-lg ml-2"
+                    disabled={isLoadingUsers}
+                    className="btn-gold text-black font-semibold py-2.5 px-5 rounded-lg ml-2 shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 hover:scale-105 active:scale-95"
                   >
-                    <FontAwesomeIcon icon={faSearch} className="mr-2" />
-                    Rechercher
+                    <FontAwesomeIcon icon={faSearch} className={isLoadingUsers ? 'animate-spin' : ''} />
+                    {isLoadingUsers ? 'Recherche...' : 'Rechercher'}
                   </button>
                   <button
                     onClick={async () => {
@@ -1052,9 +1053,10 @@ function AdminContent() {
                         setIsLoadingUsers(false)
                       }
                     }}
-                    className="text-gray-400 hover:text-white px-4 py-2 rounded-lg border border-white/20 hover:border-brand-gold transition-colors"
+                    disabled={isLoadingUsers}
+                    className="bg-white/5 text-gray-300 hover:text-white hover:bg-white/10 px-5 py-2.5 rounded-lg border border-white/20 hover:border-brand-gold/50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-brand-gold/20 active:scale-95"
                   >
-                    Afficher tous
+                    {isLoadingUsers ? 'Chargement...' : 'Afficher tous'}
                   </button>
                 </div>
               </div>
@@ -1289,15 +1291,15 @@ function AdminContent() {
                         setShowOrderModal(false)
                         setFullOrderDetails(null)
                       }}
-                      className="flex-1 bg-white/10 text-white font-semibold py-2 px-4 rounded-lg hover:bg-white/20 transition-colors text-sm sm:text-base"
+                      className="flex-1 bg-white/10 text-white font-semibold py-2.5 px-4 rounded-lg hover:bg-white/20 transition-all duration-300 text-sm sm:text-base hover:scale-105 active:scale-95"
                     >
                       Fermer
                     </button>
                     <Link
                       href={`/admin/orders/${selectedOrder.id}`}
-                      className="flex-1 btn-gold text-black font-semibold py-2 px-4 rounded-lg text-center text-sm sm:text-base"
+                      className="flex-1 btn-gold text-black font-semibold py-2.5 px-4 rounded-lg text-center text-sm sm:text-base shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300 flex items-center justify-center gap-2 hover:scale-105 active:scale-95"
                     >
-                      <FontAwesomeIcon icon={faEdit} className="mr-2" />
+                      <FontAwesomeIcon icon={faEdit} />
                       <span className="hidden sm:inline">Modifier la commande</span>
                       <span className="sm:hidden">Modifier</span>
                     </Link>
@@ -1306,9 +1308,9 @@ function AdminContent() {
                         // TODO: Générer facture PDF
                         alert('Fonctionnalité de génération de facture à venir')
                       }}
-                      className="flex-1 bg-white/10 text-white font-semibold py-2 px-4 rounded-lg hover:bg-white/20 transition-colors text-sm sm:text-base"
+                      className="flex-1 bg-white/10 text-white font-semibold py-2.5 px-4 rounded-lg hover:bg-white/20 transition-all duration-300 text-sm sm:text-base flex items-center justify-center gap-2 hover:scale-105 active:scale-95"
                     >
-                      <FontAwesomeIcon icon={faDownload} className="mr-2" />
+                      <FontAwesomeIcon icon={faDownload} />
                       <span className="hidden sm:inline">Facture</span>
                       <span className="sm:hidden">PDF</span>
                     </button>
@@ -1328,7 +1330,7 @@ function AdminContent() {
                   <h3 className="text-xl sm:text-2xl font-bold text-white">Ajouter un produit</h3>
                   <button
                     onClick={() => setShowAddProductModal(false)}
-                    className="text-gray-400 hover:text-white transition-colors"
+                    className="text-gray-400 hover:text-white transition-all duration-300 p-2 rounded-lg hover:bg-white/10 hover:scale-110 active:scale-95"
                   >
                     <FontAwesomeIcon icon={faXmark} className="text-2xl" />
                   </button>
@@ -1589,9 +1591,9 @@ function AdminContent() {
                       onClick={() => {
                         setNewProductVariants([...newProductVariants, { title: '', priceCents: '', stock: '' }])
                       }}
-                      className="text-sm btn-gold text-black font-semibold py-1 px-3 rounded-lg"
+                      className="text-sm btn-gold text-black font-semibold py-2 px-4 rounded-lg shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300 flex items-center gap-2 hover:scale-105 active:scale-95"
                     >
-                      <FontAwesomeIcon icon={faPlus} className="mr-1" />
+                      <FontAwesomeIcon icon={faPlus} />
                       Ajouter un variant
                     </button>
                   </div>
@@ -1650,7 +1652,7 @@ function AdminContent() {
                                 onClick={() => {
                                   setNewProductVariants(newProductVariants.filter((_, i) => i !== index))
                                 }}
-                                className="text-red-400 hover:text-red-300 p-2"
+                                className="text-red-400 hover:text-red-300 p-2 rounded-lg hover:bg-red-500/20 transition-all duration-300 hover:scale-110 active:scale-95"
                                 title="Supprimer"
                               >
                                 <FontAwesomeIcon icon={faTrash} />
@@ -1688,14 +1690,14 @@ function AdminContent() {
                   <button
                     type="button"
                     onClick={() => setShowAddProductModal(false)}
-                    className="flex-1 bg-white/10 text-white font-semibold py-2 px-4 rounded-lg hover:bg-white/20 transition-colors"
+                    className="flex-1 bg-white/10 text-white font-semibold py-2.5 px-4 rounded-lg hover:bg-white/20 transition-all duration-300 hover:scale-105 active:scale-95"
                   >
                     Annuler
                   </button>
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="flex-1 btn-gold text-black font-semibold py-2 px-4 rounded-lg disabled:opacity-50"
+                    className="flex-1 btn-gold text-black font-semibold py-2.5 px-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300 hover:scale-105 active:scale-95"
                   >
                     {isLoading ? 'Création...' : 'Créer le produit'}
                   </button>
@@ -1714,7 +1716,7 @@ function AdminContent() {
                   <h3 className="text-2xl font-bold text-white">Modifier le produit</h3>
                   <button
                     onClick={() => setShowEditProductModal(false)}
-                    className="text-gray-400 hover:text-white transition-colors"
+                    className="text-gray-400 hover:text-white transition-all duration-300 p-2 rounded-lg hover:bg-white/10 hover:scale-110 active:scale-95"
                   >
                     <FontAwesomeIcon icon={faXmark} className="text-2xl" />
                   </button>
@@ -1919,9 +1921,9 @@ function AdminContent() {
                           variants: [...editingProduct.variants, { title: '', priceCents: '', stock: '' }]
                         })
                       }}
-                      className="text-sm btn-gold text-black font-semibold py-1 px-3 rounded-lg"
+                      className="text-sm btn-gold text-black font-semibold py-2 px-4 rounded-lg shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300 flex items-center gap-2 hover:scale-105 active:scale-95"
                     >
-                      <FontAwesomeIcon icon={faPlus} className="mr-1" />
+                      <FontAwesomeIcon icon={faPlus} />
                       Ajouter un variant
                     </button>
                   </div>
@@ -1983,7 +1985,7 @@ function AdminContent() {
                                     variants: editingProduct.variants.filter((_, i) => i !== index)
                                   })
                                 }}
-                                className="text-red-400 hover:text-red-300 p-2"
+                                className="text-red-400 hover:text-red-300 p-2 rounded-lg hover:bg-red-500/20 transition-all duration-300 hover:scale-110 active:scale-95"
                                 title="Supprimer"
                               >
                                 <FontAwesomeIcon icon={faTrash} />
@@ -2021,14 +2023,14 @@ function AdminContent() {
                   <button
                     type="button"
                     onClick={() => setShowEditProductModal(false)}
-                    className="flex-1 bg-white/10 text-white font-semibold py-2 px-4 rounded-lg hover:bg-white/20 transition-colors"
+                    className="flex-1 bg-white/10 text-white font-semibold py-2.5 px-4 rounded-lg hover:bg-white/20 transition-all duration-300 hover:scale-105 active:scale-95"
                   >
                     Annuler
                   </button>
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="flex-1 btn-gold text-black font-semibold py-2 px-4 rounded-lg disabled:opacity-50"
+                    className="flex-1 btn-gold text-black font-semibold py-2.5 px-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300 hover:scale-105 active:scale-95"
                   >
                     {isLoading ? 'Modification...' : 'Enregistrer les modifications'}
                   </button>

@@ -11,17 +11,18 @@ datasource db {
 }
 
 model User {
-  id            String          @id @default(cuid())
-  email         String          @unique
-  name          String?
-  password      String? // si credentials
-  auth0Id       String?         @unique
-  role          String          @default("customer") // 'admin' possible
-  orders        Order[]
-  comments      Comment[]
-  returns       ReturnRequest[]
-  subscriptions Subscription[]
-  createdAt     DateTime        @default(now())
+  id               String          @id // auth0Id directement (ex: "google-oauth2|...")
+  email            String          @unique
+  name             String?
+  password         String? // si credentials
+  stripeCustomerId String?         @unique
+  role             String          @default("customer") // 'admin' possible
+  // Pas de relation orders car userId dans Order stocke l'auth0Id directement
+  comments         Comment[]
+  returns          ReturnRequest[]
+  subscriptions    Subscription[]
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime?       @updatedAt
 }
 
 model Product {
@@ -64,8 +65,9 @@ model Category {
 
 model Order {
   id              String          @id @default(cuid())
-  user            User?           @relation(fields: [userId], references: [id])
-  userId          String?
+  // userId stocke maintenant l'auth0Id directement (ex: "google-oauth2|...")
+  // Pas de relation pour permettre de stocker l'auth0Id même si l'utilisateur n'existe pas encore
+  userId          String? // auth0Id de l'utilisateur
   totalCents      Int
   currency        String          @default("EUR")
   status          String          @default("pending") // pending, paid, shipped, delivered, cancelled, refunded

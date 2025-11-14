@@ -13,6 +13,8 @@ export default function VerifyEmailPage() {
   const [isChecking, setIsChecking] = useState(true)
   const [isVerified, setIsVerified] = useState(false)
   const [email, setEmail] = useState<string | null>(null)
+  const [isResending, setIsResending] = useState(false)
+  const [resendStatus, setResendStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null)
 
   useEffect(() => {
     const checkEmailVerification = async () => {
@@ -54,8 +56,39 @@ export default function VerifyEmailPage() {
   }, [auth0State.user, router])
 
   const handleResendVerification = async () => {
-    // TODO: Implémenter la fonctionnalité de renvoi d'email de vérification
-    alert('Fonctionnalité de renvoi d\'email de vérification à implémenter')
+    try {
+      setIsResending(true)
+      setResendStatus(null)
+
+      const response = await fetch('/api/auth/resend-verification', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      const data = await response.json()
+
+      if (response.ok && data.success) {
+        setResendStatus({
+          type: 'success',
+          message: 'Email de vérification envoyé avec succès ! Vérifiez votre boîte de réception.'
+        })
+      } else {
+        setResendStatus({
+          type: 'error',
+          message: data.error || 'Erreur lors de l\'envoi de l\'email de vérification'
+        })
+      }
+    } catch (error) {
+      console.error('❌ Erreur lors du renvoi de l\'email:', error)
+      setResendStatus({
+        type: 'error',
+        message: 'Une erreur est survenue. Veuillez réessayer plus tard.'
+      })
+    } finally {
+      setIsResending(false)
+    }
   }
 
   return (
@@ -131,13 +164,32 @@ export default function VerifyEmailPage() {
                     <li>Revenez sur cette page pour continuer votre commande</li>
                   </ol>
                 </div>
+                {resendStatus && (
+                  <div className={`mb-4 sm:mb-6 p-3 sm:p-4 rounded-lg ${
+                    resendStatus.type === 'success' 
+                      ? 'bg-green-500/10 border border-green-500/30 text-green-300' 
+                      : 'bg-red-500/10 border border-red-500/30 text-red-300'
+                  }`}>
+                    <p className="text-xs sm:text-sm">{resendStatus.message}</p>
+                  </div>
+                )}
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
                   <button
                     onClick={handleResendVerification}
-                    className="btn-gold text-black font-bold py-2.5 sm:py-3 px-6 sm:px-8 rounded-full text-sm sm:text-base"
+                    disabled={isResending}
+                    className="btn-gold text-black font-bold py-2.5 sm:py-3 px-6 sm:px-8 rounded-full text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
-                    <span className="hidden sm:inline">Renvoyer l'email de vérification</span>
-                    <span className="sm:hidden">Renvoyer l'email</span>
+                    {isResending ? (
+                      <>
+                        <FontAwesomeIcon icon={faSpinner} className="animate-spin" />
+                        <span>Envoi en cours...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="hidden sm:inline">Renvoyer l'email de vérification</span>
+                        <span className="sm:hidden">Renvoyer l'email</span>
+                      </>
+                    )}
                   </button>
                   <Link
                     href="/cart"

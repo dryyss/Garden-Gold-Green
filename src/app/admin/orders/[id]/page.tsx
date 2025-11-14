@@ -297,10 +297,16 @@ export default function AdminOrderDetailPage() {
 
       setOrder(updatedOrder)
       setForm({
-        ...form,
+        status: updatedOrder.status,
+        trackingNumber: updatedOrder.trackingNumber || '',
+        carrier: updatedOrder.carrier || '',
+        carrierTrackingUrl: updatedOrder.carrierTrackingUrl || '',
+        shippingStatus: updatedOrder.shippingStatus || '',
         shippedAt: formatDateInput(updatedOrder.shippedAt),
         deliveredAt: formatDateInput(updatedOrder.deliveredAt),
         estimatedDeliveryDate: formatDateInput(updatedOrder.estimatedDeliveryDate),
+        historyStatus: '',
+        historyMessage: '',
       })
       setMessage('Commande mise à jour avec succès.')
       handleResetHistory()

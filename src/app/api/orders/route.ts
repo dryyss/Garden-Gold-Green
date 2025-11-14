@@ -66,6 +66,9 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { items, totalCents, shippingAddress, customerEmail, customerName, customerPhone } = body
 
+    console.log(`📥 POST /api/orders - userId: ${userId}`)
+    console.log(`📦 Items reçus:`, JSON.stringify(items, null, 2))
+
     if (!items || items.length === 0) {
       return NextResponse.json(
         { error: 'Aucun article dans la commande' },
@@ -80,6 +83,33 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Formater les items pour Prisma
+    const formattedItems = items.map((item: any) => {
+      // Si l'item vient du panier, il peut avoir 'id' au lieu de 'productId'
+      const productId = item.productId || item.id
+      if (!productId) {
+        throw new Error(`Item sans productId ni id: ${JSON.stringify(item)}`)
+      }
+      
+      // Si l'item a 'price' en euros, convertir en centimes
+      let priceCents = item.priceCents
+      if (!priceCents && typeof item.price === 'number') {
+        priceCents = Math.round(item.price * 100)
+      }
+      if (typeof priceCents !== 'number') {
+        throw new Error(`Item sans priceCents valide: ${JSON.stringify(item)}`)
+      }
+      
+      return {
+        productId: String(productId),
+        name: item.name || item.title || `Produit ${productId}`,
+        priceCents: priceCents,
+        quantity: item.quantity || 1
+      }
+    })
+
+    console.log(`✅ Items formatés:`, JSON.stringify(formattedItems, null, 2))
+
     const nowId = `MAN-${Date.now()}`
     const order = await upsertOrder({
       id: nowId,
@@ -91,7 +121,7 @@ export async function POST(request: NextRequest) {
       customerName: customerName || session.user.name || '',
       customerPhone: customerPhone || '',
       shippingAddress: shippingAddress || {},
-      items,
+      items: formattedItems,
     })
 
     return NextResponse.json({

@@ -133,6 +133,38 @@ async function migrateOrders() {
           history: order.shippingHistory || []
         } : null)
 
+        // Vérifier que tous les produits existent avant de créer la commande
+        const itemsToCreate = []
+        for (const item of order.items) {
+          // Vérifier si le produit existe
+          const product = await prisma.product.findUnique({
+            where: { id: item.productId }
+          })
+
+          if (!product) {
+            console.log(`  ⚠️  Produit ${item.productId} non trouvé pour la commande ${order.id}, ignoré`)
+            continue
+          }
+
+          // Utiliser le prix du produit si priceCents est null
+          const priceCents = item.priceCents || product.priceCents || 0
+
+          itemsToCreate.push({
+            productId: item.productId,
+            name: item.name,
+            priceCents: priceCents,
+            quantity: item.quantity,
+            status: 'ordered'
+          })
+        }
+
+        // Ne créer la commande que si elle a au moins un item valide
+        if (itemsToCreate.length === 0) {
+          console.log(`  ⚠️  Commande ${order.id} ignorée (aucun produit valide)`)
+          errorCount++
+          continue
+        }
+
         // Créer la commande
         const createdOrder = await prisma.order.create({
           data: {
@@ -162,13 +194,7 @@ async function migrateOrders() {
             createdAt: new Date(order.createdAt),
             updatedAt: new Date(order.updatedAt),
             items: {
-              create: order.items.map(item => ({
-                productId: item.productId,
-                name: item.name,
-                priceCents: item.priceCents,
-                quantity: item.quantity,
-                status: 'ordered'
-              }))
+              create: itemsToCreate
             }
           }
         })

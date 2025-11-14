@@ -216,9 +216,9 @@ export default function OrdersPage() {
       <ResponsiveContainer size="lg" padding="lg">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
-          <div className="mb-8 text-center sm:text-left">
-            <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Mes Commandes</h1>
-            <p className="text-gray-400">Suivez l&apos;état de vos commandes</p>
+          <div className="mb-10 sm:mb-12 text-center sm:text-left">
+            <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">Mes Commandes</h1>
+            <p className="text-gray-300 text-base sm:text-lg">Suivez l&apos;état de vos commandes</p>
           </div>
 
           {/* Error Message */}
@@ -237,13 +237,16 @@ export default function OrdersPage() {
           {/* Orders List */}
           <div className="space-y-6">
             {orders.length === 0 ? (
-              <div className="text-center py-12">
-                <FontAwesomeIcon icon={faShoppingCart} className="icon-2xl text-gray-600 mb-4" />
-                <h3 className="text-xl font-semibold text-white mb-2">Aucune commande</h3>
-                <p className="text-gray-400 mb-6">Vous n&apos;avez pas encore passé de commande</p>
+              <div className="text-center py-16 sm:py-20">
+                <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-6 border-2 border-white/10">
+                  <FontAwesomeIcon icon={faShoppingCart} className="text-4xl sm:text-5xl text-brand-gold/60" />
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-bold text-white mb-3">Aucune commande</h3>
+                <p className="text-gray-300 text-base sm:text-lg mb-8 max-w-md mx-auto">Vous n&apos;avez pas encore passé de commande</p>
                 <a
                   href="/products"
-                  className="inline-block bg-brand-gold text-brand-black px-6 py-3 rounded-lg hover:bg-brand-gold/90 transition-colors font-semibold"
+                  className="inline-block bg-brand-gold text-black font-extrabold px-8 py-4 rounded-lg hover:bg-brand-gold/90 transition-all text-base sm:text-lg shadow-lg hover:shadow-xl transform hover:scale-105 tracking-wide"
+                  style={{ textShadow: '0 1px 2px rgba(0,0,0,0.1)' }}
                 >
                   Découvrir nos produits
                 </a>

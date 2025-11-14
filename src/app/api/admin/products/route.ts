@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAdmin } from '@/lib/auth-utils'
 import { filterProducts, listProducts, getProductBySlug, upsertProduct } from '@/lib/products-store'
-import ordersData from '@/data/orders.json'
+import { prisma } from '@/lib/prisma'
 
 // GET - Récupérer tous les produits avec pagination et filtres depuis le fichier JSON
 export const GET = requireAdmin(async (request: NextRequest) => {
@@ -31,31 +31,37 @@ export const GET = requireAdmin(async (request: NextRequest) => {
       return dateB - dateA
     })
 
-    // Calculer les statistiques de ventes pour chaque produit depuis orders.json
-    const ordersMap = typeof ordersData === 'object' && !Array.isArray(ordersData) 
-      ? ordersData as Record<string, any>
-      : {}
+    // Calculer les statistiques de ventes pour chaque produit depuis Prisma
+    const orders = await prisma.order.findMany({
+      where: {
+        status: {
+          in: ['delivered', 'shipped', 'paid']
+        }
+      },
+      include: {
+        items: true
+      }
+    })
+    
+    // Créer un map des statistiques par produit
+    const statsMap = new Map<string, { sales: number; revenue: number }>()
+    
+    orders.forEach((order) => {
+      order.items.forEach((item) => {
+        const existing = statsMap.get(item.productId) || { sales: 0, revenue: 0 }
+        statsMap.set(item.productId, {
+          sales: existing.sales + item.quantity,
+          revenue: existing.revenue + (item.priceCents * item.quantity)
+        })
+      })
+    })
     
     const productsWithStats = products.map((product) => {
-      let totalSales = 0
-      let totalRevenue = 0
-
-      // Parcourir les commandes pour calculer les ventes
-      Object.values(ordersMap).forEach((order: any) => {
-        if (order.status === 'delivered' || order.status === 'shipped') {
-          order.items?.forEach((item: any) => {
-            if (item.productId === product.id) {
-              totalSales += item.quantity || 0
-              totalRevenue += (item.priceCents || 0) * (item.quantity || 0)
-            }
-          })
-        }
-      })
-
+      const stats = statsMap.get(product.id) || { sales: 0, revenue: 0 }
       return {
         ...product,
-        sales: totalSales,
-        revenue: totalRevenue,
+        sales: stats.sales,
+        revenue: stats.revenue,
         // S'assurer que les images sont un tableau
         images: Array.isArray(product.images) 
           ? product.images 

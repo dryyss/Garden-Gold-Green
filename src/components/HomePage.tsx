@@ -25,7 +25,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { HeroLogo } from '@/components/HeroLogo'
 import { useTranslation } from '@/contexts/TranslationContext'
-import productsData from '@/data/products.json'
+import { useState, useEffect } from 'react'
 
 // Lazy load des composants lourds
 const ProductGridCarousel = lazy(() => import('@/components/ProductGridCarousel').then(m => ({ default: m.ProductGridCarousel })))
@@ -50,19 +50,36 @@ function transformProduct(product: any) { // eslint-disable-line @typescript-esl
 
 export default function HomePage() {
   const { t } = useTranslation()
+  const [allProducts, setAllProducts] = useState<any[]>([])
+
+  // Charger les produits depuis l'API
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const response = await fetch('/api/products/all')
+        const data = await response.json()
+        if (data.success && data.products) {
+          setAllProducts(data.products)
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement des produits:', error)
+      }
+    }
+    loadProducts()
+  }, [])
 
   // Récupérer les produits les plus populaires
-  const featuredProducts = productsData
+  const featuredProducts = allProducts
     .filter(product => product.published)
     .slice(0, 6)
     .map(transformProduct)
 
-  const bestSellers = productsData
+  const bestSellers = allProducts
     .filter(product => product.published)
     .slice(6, 12)
     .map(transformProduct)
 
-  const newProducts = productsData
+  const newProducts = allProducts
     .filter(product => product.published)
     .slice(12, 18)
     .map(transformProduct)

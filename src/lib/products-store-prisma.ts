@@ -238,82 +238,12 @@ export async function upsertProduct(
 
 export async function deleteProduct(id: string): Promise<boolean> {
   try {
-    console.log(`🗑️ [deleteProduct] Suppression du produit ${id}`)
-    
-    // Vérifier si le produit existe
-    const product = await prisma.product.findUnique({
-      where: { id },
-      include: {
-        variants: true,
-        orderItems: true,
-        comments: true,
-        subscriptionPlans: true
-      }
-    })
-    
-    if (!product) {
-      console.error(`❌ [deleteProduct] Produit ${id} non trouvé`)
-      return false
-    }
-    
-    console.log(`📋 [deleteProduct] Produit trouvé avec ${product.variants.length} variantes, ${product.orderItems.length} commandes`)
-    
-    // Vérifier si le produit a des commandes associées
-    if (product.orderItems.length > 0) {
-      console.error(`❌ [deleteProduct] Impossible de supprimer le produit ${id}: ${product.orderItems.length} commande(s) associée(s)`)
-      throw new Error(`Impossible de supprimer un produit avec des commandes associées (${product.orderItems.length} commande(s))`)
-    }
-    
-    // Supprimer d'abord les relations
-    // 1. Supprimer les variantes
-    if (product.variants.length > 0) {
-      await prisma.productVariant.deleteMany({
-        where: { productId: id }
-      })
-      console.log(`✅ [deleteProduct] ${product.variants.length} variante(s) supprimée(s)`)
-    }
-    
-    // 2. Supprimer les commentaires
-    if (product.comments.length > 0) {
-      await prisma.comment.deleteMany({
-        where: { productId: id }
-      })
-      console.log(`✅ [deleteProduct] ${product.comments.length} commentaire(s) supprimé(s)`)
-    }
-    
-    // 3. Supprimer les plans d'abonnement
-    if (product.subscriptionPlans.length > 0) {
-      await prisma.subscriptionPlan.deleteMany({
-        where: { productId: id }
-      })
-      console.log(`✅ [deleteProduct] ${product.subscriptionPlans.length} plan(s) d'abonnement supprimé(s)`)
-    }
-    
-    // 4. Détacher les catégories (relation many-to-many)
-    await prisma.product.update({
-      where: { id },
-      data: {
-        categories: {
-          set: [] // Détacher toutes les catégories
-        }
-      }
-    })
-    console.log(`✅ [deleteProduct] Catégories détachées`)
-    
-    // 5. Supprimer le produit
     await prisma.product.delete({
       where: { id }
     })
-    
-    console.log(`✅ [deleteProduct] Produit ${id} supprimé avec succès`)
     return true
   } catch (error: any) {
-    console.error(`❌ [deleteProduct] Erreur suppression produit ${id}:`, error)
-    console.error(`❌ [deleteProduct] Détails:`, {
-      code: error.code,
-      message: error.message,
-      meta: error.meta
-    })
+    console.error('❌ Erreur suppression produit:', error)
     return false
   }
 }

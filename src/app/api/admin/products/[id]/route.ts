@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAdmin } from '@/lib/auth-utils'
 import { getProductById, getProductBySlug, upsertProduct, deleteProduct } from '@/lib/products-store'
-import ordersData from '@/data/orders.json'
+import { prisma } from '@/lib/prisma'
 
 // GET - Récupérer un produit spécifique depuis le fichier JSON
 export async function GET(
@@ -21,23 +21,24 @@ export async function GET(
         )
       }
 
-      // Calculer les statistiques depuis orders.json
-      const ordersMap = typeof ordersData === 'object' && !Array.isArray(ordersData) 
-        ? ordersData as Record<string, any>
-        : {}
+      // Calculer les statistiques depuis Prisma
+      const orderItems = await prisma.orderItem.findMany({
+        where: {
+          productId: product.id,
+          order: {
+            status: {
+              in: ['delivered', 'shipped', 'paid']
+            }
+          }
+        }
+      })
       
       let totalSales = 0
       let totalRevenue = 0
 
-      Object.values(ordersMap).forEach((order: any) => {
-        if (order.status === 'delivered' || order.status === 'shipped') {
-          order.items?.forEach((item: any) => {
-            if (item.productId === product.id) {
-              totalSales += item.quantity || 0
-              totalRevenue += (item.priceCents || 0) * (item.quantity || 0)
-            }
-          })
-        }
+      orderItems.forEach((item) => {
+        totalSales += item.quantity
+        totalRevenue += item.priceCents * item.quantity
       })
 
       return NextResponse.json({
@@ -182,16 +183,13 @@ export async function DELETE(
       }
 
       // Vérifier si le produit a des commandes associées
-      const ordersMap = typeof ordersData === 'object' && !Array.isArray(ordersData) 
-        ? ordersData as Record<string, any>
-        : {}
-      
-      let hasOrders = false
-      Object.values(ordersMap).forEach((order: any) => {
-        if (order.items?.some((item: any) => item.productId === id)) {
-          hasOrders = true
+      const orderItems = await prisma.orderItem.findFirst({
+        where: {
+          productId: id
         }
       })
+      
+      const hasOrders = !!orderItems
 
       if (hasOrders) {
         return NextResponse.json(
