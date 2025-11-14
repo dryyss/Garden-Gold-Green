@@ -1,0 +1,12 @@
+{
+  "build": {
+    "type": "nodejs",
+    "buildCommand": "npm run build"
+  },
+  "deploy": {
+    "startCommand": "npm start"
+  },
+  "requirements": {
+    "node": "20.x"
+  }
+}

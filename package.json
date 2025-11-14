@@ -8,6 +8,8 @@
     "build:dev": "next build --turbopack",
     "postbuild": "prisma generate",
     "start": "next start",
+    "clevercloud:build": "npm run build",
+    "clevercloud:start": "npm start",
     "lint": "eslint",
     "analyze": "cross-env ANALYZE=true next build",
     "db:generate": "prisma generate",
