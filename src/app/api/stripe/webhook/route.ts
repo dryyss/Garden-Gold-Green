@@ -323,7 +323,7 @@ export async function POST(request: NextRequest) {
         // Ne pas bloquer la réponse au webhook, mais loguer l'erreur
       }
 
-        break;
+      break;
       }
 
       case 'payment_intent.succeeded': {
