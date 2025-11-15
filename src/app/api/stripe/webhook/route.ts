@@ -318,6 +318,10 @@ export async function POST(request: NextRequest) {
           console.error('❌ Stack trace:', err?.stack)
           // Ne pas bloquer la réponse au webhook, mais loguer l'erreur
         }
+      } catch (err: any) {
+        console.error('❌ Erreur lors du traitement checkout.session.completed:', err)
+        // Ne pas bloquer la réponse au webhook, mais loguer l'erreur
+      }
 
         break;
       }
