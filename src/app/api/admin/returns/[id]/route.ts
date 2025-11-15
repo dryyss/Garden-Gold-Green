@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 import { requireAdmin } from '@/lib/auth-utils'
-
-const prisma = new PrismaClient()
 
 // GET - Récupérer une demande de retour spécifique
 export async function GET(
@@ -67,8 +65,6 @@ export async function GET(
     } catch (error) {
       console.error('Erreur lors de la récupération du retour:', error)
       return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 })
-    } finally {
-      await prisma.$disconnect()
     }
   })(request)
 }
@@ -162,8 +158,6 @@ export async function PATCH(
     } catch (error) {
       console.error('Erreur lors de la mise à jour du retour:', error)
       return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 })
-    } finally {
-      await prisma.$disconnect()
     }
   })(request)
 }
@@ -218,8 +212,6 @@ export async function DELETE(
     } catch (error) {
       console.error('Erreur lors de la suppression du retour:', error)
       return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 })
-    } finally {
-      await prisma.$disconnect()
     }
   })(request)
 }

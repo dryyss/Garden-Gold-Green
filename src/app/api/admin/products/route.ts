@@ -31,28 +31,32 @@ export const GET = requireAdmin(async (request: NextRequest) => {
       return dateB - dateA
     })
 
-    // Calculer les statistiques de ventes pour chaque produit depuis Prisma
-    const orders = await prisma.order.findMany({
-      where: {
-        status: {
-          in: ['delivered', 'shipped', 'paid']
-        }
-      },
-      include: {
-        items: true
-      }
-    })
+    // Calculer les statistiques de ventes avec agrégation SQL (plus efficace)
+    // Utiliser une requête SQL brute pour calculer SUM(quantity) et SUM(priceCents * quantity)
+    const stats = await prisma.$queryRaw<Array<{
+      productId: string;
+      sales: bigint;
+      revenue: bigint;
+    }>>`
+      SELECT 
+        "productId",
+        SUM("quantity")::int as "sales",
+        SUM("priceCents" * "quantity")::int as "revenue"
+      FROM "OrderItem"
+      INNER JOIN "Order" ON "OrderItem"."orderId" = "Order"."id"
+      WHERE "Order"."status" IN ('delivered', 'shipped', 'paid')
+      GROUP BY "productId"
+    `
     
-    // Créer un map des statistiques par produit
+    // Créer un map des statistiques par produit depuis l'agrégation SQL
     const statsMap = new Map<string, { sales: number; revenue: number }>()
     
-    orders.forEach((order) => {
-      order.items.forEach((item) => {
-        const existing = statsMap.get(item.productId) || { sales: 0, revenue: 0 }
-        statsMap.set(item.productId, {
-          sales: existing.sales + item.quantity,
-          revenue: existing.revenue + (item.priceCents * item.quantity)
-        })
+    stats.forEach((stat) => {
+      const sales = Number(stat.sales) || 0
+      const revenue = Number(stat.revenue) || 0
+      statsMap.set(stat.productId, {
+        sales,
+        revenue
       })
     })
     

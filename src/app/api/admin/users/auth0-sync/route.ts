@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAdmin, isOwner, getAuthenticatedUser } from '@/lib/auth-utils'
 import { getAuth0UserRoles, assignSingleRole, getAllAuth0Roles } from '@/lib/auth0-management'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 import { getSession } from '@auth0/nextjs-auth0'
 import { mapToBackofficeRoles } from '@/lib/roles'
-
-const prisma = new PrismaClient()
 
 /**
  * GET - Lire les rôles d'un utilisateur depuis Auth0
@@ -83,8 +81,6 @@ export async function GET(request: NextRequest) {
         { error: error.message || 'Erreur lors de la lecture des rôles' },
         { status: 500 }
       )
-    } finally {
-      await prisma.$disconnect()
     }
   })(request)
 }
@@ -177,8 +173,6 @@ export async function POST(request: NextRequest) {
         { error: error.message || 'Erreur lors de la synchronisation' },
         { status: 500 }
       )
-    } finally {
-      await prisma.$disconnect()
     }
   })(request)
 }

@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 import { requireAdmin } from '@/lib/auth-utils'
 import { getAuth0UserRolesBatch, listAuth0Users } from '@/lib/auth0-management'
-
-const prisma = new PrismaClient()
 
 // GET - Récupérer tous les utilisateurs avec pagination
 export const GET = requireAdmin(async (request: NextRequest) => {
@@ -105,8 +103,6 @@ export const GET = requireAdmin(async (request: NextRequest) => {
   } catch (error) {
     console.error('Erreur lors de la récupération des utilisateurs Auth0:', error)
     return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 })
-  } finally {
-    await prisma.$disconnect()
   }
 })
 

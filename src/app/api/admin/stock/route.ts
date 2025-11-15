@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 import { requireAdmin } from '@/lib/auth-utils'
-
-const prisma = new PrismaClient()
 
 // GET - Récupérer les statistiques de stock
 export const GET = requireAdmin(async (request: NextRequest) => {
@@ -83,8 +81,6 @@ export const GET = requireAdmin(async (request: NextRequest) => {
   } catch (error) {
     console.error('Erreur lors de la récupération du stock:', error)
     return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 })
-  } finally {
-    await prisma.$disconnect()
   }
 })
 
@@ -148,8 +144,6 @@ export const PATCH = requireAdmin(async (request: NextRequest) => {
   } catch (error) {
     console.error('Erreur lors de la mise à jour du stock:', error)
     return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 })
-  } finally {
-    await prisma.$disconnect()
   }
 })
 

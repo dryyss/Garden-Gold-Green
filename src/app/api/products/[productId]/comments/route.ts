@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 
-const prisma = new PrismaClient()
+// Cache les commentaires pendant 60 secondes
+export const revalidate = 60
 
 // GET - Récupérer les commentaires d'un produit
 export async function GET(

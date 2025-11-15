@@ -1,0 +1,11 @@
+{
+  "build": {
+    "type": "npm",
+    "buildCommand": "npm run build:production"
+  },
+  "deploy": {
+    "type": "npm",
+    "startCommand": "npm start"
+  }
+}
+

@@ -144,13 +144,24 @@ function buildApplication() {
     
     // Construire l'application Next.js
     console.log('🏗️  Construction de l\'application Next.js...');
-    execSync('next build', { 
-      stdio: 'inherit',
-      env: { ...process.env, NODE_ENV: 'production' }
-    });
+    console.log('⏳ Cela peut prendre plusieurs minutes...');
     
-    console.log('✅ Build terminé avec succès!');
-    return true;
+    const startTime = Date.now();
+    try {
+      execSync('next build', { 
+        stdio: 'inherit',
+        env: { ...process.env, NODE_ENV: 'production' },
+        maxBuffer: 10 * 1024 * 1024 // 10MB buffer pour les logs
+      });
+      
+      const duration = Math.round((Date.now() - startTime) / 1000);
+      console.log(`✅ Build terminé avec succès en ${duration} secondes!`);
+      return true;
+    } catch (error) {
+      const duration = Math.round((Date.now() - startTime) / 1000);
+      console.error(`❌ Erreur lors du build après ${duration} secondes`);
+      throw error;
+    }
   } catch (error) {
     console.error('❌ Erreur lors du build:', error.message);
     if (error.stdout) console.error('stdout:', error.stdout.toString());

@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 import { requireAdmin } from '@/lib/auth-utils'
-
-const prisma = new PrismaClient()
 
 // GET - Récupérer une promotion spécifique
 export async function GET(
@@ -31,8 +29,6 @@ export async function GET(
     } catch (error) {
       console.error('Erreur lors de la récupération de la promotion:', error)
       return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 })
-    } finally {
-      await prisma.$disconnect()
     }
   })(request)
 }
@@ -84,8 +80,6 @@ export async function PATCH(
     } catch (error) {
       console.error('Erreur lors de la mise à jour de la promotion:', error)
       return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 })
-    } finally {
-      await prisma.$disconnect()
     }
   })(request)
 }
@@ -121,8 +115,6 @@ export async function DELETE(
     } catch (error) {
       console.error('Erreur lors de la suppression de la promotion:', error)
       return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 })
-    } finally {
-      await prisma.$disconnect()
     }
   })(request)
 }

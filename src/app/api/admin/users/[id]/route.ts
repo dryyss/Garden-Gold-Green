@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 import { requireAdmin, isOwner, getAuthenticatedUser } from '@/lib/auth-utils'
 import { assignSingleRole } from '@/lib/auth0-management'
 import { mapToBackofficeRoles } from '@/lib/roles'
-
-const prisma = new PrismaClient()
 
 // GET - Récupérer un utilisateur spécifique
 export async function GET(
@@ -59,8 +57,6 @@ export async function GET(
     } catch (error) {
       console.error('Erreur lors de la récupération de l\'utilisateur:', error)
       return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 })
-    } finally {
-      await prisma.$disconnect()
     }
   })(request)
 }
@@ -220,8 +216,6 @@ export async function PATCH(
     } catch (error) {
       console.error('Erreur lors de la mise à jour de l\'utilisateur:', error)
       return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 })
-    } finally {
-      await prisma.$disconnect()
     }
   })(request)
 }

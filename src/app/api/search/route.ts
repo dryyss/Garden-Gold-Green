@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 
-const prisma = new PrismaClient()
+// Cache les résultats de recherche pendant 30 secondes
+export const revalidate = 30
 
 export async function GET(request: NextRequest) {
   try {

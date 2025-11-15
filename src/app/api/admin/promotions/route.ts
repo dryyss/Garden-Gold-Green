@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 import { requireAdmin } from '@/lib/auth-utils'
-
-const prisma = new PrismaClient()
 
 // GET - Récupérer toutes les promotions
 export const GET = requireAdmin(async (request: NextRequest) => {
@@ -28,8 +26,6 @@ export const GET = requireAdmin(async (request: NextRequest) => {
   } catch (error) {
     console.error('Erreur lors de la récupération des promotions:', error)
     return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 })
-  } finally {
-    await prisma.$disconnect()
   }
 })
 
@@ -109,8 +105,6 @@ export const POST = requireAdmin(async (request: NextRequest) => {
   } catch (error) {
     console.error('Erreur lors de la création de la promotion:', error)
     return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 })
-  } finally {
-    await prisma.$disconnect()
   }
 })
 

@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 import { auth0 } from '@/lib/auth0'
-
-const prisma = new PrismaClient()
 
 // POST - Créer une demande de retour
 export async function POST(request: NextRequest) {

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 
-const prisma = new PrismaClient()
+// Cache la validation pendant 10 secondes (les codes promo ne changent pas souvent)
+export const revalidate = 10
 
 // POST - Valider un code promo
 export async function POST(request: NextRequest) {
@@ -113,8 +114,6 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Erreur lors de la validation du code promo:', error)
     return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 })
-  } finally {
-    await prisma.$disconnect()
   }
 }
 
