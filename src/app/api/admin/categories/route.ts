@@ -10,7 +10,7 @@ export const GET = requireAdmin(async (request: NextRequest) => {
     const includeProducts = searchParams.get('includeProducts') === 'true'
     const includeCount = searchParams.get('includeCount') === 'true'
 
-    let categories = [...categoriesData]
+    const categories = [...categoriesData]
 
     // Ajouter le nombre de produits si demandé
     let categoriesWithCount = categories

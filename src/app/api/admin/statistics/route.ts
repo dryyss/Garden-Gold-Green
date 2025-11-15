@@ -11,7 +11,7 @@ export const GET = requireAdmin(async (request: NextRequest) => {
     // Calculer les dates pour la période courante
     const now = new Date()
     let startDate: Date
-    let endDate: Date = now
+    const endDate: Date = now
 
     switch (period) {
       case 'week':
