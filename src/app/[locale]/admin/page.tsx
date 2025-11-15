@@ -62,6 +62,7 @@ interface User {
   role: 'customer' | 'admin' | 'owner'
   orderCount: number
   totalSpent: number
+  lastLogin?: string | null
   createdAt: string
 }
 
@@ -257,7 +258,7 @@ function AdminContent() {
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">Admin Dashboard</h1>
           <p className="text-gray-400">
-            Welcome back, {auth0State.user?.name || authState.user?.firstName || auth0State.user?.email || 'Admin'}
+            Welcome back, {auth0State.user?.name || authState.user?.name || auth0State.user?.email || 'Admin'}
             {auth0State.user?.backofficeRole === 'owner' && (
               <span className="ml-2 text-yellow-400">
                 <FontAwesomeIcon icon={faCrown} className="mr-1" />

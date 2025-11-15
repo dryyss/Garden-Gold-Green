@@ -5,7 +5,7 @@
  * Usage: tsx scripts/migrate-orders-to-prisma.ts
  */
 
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, Prisma } from '@prisma/client'
 import ordersData from '../src/data/orders.json'
 import path from 'path'
 
@@ -131,7 +131,7 @@ async function migrateOrders() {
           deliveredAt: order.deliveredAt || null,
           estimatedDeliveryDate: order.estimatedDeliveryDate || null,
           history: order.shippingHistory || []
-        } : null)
+        } : undefined)
 
         // Vérifier que tous les produits existent avant de créer la commande
         const itemsToCreate = []
@@ -180,8 +180,8 @@ async function migrateOrders() {
             customerEmail: order.customerEmail || null,
             customerName: order.customerName || null,
             customerPhone: order.customerPhone || null,
-            shippingAddress: order.shippingAddress || null,
-            billingAddress: order.billingAddress || null,
+            shippingAddress: order.shippingAddress ? (order.shippingAddress as Prisma.InputJsonValue) : undefined,
+            billingAddress: order.billingAddress ? (order.billingAddress as Prisma.InputJsonValue) : undefined,
             stripeSessionId: order.stripeSessionId || null,
             paymentIntentId: typeof order.paymentIntentId === 'string'
               ? order.paymentIntentId
@@ -190,8 +190,8 @@ async function migrateOrders() {
                 : null,
             receiptUrl: order.receiptUrl || null,
             invoicePdf: order.invoicePdf || null,
-            shippingInfo: shippingInfo,
-            metadata: order.metadata || null,
+            shippingInfo: shippingInfo ? (shippingInfo as Prisma.InputJsonValue) : undefined,
+            metadata: order.metadata ? (order.metadata as Prisma.InputJsonValue) : undefined,
             deliveredAt: order.deliveredAt ? new Date(order.deliveredAt) : null,
             createdAt: new Date(order.createdAt),
             updatedAt: new Date(order.updatedAt),

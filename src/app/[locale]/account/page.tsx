@@ -74,7 +74,7 @@ export default function AccountPage() {
             Mon Compte
           </h1>
           <p className="text-gray-400">
-            Bienvenue, {user?.firstName || user?.email}
+            Bienvenue, {user?.name || user?.email}
           </p>
         </div>
 
@@ -86,14 +86,10 @@ export default function AccountPage() {
             </div>
             <div className="flex-1">
               <h2 className="text-xl font-semibold text-white">
-                {user?.firstName && user?.lastName 
-                  ? `${user.firstName} ${user.lastName}` 
-                  : user?.email || 'Utilisateur'}
+                {user?.name || user?.email || 'Utilisateur'}
               </h2>
               <p className="text-gray-400">{user?.email}</p>
-              <p className="text-sm text-brand-green">
-                {user?.phone && `📞 ${user.phone}`}
-              </p>
+              {/* Téléphone non typé dans User, on l'affichera plus tard si nécessaire */}
             </div>
             <button className="text-gray-400 hover:text-white transition-colors">
               <FontAwesomeIcon icon={faEdit} className="text-lg" />

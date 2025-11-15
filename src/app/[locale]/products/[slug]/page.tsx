@@ -66,17 +66,23 @@ export default function ProductDetailPage() {
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    // Simuler le chargement d'un produit depuis l'API
-    const productSlug = params.slug as string
-    const foundProduct = productsData.find(p => p.slug === productSlug)
-    
-    if (foundProduct) {
-      const transformedProduct = transformProduct(foundProduct)
-      setProduct(transformedProduct)
-      
-      // Charger les plans d'abonnement pour ce produit
-      fetchPlans(foundProduct.id)
+    const loadProduct = async () => {
+      try {
+        const productSlug = params.slug as string
+        const response = await fetch(`/api/products?slug=${productSlug}`)
+        const data = await response.json()
+        if (data.success && data.product) {
+          const transformedProduct = transformProduct(data.product)
+          setProduct(transformedProduct)
+          // Charger les plans d'abonnement pour ce produit
+          fetchPlans(data.product.id)
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement du produit:', error)
+      }
     }
+
+    loadProduct()
   }, [params.slug, fetchPlans])
 
   const handlePlanSelect = (plan: SubscriptionPlanWithDetails) => {
@@ -97,7 +103,6 @@ export default function ProductDetailPage() {
 
     try {
       await createSubscription({
-        userId: user.sub,
         ...data
       })
       
@@ -140,26 +145,6 @@ export default function ProductDetailPage() {
     }
   }
 
-  useEffect(() => {
-    if (params.slug) {
-      const loadProduct = async () => {
-        try {
-          setLoading(true)
-          const response = await fetch(`/api/products?slug=${params.slug}`)
-          const data = await response.json()
-          if (data.success && data.product) {
-            setProduct(transformProduct(data.product))
-          }
-        } catch (error) {
-          console.error('Erreur lors du chargement du produit:', error)
-        } finally {
-          setLoading(false)
-        }
-      }
-      loadProduct()
-    }
-  }, [params.slug])
-
   const handleAddToCart = async () => {
     if (!product) return
     
@@ -193,7 +178,7 @@ export default function ProductDetailPage() {
     )
   }
 
-  const relatedProducts = productsData.filter(p => product.relatedProducts.includes(p.id))
+  const relatedProducts: any[] = []
 
   return (
     <main className="bg-brand-black min-h-screen pt-24">

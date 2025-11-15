@@ -25,7 +25,7 @@ function filterProducts(
   // Filtrer par catégorie
   if (category) {
     filteredProducts = filteredProducts.filter(product => 
-      product.categories.some(cat => cat.slug === category)
+      product.categories.some((cat: any) => cat.slug === category)
     )
   }
   

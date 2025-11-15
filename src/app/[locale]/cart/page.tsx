@@ -11,7 +11,8 @@ import {
   faTrash, 
   faArrowLeft,
   faShoppingBag,
-  faLock
+  faLock,
+  faCheckCircle
 } from '@fortawesome/free-solid-svg-icons'
 
 export default function CartPage() {
@@ -19,14 +20,14 @@ export default function CartPage() {
 
   const updateQuantity = (id: string, quantity: number) => {
     if (quantity <= 0) {
-      dispatch({ type: 'REMOVE_ITEM', payload: { id } })
+      dispatch({ type: 'REMOVE_ITEM', payload: id })
     } else {
       dispatch({ type: 'UPDATE_QUANTITY', payload: { id, quantity } })
     }
   }
 
   const removeItem = (id: string) => {
-    dispatch({ type: 'REMOVE_ITEM', payload: { id } })
+    dispatch({ type: 'REMOVE_ITEM', payload: id })
   }
 
   const clearCart = () => {

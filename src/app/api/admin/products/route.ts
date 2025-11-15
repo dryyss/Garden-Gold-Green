@@ -153,7 +153,6 @@ export const POST = requireAdmin(async (request: NextRequest) => {
       images: Array.isArray(images) ? images : (typeof images === 'string' ? [images] : []),
       published,
       isFeatured,
-      categoryIds: categoryIds,
       variants: variants.map((variant: any) => ({
         id: `${newId}-v${variants.indexOf(variant) + 1}`,
         title: variant.title,

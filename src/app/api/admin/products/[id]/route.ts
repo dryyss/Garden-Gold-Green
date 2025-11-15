@@ -113,7 +113,6 @@ export async function PATCH(
 
       // Préparer les données à mettre à jour
       const updateData: any = {
-        id,
         ...existingProduct
       }
       

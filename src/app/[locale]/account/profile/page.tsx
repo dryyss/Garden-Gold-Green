@@ -18,6 +18,8 @@ import Link from 'next/link'
 export default function ProfilePage() {
   const { state: authState, updateProfile } = useAuth()
   const router = useRouter()
+  const user = authState.user
+  const isAuthenticated = authState.isAuthenticated
   const [isEditing, setIsEditing] = useState(false)
   const [formData, setFormData] = useState({
     firstName: '',
@@ -35,24 +37,8 @@ export default function ProfilePage() {
   useEffect(() => {
     if (!isAuthenticated) {
       router.push('/')
-      return
     }
-
-    if (user) {
-      setFormData({
-        firstName: user.firstName || '',
-        lastName: user.lastName || '',
-        email: user.email || '',
-        phone: user.phone || '',
-        address: {
-          street: user.address?.street || '',
-          city: user.address?.city || '',
-          postalCode: user.address?.postalCode || '',
-          country: user.address?.country || 'France'
-        }
-      })
-    }
-  }, [isAuthenticated, user, router])
+  }, [isAuthenticated, router])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target

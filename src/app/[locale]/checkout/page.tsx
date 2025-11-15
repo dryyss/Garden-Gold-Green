@@ -40,8 +40,8 @@ export default function CheckoutPage() {
   const { state: authState } = useAuth()
   const [form, setForm] = useState<CheckoutForm>({
     email: authState.user?.email || '',
-    firstName: authState.user?.firstName || '',
-    lastName: authState.user?.lastName || '',
+    firstName: '',
+    lastName: '',
     address: '',
     city: '',
     state: '',

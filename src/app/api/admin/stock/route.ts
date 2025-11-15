@@ -119,7 +119,7 @@ export const PATCH = requireAdmin(async (request: NextRequest) => {
       updates.map(async (update: { productId: string; stock: number }) => {
         const product = await prisma.product.update({
           where: { id: update.productId },
-          data: { stock: parseInt(update.stock) },
+          data: { stock: update.stock },
           include: {
             categories: true
           }

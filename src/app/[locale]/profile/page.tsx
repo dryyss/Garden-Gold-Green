@@ -10,7 +10,7 @@ function ProfileContent() {
   const { state: authState } = useAuth()
   const { state: auth0State } = useAuth0Context()
   
-  const user = auth0State.user || authState.user
+  const user = (auth0State.user || authState.user) as any
 
   return (
     <div className="bg-brand-black min-h-screen text-gray-300 pt-24">

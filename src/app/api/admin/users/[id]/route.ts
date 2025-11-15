@@ -14,19 +14,7 @@ export async function GET(
       const { id } = await params
 
       const user = await prisma.user.findUnique({
-        where: { id },
-        include: {
-          orders: {
-            select: {
-              id: true,
-              totalCents: true,
-              status: true,
-              createdAt: true
-            },
-            orderBy: { createdAt: 'desc' },
-            take: 10
-          }
-        }
+        where: { id }
       })
 
       if (!user) {
@@ -36,8 +24,20 @@ export async function GET(
         )
       }
 
-      const orderCount = user.orders.length
-      const totalSpent = user.orders
+      const orders = await prisma.order.findMany({
+        where: { userId: id },
+        select: {
+          id: true,
+          totalCents: true,
+          status: true,
+          createdAt: true
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 10
+      })
+
+      const orderCount = orders.length
+      const totalSpent = orders
         .filter(order => ['paid', 'shipped', 'delivered'].includes(order.status))
         .reduce((sum, order) => sum + order.totalCents, 0)
 

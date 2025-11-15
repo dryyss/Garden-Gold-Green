@@ -96,7 +96,7 @@ export default function SubscriptionsPage() {
   if (authLoading || loadingSubscriptions) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <LoadingSpinner size="large" />
+        <LoadingSpinner size="lg" />
       </div>
     );
   }
@@ -232,19 +232,28 @@ export default function SubscriptionsPage() {
 
       {/* Notifications */}
       {notification && (
-        <Notification
-          type={notification.type}
-          message={notification.message}
-          onClose={() => setNotification(null)}
-          className="fixed top-4 right-4 z-50"
-        />
+        <div className="fixed top-4 right-4 z-50">
+          <Notification
+            id="subscriptions-notification"
+            type={notification.type}
+            title={
+              notification.type === 'success'
+                ? 'Succès'
+                : notification.type === 'error'
+                  ? 'Erreur'
+                  : 'Information'
+            }
+            message={notification.message}
+            onClose={() => setNotification(null)}
+          />
+        </div>
       )}
 
       {/* Overlay de chargement pour les actions */}
       {loadingAction && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 text-center">
-            <LoadingSpinner size="medium" />
+            <LoadingSpinner size="md" />
             <p className="mt-4 text-gray-600">Traitement en cours...</p>
           </div>
         </div>
