@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAdmin, isOwner, getAuthenticatedUser } from '@/lib/auth-utils'
-import { getAuth0UserRoles, assignSingleRole, getAllAuth0Roles } from '@/lib/auth0-management'
+import { getAuth0UserRoles, assignSingleRole } from '@/lib/auth0-management'
 import { prisma } from '@/lib/prisma'
-import { getSession } from '@auth0/nextjs-auth0'
 import { mapToBackofficeRoles } from '@/lib/roles'
 
 /**
@@ -177,26 +176,6 @@ export async function POST(request: NextRequest) {
   })(request)
 }
 
-/**
- * GET - Liste tous les rôles disponibles dans Auth0
- */
-export async function GET_ROLES(request: NextRequest) {
-  return requireAdmin(async (request: NextRequest) => {
-    try {
-      const roles = await getAllAuth0Roles()
-      return NextResponse.json({
-        success: true,
-        roles: roles.map(r => ({ id: r.id, name: r.name }))
-      })
-    } catch (error: any) {
-      console.error('Erreur lors de la récupération des rôles:', error)
-      return NextResponse.json(
-        { error: error.message || 'Erreur lors de la récupération des rôles' },
-        { status: 500 }
-      )
-    }
-  })(request)
-}
 
 
 
