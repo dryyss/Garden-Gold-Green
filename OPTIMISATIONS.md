@@ -194,3 +194,4 @@ const orders = await prisma.order.findMany({
 
 Voir le fichier `OPTIMISATIONS-FIXES.md` pour les corrections détaillées.
 
+

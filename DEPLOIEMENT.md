@@ -213,3 +213,4 @@ pm2 restart garden-gold-green
 - ⚠️ **Configurer les backups de base de données**
 - ⚠️ **Mettre à jour régulièrement les dépendances**
 
+

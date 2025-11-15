@@ -156,3 +156,4 @@ Une fois toutes les modifications faites :
 - En production, configurez les variables d'environnement directement sur votre serveur
 - Utilisez des secrets forts et uniques pour la production
 
+
