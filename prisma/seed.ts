@@ -121,7 +121,7 @@ async function main() {
         cbdPercent: 12.0,
         sku: 'GG-FL-GOR',
         stock: 20,
-        images: ['/assets/products/fleurs-gorilla-1.jpg'],
+          images: JSON.stringify(['/assets/products/fleurs-gorilla-1.jpg']),
         published: true,
         categories: {
           connect: [{ id: categories[1].id }],
@@ -160,6 +160,7 @@ async function main() {
     where: { email: 'admin@gardengoldgreen.com' },
     update: {},
     create: {
+      id: 'seed-admin-1',
       email: 'admin@gardengoldgreen.com',
       name: 'Admin Garden Gold Green',
       role: 'admin',
@@ -172,6 +173,7 @@ async function main() {
       where: { email: 'client1@example.com' },
       update: {},
       create: {
+        id: 'seed-customer-1',
         email: 'client1@example.com',
         name: 'Jean Dupont',
         role: 'customer',
@@ -181,6 +183,7 @@ async function main() {
       where: { email: 'client2@example.com' },
       update: {},
       create: {
+        id: 'seed-customer-2',
         email: 'client2@example.com',
         name: 'Marie Martin',
         role: 'customer',
@@ -209,11 +212,13 @@ async function main() {
           create: [
             {
               productId: products[0].id,
+              name: products[0].title,
               priceCents: 2990,
               quantity: 1,
             },
             {
               productId: products[2].id,
+              name: products[2].title,
               priceCents: 1590,
               quantity: 1,
             },
@@ -238,6 +243,7 @@ async function main() {
           create: [
             {
               productId: products[3].id,
+              name: products[3].title,
               priceCents: 3490,
               quantity: 1,
             },

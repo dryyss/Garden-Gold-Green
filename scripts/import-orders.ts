@@ -8,9 +8,7 @@ import {
 } from '../src/lib/orders-store'
 import { prisma } from '../src/lib/prisma'
 
-const prisma = new PrismaClient()
-
-interface LegacyOrderRecord extends Partial<OrderRecord> {
+interface LegacyOrderRecord extends Omit<Partial<OrderRecord>, 'paymentIntentId'> {
   id: string
   items: Array<{
     productId: string
@@ -48,8 +46,8 @@ function normalizeOrder(raw: LegacyOrderRecord): OrderRecord {
     typeof raw.paymentIntentId === 'string'
       ? raw.paymentIntentId
       : raw.paymentIntentId && typeof raw.paymentIntentId === 'object'
-        ? raw.paymentIntentId.id ?? null
-        : raw.paymentIntentId ?? null
+        ? raw.paymentIntentId.id ?? undefined
+        : raw.paymentIntentId ?? undefined
 
   const shippingInfo: OrderShippingInfo | null =
     raw.shippingInfo ??
@@ -93,7 +91,7 @@ function normalizeOrder(raw: LegacyOrderRecord): OrderRecord {
     shippingAddress: raw.shippingAddress,
     billingAddress: raw.billingAddress,
     stripeSessionId: raw.stripeSessionId,
-    paymentIntentId: paymentIntentId ?? null,
+    paymentIntentId: paymentIntentId ?? undefined,
     receiptUrl: raw.receiptUrl ?? null,
     invoicePdf: raw.invoicePdf ?? null,
     trackingNumber: raw.trackingNumber ?? null,

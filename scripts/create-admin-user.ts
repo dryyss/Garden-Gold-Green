@@ -33,8 +33,12 @@ async function createAdminUser(email: string, password: string) {
     const hashedPassword = await bcrypt.hash(password, 12)
 
     // Créer l'utilisateur admin
+    // Générer un ID basé sur l'email (format similaire à auth0)
+    const userId = `admin-${email.toLowerCase().replace(/[^a-z0-9]/g, '-')}`
+    
     const admin = await prisma.user.create({
       data: {
+        id: userId,
         email: email.toLowerCase(),
         name: 'Administrator',
         password: hashedPassword,

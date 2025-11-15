@@ -14,7 +14,7 @@ const prisma = new PrismaClient()
 interface OrderItemRecord {
   productId: string
   name: string
-  priceCents: number
+  priceCents: number | null
   quantity: number
   image?: string
 }
@@ -39,7 +39,7 @@ interface OrderRecord {
   shippingAddress?: Record<string, unknown>
   billingAddress?: Record<string, unknown>
   stripeSessionId?: string
-  paymentIntentId?: string
+  paymentIntentId?: string | { id?: string }
   receiptUrl?: string | null
   invoicePdf?: string | null
   trackingNumber?: string | null
@@ -79,7 +79,7 @@ async function migrateOrders() {
     console.log('✅ Connexion à la base de données établie\n')
 
     // orders.json est un objet, pas un tableau
-    const ordersMap = ordersData as Record<string, OrderRecord>
+    const ordersMap = ordersData as unknown as Record<string, OrderRecord>
     const orders = Object.values(ordersMap)
     
     console.log(`📦 ${orders.length} commandes à migrer\n`)
@@ -104,9 +104,9 @@ async function migrateOrders() {
         // Trouver ou créer l'utilisateur si userId est fourni
         let userId = order.userId || null
         if (userId && userId.startsWith('auth0|')) {
-          // Chercher l'utilisateur par auth0Id
+          // Chercher l'utilisateur par id (qui stocke l'auth0Id)
           const user = await prisma.user.findUnique({
-            where: { auth0Id: userId }
+            where: { id: userId }
           })
           if (user) {
             userId = user.id
@@ -185,7 +185,9 @@ async function migrateOrders() {
             stripeSessionId: order.stripeSessionId || null,
             paymentIntentId: typeof order.paymentIntentId === 'string'
               ? order.paymentIntentId
-              : null,
+              : order.paymentIntentId && typeof order.paymentIntentId === 'object'
+                ? order.paymentIntentId.id ?? null
+                : null,
             receiptUrl: order.receiptUrl || null,
             invoicePdf: order.invoicePdf || null,
             shippingInfo: shippingInfo,
