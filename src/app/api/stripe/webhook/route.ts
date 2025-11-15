@@ -319,29 +319,29 @@ export async function POST(request: NextRequest) {
           // Ne pas bloquer la réponse au webhook, mais loguer l'erreur
         }
 
-        break
+        break;
       }
 
       case 'payment_intent.succeeded': {
         const paymentIntent = event.data.object as Stripe.PaymentIntent
-        break
+        break;
       }
 
       case 'payment_intent.payment_failed': {
         const paymentIntent = event.data.object as Stripe.PaymentIntent
         
         // TODO: Notifier l'utilisateur de l'échec
-        break
+        break;
       }
 
       case 'charge.refunded': {
         // Mise à jour du statut gérée côté commandes JSON si nécessaire
-        break
+        break;
       }
 
       default:
         // Événement non traité
-        break
+        break;
     }
 
     return NextResponse.json({ received: true })
