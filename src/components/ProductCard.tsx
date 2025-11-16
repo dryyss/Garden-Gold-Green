@@ -130,9 +130,12 @@ export function ProductCard({ product, className = '' }: ProductCardProps) {
           <Image
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 cursor-pointer"
             src={product.image}
-            alt={product.name}
+            alt={`${product.name} - Produit CBD ${product.category} - ${product.price.toFixed(2)}€`}
             width={400}
             height={288}
+            loading="lazy"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            title={`${product.name} - ${product.category}`}
           />
         </Link>
         

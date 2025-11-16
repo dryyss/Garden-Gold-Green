@@ -93,10 +93,12 @@ export function ImageCarousel({
         <div className="relative aspect-square bg-gray-800 rounded-xl overflow-hidden">
           <Image
             src={images[currentIndex]}
-            alt={`${alt} ${currentIndex + 1}`}
+            alt={`${alt} - Image ${currentIndex + 1} - Produit CBD premium`}
             fill
             className="object-cover transition-transform duration-300 group-hover:scale-105"
             priority
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            title={`${alt} - Vue ${currentIndex + 1}`}
           />
 
           {/* Navigation Arrows */}
@@ -172,10 +174,13 @@ export function ImageCarousel({
               >
                 <Image
                   src={image}
-                  alt={`${alt} miniature ${index + 1}`}
+                  alt={`${alt} - Miniature ${index + 1} - Produit CBD`}
                   width={150}
                   height={150}
                   className="w-full h-full object-cover"
+                  loading="lazy"
+                  sizes="(max-width: 1024px) 25vw, 12.5vw"
+                  title={`${alt} - Miniature ${index + 1}`}
                 />
               </button>
             ))}
@@ -197,10 +202,13 @@ export function ImageCarousel({
           <div className="relative max-w-4xl max-h-full">
             <Image
               src={images[currentIndex]}
-              alt={`${alt} plein écran ${currentIndex + 1}`}
+              alt={`${alt} - Vue plein écran ${currentIndex + 1} - Produit CBD premium`}
               width={800}
               height={800}
               className="max-w-full max-h-full object-contain"
+              priority
+              sizes="100vw"
+              title={`${alt} - Vue plein écran ${currentIndex + 1}`}
             />
 
             {/* Fullscreen Navigation */}

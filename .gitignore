@@ -107,7 +107,14 @@ dist
 
 # Gatsby files
 .cache/
-public
+# public - Commenté pour permettre les logos et assets statiques
+# public
+# Exceptions pour les assets nécessaires
+!public/logo*.png
+!public/logo*.jpg
+!public/logo*.svg
+!public/manifest.json
+!public/**/*.svg
 
 # Storybook build outputs
 .out

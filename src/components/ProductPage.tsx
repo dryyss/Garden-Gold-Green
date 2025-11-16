@@ -270,7 +270,7 @@ export default function ProductPage({ product }: { product: Product }) {
           <div>
             <ImageCarousel
               images={productImages}
-              alt={product.name}
+              alt={`${product.name} - Produit CBD ${product.category} - ${product.price.toFixed(2)}€`}
               showThumbnails={true}
               showFullscreen={true}
               autoPlay={false}

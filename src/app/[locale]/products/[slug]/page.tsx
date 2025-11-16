@@ -199,9 +199,12 @@ export default function ProductDetailPage() {
               <Image
                 className="w-full h-auto object-cover rounded-lg"
                 src={product.images[selectedImage]}
-                alt={product.name}
+                alt={`${product.name} - Image principale - Produit CBD ${product.category} - ${product.price.toFixed(2)}€`}
                 width={600}
                 height={400}
+                priority
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                title={`${product.name} - ${product.category}`}
               />
             </div>
             <div className="grid grid-cols-4 gap-4">
@@ -218,9 +221,12 @@ export default function ProductDetailPage() {
                   <Image
                     className="w-full h-full object-cover rounded-md"
                     src={image}
-                    alt={`${product.name} view ${index + 1}`}
+                    alt={`${product.name} - Vue ${index + 1} - Miniature produit CBD`}
                     width={100}
                     height={100}
+                    loading="lazy"
+                    sizes="(max-width: 1024px) 25vw, 12.5vw"
+                    title={`${product.name} - Vue ${index + 1}`}
                   />
                 </div>
               ))}
