@@ -24,11 +24,14 @@ interface ContactForm {
 export default function ContactPage() {
   const { t } = useTranslation()
   
-  // Fonction helper pour éviter les erreurs de traduction
-  const safeT = (key: string, fallback: string = '') => {
+  // Fonction helper pour éviter les erreurs de traduction (retourne toujours une string)
+  const safeT = (key: string, fallback: string = ''): string => {
     try {
-      const result = t(key)
-      return result || fallback
+      const result = t(key) as unknown
+      if (typeof result === 'string') {
+        return result || fallback
+      }
+      return fallback
     } catch (error) {
       console.warn(`Translation error for key: ${key}`, error)
       return fallback
@@ -403,7 +406,7 @@ export default function ContactPage() {
               <div className="space-y-4">
                 {(() => {
                   try {
-                    const faqItems = safeT('contact.faq.items', [])
+                    const faqItems = t('contact.faq.items') as any
                     if (Array.isArray(faqItems)) {
                       return faqItems.map((item: any, index: number) => (
                         <div key={index} className="card-bg rounded-lg p-4">

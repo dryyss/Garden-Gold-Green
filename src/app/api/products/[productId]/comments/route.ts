@@ -86,7 +86,7 @@ export async function POST(
     const newComment = await prisma.comment.create({
       data: {
         userId: userId,
-        productId: params.productId,
+        productId,
         rating: parseInt(rating),
         content: comment,
         isVerified: !!hasPurchased, // Vérifié si l'utilisateur a acheté le produit

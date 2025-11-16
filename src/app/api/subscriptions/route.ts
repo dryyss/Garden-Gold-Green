@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
     });
 
     // Enrichir les données
-    const enrichedSubscriptions: SubscriptionWithDetails[] = subscriptions.map(subscription => {
+    const enrichedSubscriptions = subscriptions.map(subscription => {
       const canPause = subscription.status === 'active';
       const canCancel = subscription.status === 'active';
       const canResume = subscription.status === 'paused';
@@ -142,8 +142,7 @@ export async function POST(request: NextRequest) {
         currentPeriodStart: now,
         currentPeriodEnd,
         nextBillingDate,
-        quantity,
-        shippingAddress: JSON.stringify(shippingAddress)
+        quantity
       },
       include: {
         plan: {

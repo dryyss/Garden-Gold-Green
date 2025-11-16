@@ -314,9 +314,16 @@ export default function OrderDetailPage() {
                 {order.items.map((item) => (
                   <div key={item.id} className="flex items-center space-x-4 p-4 bg-white/5 rounded-lg">
                     <div className="w-16 h-16 bg-white/10 rounded-lg flex items-center justify-center">
-                      {item.product?.image ? (
+                      {item.product?.images ? (
                         <Image
-                          src={item.product.image}
+                          src={(() => {
+                            try {
+                              const imgs = JSON.parse(item.product.images) as string[]
+                              return imgs[0] || '/logo.png'
+                            } catch {
+                              return '/logo.png'
+                            }
+                          })()}
                           alt={item.name}
                           width={64}
                           height={64}
@@ -459,8 +466,18 @@ export default function OrderDetailPage() {
             <div className="bg-brand-black rounded-xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
               <ReturnRequest 
                 orderId={order.id}
-                onClose={() => setShowReturnForm(false)}
-                onSuccess={() => {
+                items={order.items.map(item => ({
+                  id: item.id,
+                  productName: item.name,
+                  quantity: item.quantity,
+                  price: item.priceCents / 100,
+                  image: '',
+                  orderDate: order.createdAt,
+                  deliveryDate: order.deliveredAt || order.createdAt,
+                  // TODO: affiner la logique de retour possible
+                  canReturn: true,
+                }))}
+                onReturnRequested={() => {
                   setShowReturnForm(false)
                   // Optionnel: recharger les données de la commande
                   fetchOrder()

@@ -1,22 +1,22 @@
-'use client'
+ 'use client'
 
-import { useState, useEffect } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { 
-  faXmark, 
-  faEnvelope, 
-  faUser,
-  faPhone,
-  faMapMarkerAlt,
-  faEdit,
-  faSave,
-  faSpinner,
-  faSignOutAlt
-} from '@fortawesome/free-solid-svg-icons'
-import { useAuth0 } from '@/hooks/useAuth0'
-import { useTranslation } from '@/contexts/TranslationContext'
+ import { useState, useEffect } from 'react'
+ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+ import { 
+   faXmark, 
+   faEnvelope, 
+   faUser,
+   faPhone,
+   faMapMarkerAlt,
+   faEdit,
+   faSave,
+   faSpinner,
+   faSignOutAlt
+ } from '@fortawesome/free-solid-svg-icons'
+ import { useAuth } from '@/contexts/AuthContext'
+ import { useTranslation } from '@/contexts/TranslationContext'
 
-interface UserProfileModalProps {
+ interface UserProfileModalProps {
   isOpen: boolean
   onClose: () => void
 }
@@ -42,15 +42,15 @@ export function UserProfileModal({ isOpen, onClose }: UserProfileModalProps) {
   useEffect(() => {
     if (state.user) {
       setFormData({
-        firstName: state.user.firstName,
-        lastName: state.user.lastName,
+        firstName: state.user.firstName || '',
+        lastName: state.user.lastName || '',
         email: state.user.email,
         phone: state.user.phone || '',
-        address: state.user.address || {
-          street: '',
-          city: '',
-          postalCode: '',
-          country: 'France'
+        address: {
+          street: state.user.address?.street || '',
+          city: state.user.address?.city || '',
+          postalCode: state.user.address?.postalCode || '',
+          country: state.user.address?.country || 'France'
         }
       })
     }

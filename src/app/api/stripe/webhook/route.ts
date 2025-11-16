@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { sendOrderConfirmationEmail } from '@/lib/email'
-import { upsertOrder, CartItemPayload } from '@/lib/orders-store'
+import { upsertOrder } from '@/lib/orders-store'
+import { CartItemPayload } from '@/lib/orders-store-prisma'
 import { listProducts } from '@/lib/products-store'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -85,7 +86,7 @@ export async function POST(request: NextRequest) {
                   : (paymentIntentRaw as Stripe.PaymentIntent)
 
               paymentIntentId = paymentIntentObj.id
-              const charge = paymentIntentObj.charges?.data?.[0]
+              const charge = (paymentIntentObj as any).charges?.data?.[0]
               receiptUrl = charge?.receipt_url || receiptUrl
             } catch (piError) {
               console.warn('⚠️ Impossible de récupérer le PaymentIntent:', piError)
@@ -111,10 +112,10 @@ export async function POST(request: NextRequest) {
             }
           }
 
-          const shippingDetails = expandedSession.shipping_details || null
-          const shippingAddressData = shippingDetails?.address || expandedSession.customer_details?.address || null
-          const shippingPhone = shippingDetails?.phone || expandedSession.customer_details?.phone || ''
-          const shippingName = shippingDetails?.name || expandedSession.customer_details?.name || ''
+          const shippingDetails = (expandedSession as any).shipping_details || null
+          const shippingAddressData = shippingDetails?.address || (expandedSession as any).customer_details?.address || null
+          const shippingPhone = shippingDetails?.phone || (expandedSession as any).customer_details?.phone || ''
+          const shippingName = shippingDetails?.name || (expandedSession as any).customer_details?.name || ''
           const [shippingFirstName, ...shippingRest] = shippingName ? shippingName.split(' ') : ['']
           const shippingLastName = shippingRest.join(' ')
 

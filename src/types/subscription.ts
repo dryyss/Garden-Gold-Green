@@ -2,7 +2,7 @@
 export interface SubscriptionPlan {
   id: string;
   name: string;
-  description?: string;
+  description?: string | null;
   interval: 'weekly' | 'monthly' | 'yearly';
   intervalCount: number;
   priceCents: number;

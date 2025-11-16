@@ -118,7 +118,6 @@ export function useOrderNotifications() {
         const message = statusMessages[update.status as keyof typeof statusMessages]
         if (message) {
           addNotification({
-            id: notificationId,
             type: 'success',
             title: 'Mise à jour de commande',
             message: `${message} (Commande #${update.id})`,

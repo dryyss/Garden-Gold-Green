@@ -7,7 +7,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { ProductCard } from '@/components/ProductCard'
 
-interface Product {
+// Compatible avec le type Product attendu par ProductCard, mais avec quelques champs optionnels
+interface CarouselProduct {
   id: string
   name: string
   price: number
@@ -15,15 +16,16 @@ interface Product {
   slug: string
   rating: number
   reviewCount: number
+  category?: string
+  description?: string
+  inStock?: boolean
   isNew?: boolean
   isBestSeller?: boolean
-  inStock?: boolean
-  category?: string
   cbdPercent?: number
 }
 
 interface ProductGridCarouselProps {
-  products: Product[]
+  products: CarouselProduct[]
   title?: string
   className?: string
   itemsPerView?: {
@@ -153,7 +155,24 @@ export function ProductGridCarousel({
               style={{ width: `${100 / currentItemsPerView}%` }}
             >
               <div className="h-full">
-                <ProductCard product={product} />
+                <ProductCard 
+                  product={{
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    originalPrice: product.price,
+                    image: product.image,
+                    category: product.category ?? '',
+                    description: product.description ?? '',
+                    rating: product.rating,
+                    reviewCount: product.reviewCount,
+                    inStock: product.inStock ?? true,
+                    isNew: product.isNew,
+                    isBestSeller: product.isBestSeller,
+                    slug: product.slug,
+                    cbdPercent: product.cbdPercent,
+                  }} 
+                />
               </div>
             </div>
           ))}

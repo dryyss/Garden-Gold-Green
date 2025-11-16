@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Inter, Montserrat } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
@@ -93,7 +94,9 @@ export default function RootLayout({
         {/* Filigrane global */}
         <div aria-hidden className="watermark-overlay" />
         <PageLoader minLoadingTime={1500} showOnce={true}>
-          <GoogleAnalytics />
+          <Suspense fallback={null}>
+            <GoogleAnalytics />
+          </Suspense>
           <TranslationProvider>
             <NotificationProvider>
               <Auth0Provider>

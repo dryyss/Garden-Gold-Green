@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { prisma } from '@/lib/prisma'
-import { upsertOrder, CartItemPayload } from '@/lib/orders-store'
+import { upsertOrder } from '@/lib/orders-store'
+import { CartItemPayload } from '@/lib/orders-store-prisma'
 import { listProducts } from '@/lib/products-store'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -27,7 +28,8 @@ export async function POST(request: NextRequest) {
     console.log(`📥 [create-from-session] Création commande depuis session ${sessionId}`)
 
     // Récupérer la session Stripe
-    const expandedSession = await stripe.checkout.sessions.retrieve(sessionId, {
+    // Typée en any ici pour éviter les incompatibilités entre les types Response<Session> et notre usage
+    const expandedSession: any = await stripe.checkout.sessions.retrieve(sessionId, {
       expand: ['invoice', 'payment_intent'],
     })
 
@@ -63,7 +65,10 @@ export async function POST(request: NextRequest) {
     // Récupérer les produits
     const products = await listProducts()
     console.log(`📦 [create-from-session] Produits récupérés: ${products.length}`)
-    console.log(`📦 [create-from-session] Exemples d'IDs produits:`, products.slice(0, 3).map(p => ({ id: p.id, name: p.name })))
+    console.log(
+      `📦 [create-from-session] Exemples d'IDs produits:`,
+      products.slice(0, 3).map(p => ({ id: p.id, title: p.title }))
+    )
     
     // Créer une map avec plusieurs clés possibles (id, slug, ancien id numérique)
     const productsMap = new Map<string, any>()

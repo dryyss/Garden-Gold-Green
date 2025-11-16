@@ -50,7 +50,7 @@ export async function GET(
           role: user.role,
           orderCount,
           totalSpent,
-          recentOrders: user.orders,
+          recentOrders: orders,
           createdAt: user.createdAt.toISOString()
         }
       })

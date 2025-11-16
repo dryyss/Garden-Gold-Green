@@ -118,7 +118,7 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
     return
   }
 
-  const message: MailDataRequired = {
+  const message: any = {
     to: options.to,
     from: options.from || DEFAULT_FROM_EMAIL,
   }

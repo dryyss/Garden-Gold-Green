@@ -229,10 +229,10 @@ export async function listOrdersByUser(userId: string, userEmail?: string): Prom
   try {
     const where: any = {}
     
-    // Si userId est un auth0Id, chercher l'utilisateur
+    // Si userId est un auth0Id (stocké comme id utilisateur), chercher l'utilisateur
     if (userId.startsWith('auth0|') || userId.startsWith('google-oauth2|')) {
       const user = await prisma.user.findUnique({
-        where: { auth0Id: userId }
+        where: { id: userId }
       })
       if (user) {
         where.userId = user.id

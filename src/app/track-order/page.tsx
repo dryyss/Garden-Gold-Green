@@ -332,9 +332,9 @@ export default function TrackOrderPage() {
                       className="flex items-center justify-between py-3 border-b border-white/10 last:border-0"
                     >
                       <div className="flex items-center gap-4">
-                        {item.product?.images && (
+                        {item.product?.image && (
                           <img
-                            src={item.product.images[0]}
+                            src={item.product.image}
                             alt={item.name}
                             className="w-16 h-16 object-cover rounded-lg"
                           />

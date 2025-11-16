@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
       const savings = calculateSavings(originalPrice, plan.priceCents);
       
       return {
-        ...plan,
+        ...(plan as any),
         originalPriceCents: originalPrice,
         savingsCents: savings.amount,
         savingsPercentage: savings.percentage,

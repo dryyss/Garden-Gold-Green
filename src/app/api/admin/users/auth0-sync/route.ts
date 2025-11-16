@@ -146,8 +146,8 @@ export async function POST(request: NextRequest) {
         )
       }
 
-      // Mettre à jour dans Auth0
-      await assignSingleRole(auth0UserId, normalizedRole)
+      // Mettre à jour dans Auth0 (auth0UserId est garanti non null ici)
+      await assignSingleRole(auth0UserId as string, normalizedRole)
 
       // Mettre à jour dans Prisma
       const updatedUser = await prisma.user.update({

@@ -38,9 +38,13 @@ export async function POST(request: NextRequest) {
     // Hasher le mot de passe
     const hashedPassword = await bcrypt.hash(password, 12)
 
+    // Créer l'utilisateur (id requis car il n'y a pas de default dans Prisma)
+    const userId = `local-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
+
     // Créer l'utilisateur
     const user = await prisma.user.create({
       data: {
+        id: userId,
         name: name.trim(),
         email: email.toLowerCase(),
         password: hashedPassword,

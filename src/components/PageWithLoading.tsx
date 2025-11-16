@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, ReactNode } from 'react'
-import { InlineLoading } from './LoadingOverlay'
+import { StandaloneLogoLoading } from './StandaloneLogoLoading'
 
 interface PageWithLoadingProps {
   children: ReactNode
@@ -43,7 +43,14 @@ export function PageWithLoading({
   }, [minLoadingTime, onLoad])
 
   if (isLoading) {
-    return <InlineLoading message={loadingMessage} className="min-h-screen" />
+    return (
+      <div className="min-h-screen bg-brand-black flex items-center justify-center">
+        <div className="flex flex-col items-center space-y-4">
+          <StandaloneLogoLoading isLoading={true} />
+          <p className="text-gray-300 text-sm">{loadingMessage}</p>
+        </div>
+      </div>
+    )
   }
 
   return <>{children}</>

@@ -227,19 +227,10 @@ export async function deleteUser(id: string): Promise<boolean> {
   try {
     console.log(`🗑️ [deleteUser] Suppression de l'utilisateur ${id}`)
     
-    // Chercher par id ou auth0Id
-    const isAuth0Id = id.startsWith('auth0|') || id.startsWith('google-oauth2|')
-    
-    let user = null
-    if (isAuth0Id) {
-      user = await prisma.user.findUnique({
-        where: { auth0Id: id }
-      })
-    } else {
-      user = await prisma.user.findUnique({
-        where: { id }
-      })
-    }
+    // Chercher par id (utilisé aussi pour les identifiants Auth0)
+    const user = await prisma.user.findUnique({
+      where: { id }
+    })
     
     if (!user) {
       console.error(`❌ [deleteUser] Utilisateur ${id} non trouvé`)

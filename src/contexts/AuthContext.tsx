@@ -2,12 +2,23 @@
 
 import { createContext, useContext, useReducer, useEffect } from 'react'
 
+interface Address {
+  street?: string
+  city?: string
+  postalCode?: string
+  country?: string
+}
+
 interface User {
   id: string
   email: string
   name: string
   role: 'customer' | 'admin'
   createdAt: string
+  firstName?: string
+  lastName?: string
+  phone?: string
+  address?: Address
 }
 
 interface AuthState {

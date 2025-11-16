@@ -30,14 +30,15 @@ export function AdminGuard({ children }: AdminGuardProps) {
         isLoading: state.isLoading,
         isAuthenticated: state.isAuthenticated,
         hasUser: !!state.user,
-        userRole: state.user?.backofficeRole,
-        userRoles: state.user?.roles,
+        // Les rôles détaillés sont déjà dans les logs Auth0Context; ici on garde léger
+        userRole: undefined,
+        userRoles: undefined,
         hasAdminAccess,
         auth0User: !!auth0State.user,
         authStateUser: !!authState.user,
       })
     }
-  }, [bypassAdminGuard, state.isLoading, state.isAuthenticated, state.user?.backofficeRole, hasAdminAccess, auth0State.user, authState.user])
+  }, [bypassAdminGuard, state.isLoading, state.isAuthenticated, hasAdminAccess, auth0State.user, authState.user])
 
   useEffect(() => {
     if (bypassAdminGuard) {
@@ -66,9 +67,7 @@ export function AdminGuard({ children }: AdminGuardProps) {
     if (!hasAdminAccess) {
       if (process.env.NODE_ENV !== 'production') {
         console.log('❌ AdminGuard: Accès refusé - pas admin/owner, redirection vers /')
-        console.log('   Détails:', {
-          userRole: state.user?.backofficeRole,
-          userRoles: state.user?.roles,
+          console.log('   Détails:', {
           isAdminOrOwnerResult: auth0State.user ? isAdminOrOwnerAuth0() : isAdminAuth(),
         })
       }
@@ -79,7 +78,7 @@ export function AdminGuard({ children }: AdminGuardProps) {
     if (process.env.NODE_ENV !== 'production') {
       console.log('✅ AdminGuard: Accès autorisé')
     }
-  }, [bypassAdminGuard, state.isAuthenticated, state.isLoading, state.user?.backofficeRole, hasAdminAccess, router, auth0State.user, isAdminOrOwnerAuth0, isAdminAuth])
+  }, [bypassAdminGuard, state.isAuthenticated, state.isLoading, hasAdminAccess, router, auth0State.user, isAdminOrOwnerAuth0, isAdminAuth])
 
   if (!bypassAdminGuard && (state.isLoading || !state.isAuthenticated || !hasAdminAccess)) {
     return (

@@ -1,11 +1,11 @@
-'use client'
+ 'use client'
 
-import { useState } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faXmark, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
-import { useAuth0 } from '@/hooks/useAuth0'
+ import { useState } from 'react'
+ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+ import { faXmark, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
+ import { useAuth } from '@/contexts/AuthContext'
 
-interface RegisterModalProps {
+ interface RegisterModalProps {
   isOpen: boolean
   onClose: () => void
   onSwitchToLogin: () => void
@@ -33,20 +33,20 @@ export function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModa
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (formData.password !== formData.confirmPassword) {
       alert('Les mots de passe ne correspondent pas')
       return
     }
 
+    const fullName = `${formData.firstName} ${formData.lastName}`.trim() || formData.email
+
     await register({
-      firstName: formData.firstName,
-      lastName: formData.lastName,
+      name: fullName,
       email: formData.email,
-      password: formData.password,
-      phone: formData.phone || undefined
+      password: formData.password
     })
-    
+
     if (state.isAuthenticated) {
       onClose()
     }

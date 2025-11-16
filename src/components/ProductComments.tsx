@@ -125,10 +125,10 @@ export function ProductComments({ productId }: ProductCommentsProps) {
             <label className="block text-sm font-medium text-gray-300 mb-2">
               {t('products.comments.rating')}
             </label>
+            {/* Composant d'affichage uniquement pour l'instant */}
             <StarRating 
               rating={newRating} 
-              onRatingChange={setNewRating}
-              interactive={true}
+              size="lg"
             />
           </div>
           

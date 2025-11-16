@@ -98,13 +98,14 @@ function CartPageContent() {
       <div className="min-h-screen bg-brand-black pt-24">
         <div className="container mx-auto px-4 py-12">
           {/* Breadcrumb */}
-          <Breadcrumb 
-            items={[
-              { label: 'Boutique', href: '/products' },
-              { label: 'Panier' }
-            ]}
-            className="mb-6"
-          />
+          <div className="mb-6">
+            <Breadcrumb 
+              items={[
+                { label: 'Boutique', href: '/products' },
+                { label: 'Panier' }
+              ]}
+            />
+          </div>
 
           {/* Header */}
           <div className="flex items-center mb-6 sm:mb-8">
@@ -151,13 +152,14 @@ function CartPageContent() {
     <div className="min-h-screen bg-brand-black pt-24">
       <div className="container mx-auto px-4 py-8">
         {/* Breadcrumb */}
-        <Breadcrumb 
-          items={[
-            { label: 'Boutique', href: '/products' },
-            { label: 'Panier' }
-          ]}
-          className="mb-6"
-        />
+        <div className="mb-6">
+          <Breadcrumb 
+            items={[
+              { label: 'Boutique', href: '/products' },
+              { label: 'Panier' }
+            ]}
+          />
+        </div>
 
         {/* Header */}
         <div className="mb-6 sm:mb-8">

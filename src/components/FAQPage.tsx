@@ -20,7 +20,9 @@ import faqTranslationsEn from '@/locales/faq-en.json'
 import faqTranslationsEs from '@/locales/faq-es.json'
 import faqTranslationsNl from '@/locales/faq-nl.json'
 
-const faqTranslations: Record<string, typeof faqTranslationsFr> = {
+// Les fichiers JSON de traduction peuvent avoir des structures légèrement différentes selon la langue,
+// on garde donc un typage large ici pour ne pas bloquer le build.
+const faqTranslations: Record<string, any> = {
   fr: faqTranslationsFr,
   en: faqTranslationsEn,
   es: faqTranslationsEs,

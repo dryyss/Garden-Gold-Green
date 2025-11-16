@@ -14,7 +14,8 @@ interface Translations {
 interface TranslationContextType {
   language: SupportedLanguage
   setLanguage: (lang: SupportedLanguage) => void
-  t: (key: string) => string
+  // params optionnel pour une compatibilité basique avec les signatures de t(key, params)
+  t: (key: string, params?: any) => string
   isLoading: boolean
 }
 
@@ -145,7 +146,7 @@ export const TranslationProvider: React.FC<TranslationProviderProps> = ({ childr
   }
 
   // Fonction de traduction
-  const t = (key: string): string => {
+  const t = (key: string, _params?: any): string => {
     return getNestedValue(translations, key)
   }
 

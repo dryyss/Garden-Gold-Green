@@ -29,10 +29,9 @@ export function withRateLimit(
   maxRequests: number = 100,
   windowMs: number = 60000
 ): NextResponse | null {
-  const ip = 
-    request.ip || 
-    request.headers.get('x-forwarded-for') || 
-    request.headers.get('x-real-ip') || 
+  const ip =
+    request.headers.get('x-forwarded-for') ||
+    request.headers.get('x-real-ip') ||
     'unknown'
   
   const result = checkRateLimit(ip, maxRequests, windowMs)
