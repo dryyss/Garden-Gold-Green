@@ -67,7 +67,7 @@ const blogPosts = {
     date: "2024-01-15",
     readTime: "8 min",
     category: "Éducation",
-    image: "https://via.placeholder.com/800x400/00C853/FFFFFF?text=CBD+Guide",
+    image: "/logo.png",
     tags: ["CBD", "Bien-être", "Guide", "Éducation"]
   },
   "meilleurs-produits-cbd-stress": {
@@ -120,7 +120,7 @@ const blogPosts = {
     date: "2024-01-10",
     readTime: "5 min",
     category: "Produits",
-    image: "https://via.placeholder.com/800x400/FFD700/000000?text=Stress+Relief",
+    image: "/logo2.png",
     tags: ["Stress", "Produits", "CBD", "Bien-être"]
   }
 }
@@ -285,7 +285,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <div className="card-bg rounded-xl overflow-hidden group hover:shadow-gold-glow transition-all duration-300">
                 <div className="relative h-48">
                   <Image
-                    src="https://via.placeholder.com/400x300/00C853/FFFFFF?text=Related+Article"
+                    src="/logo.png"
                     alt="Article similaire"
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -312,7 +312,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <div className="card-bg rounded-xl overflow-hidden group hover:shadow-gold-glow transition-all duration-300">
                 <div className="relative h-48">
                   <Image
-                    src="https://via.placeholder.com/400x300/FFD700/000000?text=Related+Article"
+                    src="/logo2.png"
                     alt="Article similaire"
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-300"

@@ -21,7 +21,7 @@ const blogPosts = [
     date: "2024-01-15",
     readTime: "8 min",
     category: "Éducation",
-    image: "https://via.placeholder.com/600x400/00C853/FFFFFF?text=CBD+Guide",
+    image: "/logo.png",
     featured: true
   },
   {
@@ -34,7 +34,7 @@ const blogPosts = [
     date: "2024-01-10",
     readTime: "5 min",
     category: "Produits",
-    image: "https://via.placeholder.com/600x400/FFD700/000000?text=Stress+Relief",
+    image: "/logo2.png",
     featured: false
   },
   {
@@ -47,7 +47,7 @@ const blogPosts = [
     date: "2024-01-05",
     readTime: "6 min",
     category: "Bien-être",
-    image: "https://via.placeholder.com/600x400/C0C0C0/000000?text=Sleep+Better",
+    image: "/logo.png",
     featured: false
   },
   {
@@ -60,7 +60,7 @@ const blogPosts = [
     date: "2024-01-01",
     readTime: "10 min",
     category: "Histoire",
-    image: "https://via.placeholder.com/600x400/00C853/FFFFFF?text=Hemp+History",
+    image: "/logo2.png",
     featured: false
   },
   {
@@ -73,7 +73,7 @@ const blogPosts = [
     date: "2023-12-28",
     readTime: "7 min",
     category: "Sport",
-    image: "https://via.placeholder.com/600x400/FFD700/000000?text=Sports+Performance",
+    image: "/logo.png",
     featured: false
   },
   {
@@ -86,7 +86,7 @@ const blogPosts = [
     date: "2023-12-25",
     readTime: "9 min",
     category: "Éducation",
-    image: "https://via.placeholder.com/600x400/C0C0C0/000000?text=Cannabinoids",
+    image: "/logo2.png",
     featured: false
   }
 ]

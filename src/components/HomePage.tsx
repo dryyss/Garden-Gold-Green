@@ -226,7 +226,7 @@ export default function HomePage() {
             <div className="lg:w-1/2 w-full">
             <Image
                     className="rounded-xl shadow-2xl" 
-                    src="https://via.placeholder.com/600x400/00C853/FFFFFF?text=Cannabis+Leaf+Premium" 
+                    src="/logo.png" 
                     alt="Close-up of a vibrant green cannabis leaf with glistening golden CBD oil dripping from the tip, dark background, macro photography, dramatic lighting"
                     width={600}
                     height={400}

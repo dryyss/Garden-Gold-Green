@@ -33,7 +33,7 @@ export default function FavoritesPage() {
       id: '1',
       title: '3G Gold Standard CBD Oil',
       price: 79.99,
-      image: 'https://via.placeholder.com/300x200/00C853/FFFFFF?text=CBD+Oil',
+      image: '/logo.png',
       cbdPercent: 10,
       slug: '3g-gold-standard-cbd-oil'
     },
@@ -41,7 +41,7 @@ export default function FavoritesPage() {
       id: '2',
       title: 'Emerald Soothe CBD Balm',
       price: 54.99,
-      image: 'https://via.placeholder.com/300x200/FFD700/000000?text=CBD+Cream',
+      image: '/logo2.png',
       cbdPercent: 2,
       slug: 'emerald-soothe-cbd-balm'
     }

@@ -1,0 +1,8 @@
+<svg width="400" height="288" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="288" fill="#C0C0C0"/>
+  <rect x="50" y="50" width="300" height="188" fill="#ffffff" rx="10"/>
+  <text x="200" y="120" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#C0C0C0">Sleep Gummies 50mg</text>
+  <text x="200" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#666">Bonbons Sommeil</text>
+  <circle cx="200" cy="180" r="30" fill="#C0C0C0" opacity="0.3"/>
+  <text x="200" y="185" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#C0C0C0" font-weight="bold">3G</text>
+</svg>

@@ -1,0 +1,8 @@
+<svg width="400" height="288" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="288" fill="#00C853"/>
+  <rect x="50" y="50" width="300" height="188" fill="#ffffff" rx="10"/>
+  <text x="200" y="120" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#00C853">Massage Oil 8%</text>
+  <text x="200" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#666">Huile de Massage</text>
+  <circle cx="200" cy="180" r="30" fill="#00C853" opacity="0.3"/>
+  <text x="200" y="185" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#00C853" font-weight="bold">3G</text>
+</svg>

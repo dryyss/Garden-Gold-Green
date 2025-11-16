@@ -112,34 +112,60 @@ function buildApplication() {
       console.warn('⚠️  Continuation du build...');
     }
     
-    // Appliquer les migrations (seulement si DATABASE_URL est disponible)
+    // Appliquer les migrations ou synchroniser le schéma (seulement si DATABASE_URL est disponible)
     if (hasDatabaseUrl) {
-      console.log('🗄️  Application des migrations Prisma...');
+      console.log('🗄️  Synchronisation du schéma Prisma avec la base de données...');
       try {
-        execSync('npx prisma migrate deploy', { 
-          stdio: 'inherit',
-          env: { ...process.env }
-        });
-        console.log('✅ Migrations Prisma appliquées avec succès');
+        // Vérifier si des migrations existent
+        const migrationsDir = path.join(process.cwd(), 'prisma', 'migrations');
+        const hasMigrations = fs.existsSync(migrationsDir) && fs.readdirSync(migrationsDir).length > 0;
+        
+        if (hasMigrations) {
+          // Utiliser migrate deploy si des migrations existent
+          console.log('📦 Application des migrations Prisma...');
+          execSync('npx prisma migrate deploy', { 
+            stdio: 'inherit',
+            env: { ...process.env }
+          });
+          console.log('✅ Migrations Prisma appliquées avec succès');
+        } else {
+          // Utiliser db push si aucune migration n'existe (synchronise le schéma directement)
+          console.log('📦 Synchronisation du schéma Prisma (db push)...');
+          execSync('npx prisma db push --accept-data-loss', { 
+            stdio: 'inherit',
+            env: { ...process.env }
+          });
+          console.log('✅ Schéma Prisma synchronisé avec succès');
+        }
       } catch (error) {
         // Vérifier le code de sortie
         const exitCode = error.status || error.code || 1;
         const errorOutput = (error.stderr || error.stdout || '').toString();
         
-        // Si l'erreur est liée à l'absence de migrations, c'est OK
+        // Si l'erreur est liée à l'absence de migrations, essayer db push
         if (errorOutput.includes('No migrations found') || errorOutput.includes('no migration')) {
-          console.log('ℹ️  Aucune migration à appliquer (normal pour une nouvelle base de données)');
+          console.log('ℹ️  Aucune migration trouvée, synchronisation du schéma avec db push...');
+          try {
+            execSync('npx prisma db push --accept-data-loss', { 
+              stdio: 'inherit',
+              env: { ...process.env }
+            });
+            console.log('✅ Schéma Prisma synchronisé avec succès');
+          } catch (pushError) {
+            console.error('❌ Erreur lors de la synchronisation du schéma:', pushError.message);
+            console.log('⚠️  Continuation du build...');
+          }
         } else if (errorOutput.includes('Environment variable not found: DATABASE_URL')) {
           console.error('❌ DATABASE_URL n\'est toujours pas disponible pour les migrations');
           console.error('Vérifiez que POSTGRESQL_ADDON_URI ou les variables POSTGRESQL_ADDON_* sont définies');
           console.log('⚠️  Continuation du build sans migrations...');
         } else {
-          console.log(`⚠️  Erreur lors des migrations (code ${exitCode}): ${error.message}`);
+          console.log(`⚠️  Erreur lors de la synchronisation (code ${exitCode}): ${error.message}`);
           console.log('⚠️  Continuation du build...');
         }
       }
     } else {
-      console.log('⚠️  Migrations Prisma ignorées (DATABASE_URL non disponible)');
+      console.log('⚠️  Synchronisation Prisma ignorée (DATABASE_URL non disponible)');
     }
     
     // Construire l'application Next.js
