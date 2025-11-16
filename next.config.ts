@@ -31,6 +31,8 @@ const nextConfig: NextConfig = {
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     // Configuration pour éviter les erreurs 400 sur les images locales
     minimumCacheTTL: 60,
+    // Permettre les images locales depuis /public
+    unoptimized: false,
   },
   // Compress responses
   compress: true,
