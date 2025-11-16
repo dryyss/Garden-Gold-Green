@@ -1,21 +1,16 @@
-import { handleAuth, handleLogin, handleLogout, handleCallback, handleProfile } from '@auth0/nextjs-auth0';
+import { auth0 } from '@/lib/auth0';
+import { NextRequest } from 'next/server';
 
 // Route Auth0 catch-all pour gérer toutes les routes d'authentification
-// Cela crée automatiquement les routes suivantes :
-// - /api/auth/login
-// - /api/auth/logout
-// - /api/auth/callback
-// - /api/auth/me (via handleProfile)
-export const GET = handleAuth({
-  login: handleLogin({
-    authorizationParams: {
-      audience: process.env.AUTH0_AUDIENCE,
-      scope: 'openid profile email',
-    },
-  }),
-  logout: handleLogout({
-    returnTo: process.env.AUTH0_BASE_URL || process.env.NEXT_PUBLIC_APP_URL || '/',
-  }),
-  callback: handleCallback(),
-  profile: handleProfile(),
-});
+// Dans Auth0 v4, on utilise Auth0Client.middleware() pour gérer les routes API
+export async function GET(request: Request) {
+  // Convertir Request en NextRequest pour compatibilité
+  const nextRequest = new NextRequest(request);
+  return auth0.middleware(nextRequest);
+}
+
+export async function POST(request: Request) {
+  // Convertir Request en NextRequest pour compatibilité
+  const nextRequest = new NextRequest(request);
+  return auth0.middleware(nextRequest);
+}
