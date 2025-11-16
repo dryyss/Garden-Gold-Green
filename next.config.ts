@@ -29,6 +29,8 @@ const nextConfig: NextConfig = {
     formats: ['image/avif', 'image/webp'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    // Configuration pour éviter les erreurs 400 sur les images locales
+    minimumCacheTTL: 60,
   },
   // Compress responses
   compress: true,
