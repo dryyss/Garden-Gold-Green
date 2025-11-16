@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       openGraph: {
         title: `${productTitle} - Garden Gold Green`,
         description: productDescription.substring(0, 160),
-        type: 'product',
+        type: 'website',
         images: [
           {
             url: productImage,

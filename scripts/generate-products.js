@@ -67,7 +67,8 @@ function generateProduct(id, category) {
   };
   
   const textColor = colorMap[categoryData.name] === "FFD700" ? "000000" : "FFFFFF";
-  const imageUrl = `https://via.placeholder.com/400x288/${colorMap[categoryData.name]}/${textColor}?text=${encodeURIComponent(productType + ' ' + concentration + '%')}`;
+  // Utiliser une image locale par défaut au lieu de placeholder
+  const imageUrl = '/logo.png';
   
   return {
     id: id.toString(),
