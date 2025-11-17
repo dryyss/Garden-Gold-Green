@@ -31,6 +31,10 @@ function getAppBaseURL(): string | undefined {
 // - appBaseUrl: L'URL de base de l'application (requis)
 // - authorizationParameters: Paramètres d'autorisation (audience, scope)
 // - session: Configuration des cookies de session
+// 
+// NOTE: Le callback path est automatiquement déterminé par l'emplacement de la route.
+// Si la route est /api/auth/[auth0], le callback sera /api/auth/callback
+// Assurez-vous que Auth0 Dashboard a /api/auth/callback dans "Allowed Callback URLs"
 export const auth0 = new Auth0Client({
   domain: getAuth0Domain(),
   clientId: process.env.AUTH0_CLIENT_ID,
