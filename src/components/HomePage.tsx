@@ -94,6 +94,9 @@ export default function HomePage() {
           <div className="mb-8 pt-8 sm:pt-12 md:pt-16">
             <HeroLogo />
           </div>
+          <p className="text-2xl md:text-3xl font-semibold text-brand-gold mb-2 tracking-wide">
+            Le Jardin de L'or Vert
+          </p>
           <h1 className="text-5xl md:text-7xl font-bold text-white mb-4 tracking-tight">
             {t('home.hero.mainTitle')}
           </h1>
