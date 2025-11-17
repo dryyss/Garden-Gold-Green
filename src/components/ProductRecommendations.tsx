@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -23,15 +24,92 @@ interface Product {
 }
 
 interface ProductRecommendationsProps {
-  products: Product[]
+  products?: Product[]
   title?: string
+  productId?: string
+  categoryId?: string
+  categoryName?: string
+  priceCents?: number
+  limit?: number
 }
 
 export function ProductRecommendations({ 
-  products, 
-  title 
+  products: initialProducts, 
+  title,
+  productId,
+  categoryId,
+  categoryName,
+  priceCents,
+  limit = 4
 }: ProductRecommendationsProps) {
   const { t } = useTranslation()
+  const [products, setProducts] = useState<Product[]>(initialProducts || [])
+  const [loading, setLoading] = useState(!initialProducts || initialProducts.length === 0)
+
+  // Charger les suggestions depuis l'API si aucun produit n'est fourni
+  useEffect(() => {
+    if (initialProducts && initialProducts.length > 0) {
+      setProducts(initialProducts)
+      setLoading(false)
+      return
+    }
+
+    const loadSuggestions = async () => {
+      try {
+        const params = new URLSearchParams()
+        if (productId) params.set('productId', productId)
+        if (categoryId) params.set('categoryId', categoryId)
+        if (categoryName) params.set('category', categoryName)
+        if (priceCents) params.set('priceCents', priceCents.toString())
+        params.set('limit', limit.toString())
+
+        const response = await fetch(`/api/products/suggestions?${params.toString()}`)
+        const data = await response.json()
+
+        if (data.success && data.products) {
+          const suggestions = data.products.map((p: any) => {
+            const images = typeof p.images === 'string' ? JSON.parse(p.images) : (Array.isArray(p.images) ? p.images : [])
+            return {
+              id: p.id,
+              name: p.title,
+              price: p.priceCents / 100,
+              image: images[0] || '/logo2.png',
+              slug: p.slug,
+              category: p.categories?.[0]?.name || 'CBD Products',
+              rating: 4.5,
+              reviewCount: Math.floor(Math.random() * 100) + 10,
+              inStock: (p.stock || 0) > 0,
+              totalStock: p.stock || 0,
+              isNew: false,
+              isBestSeller: p.isFeatured || false,
+            }
+          })
+          setProducts(suggestions)
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement des suggestions:', error)
+        setProducts([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadSuggestions()
+  }, [productId, categoryId, categoryName, priceCents, limit, initialProducts])
+
+  if (loading) {
+    return (
+      <section className="mt-12">
+        <h2 className="text-2xl font-bold text-white mb-6 gold-text-gradient">
+          {title || t('sections.youMightLike')}
+        </h2>
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-gold"></div>
+        </div>
+      </section>
+    )
+  }
+
   if (products.length === 0) {
     return null
   }

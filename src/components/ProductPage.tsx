@@ -153,41 +153,39 @@ export default function ProductPage({ product }: { product: Product }) {
     }
   ]
 
-  // Données fictives pour les produits similaires
-  const mockRelatedProducts: RelatedProduct[] = [
-    {
-      id: '2',
-      name: 'CBD Huile 15%',
-      price: 49.90,
-      image: '/logo2.png',
-      slug: 'cbd-huile-15',
-      rating: 4.8,
-      reviewCount: 67
-    },
-    {
-      id: '3',
-      name: 'CBD Gummies Relax',
-      price: 29.90,
-      image: '/logo2.png',
-      slug: 'cbd-gummies-relax',
-      rating: 4.6,
-      reviewCount: 43
-    },
-    {
-      id: '4',
-      name: 'CBD Crème Muscles',
-      price: 24.90,
-      image: '/logo2.png',
-      slug: 'cbd-creme-muscles',
-      rating: 4.4,
-      reviewCount: 28
-    }
-  ]
-
+  // Charger les suggestions de produits depuis l'API
   useEffect(() => {
     setReviews(mockReviews)
-    setRelatedProducts(mockRelatedProducts)
-  }, [])
+    
+    // Charger les suggestions basées sur le produit actuel
+    const loadSuggestions = async () => {
+      try {
+        const response = await fetch(`/api/products/suggestions?productId=${product.id}&limit=4`)
+        const data = await response.json()
+        
+        if (data.success && data.products) {
+          const suggestions = data.products.map((p: any) => ({
+            id: p.id,
+            name: p.title,
+            price: p.priceCents / 100,
+            image: Array.isArray(p.images) ? p.images[0] : (typeof p.images === 'string' ? JSON.parse(p.images)[0] : '/logo2.png'),
+            slug: p.slug,
+            rating: 4.5,
+            reviewCount: Math.floor(Math.random() * 100) + 10,
+          }))
+          setRelatedProducts(suggestions)
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement des suggestions:', error)
+        // En cas d'erreur, ne pas afficher de suggestions
+        setRelatedProducts([])
+      }
+    }
+    
+    if (product?.id) {
+      loadSuggestions()
+    }
+  }, [product?.id])
 
   const handleAddToCart = () => {
     dispatch({

@@ -50,7 +50,18 @@ function transformProduct(product: any) { // eslint-disable-line @typescript-esl
 
 export default function HomePage() {
   const { t } = useTranslation()
-  const [allProducts, setAllProducts] = useState<any[]>([])
+  const [allProducts, setAllProducts] = useState<Array<{
+    id: string
+    title: string
+    slug: string
+    priceCents: number
+    images: string[] | string
+    published: boolean
+    isFeatured?: boolean
+    categories?: Array<{ name: string; slug: string }>
+    stock: number
+    totalStock?: number
+  }>>([])
 
   // Charger les produits depuis l'API
   useEffect(() => {
@@ -68,10 +79,10 @@ export default function HomePage() {
     loadProducts()
   }, [])
 
-  // Récupérer les produits les plus populaires
+  // Récupérer les produits en vedette (isFeatured: true)
   const featuredProducts = allProducts
-    .filter(product => product.published)
-    .slice(0, 6)
+    .filter(product => product.published && product.isFeatured)
+    .slice(0, 6) // Limiter à 6 produits maximum
     .map(transformProduct)
 
   const bestSellers = allProducts
@@ -95,7 +106,7 @@ export default function HomePage() {
             <HeroLogo />
           </div>
           <p className="text-2xl md:text-3xl font-semibold text-brand-gold mb-2 tracking-wide">
-            Le Jardin de L'or Vert
+            Le Jardin de L&apos;or Vert
           </p>
           <h1 className="text-5xl md:text-7xl font-bold text-white mb-4 tracking-tight">
             {t('home.hero.mainTitle')}
