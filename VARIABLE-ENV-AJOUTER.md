@@ -55,3 +55,5 @@ Après avoir ajouté la variable et redéployé :
 
 Si aucune de ces variables ne fonctionne, le problème pourrait venir d'une version de `@auth0/nextjs-auth0` qui a un bug, ou d'une configuration manquante dans le code. Dans ce cas, il faudra peut-être mettre à jour la bibliothèque ou utiliser une autre approche.
 
+
+
