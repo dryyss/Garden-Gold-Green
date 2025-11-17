@@ -24,7 +24,9 @@
     "db:migrate-products": "tsx scripts/migrate-products-to-prisma.ts",
     "db:migrate-orders": "tsx scripts/migrate-orders-to-prisma.ts",
     "db:migrate-users": "tsx scripts/migrate-users-to-prisma.ts",
-    "db:migrate-user-ids": "tsx scripts/migrate-user-ids.ts"
+    "db:migrate-user-ids": "tsx scripts/migrate-user-ids.ts",
+    "db:backup": "tsx scripts/backup-database.ts",
+    "db:export-json": "tsx scripts/export-database-json.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
