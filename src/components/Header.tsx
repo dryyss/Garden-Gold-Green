@@ -33,7 +33,6 @@ import { useAuth } from '@/contexts/AuthContext'
 import { useAuth0Context } from '@/contexts/Auth0Context'
 import { useTranslation } from '@/contexts/TranslationContext'
 import { SearchModal } from './SearchModal'
-import { AuthModal } from './AuthModal'
 import { LanguageSelector } from './LanguageSelector'
 
 export function Header() {
@@ -43,8 +42,6 @@ export function Header() {
   const [expandedCategories, setExpandedCategories] = useState<string[]>([])
   const [isScrolled, setIsScrolled] = useState(false)
   const [showFloatingCart, setShowFloatingCart] = useState(false)
-  const [showAuthModal, setShowAuthModal] = useState(false)
-  const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(true)
   const [isNavigationOpen, setIsNavigationOpen] = useState(true)
   const { state, dispatch } = useCart()
@@ -458,28 +455,22 @@ export function Header() {
                 </div>
               ) : (
                 <div className="mb-3 pb-3 border-b border-white/10 space-y-2">
-                  <button
-                    onClick={() => {
-                      setAuthMode('register')
-                      setShowAuthModal(true)
-                      setIsMenuOpen(false)
-                    }}
+                  <Link
+                    href="/auth/login?screen_hint=signup"
+                    onClick={() => setIsMenuOpen(false)}
                     className="w-full flex items-center justify-center space-x-2 bg-brand-gold text-black font-semibold px-4 py-2 rounded-full hover:shadow-gold-glow transition-all duration-300"
                   >
                     <FontAwesomeIcon icon={faUser} />
                     <span>{t('header.user.register')}</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      setAuthMode('login')
-                      setShowAuthModal(true)
-                      setIsMenuOpen(false)
-                    }}
+                  </Link>
+                  <Link
+                    href="/auth/login"
+                    onClick={() => setIsMenuOpen(false)}
                     className="w-full flex items-center justify-center space-x-2 text-white hover:text-brand-gold transition-colors py-2"
                   >
                     <FontAwesomeIcon icon={faUser} />
                     <span>{t('header.user.login')}</span>
-                  </button>
+                  </Link>
                 </div>
               )}
 
@@ -599,12 +590,6 @@ export function Header() {
         onClose={() => setIsSearchModalOpen(false)} 
       />
 
-      {/* Auth Modal */}
-      <AuthModal 
-        isOpen={showAuthModal}
-        onClose={() => setShowAuthModal(false)}
-        initialMode={authMode}
-      />
 
       {/* Panier flottant - apparaît quand on scrolle */}
       {showFloatingCart && (
