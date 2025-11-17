@@ -214,6 +214,17 @@ export function Header() {
               >
                 <FontAwesomeIcon icon={faMagnifyingGlass} className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
+
+              {/* Admin icon - Visible on mobile for admins */}
+              {user && isAdmin && (
+                <Link
+                  href="/admin"
+                  className="text-brand-gold hover:text-yellow-400 transition-colors duration-300 p-1.5 sm:p-2 relative"
+                  title="Admin"
+                >
+                  <FontAwesomeIcon icon={faShieldHalved} className="w-4 h-4 sm:w-5 sm:h-5" />
+                </Link>
+              )}
           
           {/* User Menu */}
           {user ? (
