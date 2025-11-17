@@ -39,6 +39,25 @@ export function ChatSupport() {
       
       // Options de configuration
       window.$crisp.push(['set', 'session:segments', [['visitor']]])
+
+      // Envoyer le message promotionnel de bienvenue
+      window.$crisp.push(['on', 'chat:opened', () => {
+        // Attendre un peu pour que le chat soit complètement ouvert
+        setTimeout(() => {
+          if (window.$crisp) {
+            // Message promotionnel avec formatage
+            const welcomeMessage = `🌿 *GARDEN GOLD GREEN* 🌿
+
+*L'Élixir le Plus Fin de la Nature*
+
+Découvrez notre collection premium de produits CBD, méticuleusement conçus pour vous apporter équilibre, sérénité et pureté inégalée.
+
+Bienvenue au Jardin de L'or Vert 🌱`
+
+            window.$crisp.push(['do', 'message:send', ['text', welcomeMessage]])
+          }
+        }, 1000)
+      }])
     }
 
     // Alternative: Si vous voulez utiliser un autre service
