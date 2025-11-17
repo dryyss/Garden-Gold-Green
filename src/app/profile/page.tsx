@@ -351,7 +351,7 @@ export default function ProfilePage() {
                 loading={isPortalLoading}
               >
                 <FontAwesomeIcon icon={faCreditCard} className="icon-sm mr-2" />
-                {isPortalLoading ? 'Ouverture du portail…' : 'Ouvrir le portail Stripe'}
+                {isPortalLoading ? 'Ouverture du portail…' : 'Ouvrir le portail de gestion'}
               </ResponsiveButton>
             </ResponsiveCard>
           </div>
