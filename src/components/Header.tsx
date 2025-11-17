@@ -436,6 +436,17 @@ export function Header() {
                     <span className="text-sm">{t('header.user.trackOrder')}</span>
                   </Link>
                   
+                  {isAdmin && (
+                    <Link
+                      href="/admin"
+                      className="flex items-center space-x-3 justify-center text-brand-gold hover:text-yellow-400 transition-colors py-2 border-t border-white/10 mt-2 pt-2"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <FontAwesomeIcon icon={faShieldHalved} className="w-4 h-4" />
+                      <span className="text-sm font-semibold">Admin</span>
+                    </Link>
+                  )}
+                  
                   <Link
                     href="/auth/logout"
                     onClick={(e) => {
