@@ -4,7 +4,7 @@ import { useUser } from '@auth0/nextjs-auth0'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUser, faEnvelope, faPhone, faMapMarkerAlt, faEdit, faCreditCard } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faEnvelope, faPhone, faMapMarkerAlt, faEdit, faCreditCard, faPaperPlane, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { ResponsiveContainer } from '@/components/ResponsiveContainer'
 import { ResponsiveCard } from '@/components/ResponsiveCard'
 import { ResponsiveButton } from '@/components/ResponsiveButton'
@@ -16,6 +16,8 @@ export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [isPortalLoading, setIsPortalLoading] = useState(false)
+  const [isResendingVerification, setIsResendingVerification] = useState(false)
+  const [verificationMessage, setVerificationMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -124,6 +126,41 @@ export default function ProfilePage() {
     }
   }
 
+  const handleResendVerification = async () => {
+    setIsResendingVerification(true)
+    setVerificationMessage(null)
+    
+    try {
+      const response = await fetch('/api/auth/resend-verification', {
+        method: 'POST',
+      })
+
+      const data = await response.json()
+
+      if (response.ok && data.success) {
+        setVerificationMessage({
+          type: 'success',
+          text: 'Email de vérification envoyé ! Vérifiez votre boîte de réception.'
+        })
+      } else {
+        setVerificationMessage({
+          type: 'error',
+          text: data.error || 'Erreur lors de l\'envoi de l\'email de vérification'
+        })
+      }
+    } catch (error) {
+      console.error('Erreur renvoi email vérification:', error)
+      setVerificationMessage({
+        type: 'error',
+        text: 'Erreur lors de l\'envoi de l\'email de vérification'
+      })
+    } finally {
+      setIsResendingVerification(false)
+    }
+  }
+
+  const isEmailVerified = user?.email_verified ?? false
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-brand-black flex items-center justify-center pt-24">
@@ -148,6 +185,47 @@ export default function ProfilePage() {
             <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Mon Profil</h1>
             <p className="text-gray-400">Gérez vos informations personnelles</p>
           </div>
+
+          {/* Email Verification Alert */}
+          {!isEmailVerified && (
+            <div className="mb-6">
+              <ResponsiveCard variant="glass" padding="md" className="border-2 border-yellow-500/50 bg-yellow-500/10">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <div className="flex items-start gap-3 flex-1">
+                    <FontAwesomeIcon 
+                      icon={faExclamationTriangle} 
+                      className="text-yellow-400 text-xl mt-1 flex-shrink-0" 
+                    />
+                    <div>
+                      <h3 className="text-white font-semibold mb-1">Email non vérifié</h3>
+                      <p className="text-gray-300 text-sm">
+                        Votre adresse email n'a pas encore été vérifiée. Veuillez vérifier votre boîte de réception et cliquer sur le lien de vérification.
+                      </p>
+                      {verificationMessage && (
+                        <p className={`text-sm mt-2 ${
+                          verificationMessage.type === 'success' 
+                            ? 'text-green-400' 
+                            : 'text-red-400'
+                        }`}>
+                          {verificationMessage.text}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <ResponsiveButton
+                    onClick={handleResendVerification}
+                    disabled={isResendingVerification}
+                    loading={isResendingVerification}
+                    variant="primary"
+                    className="flex-shrink-0"
+                  >
+                    <FontAwesomeIcon icon={faPaperPlane} className="icon-sm mr-2" />
+                    {isResendingVerification ? 'Envoi...' : 'Renvoyer l\'email'}
+                  </ResponsiveButton>
+                </div>
+              </ResponsiveCard>
+            </div>
+          )}
 
           {/* Profile Card */}
           <ResponsiveCard variant="glass" padding="lg">
