@@ -98,50 +98,50 @@ export default function HomePage() {
   return (
     <div className="bg-brand-black">
       {/* Hero Section */}
-      <section className="relative h-[900px] flex items-center justify-center text-center overflow-hidden">
+      <section className="relative min-h-[600px] sm:min-h-[700px] md:h-[900px] flex items-center justify-center text-center overflow-hidden py-12 sm:py-16 md:py-0">
         <div className="absolute inset-0 hero-bg"></div>
         <div className="absolute inset-0 hero-overlay"></div>
-        <div className="relative z-10 flex flex-col items-center px-4">
-          <div className="mb-8 pt-8 sm:pt-12 md:pt-16">
+        <div className="relative z-10 flex flex-col items-center px-4 sm:px-6 w-full max-w-6xl mx-auto">
+          <div className="mb-4 sm:mb-6 md:mb-8 pt-4 sm:pt-6 md:pt-8">
             <HeroLogo />
           </div>
-          <p className="text-2xl md:text-3xl font-semibold text-brand-gold mb-2 tracking-wide">
+          <p className="text-xl sm:text-2xl md:text-3xl font-semibold text-brand-gold mb-2 sm:mb-3 tracking-wide px-2">
             Le Jardin de L&apos;or Vert
           </p>
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-4 tracking-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-white mb-3 sm:mb-4 tracking-tight px-2 leading-tight">
             {t('home.hero.mainTitle')}
           </h1>
-          <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-8">
+          <p className="text-base sm:text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-6 sm:mb-8 px-4 leading-relaxed">
             {t('home.hero.mainSubtitle')}
           </p>
-          <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-            <Link href="/products" className="btn-gold text-black font-semibold py-3 px-8 rounded-full shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300 flex items-center justify-center">
+          <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 w-full sm:w-auto px-4 sm:px-0">
+            <Link href="/products" className="btn-gold text-black font-semibold py-2.5 sm:py-3 px-6 sm:px-8 rounded-full shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300 flex items-center justify-center text-sm sm:text-base">
               {t('home.hero.ctaCollection')}
               <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
             </Link>
-            <Link href="/learn" className="bg-transparent border-2 border-brand-green text-brand-green font-semibold py-3 px-8 rounded-full hover:bg-brand-green hover:text-black transition-all duration-300 flex items-center justify-center">
+            <Link href="/learn" className="bg-transparent border-2 border-brand-green text-brand-green font-semibold py-2.5 sm:py-3 px-6 sm:px-8 rounded-full hover:bg-brand-green hover:text-black transition-all duration-300 flex items-center justify-center text-sm sm:text-base">
               {t('home.hero.ctaLearnMore')}
               <FontAwesomeIcon icon={faPlay} className="ml-2" />
             </Link>
           </div>
           
           {/* Stats rapides */}
-          <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+          <div className="mt-8 sm:mt-10 md:mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 max-w-4xl mx-auto w-full px-4 sm:px-0">
             <div className="text-center">
-              <div className="text-3xl font-bold text-brand-gold mb-1">10K+</div>
-              <div className="text-sm text-gray-400">{t('home.hero.stats.satisfiedCustomers')}</div>
+              <div className="text-2xl sm:text-3xl font-bold text-brand-gold mb-1">10K+</div>
+              <div className="text-xs sm:text-sm text-gray-400 leading-tight">{t('home.hero.stats.satisfiedCustomers')}</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-brand-green mb-1">100%</div>
-              <div className="text-sm text-gray-400">{t('home.hero.stats.organic')}</div>
+              <div className="text-2xl sm:text-3xl font-bold text-brand-green mb-1">100%</div>
+              <div className="text-xs sm:text-sm text-gray-400 leading-tight">{t('home.hero.stats.organic')}</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-brand-gold mb-1">50+</div>
-              <div className="text-sm text-gray-400">{t('home.hero.stats.premiumProducts')}</div>
+              <div className="text-2xl sm:text-3xl font-bold text-brand-gold mb-1">50+</div>
+              <div className="text-xs sm:text-sm text-gray-400 leading-tight">{t('home.hero.stats.premiumProducts')}</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-brand-green mb-1">24/7</div>
-              <div className="text-sm text-gray-400">{t('home.hero.stats.customerSupport')}</div>
+              <div className="text-2xl sm:text-3xl font-bold text-brand-green mb-1">24/7</div>
+              <div className="text-xs sm:text-sm text-gray-400 leading-tight">{t('home.hero.stats.customerSupport')}</div>
             </div>
           </div>
         </div>

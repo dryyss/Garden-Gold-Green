@@ -35,7 +35,7 @@ export function HeroLogo({ className = '' }: HeroLogoProps) {
         }`}
       >
         <Image
-          className="h-64 w-64 sm:h-80 sm:w-80 md:h-96 md:w-96 lg:h-[28rem] lg:w-[28rem] drop-shadow-2xl" 
+          className="h-40 w-40 sm:h-64 sm:w-64 md:h-80 md:w-80 lg:h-96 lg:w-96 xl:h-[28rem] xl:w-[28rem] drop-shadow-2xl" 
           src="/logo.png" 
           alt="3G - Garden Gold Green logo, metallic gold, emerald green, and shiny silver, on a dark background with light reflections"
           width={448}
@@ -61,7 +61,7 @@ export function HeroLogo({ className = '' }: HeroLogoProps) {
         }}
       >
         <Image
-          className="h-80 w-80 md:h-96 md:w-96 lg:h-[28rem] lg:w-[28rem] drop-shadow-2xl" 
+          className="h-64 w-64 sm:h-80 sm:w-80 md:h-96 md:w-96 lg:h-[28rem] lg:w-[28rem] drop-shadow-2xl" 
           src="/logo.png" 
           alt="3G - Garden Gold Green logo background"
           width={448}
