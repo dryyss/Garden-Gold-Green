@@ -406,3 +406,77 @@ export async function listAuth0Users(
     perPage,
   }
 }
+
+/**
+ * Récupère les rôles de plusieurs utilisateurs par batch avec limitation de concurrence
+ * @param userIds - Tableau d'IDs Auth0
+ * @param maxConcurrency - Nombre maximum de requêtes parallèles (défaut: 5)
+ * @returns Map avec userId -> roles[]
+ */
+export async function getAuth0UserRolesBatch(
+  userIds: string[],
+  maxConcurrency: number = 5
+): Promise<Map<string, string[]>> {
+  const rolesMap = new Map<string, string[]>()
+  
+  // Traiter par batch avec limitation de concurrence
+  for (let i = 0; i < userIds.length; i += maxConcurrency) {
+    const batch = userIds.slice(i, i + maxConcurrency)
+    const promises = batch.map(async (userId) => {
+      try {
+        const roles = await getAuth0UserRoles(userId)
+        return { userId, roles }
+      } catch (error) {
+        console.error(`Erreur lors de la récupération des rôles pour ${userId}:`, error)
+        return { userId, roles: [] }
+      }
+    })
+    
+    const results = await Promise.all(promises)
+    results.forEach(({ userId, roles }) => {
+      rolesMap.set(userId, roles)
+    })
+  }
+  
+  return rolesMap
+}
+
+/**
+ * Envoie un email de vérification à un utilisateur Auth0
+ * @param userId - L'ID Auth0 de l'utilisateur
+ */
+export async function sendVerificationEmail(userId: string): Promise<void> {
+  try {
+    const token = await getManagementToken()
+    
+    // Utiliser l'endpoint Jobs API pour envoyer l'email de vérification
+    const response = await fetch(`https://${AUTH0_DOMAIN}/api/v2/jobs/verification-email`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user_id: userId,
+      }),
+    })
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      
+      // Si l'email est déjà vérifié, Auth0 peut retourner une erreur
+      if (errorText.includes('already verified') || errorText.includes('email_verified')) {
+        throw new Error('Email déjà vérifié')
+      }
+      
+      throw new Error(`Failed to send verification email: ${errorText}`)
+    }
+
+    // La réponse peut être vide ou contenir un job_id
+    const data = await response.json().catch(() => ({}))
+    console.log(`✅ Email de vérification envoyé pour l'utilisateur ${userId}`, data)
+  } catch (error) {
+    console.error('Erreur lors de l\'envoi de l\'email de vérification:', error)
+    throw error
+  }
+}
