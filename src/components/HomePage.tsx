@@ -26,6 +26,7 @@ import {
 import { HeroLogo } from '@/components/HeroLogo'
 import { useTranslation } from '@/contexts/TranslationContext'
 import { useState, useEffect } from 'react'
+import { ProductQuiz } from '@/components/ProductQuiz'
 
 // Lazy load des composants lourds
 const ProductGridCarousel = lazy(() => import('@/components/ProductGridCarousel').then(m => ({ default: m.ProductGridCarousel })))
@@ -62,6 +63,7 @@ export default function HomePage() {
     stock: number
     totalStock?: number
   }>>([])
+  const [showQuiz, setShowQuiz] = useState(false)
 
   // Charger les produits depuis l'API
   useEffect(() => {
@@ -97,6 +99,7 @@ export default function HomePage() {
 
   return (
     <div className="bg-brand-black">
+      {showQuiz && <ProductQuiz onClose={() => setShowQuiz(false)} />}
       {/* Hero Section */}
       <section className="relative min-h-[600px] sm:min-h-[700px] md:h-[900px] flex items-center justify-center text-center overflow-hidden py-12 sm:py-16 md:py-0">
         <div className="absolute inset-0 hero-bg"></div>
@@ -142,6 +145,30 @@ export default function HomePage() {
             <div className="text-center">
               <div className="text-2xl sm:text-3xl font-bold text-brand-green mb-1">24/7</div>
               <div className="text-xs sm:text-sm text-gray-400 leading-tight">{t('home.hero.stats.customerSupport')}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Quiz Section */}
+      <section className="py-16 bg-gradient-to-b from-brand-black to-gray-900">
+        <div className="container mx-auto px-6">
+          <div className="max-w-3xl mx-auto text-center">
+            <div className="card-bg rounded-2xl p-8 sm:p-12 border-2 border-brand-gold/30">
+              <FontAwesomeIcon icon={faFlaskVial} className="text-5xl text-brand-gold mb-4" />
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 gold-text-gradient">
+                Trouvez le produit CBD parfait pour vous
+              </h2>
+              <p className="text-lg text-gray-300 mb-6">
+                Répondez à notre questionnaire personnalisé et découvrez les produits qui correspondent à vos besoins
+              </p>
+              <button
+                onClick={() => setShowQuiz(true)}
+                className="btn-gold text-black font-semibold py-3 px-8 rounded-full shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300 inline-flex items-center gap-2"
+              >
+                <FontAwesomeIcon icon={faFlaskVial} />
+                Commencer le quiz
+              </button>
             </div>
           </div>
         </div>
