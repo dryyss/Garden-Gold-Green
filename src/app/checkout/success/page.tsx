@@ -10,6 +10,8 @@ import {
   faSpinner
 } from '@fortawesome/free-solid-svg-icons'
 import { usePaymentSuccess } from '@/hooks/usePaymentSuccess'
+import { ProductQuiz } from '@/components/ProductQuiz'
+import { useState, useEffect } from 'react'
 
 export default function CheckoutSuccessPage() {
   const searchParams = useSearchParams()
@@ -18,6 +20,8 @@ export default function CheckoutSuccessPage() {
   const orderId = searchParams.get('order_id')
   const token = searchParams.get('token') // Paramètre PayPal
   const payerId = searchParams.get('PayerID') // Paramètre PayPal
+  const [showQuiz, setShowQuiz] = useState(false)
+  const [hasShownQuiz, setHasShownQuiz] = useState(false)
 
   // Utiliser token comme orderId si c'est un paiement PayPal
   const effectiveOrderId = orderId || token
@@ -26,7 +30,13 @@ export default function CheckoutSuccessPage() {
     sessionId,
     orderId: effectiveOrderId,
     onSuccess: () => {
-      // Paiement traité avec succès
+      // Paiement traité avec succès - afficher le QCM après un court délai
+      if (!hasShownQuiz) {
+        setTimeout(() => {
+          setShowQuiz(true)
+          setHasShownQuiz(true)
+        }, 2000) // Afficher le QCM 2 secondes après le succès
+      }
     },
     onError: (error) => {
       console.error('❌ Erreur lors du traitement du paiement:', error)
@@ -52,6 +62,7 @@ export default function CheckoutSuccessPage() {
 
   return (
     <div className="min-h-screen bg-brand-black pt-32 pb-16">
+      {showQuiz && <ProductQuiz onClose={() => setShowQuiz(false)} />}
       <div className="container mx-auto px-6">
         <div className="max-w-2xl mx-auto">
           <div className="card-bg rounded-2xl p-12 text-center">
