@@ -11,7 +11,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { usePaymentSuccess } from '@/hooks/usePaymentSuccess'
 import { ProductQuiz } from '@/components/ProductQuiz'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 export default function CheckoutSuccessPage() {
   const searchParams = useSearchParams()
