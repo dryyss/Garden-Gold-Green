@@ -37,3 +37,4 @@ Le paramètre `?schema=public` à la fin est **essentiel** pour que Prisma fonct
 
 Si vous préférez, le script `start-production.js` peut automatiquement convertir `POSTGRESQL_ADDON_URI` en `DATABASE_URL`, mais il est recommandé de définir `DATABASE_URL` directement pour plus de clarté.
 
+
