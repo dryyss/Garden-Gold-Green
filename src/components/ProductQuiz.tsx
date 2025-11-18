@@ -337,15 +337,32 @@ export function ProductQuiz({ onClose }: { onClose?: () => void }) {
         }),
       })
 
-      // Récupérer les produits recommandés
-      const categoryParams = results.recommendedCategories.join(',')
+      // Récupérer les produits recommandés via l'API de suggestions
+      // Utiliser la première catégorie recommandée comme base
+      const primaryCategory = results.recommendedCategories[0] || 'huiles-cbd'
       const productsResponse = await fetch(
-        `/api/products/all?categories=${categoryParams}&limit=6`
+        `/api/products/suggestions?categoryName=${primaryCategory}&limit=6`
       )
       const productsData = await productsResponse.json()
 
-      if (productsData.success) {
+      if (productsData.success && productsData.products) {
         setRecommendedProducts(productsData.products || [])
+      } else {
+        // Fallback : récupérer tous les produits et filtrer
+        const allProductsResponse = await fetch('/api/products/all')
+        const allProductsData = await allProductsResponse.json()
+        if (allProductsData.success && allProductsData.products) {
+          // Filtrer par catégories recommandées
+          const filtered = allProductsData.products
+            .filter((p: any) => {
+              const productCategories = p.categories?.map((c: any) => c.slug || c.name?.toLowerCase()) || []
+              return results.recommendedCategories.some((cat) =>
+                productCategories.some((pc: string) => pc.includes(cat))
+              )
+            })
+            .slice(0, 6)
+          setRecommendedProducts(filtered)
+        }
       }
 
       setShowResults(true)
