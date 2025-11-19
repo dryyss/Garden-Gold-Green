@@ -69,6 +69,11 @@ export function ProductRecommendations({
         if (data.success && data.products) {
           const suggestions = data.products.map((p: any) => {
             const images = typeof p.images === 'string' ? JSON.parse(p.images) : (Array.isArray(p.images) ? p.images : [])
+            // Calculer le stock total (produit + variantes)
+            const variantsStock = (p.variants || []).reduce((sum: number, v: any) => sum + (v.stock || 0), 0)
+            const totalStock = (p.totalStock !== undefined ? p.totalStock : (p.stock || 0) + variantsStock)
+            const inStock = totalStock > 0
+            
             return {
               id: p.id,
               name: p.title,
@@ -78,8 +83,8 @@ export function ProductRecommendations({
               category: p.categories?.[0]?.name || 'CBD Products',
               rating: 4.5,
               reviewCount: Math.floor(Math.random() * 100) + 10,
-              inStock: (p.stock || 0) > 0,
-              totalStock: p.stock || 0,
+              inStock: inStock,
+              totalStock: totalStock,
               isNew: false,
               isBestSeller: p.isFeatured || false,
             }

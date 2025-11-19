@@ -117,6 +117,17 @@ export function Footer() {
         </div>
         <div className="mt-16 pt-8 border-t border-white/10 text-center text-gray-500 text-sm">
           <p>{t('footer.copyright')}</p>
+          <p className="mt-2">
+            Créé et développé par{' '}
+            <Link 
+              href="https://andrysmagar.fr" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-brand-gold hover:text-brand-gold/80 transition-colors"
+            >
+              Andrys Magar
+            </Link>
+          </p>
         </div>
       </div>
     </footer>

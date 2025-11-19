@@ -27,19 +27,42 @@ export async function POST(request: NextRequest) {
     } catch (error: any) {
       console.error('❌ Erreur lors du renvoi de l\'email de vérification:', error)
       
+      const errorMessage = error.message || 'Une erreur est survenue'
+      
       // Si l'erreur indique que l'email est déjà vérifié, on le signale
-      if (error.message?.includes('already verified') || error.message?.includes('email_verified')) {
+      if (
+        errorMessage.includes('already verified') ||
+        errorMessage.includes('email_verified') ||
+        errorMessage.includes('déjà vérifié')
+      ) {
         return NextResponse.json({
           success: false,
           error: 'Votre email est déjà vérifié'
         }, { status: 400 })
       }
       
+      // Si le service d'email n'est pas configuré
+      if (errorMessage.includes('email service') || errorMessage.includes('email provider')) {
+        return NextResponse.json({
+          success: false,
+          error: 'Service d\'email non configuré. Veuillez contacter le support.',
+          details: 'Le service d\'envoi d\'email n\'est pas configuré dans Auth0. Veuillez configurer un fournisseur d\'email (SendGrid, Mailgun, etc.) dans le dashboard Auth0.'
+        }, { status: 500 })
+      }
+      
+      // Si l'utilisateur n'existe pas
+      if (errorMessage.includes('non trouvé') || errorMessage.includes('not found')) {
+        return NextResponse.json({
+          success: false,
+          error: 'Utilisateur non trouvé'
+        }, { status: 404 })
+      }
+      
       return NextResponse.json(
         { 
           success: false,
           error: 'Erreur lors de l\'envoi de l\'email de vérification',
-          details: error.message || 'Une erreur est survenue'
+          details: errorMessage
         },
         { status: 500 }
       )

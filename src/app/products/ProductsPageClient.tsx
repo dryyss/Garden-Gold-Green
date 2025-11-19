@@ -56,11 +56,27 @@ function transformProduct(product: Record<string, unknown>): TransformedProduct 
   const isNew = hash % 10 < 3 // 30% de chance
   const isBestSeller = hash % 10 < 2 // 20% de chance
   
+  // Parser les images si c'est une chaîne JSON
+  let images: string[] = []
+  try {
+    const productImages = (product as { images?: string[] | string }).images
+    if (typeof productImages === 'string') {
+      images = JSON.parse(productImages)
+    } else if (Array.isArray(productImages)) {
+      images = productImages
+    }
+  } catch {
+    images = []
+  }
+  
+  // Extraire la première image
+  const image = images[0] || '/logo2.png'
+  
   return {
     ...product,
     name: String((product as { title?: string }).title || ''),
     price: (Number((product as { priceCents?: number }).priceCents) || 0) / 100, // Convertir les centimes en euros
-    image: String(((product as { images?: string[] }).images?.[0]) || '/logo2.png'),
+    image: String(image),
     category: String(((product as { categories?: Array<{ name?: string }> }).categories?.[0]?.name) || 'CBD Products'),
     rating: 4.5, // Valeur par défaut
     reviewCount, // Valeur déterministe basée sur l'ID
@@ -535,6 +551,7 @@ export default function ProductsPageClient() {
     </main>
   )
 }
+
 
 
 

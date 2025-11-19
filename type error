@@ -1,0 +1,484 @@
+[1mdiff --git a/src/components/ProductQuiz.tsx b/src/components/ProductQuiz.tsx[m
+[1mindex 636e6ba..4c1c991 100644[m
+[1m--- a/src/components/ProductQuiz.tsx[m
+[1m+++ b/src/components/ProductQuiz.tsx[m
+[36m@@ -1,571 +1,579 @@[m
+[31m-'use client'[m
+[31m-[m
+[31m-import { useState } from 'react'[m
+[31m-import { useRouter } from 'next/navigation'[m
+[31m-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'[m
+[31m-import {[m
+[31m-  faCheckCircle,[m
+[31m-  faArrowRight,[m
+[31m-  faArrowLeft,[m
+[31m-  faSpinner,[m
+[31m-  faLeaf,[m
+[31m-  faFlaskVial,[m
+[31m-  faHeart,[m
+[31m-  faMoon,[m
+[31m-  faDumbbell,[m
+[31m-  faBrain,[m
+[31m-  faSmile,[m
+[31m-  faShoppingBag,[m
+[31m-} from '@fortawesome/free-solid-svg-icons'[m
+[31m-import { useTranslation } from '@/contexts/TranslationContext'[m
+[31m-import Link from 'next/link'[m
+[31m-[m
+[31m-interface Question {[m
+[31m-  id: string[m
+[31m-  question: string[m
+[31m-  type: 'single' | 'multiple'[m
+[31m-  options: {[m
+[31m-    id: string[m
+[31m-    label: string[m
+[31m-    icon?: any[m
+[31m-    categoryTags: string[] // Tags pour matcher avec les produits[m
+[31m-    needsTags?: string[] // Besoins identifiés pour développement futur[m
+[31m-  }[][m
+[31m-}[m
+[31m-[m
+[31m-interface QuizResult {[m
+[31m-  recommendedCategories: string[][m
+[31m-  needs: string[][m
+[31m-  score: Record<string, number>[m
+[31m-}[m
+[31m-[m
+[31m-export function ProductQuiz({ onClose }: { onClose?: () => void }) {[m
+[31m-  const { t } = useTranslation()[m
+[31m-  const router = useRouter()[m
+[31m-  const [currentStep, setCurrentStep] = useState(0)[m
+[31m-  const [answers, setAnswers] = useState<Record<string, string[]>>({})[m
+[31m-  const [isSubmitting, setIsSubmitting] = useState(false)[m
+[31m-  const [showResults, setShowResults] = useState(false)[m
+[31m-  const [recommendedProducts, setRecommendedProducts] = useState<any[]>([])[m
+[31m-[m
+[31m-  const questions: Question[] = [[m
+[31m-    {[m
+[31m-      id: 'experience',[m
+[31m-      question: 'Quel est votre niveau d\'expérience avec le CBD ?',[m
+[31m-      type: 'single',[m
+[31m-      options: [[m
+[31m-        {[m
+[31m-          id: 'beginner',[m
+[31m-          label: 'Débutant - Je découvre le CBD',[m
+[31m-          icon: faLeaf,[m
+[31m-          categoryTags: ['huiles-cbd', 'gummies', 'débutant'],[m
+[31m-          needsTags: ['guide-débutant', 'faible-dosage'],[m
+[31m-        },[m
+[31m-        {[m
+[31m-          id: 'intermediate',[m
+[31m-          label: 'Intermédiaire - J\'ai déjà utilisé du CBD',[m
+[31m-          icon: faFlaskVial,[m
+[31m-          categoryTags: ['huiles-cbd', 'résines', 'intermédiaire'],[m
+[31m-          needsTags: ['dosage-moyen', 'variété-produits'],[m
+[31m-        },[m
+[31m-        {[m
+[31m-          id: 'advanced',[m
+[31m-          label: 'Expert - Je connais bien le CBD',[m
+[31m-          icon: faBrain,[m
+[31m-          categoryTags: ['résines', 'fleurs-cbd', 'concentrés'],[m
+[31m-          needsTags: ['haute-concentration', 'produits-premium'],[m
+[31m-        },[m
+[31m-      ],[m
+[31m-    },[m
+[31m-    {[m
+[31m-      id: 'goal',[m
+[31m-      question: 'Quel est votre objectif principal avec le CBD ?',[m
+[31m-      type: 'multiple',[m
+[31m-      options: [[m
+[31m-        {[m
+[31m-          id: 'relaxation',[m
+[31m-          label: 'Relaxation et bien-être',[m
+[31m-          icon: faHeart,[m
+[31m-          categoryTags: ['huiles-cbd', 'gummies', 'relaxation'],[m
+[31m-          needsTags: ['produits-relaxants', 'arômes-apaisants'],[m
+[31m-        },[m
+[31m-        {[m
+[31m-          id: 'sleep',[m
+[31m-          label: 'Améliorer le sommeil',[m
+[31m-          icon: faMoon,[m
+[31m-          categoryTags: ['huiles-cbd', 'gummies', 'sommeil'],[m
+[31m-          needsTags: ['formules-sommeil', 'cbn'],[m
+[31m-        },[m
+[31m-        {[m
+[31m-          id: 'sport',[m
+[31m-          label: 'Récupération sportive',[m
+[31m-          icon: faDumbbell,[m
+[31m-          categoryTags: ['crèmes', 'baumes', 'sport'],[m
+[31m-          needsTags: ['topiques-sport', 'cbd-topique'],[m
+[31m-        },[m
+[31m-        {[m
+[31m-          id: 'wellness',[m
+[31m-          label: 'Bien-être général',[m
+[31m-          icon: faSmile,[m
+[31m-          categoryTags: ['huiles-cbd', 'gummies', 'bien-être'],[m
+[31m-          needsTags: ['produits-quotidien', 'multivitamines-cbd'],[m
+[31m-        },[m
+[31m-      ],[m
+[31m-    },[m
+[31m-    {[m
+[31m-      id: 'preference',[m
+[31m-      question: 'Quelle forme de produit préférez-vous ?',[m
+[31m-      type: 'multiple',[m
+[31m-      options: [[m
+[31m-        {[m
+[31m-          id: 'oils',[m
+[31m-          label: 'Huiles CBD',[m
+[31m-          icon: faFlaskVial,[m
+[31m-          categoryTags: ['huiles-cbd'],[m
+[31m-          needsTags: ['nouvelles-concentrations', 'arômes-naturels'],[m
+[31m-        },[m
+[31m-        {[m
+[31m-          id: 'flowers',[m
+[31m-          label: 'Fleurs CBD',[m
+[31m-          icon: faLeaf,[m
+[31m-          categoryTags: ['fleurs-cbd'],[m
+[31m-          needsTags: ['nouvelles-variétés', 'fleurs-premium'],[m
+[31m-        },[m
+[31m-        {[m
+[31m-          id: 'resins',[m
+[31m-          label: 'Résines CBD',[m
+[31m-          icon: faFlaskVial,[m
+[31m-          categoryTags: ['résines'],[m
+[31m-          needsTags: ['résines-concentrées', 'hash-cbd'],[m
+[31m-        },[m
+[31m-        {[m
+[31m-          id: 'topicals',[m
+[31m-          label: 'Crèmes et baumes',[m
+[31m-          icon: faHeart,[m
+[31m-          categoryTags: ['crèmes', 'baumes'],[m
+[31m-          needsTags: ['topiques-spécifiques', 'baumes-aromatiques'],[m
+[31m-        },[m
+[31m-        {[m
+[31m-          id: 'edibles',[m
+[31m-          label: 'Gummies et produits comestibles',[m
+[31m-          icon: faSmile,[m
+[31m-          categoryTags: ['gummies'],[m
+[31m-          needsTags: ['nouveaux-goûts', 'gummies-vitamines'],[m
+[31m-        },[m
+[31m-      ],[m
+[31m-    },[m
+[31m-    {[m
+[31m-      id: 'concentration',[m
+[31m-      question: 'Quelle concentration de CBD recherchez-vous ?',[m
+[31m-      type: 'single',[m
+[31m-      options: [[m
+[31m-        {[m
+[31m-          id: 'low',[m
+[31m-          label: 'Faible (5-10%) - Pour débuter',[m
+[31m-          categoryTags: ['débutant', 'faible-dosage'],[m
+[31m-          needsTags: ['starter-kits'],[m
+[31m-        },[m
+[31m-        {[m
+[31m-          id: 'medium',[m
+[31m-          label: 'Moyenne (15-20%) - Usage régulier',[m
+[31m-          categoryTags: ['intermédiaire', 'dosage-moyen'],[m
+[31m-          needsTags: ['formats-moyens'],[m
+[31m-        },[m
+[31m-        {[m
+[31m-          id: 'high',[m
+[31m-          label: 'Élevée (25%+) - Usage intensif',[m
+[31m-          categoryTags: ['expert', 'haute-concentration'],[m
+[31m-          needsTags: ['concentrés-premium'],[m
+[31m-        },[m
+[31m-        {[m
+[31m-          id: 'flexible',[m
+[31m-          label: 'Je veux tester différentes concentrations',[m
+[31m-          categoryTags: ['débutant', 'intermédiaire'],[m
+[31m-          needsTags: ['packs-découverte'],[m
+[31m-        },[m
+[31m-      ],[m
+[31m-    },[m
+[31m-    {[m
+[31m-      id: 'budget',[m
+[31m-      question: 'Quel est votre budget mensuel pour le CBD ?',[m
+[31m-      type: 'single',[m
+[31m-      options: [[m
+[31m-        {[m
+[31m-          id: 'budget-low',[m
+[31m-          label: 'Moins de 30€',[m
+[31m-          categoryTags: ['petit-budget', 'essentiels'],[m
+[31m-          needsTags: ['produits-accessibles', 'promotions'],[m
+[31m-        },[m
+[31m-        {[m
+[31m-          id: 'budget-medium',[m
+[31m-          label: '30-60€',[m
+[31m-          categoryTags: ['budget-moyen', 'qualité'],[m
+[31m-          needsTags: ['packs-valeur'],[m
+[31m-        },[m
+[31m-        {[m
+[31m-          id: 'budget-high',[m
+[31m-          label: 'Plus de 60€',[m
+[31m-          categoryTags: ['premium', 'qualité-supérieure'],[m
+[31m-          needsTags: ['produits-luxe', 'collections-exclusives'],[m
+[31m-        },[m
+[31m-      ],[m
+[31m-    },[m
+[31m-    {[m
+[31m-      id: 'new-products',[m
+[31m-      question: 'Quels nouveaux produits aimeriez-vous voir dans notre catalogue ?',[m
+[31m-      type: 'multiple',[m
+[31m-      options: [[m
+[31m-        {[m
+[31m-          id: 'cbn-products',[m
+[31m-          label: 'Produits avec CBN (pour le sommeil)',[m
+[31m-          needsTags: ['cbn', 'sommeil'],[m
+[31m-        },[m
+[31m-        {[m
+[31m-          id: 'cbg-products',[m
+[31m-          label: 'Produits avec CBG (énergie et focus)',[m
+[31m-          needsTags: ['cbg', 'énergie'],[m
+[31m-        },[m
+[31m-        {[m
+[31m-          id: 'terpenes',[m
+[31m-          label: 'Produits enrichis en terpènes',[m
+[31m-          needsTags: ['terpènes', 'arômes'],[m
+[31m-        },[m
+[31m-        {[m
+[31m-          id: 'vape',[m
+[31m-          label: 'E-liquides et produits pour vapoteuse',[m
+[31m-          needsTags: ['vape', 'e-liquides'],[m
+[31m-        },[m
+[31m-        {[m
+[31m-          id: 'pets',[m
+[31m-          label: 'Produits CBD pour animaux de compagnie',[m
+[31m-          needsTags: ['animaux', 'pets'],[m
+[31m-        },[m
+[31m-        {[m
+[31m-          id: 'cosmetics',[m
+[31m-          label: 'Cosmétiques et soins de la peau au CBD',[m
+[31m-          needsTags: ['cosmétiques', 'soins-peau'],[m
+[31m-        },[m
+[31m-        {[m
+[31m-          id: 'beverages',[m
+[31m-          label: 'Boissons infusées au CBD',[m
+[31m-          needsTags: ['boissons', 'infusions'],[m
+[31m-        },[m
+[31m-        {[m
+[31m-          id: 'isolates',[m
+[31m-          label: 'Isolats et cristaux de CBD purs',[m
+[31m-          needsTags: ['isolats', 'cristaux'],[m
+[31m-        },[m
+[31m-      ],[m
+[31m-    },[m
+[31m-  ][m
+[31m-[m
+[31m-  const handleAnswer = (questionId: string, optionId: string, isMultiple: boolean) => {[m
+[31m-    setAnswers((prev) => {[m
+[31m-      if (isMultiple) {[m
+[31m-        const current = prev[questionId] || [][m
+[31m-        if (current.includes(optionId)) {[m
+[31m-          return { ...prev, [questionId]: current.filter((id) => id !== optionId) }[m
+[31m-        } else {[m
+[31m-          return { ...prev, [questionId]: [...current, optionId] }[m
+[31m-        }[m
+[31m-      } else {[m
+[31m-        return { ...prev, [questionId]: [optionId] }[m
+[31m-      }[m
+[31m-    })[m
+[31m-  }[m
+[31m-[m
+[31m-  const calculateResults = (): QuizResult => {[m
+[31m-    const categoryScores: Record<string, number> = {}[m
+[31m-    const needs: string[] = [][m
+[31m-[m
+[31m-    questions.forEach((question) => {[m
+[31m-      const selectedOptions = answers[question.id] || [][m
+[31m-      selectedOptions.forEach((optionId) => {[m
+[31m-        const option = question.options.find((opt) => opt.id === optionId)[m
+[31m-        if (option) {[m
+[31m-          option.categoryTags.forEach((tag) => {[m
+[31m-            categoryScores[tag] = (categoryScores[tag] || 0) + 1[m
+[31m-          })[m
+[31m-          if (option.needsTags) {[m
+[31m-            needs.push(...option.needsTags)[m
+[31m-          }[m
+[31m-        }[m
+[31m-      })[m
+[31m-    })[m
+[31m-[m
+[31m-    // Trier les catégories par score[m
+[31m-    const sortedCategories = Object.entries(categoryScores)[m
+[31m-      .sort(([, a], [, b]) => b - a)[m
+[31m-      .slice(0, 5)[m
+[31m-      .map(([category]) => category)[m
+[31m-[m
+[31m-    return {[m
+[31m-      recommendedCategories: sortedCategories,[m
+[31m-      needs: [...new Set(needs)], // Supprimer les doublons[m
+[31m-      score: categoryScores,[m
+[31m-    }[m
+[31m-  }[m
+[31m-[m
+[31m-  const handleNext = () => {[m
+[31m-    if (currentStep < questions.length - 1) {[m
+[31m-      setCurrentStep(currentStep + 1)[m
+[31m-    } else {[m
+[31m-      handleSubmit()[m
+[31m-    }[m
+[31m-  }[m
+[31m-[m
+[31m-  const handlePrevious = () => {[m
+[31m-    if (currentStep > 0) {[m
+[31m-      setCurrentStep(currentStep - 1)[m
+[31m-    }[m
+[31m-  }[m
+[31m-[m
+[31m-  const handleSubmit = async () => {[m
+[31m-    setIsSubmitting(true)[m
+[31m-[m
+[31m-    try {[m
+[31m-      const results = calculateResults()[m
+[31m-[m
+[31m-      // Sauvegarder les réponses[m
+[31m-      await fetch('/api/quiz/submit', {[m
+[31m-        method: 'POST',[m
+[31m-        headers: { 'Content-Type': 'application/json' },[m
+[31m-        body: JSON.stringify({[m
+[31m-          answers,[m
+[31m-          results,[m
+[31m-          timestamp: new Date().toISOString(),[m
+[31m-        }),[m
+[31m-      })[m
+[31m-[m
+[31m-      // Récupérer les produits recommandés via l'API de suggestions[m
+[31m-      // Utiliser la première catégorie recommandée comme base[m
+[31m-      const primaryCategory = results.recommendedCategories[0] || 'huiles-cbd'[m
+[31m-      const productsResponse = await fetch([m
+[31m-        `/api/products/suggestions?categoryName=${primaryCategory}&limit=6`[m
+[31m-      )[m
+[31m-      const productsData = await productsResponse.json()[m
+[31m-[m
+[31m-      if (productsData.success && productsData.products) {[m
+[31m-        setRecommendedProducts(productsData.products || [])[m
+[31m-      } else {[m
+[31m-        // Fallback : récupérer tous les produits et filtrer[m
+[31m-        const allProductsResponse = await fetch('/api/products/all')[m
+[31m-        const allProductsData = await allProductsResponse.json()[m
+[31m-        if (allProductsData.success && allProductsData.products) {[m
+[31m-          // Filtrer par catégories recommandées[m
+[31m-          const filtered = allProductsData.products[m
+[31m-            .filter((p: any) => {[m
+[31m-              const productCategories = p.categories?.map((c: any) => c.slug || c.name?.toLowerCase()) || [][m
+[31m-              return results.recommendedCategories.some((cat) =>[m
+[31m-                productCategories.some((pc: string) => pc.includes(cat))[m
+[31m-              )[m
+[31m-            })[m
+[31m-            .slice(0, 6)[m
+[31m-          setRecommendedProducts(filtered)[m
+[31m-        }[m
+[31m-      }[m
+[31m-[m
+[31m-      setShowResults(true)[m
+[31m-    } catch (error) {[m
+[31m-      console.error('Erreur lors de la soumission du quiz:', error)[m
+[31m-      // Continuer même en cas d'erreur[m
+[31m-      setShowResults(true)[m
+[31m-    } finally {[m
+[31m-      setIsSubmitting(false)[m
+[31m-    }[m
+[31m-  }[m
+[31m-[m
+[31m-  const currentQuestion = questions[currentStep][m
+[31m-  const currentAnswers = answers[currentQuestion.id] || [][m
+[31m-  const canProceed = currentAnswers.length > 0[m
+[31m-[m
+[31m-  if (showResults) {[m
+[31m-    const results = calculateResults()[m
+[31m-    return ([m
+[31m-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">[m
+[31m-        <div className="bg-brand-black border-2 border-brand-gold rounded-2xl p-6 sm:p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto">[m
+[31m-          <div className="text-center mb-6">[m
+[31m-            <FontAwesomeIcon[m
+[31m-              icon={faCheckCircle}[m
+[31m-              className="text-6xl text-brand-gold mb-4"[m
+[31m-            />[m
+[31m-            <h2 className="text-3xl font-bold text-white mb-2 gold-text-gradient">[m
+[31m-              Votre Profil CBD[m
+[31m-            </h2>[m
+[31m-            <p className="text-gray-400">[m
+[31m-              Voici nos recommandations personnalisées pour vous[m
+[31m-            </p>[m
+[31m-          </div>[m
+[31m-[m
+[31m-          {recommendedProducts.length > 0 && ([m
+[31m-            <div className="mb-6">[m
+[31m-              <h3 className="text-xl font-semibold text-white mb-4">[m
+[31m-                Produits Recommandés[m
+[31m-              </h3>[m
+[31m-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">[m
+[31m-                {recommendedProducts.map((product) => ([m
+[31m-                  <Link[m
+[31m-                    key={product.id}[m
+[31m-                    href={`/products/${product.slug}`}[m
+[31m-                    className="card-bg rounded-lg p-4 hover:border-brand-gold transition-all"[m
+[31m-                    onClick={onClose}[m
+[31m-                  >[m
+[31m-                    <div className="aspect-square bg-gray-800 rounded-lg mb-3 flex items-center justify-center">[m
+[31m-                      {product.images?.[0] ? ([m
+[31m-                        <img[m
+[31m-                          src={product.images[0]}[m
+[31m-                          alt={product.title}[m
+[31m-                          className="w-full h-full object-cover rounded-lg"[m
+[31m-                        />[m
+[31m-                      ) : ([m
+[31m-                        <FontAwesomeIcon icon={faLeaf} className="text-4xl text-gray-600" />[m
+[31m-                      )}[m
+[31m-                    </div>[m
+[31m-                    <h4 className="text-white font-semibold mb-1 line-clamp-2">[m
+[31m-                      {product.title}[m
+[31m-                    </h4>[m
+[31m-                    <p className="text-brand-gold font-bold">[m
+[31m-                      {(product.priceCents / 100).toFixed(2)} €[m
+[31m-                    </p>[m
+[31m-                  </Link>[m
+[31m-                ))}[m
+[31m-              </div>[m
+[31m-            </div>[m
+[31m-          )}[m
+[31m-[m
+[31m-          <div className="mb-6">[m
+[31m-            <h3 className="text-xl font-semibold text-white mb-4">[m
+[31m-              Vos Besoins Identifiés[m
+[31m-            </h3>[m
+[31m-            <div className="flex flex-wrap gap-2">[m
+[31m-              {results.needs.slice(0, 10).map((need) => ([m
+[31m-                <span[m
+[31m-                  key={need}[m
+[31m-                  className="bg-brand-green/20 text-brand-green px-3 py-1 rounded-full text-sm"[m
+[31m-                >[m
+[31m-                  {need}[m
+[31m-                </span>[m
+[31m-              ))}[m
+[31m-            </div>[m
+[31m-          </div>[m
+[31m-[m
+[31m-          <div className="flex flex-col sm:flex-row gap-4">[m
+[31m-            <Link[m
+[31m-              href="/products"[m
+[31m-              className="btn-gold text-black font-semibold py-3 px-6 rounded-full flex-1 text-center"[m
+[31m-              onClick={onClose}[m
+[31m-            >[m
+[31m-              <FontAwesomeIcon icon={faShoppingBag} className="mr-2" />[m
+[31m-              Voir tous les produits[m
+[31m-            </Link>[m
+[31m-            <button[m
+[31m-              onClick={onClose}[m
+[31m-              className="bg-transparent border-2 border-brand-green text-brand-green font-semibold py-3 px-6 rounded-full hover:bg-brand-green hover:text-black transition-all"[m
+[31m-            >[m
+[31m-              Fermer[m
+[31m-            </button>[m
+[31m-          </div>[m
+[31m-        </div>[m
+[31m-      </div>[m
+[31m-    )[m
+[31m-  }[m
+[31m-[m
+[31m-  return ([m
+[31m-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">[m
+[31m-      <div className="bg-brand-black border-2 border-brand-gold rounded-2xl p-6 sm:p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">[m
+[31m-        {/* Progress Bar */}[m
+[31m-        <div className="mb-6">[m
+[31m-          <div className="flex justify-between text-sm text-gray-400 mb-2">[m
+[31m-            <

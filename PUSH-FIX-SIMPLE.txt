@@ -1,0 +1,20 @@
+INSTRUCTIONS POUR PUSHER LES CORRECTIONS
+=========================================
+
+Le fichier ProductQuiz.tsx a bien les corrections (categoryTags: [] pour toutes les options).
+
+Ouvre PowerShell dans ce dossier et exécute :
+
+.\fix-and-push.ps1
+
+OU exécute ces commandes une par une :
+
+git add .
+git commit -m "Fix ProductQuiz categoryTags type error"
+git fetch origin
+git merge origin/main --no-edit
+git push origin main
+
+Après le push, Clever Cloud redéploiera automatiquement avec la correction !
+
+

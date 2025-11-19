@@ -27,6 +27,7 @@ export async function GET(request: NextRequest) {
         },
         include: {
           categories: true,
+          variants: true,
         },
         take: limit,
         orderBy: {
@@ -50,6 +51,7 @@ export async function GET(request: NextRequest) {
         where: { id: productId },
         include: {
           categories: true,
+          variants: true,
         },
       })
     }
@@ -95,6 +97,7 @@ export async function GET(request: NextRequest) {
         },
         include: {
           categories: true,
+          variants: true,
         },
         take: limit * 2, // Prendre plus pour avoir du choix
         orderBy: [
@@ -125,6 +128,7 @@ export async function GET(request: NextRequest) {
         },
         include: {
           categories: true,
+          variants: true,
         },
         take: limit,
         orderBy: [
@@ -147,6 +151,7 @@ export async function GET(request: NextRequest) {
         },
         include: {
           categories: true,
+          variants: true,
         },
         take: limit - suggestions.length,
         orderBy: {
@@ -167,6 +172,7 @@ export async function GET(request: NextRequest) {
         },
         include: {
           categories: true,
+          variants: true,
         },
         take: limit - suggestions.length,
         orderBy: {
@@ -179,10 +185,17 @@ export async function GET(request: NextRequest) {
     // Limiter et formater les résultats
     const finalSuggestions = suggestions
       .slice(0, limit)
-      .map(product => ({
-        ...product,
-        images: typeof product.images === 'string' ? JSON.parse(product.images) : product.images,
-      }))
+      .map(product => {
+        // Calculer le stock total (produit + variantes)
+        const variantsStock = (product.variants || []).reduce((sum: number, v: any) => sum + (v.stock || 0), 0)
+        const totalStock = (product.stock || 0) + variantsStock
+        
+        return {
+          ...product,
+          images: typeof product.images === 'string' ? JSON.parse(product.images) : product.images,
+          totalStock, // Ajouter le stock total calculé
+        }
+      })
 
     return NextResponse.json({
       success: true,
@@ -200,5 +213,6 @@ export async function GET(request: NextRequest) {
     )
   }
 }
+
 
 

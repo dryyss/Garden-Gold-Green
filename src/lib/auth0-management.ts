@@ -445,37 +445,89 @@ export async function getAuth0UserRolesBatch(
  * Envoie un email de vérification à un utilisateur Auth0
  * @param userId - L'ID Auth0 de l'utilisateur
  */
-export async function sendVerificationEmail(userId: string): Promise<void> {
+export async function sendVerificationEmail(userId: string, clientId?: string): Promise<void> {
   try {
     const token = await getManagementToken()
     
-    // Utiliser l'endpoint Jobs API pour envoyer l'email de vérification
-    const response = await fetch(`https://${AUTH0_DOMAIN}/api/v2/jobs/verification-email`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        user_id: userId,
-      }),
-    })
+    // Utiliser l'endpoint direct pour envoyer l'email de vérification
+    // Documentation: https://auth0.com/docs/api/management/v2#!/Users/post_send_verification_email
+    const requestBody: any = {}
+    
+    // Inclure le client_id si fourni pour utiliser le bon template d'email
+    if (clientId) {
+      requestBody.client_id = clientId
+    } else if (process.env.AUTH0_CLIENT_ID) {
+      // Utiliser le client_id de l'environnement si disponible
+      requestBody.client_id = process.env.AUTH0_CLIENT_ID
+    }
+    
+    const response = await fetch(
+      `https://${AUTH0_DOMAIN}/api/v2/users/${encodeURIComponent(userId)}/send-verification-email`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      }
+    )
 
+    // Lire le texte de la réponse (peut être vide pour 204)
+    const responseText = await response.text()
+    
     if (!response.ok) {
-      const errorText = await response.text()
+      let errorData: any = {}
       
-      // Si l'email est déjà vérifié, Auth0 peut retourner une erreur
-      if (errorText.includes('already verified') || errorText.includes('email_verified')) {
+      try {
+        if (responseText) {
+          errorData = JSON.parse(responseText)
+        }
+      } catch {
+        // Si ce n'est pas du JSON, utiliser le texte brut
+      }
+      
+      // Vérifier les erreurs courantes
+      if (
+        responseText.includes('already verified') ||
+        responseText.includes('email_verified') ||
+        errorData.error === 'user_email_verified' ||
+        errorData.message?.includes('already verified')
+      ) {
         throw new Error('Email déjà vérifié')
       }
       
-      throw new Error(`Failed to send verification email: ${errorText}`)
+      // Erreur si l'utilisateur n'existe pas
+      if (response.status === 404 || responseText.includes('not found')) {
+        throw new Error('Utilisateur non trouvé')
+      }
+      
+      // Erreur si le service d'email n'est pas configuré
+      if (responseText.includes('email service') || responseText.includes('email provider') || responseText.includes('email provider is not configured')) {
+        throw new Error('Service d\'email non configuré dans Auth0. Veuillez configurer un fournisseur d\'email (SendGrid, Mailgun, etc.) dans le dashboard Auth0 > Settings > Emails.')
+      }
+      
+      throw new Error(`Failed to send verification email: ${responseText || response.statusText}`)
     }
 
-    // La réponse peut être vide ou contenir un job_id
-    const data = await response.json().catch(() => ({}))
-    console.log(`✅ Email de vérification envoyé pour l'utilisateur ${userId}`, data)
-  } catch (error) {
+    // La réponse peut être vide (204 No Content) ou contenir des données
+    let data: any = {}
+    if (response.status === 204) {
+      // 204 No Content - succès sans contenu
+      console.log(`✅ Email de vérification envoyé pour l'utilisateur ${userId} (204 No Content)`)
+    } else if (responseText) {
+      // Essayer de parser le JSON si disponible
+      try {
+        data = JSON.parse(responseText)
+        console.log(`✅ Email de vérification envoyé pour l'utilisateur ${userId}`, data)
+      } catch {
+        // Pas de JSON, c'est OK
+        console.log(`✅ Email de vérification envoyé pour l'utilisateur ${userId}`)
+      }
+    } else {
+      console.log(`✅ Email de vérification envoyé pour l'utilisateur ${userId}`)
+    }
+  } catch (error: any) {
     console.error('Erreur lors de l\'envoi de l\'email de vérification:', error)
     throw error
   }

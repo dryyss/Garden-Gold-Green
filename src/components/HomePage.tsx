@@ -33,11 +33,26 @@ const Newsletter = lazy(() => import('@/components/Newsletter').then(m => ({ def
 
 // Transformer les données de l'ancienne structure vers la nouvelle
 function transformProduct(product: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
+  // Parser les images si c'est une chaîne JSON
+  let images: string[] = []
+  try {
+    if (typeof product.images === 'string') {
+      images = JSON.parse(product.images)
+    } else if (Array.isArray(product.images)) {
+      images = product.images
+    }
+  } catch {
+    images = []
+  }
+  
+  // Extraire la première image
+  const image = images[0] || '/logo2.png'
+  
   return {
     ...product,
     name: product.title,
     price: product.priceCents / 100, // Convertir les centimes en euros
-    image: product.images?.[0] || '/logo2.png',
+    image: image,
     category: product.categories?.[0]?.name || 'CBD Products',
     rating: 4.5, // Valeur par défaut
     reviewCount: 50, // Valeur fixe pour éviter l'erreur d'hydratation

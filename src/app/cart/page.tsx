@@ -42,6 +42,57 @@ function CartPageContent() {
   const authContext = useAuth()
   const authState = authContext?.state || { isAuthenticated: false }
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false)
+  const [productImages, setProductImages] = useState<Record<string, string>>({})
+  
+  // Récupérer les images manquantes depuis l'API
+  useEffect(() => {
+    const fetchMissingImages = async () => {
+      const itemsWithoutImages = state.items.filter(item => !item.image || item.image === '/logo2.png')
+      if (itemsWithoutImages.length === 0) return
+      
+      try {
+        const response = await fetch('/api/products/all')
+        const data = await response.json()
+        if (data.success && data.products) {
+          const imagesMap: Record<string, string> = {}
+          data.products.forEach((product: any) => {
+            let images: string[] = []
+            try {
+              if (typeof product.images === 'string') {
+                images = JSON.parse(product.images)
+              } else if (Array.isArray(product.images)) {
+                images = product.images
+              }
+            } catch {
+              images = []
+            }
+            const image = images[0] || '/logo2.png'
+            imagesMap[product.id] = image
+          })
+          setProductImages(imagesMap)
+          
+          // Mettre à jour les items du panier avec les images manquantes
+          const updatedItems = state.items.map(item => {
+            if (!item.image || item.image === '/logo2.png') {
+              const productImage = imagesMap[item.id] || '/logo2.png'
+              return { ...item, image: productImage }
+            }
+            return item
+          })
+          
+          // Si des images ont été trouvées, mettre à jour le panier
+          const hasChanges = updatedItems.some((item, index) => item.image !== state.items[index].image)
+          if (hasChanges) {
+            dispatch({ type: 'LOAD_CART', payload: updatedItems })
+          }
+        }
+      } catch (error) {
+        console.error('Erreur lors de la récupération des images:', error)
+      }
+    }
+    
+    fetchMissingImages()
+  }, [state.items, dispatch])
   
   // Calculer le total
   const subtotal = state.items.reduce((total, item) => total + (item.price * item.quantity), 0)
@@ -205,7 +256,7 @@ function CartPageContent() {
                       {item.slug ? (
                         <Link href={`/products/${item.slug}`}>
                           <ImageWithLoading
-                            src={item.image}
+                            src={item.image || '/logo2.png'}
                             alt={item.name}
                             fill
                             className="object-cover rounded-lg hover:opacity-80 transition-opacity cursor-pointer"
@@ -213,7 +264,7 @@ function CartPageContent() {
                         </Link>
                       ) : (
                         <ImageWithLoading
-                          src={item.image}
+                          src={item.image || '/logo2.png'}
                           alt={item.name}
                           fill
                           className="object-cover rounded-lg"
