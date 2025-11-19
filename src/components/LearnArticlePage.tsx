@@ -11,7 +11,8 @@ import {
   faShare,
   faBookmark,
   faTag,
-  faChevronRight
+  faChevronRight,
+  faCalendar
 } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from '@/contexts/TranslationContext'
 
