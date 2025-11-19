@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -30,6 +30,7 @@ const aboutTranslations: Record<string, typeof aboutTranslationsFr> = {
 export default function AboutPage() {
   const { language } = useTranslation()
   const at = aboutTranslations[language] || aboutTranslations.fr
+  const [imageError, setImageError] = useState(false)
 
   return (
     <main className="bg-brand-black min-h-screen pt-24">
@@ -62,10 +63,11 @@ export default function AboutPage() {
             <div className="relative">
               <div className="relative w-full h-96 rounded-2xl overflow-hidden">
                 <Image
-                  src="/images/about-hemp-fields.jpg"
+                  src={imageError ? '/logo2.png' : '/images/about-hemp-fields.jpg'}
                   alt="Hemp fields in Colorado"
                   fill
                   className="object-cover"
+                  onError={() => setImageError(true)}
                 />
               </div>
             </div>

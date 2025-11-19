@@ -8,7 +8,8 @@ import {
   faShare,
   faHeart,
   faBookmark,
-  faTag
+  faTag,
+  faChevronRight
 } from '@fortawesome/free-solid-svg-icons'
 
 // Données fictives pour les articles de blog
@@ -176,9 +177,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       <div className="container mx-auto px-6 py-8">
         <Link 
           href="/blog" 
-          className="text-gray-400 hover:text-brand-gold transition-colors flex items-center"
+          className="text-gray-400 hover:text-brand-gold transition-colors flex items-center group"
         >
-          <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
+          <FontAwesomeIcon icon={faArrowLeft} className="mr-2 group-hover:-translate-x-1 transition-transform" />
           Retour au blog
         </Link>
       </div>
@@ -187,13 +188,17 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       <section className="pb-12">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto">
-            <div className="flex items-center space-x-4 mb-6">
-              <span className="bg-brand-green/20 text-brand-green px-3 py-1 rounded-full text-sm font-semibold">
+            <div className="flex items-center flex-wrap gap-4 mb-6">
+              <span className="bg-brand-green/20 text-brand-green px-4 py-2 rounded-full text-sm font-semibold">
                 {post.category}
               </span>
               <div className="flex items-center text-gray-400 text-sm">
                 <FontAwesomeIcon icon={faCalendar} className="mr-2" />
-                {new Date(post.date).toLocaleDateString('fr-FR')}
+                {new Date(post.date).toLocaleDateString('fr-FR', { 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                })}
               </div>
               <div className="flex items-center text-gray-400 text-sm">
                 <FontAwesomeIcon icon={faUser} className="mr-2" />
@@ -201,11 +206,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               </div>
             </div>
 
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 gold-text-gradient">
+            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight gold-text-gradient">
               {post.title}
             </h1>
 
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center justify-between mb-8 pb-8 border-b border-white/10">
               <div className="flex items-center space-x-4">
                 <div className="flex items-center text-gray-300">
                   <FontAwesomeIcon icon={faUser} className="mr-2" />
@@ -213,24 +218,25 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 </div>
               </div>
               <div className="flex items-center space-x-4">
-                <button className="text-gray-400 hover:text-brand-gold transition-colors">
+                <button className="text-gray-400 hover:text-brand-gold transition-colors p-2 hover:bg-white/5 rounded-full">
                   <FontAwesomeIcon icon={faShare} className="text-xl" />
                 </button>
-                <button className="text-gray-400 hover:text-brand-gold transition-colors">
+                <button className="text-gray-400 hover:text-brand-gold transition-colors p-2 hover:bg-white/5 rounded-full">
                   <FontAwesomeIcon icon={faHeart} className="text-xl" />
                 </button>
-                <button className="text-gray-400 hover:text-brand-gold transition-colors">
+                <button className="text-gray-400 hover:text-brand-gold transition-colors p-2 hover:bg-white/5 rounded-full">
                   <FontAwesomeIcon icon={faBookmark} className="text-xl" />
                 </button>
               </div>
             </div>
 
-            <div className="relative h-96 rounded-xl overflow-hidden mb-8">
+            <div className="relative h-96 md:h-[500px] rounded-xl overflow-hidden mb-8 shadow-2xl">
               <Image
                 src={post.image}
                 alt={post.title}
                 fill
                 className="object-cover"
+                priority
               />
             </div>
           </div>
@@ -246,7 +252,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               dangerouslySetInnerHTML={{ __html: post.content }}
               style={{
                 color: '#E0E0E0',
-                lineHeight: '1.7'
+                lineHeight: '1.8',
+                fontSize: '18px'
               }}
             />
           </div>
@@ -258,12 +265,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center space-x-4">
-              <FontAwesomeIcon icon={faTag} className="text-brand-gold" />
+              <FontAwesomeIcon icon={faTag} className="text-brand-gold text-xl" />
               <div className="flex flex-wrap gap-2">
                 {post.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="bg-white/10 text-gray-300 px-3 py-1 rounded-full text-sm hover:bg-brand-gold hover:text-black transition-colors cursor-pointer"
+                    className="bg-white/10 text-gray-300 px-4 py-2 rounded-full text-sm hover:bg-brand-gold hover:text-black transition-colors cursor-pointer"
                   >
                     #{tag}
                   </span>
@@ -282,7 +289,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               Articles similaires
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="card-bg rounded-xl overflow-hidden group hover:shadow-gold-glow transition-all duration-300">
+              <Link
+                href="/blog/cbd-sommeil-repos"
+                className="card-bg rounded-xl overflow-hidden group hover:shadow-gold-glow transition-all duration-300"
+              >
                 <div className="relative h-48">
                   <Image
                     src="/logo.png"
@@ -293,23 +303,22 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 </div>
                 <div className="p-6">
                   <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-brand-gold transition-colors">
-                    <Link href="/blog/cbd-sommeil-repos">
-                      CBD et Sommeil : Comment améliorer votre repos
-                    </Link>
+                    CBD et Sommeil : Comment améliorer votre repos
                   </h3>
-                  <p className="text-gray-400 mb-4">
+                  <p className="text-gray-400 mb-4 line-clamp-2">
                     Découvrez comment le CBD peut vous aider à retrouver un sommeil réparateur...
                   </p>
-                  <Link
-                    href="/blog/cbd-sommeil-repos"
-                    className="text-brand-gold hover:text-brand-gold/80 font-semibold"
-                  >
-                    Lire la suite →
-                  </Link>
+                  <div className="flex items-center text-brand-gold font-semibold">
+                    Lire la suite
+                    <FontAwesomeIcon icon={faChevronRight} className="ml-2 group-hover:translate-x-1 transition-transform" />
+                  </div>
                 </div>
-              </div>
+              </Link>
 
-              <div className="card-bg rounded-xl overflow-hidden group hover:shadow-gold-glow transition-all duration-300">
+              <Link
+                href="/blog/differences-cbd-cbg-cbn"
+                className="card-bg rounded-xl overflow-hidden group hover:shadow-gold-glow transition-all duration-300"
+              >
                 <div className="relative h-48">
                   <Image
                     src="/logo2.png"
@@ -320,21 +329,17 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 </div>
                 <div className="p-6">
                   <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-brand-gold transition-colors">
-                    <Link href="/blog/differences-cbd-cbg-cbn">
-                      Les Différences entre CBD, CBG et CBN
-                    </Link>
+                    Les Différences entre CBD, CBG et CBN
                   </h3>
-                  <p className="text-gray-400 mb-4">
+                  <p className="text-gray-400 mb-4 line-clamp-2">
                     Comprendre les différents cannabinoïdes et leurs effets spécifiques...
                   </p>
-                  <Link
-                    href="/blog/differences-cbd-cbg-cbn"
-                    className="text-brand-gold hover:text-brand-gold/80 font-semibold"
-                  >
-                    Lire la suite →
-                  </Link>
+                  <div className="flex items-center text-brand-gold font-semibold">
+                    Lire la suite
+                    <FontAwesomeIcon icon={faChevronRight} className="ml-2 group-hover:translate-x-1 transition-transform" />
+                  </div>
                 </div>
-              </div>
+              </Link>
             </div>
           </div>
         </div>

@@ -100,13 +100,13 @@ export default function BlogPage() {
   return (
     <div className="bg-brand-black min-h-screen text-gray-300 pt-24">
       {/* Hero Section */}
-      <section className="py-20">
+      <section className="py-20 bg-gradient-to-r from-brand-gold/10 to-brand-green/10">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 gold-text-gradient">
               Blog Garden Gold Green
             </h1>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
               Découvrez nos articles d'experts sur le CBD, le bien-être et les dernières 
               tendances du secteur.
             </p>
@@ -193,7 +193,11 @@ export default function BlogPage() {
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {regularPosts.map((post) => (
-              <article key={post.id} className="card-bg rounded-xl overflow-hidden group hover:shadow-gold-glow transition-all duration-300">
+              <Link
+                key={post.id}
+                href={`/blog/${post.slug}`}
+                className="card-bg rounded-xl overflow-hidden group hover:shadow-gold-glow transition-all duration-300 transform hover:-translate-y-1"
+              >
                 <div className="relative h-48">
                   <Image
                     src={post.image}
@@ -202,7 +206,7 @@ export default function BlogPage() {
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   <div className="absolute top-4 left-4">
-                    <span className="bg-brand-green/20 text-brand-green px-3 py-1 rounded-full text-sm font-semibold">
+                    <span className="bg-brand-green/20 text-brand-green px-3 py-1 rounded-full text-sm font-semibold backdrop-blur-sm">
                       {post.category}
                     </span>
                   </div>
@@ -211,30 +215,29 @@ export default function BlogPage() {
                   <div className="flex items-center space-x-4 mb-3 text-sm text-gray-400">
                     <div className="flex items-center">
                       <FontAwesomeIcon icon={faCalendar} className="mr-1" />
-                      {new Date(post.date).toLocaleDateString('fr-FR')}
+                      {new Date(post.date).toLocaleDateString('fr-FR', { 
+                        year: 'numeric', 
+                        month: 'short', 
+                        day: 'numeric' 
+                      })}
                     </div>
                     <div className="flex items-center">
                       <FontAwesomeIcon icon={faUser} className="mr-1" />
                       {post.readTime}
                     </div>
                   </div>
-                  <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-brand-gold transition-colors">
-                    <Link href={`/blog/${post.slug}`}>
-                      {post.title}
-                    </Link>
+                  <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-brand-gold transition-colors line-clamp-2">
+                    {post.title}
                   </h3>
-                  <p className="text-gray-400 mb-4 line-clamp-3">
+                  <p className="text-gray-400 mb-4 line-clamp-3 leading-relaxed">
                     {post.excerpt}
                   </p>
-                  <Link
-                    href={`/blog/${post.slug}`}
-                    className="text-brand-gold hover:text-brand-gold/80 font-semibold inline-flex items-center"
-                  >
+                  <div className="text-brand-gold hover:text-brand-gold/80 font-semibold inline-flex items-center">
                     Lire la suite
-                    <FontAwesomeIcon icon={faArrowRight} className="ml-1" />
-                  </Link>
+                    <FontAwesomeIcon icon={faArrowRight} className="ml-1 group-hover:translate-x-1 transition-transform" />
+                  </div>
                 </div>
-              </article>
+              </Link>
             ))}
           </div>
         </div>

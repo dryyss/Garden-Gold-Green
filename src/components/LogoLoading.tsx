@@ -63,7 +63,7 @@ export function LogoLoading({
         >
           {/* Logo noir et blanc - toujours visible */}
           <Image
-            src="/logo%20black%20whit.png"
+            src="/logo black whit.png"
             alt="Garden Gold Green Loading"
             fill
             sizes="(max-width: 768px) 192px, 256px"

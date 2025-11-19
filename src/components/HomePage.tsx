@@ -129,14 +129,14 @@ export default function HomePage() {
           <p className="text-base sm:text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-6 sm:mb-8 px-4 leading-relaxed">
             {t('home.hero.mainSubtitle')}
           </p>
-          <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 w-full sm:w-auto px-4 sm:px-0">
-            <Link href="/products" className="btn-gold text-black font-semibold py-2.5 sm:py-3 px-6 sm:px-8 rounded-full shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300 flex items-center justify-center text-sm sm:text-base">
+          <div className="flex flex-row space-x-4 w-full sm:w-auto justify-center px-4 sm:px-0">
+            <Link href="/products" className="btn-gold text-black font-semibold py-2.5 sm:py-3 px-6 sm:px-8 rounded-full shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300 flex items-center justify-center text-sm sm:text-base whitespace-nowrap">
               {t('home.hero.ctaCollection')}
               <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
             </Link>
-            <Link href="/learn" className="bg-transparent border-2 border-brand-green text-brand-green font-semibold py-2.5 sm:py-3 px-6 sm:px-8 rounded-full hover:bg-brand-green hover:text-black transition-all duration-300 flex items-center justify-center text-sm sm:text-base">
+            <Link href="/learn" className="bg-transparent border-2 border-brand-green text-brand-green font-semibold py-2.5 sm:py-3 px-6 sm:px-8 rounded-full hover:bg-brand-green hover:text-black transition-all duration-300 flex items-center justify-center text-sm sm:text-base whitespace-nowrap">
               {t('home.hero.ctaLearnMore')}
-              <FontAwesomeIcon icon={faPlay} className="ml-2" />
+              <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
             </Link>
           </div>
           
