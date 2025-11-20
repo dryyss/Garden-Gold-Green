@@ -252,8 +252,8 @@ export async function POST(request: NextRequest) {
             taxCents,
             discountCents,
             customerEmail: userEmail || expandedSession.customer_details?.email || '',
-            customerName: expandedSession.customer_details?.name || expandedSession.shipping_details?.name || shippingName || '',
-            customerPhone: expandedSession.customer_details?.phone || expandedSession.shipping_details?.phone || shippingPhone || '',
+            customerName: expandedSession.customer_details?.name || (expandedSession as any).shipping_details?.name || shippingName || '',
+            customerPhone: expandedSession.customer_details?.phone || (expandedSession as any).shipping_details?.phone || shippingPhone || '',
             shippingAddress: {
               firstName: shippingFirstName || '',
               lastName: shippingLastName || '',
