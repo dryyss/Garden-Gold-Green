@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
@@ -10,13 +10,16 @@ import {
   faArrowLeft,
   faCheckCircle,
   faEnvelope,
-  faLock
+  faLock,
+  faExclamationTriangle
 } from '@fortawesome/free-solid-svg-icons'
 import Image from 'next/image'
 export default function AuthPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { login, register, state } = useAuth()
   const [isLoginMode, setIsLoginMode] = useState(true)
+  const [message, setMessage] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -24,6 +27,16 @@ export default function AuthPage() {
     lastName: '',
     phone: ''
   })
+
+  // Lire le message depuis les query params
+  useEffect(() => {
+    const messageParam = searchParams.get('message')
+    if (messageParam) {
+      setMessage(decodeURIComponent(messageParam))
+      // Nettoyer l'URL après avoir lu le message
+      router.replace('/auth', { scroll: false })
+    }
+  }, [searchParams, router])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -82,7 +95,7 @@ export default function AuthPage() {
             </button>
           </div>
 
-          {/* Auth Card */}
+            {/* Auth Card */}
           <div className="card-bg rounded-2xl p-8 shadow-2xl">
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold text-white mb-2">
@@ -95,6 +108,14 @@ export default function AuthPage() {
                 }
               </p>
             </div>
+
+            {/* Message d'information depuis la redirection */}
+            {message && (
+              <div className="mb-6 bg-yellow-500/10 border border-yellow-500/50 text-yellow-400 px-4 py-3 rounded-xl flex items-start gap-3">
+                <FontAwesomeIcon icon={faExclamationTriangle} className="mt-0.5 flex-shrink-0" />
+                <p className="text-sm">{message}</p>
+              </div>
+            )}
 
             {/* Formulaire de connexion/inscription */}
             <form onSubmit={handleSubmit} className="space-y-4 mb-8">
