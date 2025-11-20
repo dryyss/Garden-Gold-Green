@@ -11,7 +11,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { usePaymentSuccess } from '@/hooks/usePaymentSuccess'
 import { ProductQuiz } from '@/components/ProductQuiz'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 export default function CheckoutSuccessPage() {
   const searchParams = useSearchParams()
@@ -22,20 +22,70 @@ export default function CheckoutSuccessPage() {
   const payerId = searchParams.get('PayerID') // Paramètre PayPal
   const [showQuiz, setShowQuiz] = useState(false)
   const [hasShownQuiz, setHasShownQuiz] = useState(false)
+  const [hasCheckedQuiz, setHasCheckedQuiz] = useState(false)
 
   // Utiliser token comme orderId si c'est un paiement PayPal
   const effectiveOrderId = orderId || token
 
+  // Vérifier si l'utilisateur a déjà complété le quiz
+  useEffect(() => {
+    const checkQuizCompleted = async () => {
+      try {
+        // Vérifier côté serveur si l'utilisateur est connecté
+        const response = await fetch('/api/quiz/check')
+        const data = await response.json()
+        
+        // Vérifier dans localStorage
+        const storageKey = data.userId 
+          ? `quiz_completed_${data.userId}` 
+          : 'quiz_completed_anonymous'
+        const quizCompleted = localStorage.getItem(storageKey) === 'true'
+        
+        setHasCheckedQuiz(true)
+        
+        // Si le quiz n'a pas été complété, on pourra l'afficher
+        if (!quizCompleted && !hasShownQuiz) {
+          // Le quiz sera affiché dans onSuccess du usePaymentSuccess
+        }
+      } catch (error) {
+        console.error('Erreur lors de la vérification du quiz:', error)
+        setHasCheckedQuiz(true)
+      }
+    }
+
+    checkQuizCompleted()
+  }, [hasShownQuiz])
+
   const { isProcessing, displayOrderId, cartCleared } = usePaymentSuccess({
     sessionId,
     orderId: effectiveOrderId,
-    onSuccess: () => {
-      // Paiement traité avec succès - afficher le QCM après un court délai
-      if (!hasShownQuiz) {
-        setTimeout(() => {
-          setShowQuiz(true)
-          setHasShownQuiz(true)
-        }, 2000) // Afficher le QCM 2 secondes après le succès
+    onSuccess: async () => {
+      // Vérifier si le quiz a déjà été complété avant de l'afficher
+      if (!hasShownQuiz && hasCheckedQuiz) {
+        try {
+          const response = await fetch('/api/quiz/check')
+          const data = await response.json()
+          
+          const storageKey = data.userId 
+            ? `quiz_completed_${data.userId}` 
+            : 'quiz_completed_anonymous'
+          const quizCompleted = localStorage.getItem(storageKey) === 'true'
+          
+          if (!quizCompleted) {
+            // Afficher le QCM après un court délai seulement si pas déjà complété
+            setTimeout(() => {
+              setShowQuiz(true)
+              setHasShownQuiz(true)
+            }, 2000) // Afficher le QCM 2 secondes après le succès
+          }
+        } catch (error) {
+          console.error('Erreur lors de la vérification du quiz:', error)
+          // En cas d'erreur, afficher quand même le quiz
+          setTimeout(() => {
+            setShowQuiz(true)
+            setHasShownQuiz(true)
+          }, 2000)
+        }
       }
     },
     onError: (error) => {

@@ -16,6 +16,7 @@ import {
   faBrain,
   faSmile,
   faShoppingBag,
+  faTimes,
 } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from '@/contexts/TranslationContext'
 import Link from 'next/link'
@@ -335,7 +336,7 @@ export function ProductQuiz({ onClose }: { onClose?: () => void }) {
       const results = calculateResults()
 
       // Sauvegarder les réponses
-      await fetch('/api/quiz/submit', {
+      const response = await fetch('/api/quiz/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -344,6 +345,24 @@ export function ProductQuiz({ onClose }: { onClose?: () => void }) {
           timestamp: new Date().toISOString(),
         }),
       })
+
+      const data = await response.json()
+      
+      // Marquer le quiz comme complété dans localStorage
+      // Récupérer l'ID utilisateur si disponible
+      try {
+        const userResponse = await fetch('/api/quiz/check')
+        const userData = await userResponse.json()
+        const storageKey = userData.userId 
+          ? `quiz_completed_${userData.userId}` 
+          : 'quiz_completed_anonymous'
+        localStorage.setItem(storageKey, 'true')
+        localStorage.setItem(`${storageKey}_date`, new Date().toISOString())
+      } catch (error) {
+        // Fallback pour utilisateurs non connectés
+        localStorage.setItem('quiz_completed_anonymous', 'true')
+        localStorage.setItem('quiz_completed_anonymous_date', new Date().toISOString())
+      }
 
       // Récupérer les produits recommandés via l'API de suggestions
       // Utiliser la première catégorie recommandée comme base
@@ -480,7 +499,18 @@ export function ProductQuiz({ onClose }: { onClose?: () => void }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
-      <div className="bg-brand-black border-2 border-brand-gold rounded-2xl p-6 sm:p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-brand-black border-2 border-brand-gold rounded-2xl p-6 sm:p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto relative">
+        {/* Close Button */}
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors z-10 p-2 hover:bg-white/10 rounded-full"
+            aria-label="Fermer le quiz"
+          >
+            <FontAwesomeIcon icon={faTimes} className="w-5 h-5" />
+          </button>
+        )}
+        
         {/* Progress Bar */}
         <div className="mb-6">
           <div className="flex justify-between text-sm text-gray-400 mb-2">
