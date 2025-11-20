@@ -1210,29 +1210,29 @@ function AdminContent() {
                           return (
                             <>
                               {(shippingAddr.firstName || shippingAddr.lastName) ? (
-                                <p className="text-white font-medium">
+                          <p className="text-white font-medium">
                                   {shippingAddr.firstName || ''} {shippingAddr.lastName || ''}
-                                </p>
-                              ) : null}
+                          </p>
+                        ) : null}
                               {shippingAddr.address && (
                                 <p>{shippingAddr.address}</p>
-                              )}
+                        )}
                               {shippingAddr.address2 && (
                                 <p>{shippingAddr.address2}</p>
                               )}
                               {(shippingAddr.postalCode || shippingAddr.city) && (
-                                <p>
+                          <p>
                                   {shippingAddr.postalCode || ''} {shippingAddr.city || ''}
-                                </p>
-                              )}
+                          </p>
+                        )}
                               {shippingAddr.country && (
                                 <p>{shippingAddr.country}</p>
-                              )}
+                        )}
                               {shippingAddr.phone && (
-                                <p className="text-sm text-gray-400 mt-2">
+                          <p className="text-sm text-gray-400 mt-2">
                                   <span className="text-gray-500">Tél:</span> {shippingAddr.phone}
-                                </p>
-                              )}
+                          </p>
+                        )}
                               {!shippingAddr.address && !shippingAddr.city && !shippingAddr.postalCode && (
                                 <p className="text-gray-500 italic">Adresse non renseignée</p>
                               )}

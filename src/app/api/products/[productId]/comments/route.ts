@@ -46,14 +46,14 @@ export async function GET(
         })
 
         return {
-          id: comment.id,
-          userId: comment.userId,
-          userName: comment.user.name || 'Utilisateur',
-          productId: comment.productId,
-          rating: comment.rating,
-          comment: comment.content,
-          date: comment.createdAt.toISOString(),
-          verified: comment.isVerified,
+      id: comment.id,
+      userId: comment.userId,
+      userName: comment.user.name || 'Utilisateur',
+      productId: comment.productId,
+      rating: comment.rating,
+      comment: comment.content,
+      date: comment.createdAt.toISOString(),
+      verified: comment.isVerified,
           helpful: helpfulCount,
           notHelpful: notHelpfulCount,
         }

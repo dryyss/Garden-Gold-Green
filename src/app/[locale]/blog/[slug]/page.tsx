@@ -303,7 +303,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 </div>
                 <div className="p-6">
                   <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-brand-gold transition-colors">
-                    CBD et Sommeil : Comment améliorer votre repos
+                      CBD et Sommeil : Comment améliorer votre repos
                   </h3>
                   <p className="text-gray-400 mb-4 line-clamp-2">
                     Découvrez comment le CBD peut vous aider à retrouver un sommeil réparateur...
@@ -329,7 +329,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 </div>
                 <div className="p-6">
                   <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-brand-gold transition-colors">
-                    Les Différences entre CBD, CBG et CBN
+                      Les Différences entre CBD, CBG et CBN
                   </h3>
                   <p className="text-gray-400 mb-4 line-clamp-2">
                     Comprendre les différents cannabinoïdes et leurs effets spécifiques...

@@ -267,13 +267,13 @@ export default function ProductPage({ product }: { product: Product }) {
             const inStock = totalStock > 0
             
             return {
-              id: p.id,
-              name: p.title,
-              price: p.priceCents / 100,
-              image: Array.isArray(p.images) ? p.images[0] : (typeof p.images === 'string' ? JSON.parse(p.images)[0] : '/logo2.png'),
-              slug: p.slug,
-              rating: 4.5,
-              reviewCount: Math.floor(Math.random() * 100) + 10,
+            id: p.id,
+            name: p.title,
+            price: p.priceCents / 100,
+            image: Array.isArray(p.images) ? p.images[0] : (typeof p.images === 'string' ? JSON.parse(p.images)[0] : '/logo2.png'),
+            slug: p.slug,
+            rating: 4.5,
+            reviewCount: Math.floor(Math.random() * 100) + 10,
               inStock: inStock,
               totalStock: totalStock,
               isNew: false,
@@ -382,7 +382,7 @@ export default function ProductPage({ product }: { product: Product }) {
             }
 
             return {
-              ...review,
+            ...review, 
               helpful: newHelpful,
               notHelpful: newNotHelpful,
               userVote: isHelpful ? 'helpful' : 'notHelpful',
@@ -400,8 +400,8 @@ export default function ProductPage({ product }: { product: Product }) {
             setReviews(prev => prev.map(review => 
               review.id === reviewId 
                 ? { ...review, helpful: updatedReview.helpful, notHelpful: updatedReview.notHelpful }
-                : review
-            ))
+        : review
+    ))
           }
         }
       }

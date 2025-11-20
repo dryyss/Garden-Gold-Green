@@ -73,10 +73,10 @@ export default function CheckoutSuccessPage() {
           
           if (!quizCompleted) {
             // Afficher le QCM après un court délai seulement si pas déjà complété
-            setTimeout(() => {
-              setShowQuiz(true)
-              setHasShownQuiz(true)
-            }, 2000) // Afficher le QCM 2 secondes après le succès
+        setTimeout(() => {
+          setShowQuiz(true)
+          setHasShownQuiz(true)
+        }, 2000) // Afficher le QCM 2 secondes après le succès
           }
         } catch (error) {
           console.error('Erreur lors de la vérification du quiz:', error)

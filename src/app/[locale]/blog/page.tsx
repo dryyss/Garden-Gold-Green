@@ -227,7 +227,7 @@ export default function BlogPage() {
                     </div>
                   </div>
                   <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-brand-gold transition-colors line-clamp-2">
-                    {post.title}
+                      {post.title}
                   </h3>
                   <p className="text-gray-400 mb-4 line-clamp-3 leading-relaxed">
                     {post.excerpt}

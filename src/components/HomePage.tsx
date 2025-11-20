@@ -80,6 +80,21 @@ export default function HomePage() {
     totalStock?: number
   }>>([])
 
+  const [bestSellers, setBestSellers] = useState<Array<{
+    id: string
+    name: string
+    price: number
+    image: string
+    slug: string
+    category: string
+    rating: number
+    reviewCount: number
+    inStock: boolean
+    totalStock: number
+    isNew: boolean
+    isBestSeller: boolean
+  }>>([])
+
   // Charger les produits depuis l'API
   useEffect(() => {
     const loadProducts = async () => {
@@ -96,6 +111,30 @@ export default function HomePage() {
     loadProducts()
   }, [])
 
+  // Charger les best sellers depuis l'API (produits les plus vendus, complétés par les plus récents si nécessaire)
+  useEffect(() => {
+    const loadBestSellers = async () => {
+      try {
+        const response = await fetch('/api/products/best-sellers?limit=12')
+        const data = await response.json()
+        if (data.success && data.products) {
+          const transformed = data.products.map(transformProduct)
+          setBestSellers(transformed)
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement des best sellers:', error)
+        // En cas d'erreur, utiliser les produits les plus récents comme fallback
+        const recentProducts = allProducts
+          .filter(product => product.published)
+          .slice(0, 12)
+          .map(transformProduct)
+        setBestSellers(recentProducts)
+      }
+    }
+
+    loadBestSellers()
+  }, [allProducts])
+
   // Récupérer les produits en vedette (isFeatured: true)
   const allFeaturedProducts = allProducts
     .filter(product => product.published && product.isFeatured)
@@ -103,12 +142,8 @@ export default function HomePage() {
   
   const featuredProducts = allFeaturedProducts.slice(0, 12) // Afficher jusqu'à 12 produits
 
-  // Récupérer les best sellers (isFeatured: true, mais différents des featured)
-  const allBestSellers = allProducts
-    .filter(product => product.published && product.isFeatured && !allFeaturedProducts.some(fp => fp.id === product.id))
-    .map(transformProduct)
-  
-  const bestSellers = allBestSellers.slice(0, 12) // Afficher jusqu'à 12 produits
+  // Les best sellers sont chargés depuis l'API (produits les plus vendus)
+  // Si pas assez, complété avec les plus récents (géré dans l'API)
 
   // Récupérer les nouveautés (isNew: true)
   const allNewProducts = allProducts
