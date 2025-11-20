@@ -222,7 +222,10 @@ export function Auth0Provider({ children }: { children: React.ReactNode }) {
   }, [auth0Error, auth0Loading, auth0User])
 
   const logout = () => {
-    router.push('/auth/logout')
+    // Auth0 utilise /api/auth/logout pour la déconnexion
+    // Ajouter returnTo pour rediriger vers la page d'accueil après déconnexion
+    const returnTo = encodeURIComponent(window.location.origin)
+    window.location.href = `/api/auth/logout?returnTo=${returnTo}`
   }
 
   const isAdmin = () => isAdminRole(state.user?.backofficeRole)

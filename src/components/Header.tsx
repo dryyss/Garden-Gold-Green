@@ -279,9 +279,17 @@ export function Header() {
                       </Link>
                     )}
                     <Link
-                      href="/auth/logout"
+                      href="/api/auth/logout"
                       className="flex items-center w-full text-left px-3 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors border-t border-white/10"
-                      onClick={() => setShowUserMenu(false)}
+                      onClick={(e) => {
+                        e.preventDefault()
+                        setShowUserMenu(false)
+                        if (auth0State.user) {
+                          logoutAuth0()
+                        } else {
+                          logout()
+                        }
+                      }}
                     >
                       <FontAwesomeIcon icon={faSignOutAlt} className="w-3 h-3 mr-2" />
                       {t('header.user.logout')}
@@ -459,7 +467,7 @@ export function Header() {
                   )}
                   
                   <Link
-                    href="/auth/logout"
+                    href="/api/auth/logout"
                     onClick={(e) => {
                       e.preventDefault()
                       if (auth0State.user) {
