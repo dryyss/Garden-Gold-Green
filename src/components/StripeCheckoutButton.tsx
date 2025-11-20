@@ -6,6 +6,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCreditCard, faSpinner, faShoppingCart } from '@fortawesome/free-solid-svg-icons'
 import { useCart } from '@/contexts/CartContext'
 import { useNotifications } from '@/contexts/NotificationContext'
+import { useAuth } from '@/contexts/AuthContext'
+import { useAuth0Context } from '@/contexts/Auth0Context'
 
 interface StripeCheckoutButtonProps {
   className?: string
@@ -14,14 +16,30 @@ interface StripeCheckoutButtonProps {
 export function StripeCheckoutButton({ className = '' }: StripeCheckoutButtonProps) {
   const { state, dispatch } = useCart()
   const { addNotification } = useNotifications()
+  const { state: authState } = useAuth()
+  const { state: auth0State } = useAuth0Context()
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
   
   // Vérifier si on est sur la page panier
   const isOnCartPage = pathname === '/cart'
+  
+  // Vérifier si l'utilisateur est authentifié (via Auth0 ou AuthContext)
+  const isAuthenticated = auth0State.isAuthenticated || authState.isAuthenticated
 
   const handleButtonClick = () => {
+    // Vérifier si l'utilisateur est connecté avant de procéder
+    if (isOnCartPage && !isAuthenticated) {
+      addNotification({
+        type: 'error',
+        title: 'Connexion requise',
+        message: 'Il faut se connecter pour passer au paiement',
+      })
+      router.push('/auth?message=Il faut se connecter pour passer au paiement')
+      return
+    }
+
     if (state.items.length === 0) {
       addNotification({
         type: 'error',

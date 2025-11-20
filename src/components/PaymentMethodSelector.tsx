@@ -8,6 +8,8 @@ import { faCreditCard as faCard, faSpinner, faCheck, faWallet } from '@fortaweso
 import { useCart } from '@/contexts/CartContext'
 import { useNotifications } from '@/contexts/NotificationContext'
 import { useTranslation } from '@/contexts/TranslationContext'
+import { useAuth } from '@/contexts/AuthContext'
+import { useAuth0Context } from '@/contexts/Auth0Context'
 
 export type PaymentMethod = 'stripe' | 'paypal'
 
@@ -26,8 +28,13 @@ export function PaymentMethodSelector({
   const { t } = useTranslation()
   const { state } = useCart()
   const { addNotification } = useNotifications()
+  const { state: authState } = useAuth()
+  const { state: auth0State } = useAuth0Context()
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>('stripe')
   const [isProcessing, setIsProcessing] = useState(false)
+  
+  // Vérifier si l'utilisateur est authentifié (via Auth0 ou AuthContext)
+  const isAuthenticated = auth0State.isAuthenticated || authState.isAuthenticated
 
   const isPayPalEnabled = process.env.NEXT_PUBLIC_STRIPE_ENABLE_PAYPAL === 'true'
 
@@ -55,6 +62,17 @@ export function PaymentMethodSelector({
   ]
 
   const handlePayment = async () => {
+    // Vérifier si l'utilisateur est connecté
+    if (!isAuthenticated) {
+      addNotification({
+        type: 'error',
+        title: 'Connexion requise',
+        message: 'Il faut se connecter pour passer au paiement',
+      })
+      router.push('/auth?message=Il faut se connecter pour passer au paiement')
+      return
+    }
+
     if (state.items.length === 0) {
       addNotification({
         type: 'error',

@@ -151,7 +151,13 @@ export function ProductGridCarousel({
           {products.map((product) => (
             <div
               key={product.id}
-              className={`flex-shrink-0 ${currentItemsPerView === 1 ? 'px-0 sm:px-2' : 'px-2'}`}
+              className={`flex-shrink-0 ${
+                currentItemsPerView === 1 
+                  ? 'px-2 sm:px-3 md:px-4' 
+                  : currentItemsPerView === 2
+                  ? 'px-2 sm:px-3'
+                  : 'px-2 sm:px-3 md:px-4'
+              }`}
               style={{ width: `${100 / currentItemsPerView}%` }}
             >
               <div className="h-full">

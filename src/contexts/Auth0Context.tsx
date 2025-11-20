@@ -222,7 +222,7 @@ export function Auth0Provider({ children }: { children: React.ReactNode }) {
   }, [auth0Error, auth0Loading, auth0User])
 
   const logout = () => {
-    router.push('/api/auth/logout')
+    router.push('/auth/logout')
   }
 
   const isAdmin = () => isAdminRole(state.user?.backofficeRole)

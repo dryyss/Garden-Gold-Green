@@ -271,13 +271,13 @@ export default function HomePage() {
       </section>
 
       {/* Best Sellers Section */}
-      <section className="py-24 bg-brand-black">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-2 gold-text-gradient">{t('home.bestSellers.title')}</h2>
-            <p className="text-lg text-gray-400">{t('home.bestSellers.subtitle')}</p>
+      <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-brand-black">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="text-center mb-8 sm:mb-12 md:mb-16">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 gold-text-gradient">{t('home.bestSellers.title')}</h2>
+            <p className="text-sm sm:text-base md:text-lg text-gray-400 px-4">{t('home.bestSellers.subtitle')}</p>
           </div>
-          <Suspense fallback={<div className="h-96 flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-gold"></div></div>}>
+          <Suspense fallback={<div className="h-64 sm:h-80 md:h-96 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 border-b-2 border-brand-gold"></div></div>}>
             <ProductGridCarousel
               products={bestSellers}
               itemsPerView={{ mobile: 1, tablet: 2, desktop: 3 }}
