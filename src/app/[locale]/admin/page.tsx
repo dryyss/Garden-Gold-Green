@@ -104,7 +104,9 @@ function AdminContent() {
     images: '',
     categoryIds: [] as string[],
     published: true,
-    isFeatured: false
+    isFeatured: false,
+    isNew: false,
+    isOnSale: false
   })
   const [editingProduct, setEditingProduct] = useState({
     id: '',
@@ -120,6 +122,8 @@ function AdminContent() {
     categoryIds: [] as string[],
     published: true,
     isFeatured: false,
+    isNew: false,
+    isOnSale: false,
     variants: [] as Array<{ id?: string; title: string; priceCents: string; stock: string }>
   })
   const [newProductVariants, setNewProductVariants] = useState<Array<{ title: string; priceCents: string; stock: string }>>([])
@@ -700,6 +704,8 @@ function AdminContent() {
                               categoryIds: prod.categories?.map((c: any) => c.id) || [],
                               published: prod.published ?? true,
                               isFeatured: prod.isFeatured ?? false,
+                              isNew: prod.isNew ?? false,
+                              isOnSale: prod.isOnSale ?? false,
                               variants: prod.variants?.map((v: any) => ({
                                 id: v.id,
                                 title: v.title || '',
@@ -1117,7 +1123,9 @@ function AdminContent() {
                         images: '',
                         categoryIds: [],
                         published: true,
-                        isFeatured: false
+                        isFeatured: false,
+                        isNew: false,
+                        isOnSale: false
                       })
                       setNewProductVariants([])
                       // Recharger toutes les données (produits, stats, etc.)
@@ -1366,24 +1374,42 @@ function AdminContent() {
                   )}
                 </div>
 
-                <div className="flex items-center gap-4">
-                  <label className="flex items-center gap-2 text-white">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  <label className="flex items-center gap-2 text-white cursor-pointer">
                     <input
                       type="checkbox"
                       checked={newProduct.published}
                       onChange={(e) => setNewProduct({ ...newProduct, published: e.target.checked })}
-                      className="w-4 h-4"
+                      className="w-4 h-4 text-brand-gold focus:ring-brand-gold rounded"
                     />
                     <span>Publié</span>
                   </label>
-                  <label className="flex items-center gap-2 text-white">
+                  <label className="flex items-center gap-2 text-white cursor-pointer">
                     <input
                       type="checkbox"
                       checked={newProduct.isFeatured}
                       onChange={(e) => setNewProduct({ ...newProduct, isFeatured: e.target.checked })}
-                      className="w-4 h-4"
+                      className="w-4 h-4 text-brand-gold focus:ring-brand-gold rounded"
                     />
-                    <span>Mis en vedette</span>
+                    <span>En vedette</span>
+                  </label>
+                  <label className="flex items-center gap-2 text-white cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={newProduct.isNew}
+                      onChange={(e) => setNewProduct({ ...newProduct, isNew: e.target.checked })}
+                      className="w-4 h-4 text-brand-gold focus:ring-brand-gold rounded"
+                    />
+                    <span>Nouveauté</span>
+                  </label>
+                  <label className="flex items-center gap-2 text-white cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={newProduct.isOnSale}
+                      onChange={(e) => setNewProduct({ ...newProduct, isOnSale: e.target.checked })}
+                      className="w-4 h-4 text-brand-gold focus:ring-brand-gold rounded"
+                    />
+                    <span>En promotion</span>
                   </label>
                 </div>
 
@@ -1449,6 +1475,8 @@ function AdminContent() {
                         categoryIds: editingProduct.categoryIds,
                         published: editingProduct.published,
                         isFeatured: editingProduct.isFeatured,
+                        isNew: editingProduct.isNew,
+                        isOnSale: editingProduct.isOnSale,
                         variants: editingProduct.variants.filter(v => v.title && v.priceCents && v.stock),
                       }),
                     })
@@ -1700,24 +1728,42 @@ function AdminContent() {
                   )}
                 </div>
 
-                <div className="flex items-center gap-4">
-                  <label className="flex items-center gap-2 text-white">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  <label className="flex items-center gap-2 text-white cursor-pointer">
                     <input
                       type="checkbox"
                       checked={editingProduct.published}
                       onChange={(e) => setEditingProduct({ ...editingProduct, published: e.target.checked })}
-                      className="w-4 h-4"
+                      className="w-4 h-4 text-brand-gold focus:ring-brand-gold rounded"
                     />
                     <span>Publié</span>
                   </label>
-                  <label className="flex items-center gap-2 text-white">
+                  <label className="flex items-center gap-2 text-white cursor-pointer">
                     <input
                       type="checkbox"
                       checked={editingProduct.isFeatured}
                       onChange={(e) => setEditingProduct({ ...editingProduct, isFeatured: e.target.checked })}
-                      className="w-4 h-4"
+                      className="w-4 h-4 text-brand-gold focus:ring-brand-gold rounded"
                     />
-                    <span>Mis en vedette</span>
+                    <span>En vedette</span>
+                  </label>
+                  <label className="flex items-center gap-2 text-white cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={editingProduct.isNew}
+                      onChange={(e) => setEditingProduct({ ...editingProduct, isNew: e.target.checked })}
+                      className="w-4 h-4 text-brand-gold focus:ring-brand-gold rounded"
+                    />
+                    <span>Nouveauté</span>
+                  </label>
+                  <label className="flex items-center gap-2 text-white cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={editingProduct.isOnSale}
+                      onChange={(e) => setEditingProduct({ ...editingProduct, isOnSale: e.target.checked })}
+                      className="w-4 h-4 text-brand-gold focus:ring-brand-gold rounded"
+                    />
+                    <span>En promotion</span>
                   </label>
                 </div>
 

@@ -59,17 +59,35 @@ export function ProductCarousel({
     return () => clearInterval(interval)
   }, [autoPlay, autoPlayInterval, products.length, itemsPerView.desktop, isHovered])
 
+  // Calculer le nombre d'éléments visibles selon la taille d'écran
+  const getItemsPerView = () => {
+    if (typeof window === 'undefined') return itemsPerView.desktop
+    if (window.innerWidth < 640) return itemsPerView.mobile
+    if (window.innerWidth < 1024) return itemsPerView.tablet
+    return itemsPerView.desktop
+  }
+
+  const [currentItemsPerView, setCurrentItemsPerView] = useState(getItemsPerView())
+
+  useEffect(() => {
+    const handleResize = () => {
+      setCurrentItemsPerView(getItemsPerView())
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
   const goToPrevious = () => {
     setCurrentIndex(Math.max(0, currentIndex - 1))
   }
 
   const goToNext = () => {
-    const maxIndex = Math.max(0, products.length - itemsPerView.desktop)
+    const maxIndex = Math.max(0, products.length - currentItemsPerView)
     setCurrentIndex(Math.min(maxIndex, currentIndex + 1))
   }
 
   const canGoPrevious = currentIndex > 0
-  const canGoNext = currentIndex < Math.max(0, products.length - itemsPerView.desktop)
+  const canGoNext = currentIndex < Math.max(0, products.length - currentItemsPerView)
 
   if (products.length === 0) return null
 
@@ -81,7 +99,7 @@ export function ProductCarousel({
           {title}
         </h3>
         
-        {products.length > itemsPerView.desktop && (
+        {products.length > currentItemsPerView && (
           <div className="flex items-center space-x-2">
             <button
               onClick={goToPrevious}
@@ -111,33 +129,35 @@ export function ProductCarousel({
         onMouseLeave={() => setIsHovered(false)}
       >
         <div 
-          className="flex transition-transform duration-500 ease-in-out"
+          className="flex transition-transform duration-500 ease-in-out gap-2 sm:gap-0"
           style={{
-            transform: `translateX(-${currentIndex * (100 / itemsPerView.desktop)}%)`,
+            transform: `translateX(-${currentIndex * (100 / currentItemsPerView)}%)`,
           }}
         >
           {products.map((product) => (
             <div
               key={product.id}
-              className="flex-shrink-0 px-2"
-              style={{ width: `${100 / itemsPerView.desktop}%` }}
+              className="flex-shrink-0 px-1 sm:px-2"
+              style={{ 
+                width: `calc(${100 / currentItemsPerView}% - 0.5rem)`,
+              }}
             >
               <Link
                 href={`/products/${product.slug}`}
-                className="block card-bg rounded-xl p-4 hover:shadow-gold-glow transition-all duration-300 group h-full"
+                className="block card-bg rounded-xl p-3 sm:p-4 hover:shadow-gold-glow transition-all duration-300 group h-full"
               >
                 {/* Product Image */}
-                <div className="relative aspect-square bg-gray-800 rounded-xl overflow-hidden mb-4">
+                <div className="relative aspect-square bg-gray-800 rounded-lg sm:rounded-xl overflow-hidden mb-3 sm:mb-4">
                   <Image
                     src={product.image}
                     alt={product.name}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
                   
                   {/* Badges */}
-                  <div className="absolute top-2 left-2 flex flex-col space-y-1">
+                  <div className="absolute top-2 left-2 flex flex-col space-y-1 z-10">
                     {product.isNew && (
                       <span className="bg-brand-green text-white text-xs px-2 py-1 rounded-full font-semibold">
                         Nouveau
@@ -150,10 +170,10 @@ export function ProductCarousel({
                     )}
                   </div>
 
-                  {/* Stock Status */}
-                  {!product.inStock && (
-                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                      <span className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                  {/* Stock Status - Seulement si vraiment en rupture */}
+                  {product.inStock === false && (
+                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-20">
+                      <span className="bg-red-500 text-white px-3 py-1.5 rounded-full text-xs font-semibold">
                         Rupture de stock
                       </span>
                     </div>
@@ -162,12 +182,12 @@ export function ProductCarousel({
 
                 {/* Product Info */}
                 <div className="space-y-2">
-                  <h4 className="text-white font-semibold text-base group-hover:text-brand-gold transition-colors line-clamp-2">
+                  <h4 className="text-white font-semibold text-sm sm:text-base group-hover:text-brand-gold transition-colors line-clamp-2 min-h-[2.5rem] sm:min-h-[3rem]">
                     {product.name}
                   </h4>
                   
-                  <div className="flex items-center justify-between">
-                    <span className="text-brand-gold font-bold text-lg">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                    <span className="text-brand-gold font-bold text-base sm:text-lg">
                       {product.price.toFixed(2)} €
                     </span>
                     <div className="flex items-center space-x-1">
@@ -185,16 +205,16 @@ export function ProductCarousel({
       </div>
 
       {/* Dots Indicator */}
-      {products.length > itemsPerView.desktop && (
+      {products.length > currentItemsPerView && (
         <div className="flex justify-center mt-6 space-x-2">
           {Array.from({ 
-            length: Math.ceil(products.length / itemsPerView.desktop) 
+            length: Math.ceil(products.length / currentItemsPerView) 
           }).map((_, index) => (
             <button
               key={index}
-              onClick={() => setCurrentIndex(index)}
+              onClick={() => setCurrentIndex(index * currentItemsPerView)}
               className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                index === Math.floor(currentIndex / itemsPerView.desktop)
+                Math.floor(currentIndex / currentItemsPerView) === index
                   ? 'bg-brand-gold scale-125' 
                   : 'bg-white/30 hover:bg-white/50'
               }`}

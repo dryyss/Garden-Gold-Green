@@ -19,6 +19,7 @@ model User {
   role             String          @default("customer") // 'admin' possible
   // Pas de relation orders car userId dans Order stocke l'auth0Id directement
   comments         Comment[]
+  commentVotes     CommentVote[]
   returns          ReturnRequest[]
   subscriptions    Subscription[]
   createdAt        DateTime        @default(now())
@@ -43,6 +44,8 @@ model Product {
   subscriptionPlans SubscriptionPlan[] // Plans d'abonnement disponibles
   published         Boolean            @default(true)
   isFeatured        Boolean            @default(false) // Produit mis en vedette
+  isNew             Boolean            @default(false) // Produit nouveauté
+  isOnSale          Boolean            @default(false) // Produit en promotion/soldé
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
 }
@@ -119,8 +122,21 @@ model Comment {
   status      String   @default("published") // published, pending, rejected
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  votes       CommentVote[] // Votes sur ce commentaire
 
   @@unique([userId, productId, orderId]) // Un seul commentaire par utilisateur/produit/commande
+}
+
+model CommentVote {
+  id        String   @id @default(cuid())
+  commentId String
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  isHelpful Boolean  // true = utile, false = pas utile
+  createdAt DateTime @default(now())
+
+  @@unique([commentId, userId]) // Un seul vote par utilisateur par commentaire
 }
 
 model ReturnRequest {

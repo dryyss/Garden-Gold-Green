@@ -58,8 +58,8 @@ function transformProduct(product: any) { // eslint-disable-line @typescript-esl
     reviewCount: 50, // Valeur fixe pour éviter l'erreur d'hydratation
     inStock: product.totalStock > 0 || product.stock > 0,
     totalStock: product.totalStock || product.stock || 0,
-    isNew: false, // Valeur fixe pour éviter l'erreur d'hydratation
-    isBestSeller: false // Valeur fixe pour éviter l'erreur d'hydratation
+    isNew: product.isNew || false, // Utiliser la valeur de la base de données
+    isBestSeller: product.isFeatured || false // Utiliser isFeatured comme bestSeller
   }
 }
 
@@ -73,6 +73,8 @@ export default function HomePage() {
     images: string[] | string
     published: boolean
     isFeatured?: boolean
+    isNew?: boolean
+    isOnSale?: boolean
     categories?: Array<{ name: string; slug: string }>
     stock: number
     totalStock?: number
@@ -100,14 +102,16 @@ export default function HomePage() {
     .slice(0, 6) // Limiter à 6 produits maximum
     .map(transformProduct)
 
+  // Récupérer les best sellers (isFeatured: true, mais différents des featured)
   const bestSellers = allProducts
-    .filter(product => product.published)
-    .slice(6, 12)
+    .filter(product => product.published && product.isFeatured && !featuredProducts.some(fp => fp.id === product.id))
+    .slice(0, 6)
     .map(transformProduct)
 
+  // Récupérer les nouveautés (isNew: true)
   const newProducts = allProducts
-    .filter(product => product.published)
-    .slice(12, 18)
+    .filter(product => product.published && product.isNew)
+    .slice(0, 6) // Limiter à 6 produits maximum
     .map(transformProduct)
 
   return (

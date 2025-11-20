@@ -85,6 +85,8 @@ export async function PATCH(
         categoryIds,
         published,
         isFeatured,
+        isNew,
+        isOnSale,
         variants
       } = body
 
@@ -129,6 +131,8 @@ export async function PATCH(
       }
       if (published !== undefined) updateData.published = published
       if (isFeatured !== undefined) updateData.isFeatured = isFeatured
+      if (isNew !== undefined) updateData.isNew = isNew
+      if (isOnSale !== undefined) updateData.isOnSale = isOnSale
       if (categoryIds !== undefined) updateData.categoryIds = categoryIds
       if (variants !== undefined) {
         updateData.variants = variants.map((variant: any, index: number) => ({

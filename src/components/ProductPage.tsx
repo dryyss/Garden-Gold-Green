@@ -35,6 +35,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { useCart } from '@/contexts/CartContext'
 import { useNotifications } from '@/contexts/NotificationContext'
+import { useAuth0Context } from '@/contexts/Auth0Context'
 import { StarRating } from '@/components/StarRating'
 import { QuantitySelector } from '@/components/QuantitySelector'
 import { AddToCartButton } from '@/components/AddToCartButton'
@@ -85,6 +86,7 @@ interface Review {
   verified: boolean
   helpful: number
   notHelpful: number
+  userVote?: 'helpful' | 'notHelpful' | null // Vote de l'utilisateur actuel
 }
 
 interface RelatedProduct {
@@ -100,11 +102,15 @@ interface RelatedProduct {
 export default function ProductPage({ product }: { product: Product }) {
   const { dispatch } = useCart()
   const { addNotification } = useNotifications()
+  const { state: authState } = useAuth0Context()
   const [quantity, setQuantity] = useState(1)
   const [activeTab, setActiveTab] = useState('description')
   const [isFavorited, setIsFavorited] = useState(false)
   const [reviews, setReviews] = useState<Review[]>([])
   const [relatedProducts, setRelatedProducts] = useState<RelatedProduct[]>([])
+  const [hasPurchased, setHasPurchased] = useState<boolean | null>(null)
+  const [newReview, setNewReview] = useState({ rating: 0, comment: '', title: '' })
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false)
 
   // Générer des images multiples pour le carousel
   const productImages = product.images && product.images.length > 0 
@@ -153,10 +159,100 @@ export default function ProductPage({ product }: { product: Product }) {
     }
   ]
 
+  // Vérifier si l'utilisateur a acheté ce produit
+  useEffect(() => {
+    const checkPurchase = async () => {
+      if (!authState.isAuthenticated || !authState.user) {
+        setHasPurchased(false)
+        return
+      }
+
+      try {
+        const response = await fetch(`/api/orders`)
+        const data = await response.json()
+        
+        if (data.success && data.orders) {
+          const hasBought = data.orders.some((order: any) => 
+            (order.status === 'paid' || order.status === 'shipped' || order.status === 'delivered') &&
+            order.items?.some((item: any) => item.productId === product.id)
+          )
+          setHasPurchased(hasBought)
+        } else {
+          setHasPurchased(false)
+        }
+      } catch (error) {
+        console.error('Erreur lors de la vérification de l\'achat:', error)
+        setHasPurchased(false)
+      }
+    }
+
+    checkPurchase()
+  }, [authState.isAuthenticated, authState.user, product.id])
+
+  // Charger les avis depuis l'API
+  useEffect(() => {
+    const loadReviews = async () => {
+      try {
+        const response = await fetch(`/api/products/${product.id}/comments`)
+        if (response.ok) {
+          const comments = await response.json()
+          
+          if (comments.length > 0) {
+            // Récupérer les votes de l'utilisateur pour chaque commentaire
+            const reviewsWithVotes = await Promise.all(
+              comments.map(async (comment: any) => {
+                let userVote: 'helpful' | 'notHelpful' | null = null
+                
+                if (authState.isAuthenticated && authState.user) {
+                  try {
+                    const voteResponse = await fetch(`/api/comments/${comment.id}/vote`)
+                    if (voteResponse.ok) {
+                      const voteData = await voteResponse.json()
+                      if (voteData.vote) {
+                        userVote = voteData.vote.isHelpful ? 'helpful' : 'notHelpful'
+                      }
+                    }
+                  } catch (error) {
+                    console.error('Erreur lors de la récupération du vote:', error)
+                  }
+                }
+
+                return {
+                  id: comment.id,
+                  user: comment.userName,
+                  rating: comment.rating,
+                  date: comment.date,
+                  title: comment.comment.length > 50 ? comment.comment.substring(0, 50) + '...' : comment.comment,
+                  comment: comment.comment,
+                  verified: comment.verified,
+                  helpful: comment.helpful || 0,
+                  notHelpful: comment.notHelpful || 0,
+                  userVote,
+                }
+              })
+            )
+            
+            setReviews(reviewsWithVotes)
+          } else {
+            // Pas d'avis dans la base, utiliser les avis fictifs
+            setReviews(mockReviews)
+          }
+        } else {
+          // En cas d'erreur, utiliser les avis fictifs
+          setReviews(mockReviews)
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement des avis:', error)
+        // En cas d'erreur, utiliser les avis fictifs
+        setReviews(mockReviews)
+      }
+    }
+
+    loadReviews()
+  }, [product.id, authState.isAuthenticated, authState.user])
+
   // Charger les suggestions de produits depuis l'API
   useEffect(() => {
-    setReviews(mockReviews)
-    
     // Charger les suggestions basées sur le produit actuel
     const loadSuggestions = async () => {
       try {
@@ -164,15 +260,26 @@ export default function ProductPage({ product }: { product: Product }) {
         const data = await response.json()
         
         if (data.success && data.products) {
-          const suggestions = data.products.map((p: any) => ({
-            id: p.id,
-            name: p.title,
-            price: p.priceCents / 100,
-            image: Array.isArray(p.images) ? p.images[0] : (typeof p.images === 'string' ? JSON.parse(p.images)[0] : '/logo2.png'),
-            slug: p.slug,
-            rating: 4.5,
-            reviewCount: Math.floor(Math.random() * 100) + 10,
-          }))
+          const suggestions = data.products.map((p: any) => {
+            // Calculer le stock total (produit + variantes)
+            const variantsStock = (p.variants || []).reduce((sum: number, v: any) => sum + (v.stock || 0), 0)
+            const totalStock = (p.totalStock !== undefined ? p.totalStock : (p.stock || 0) + variantsStock)
+            const inStock = totalStock > 0
+            
+            return {
+              id: p.id,
+              name: p.title,
+              price: p.priceCents / 100,
+              image: Array.isArray(p.images) ? p.images[0] : (typeof p.images === 'string' ? JSON.parse(p.images)[0] : '/logo2.png'),
+              slug: p.slug,
+              rating: 4.5,
+              reviewCount: Math.floor(Math.random() * 100) + 10,
+              inStock: inStock,
+              totalStock: totalStock,
+              isNew: false,
+              isBestSeller: p.isFeatured || false,
+            }
+          })
           setRelatedProducts(suggestions)
         }
       } catch (error) {
@@ -230,16 +337,179 @@ export default function ProductPage({ product }: { product: Product }) {
     })
   }
 
-  const handleReviewHelpful = (reviewId: string, helpful: boolean) => {
-    setReviews(prev => prev.map(review => 
-      review.id === reviewId 
-        ? { 
-            ...review, 
-            helpful: helpful ? review.helpful + 1 : review.helpful,
-            notHelpful: !helpful ? review.notHelpful + 1 : review.notHelpful
+  const handleReviewHelpful = async (reviewId: string, isHelpful: boolean) => {
+    if (!authState.isAuthenticated || !authState.user) {
+      addNotification({
+        type: 'error',
+        title: 'Vous devez être connecté pour voter'
+      })
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/comments/${reviewId}/vote`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isHelpful }),
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        
+        // Mettre à jour les compteurs localement
+        setReviews(prev => prev.map(review => {
+          if (review.id === reviewId) {
+            const previousVote = review.userVote
+            let newHelpful = review.helpful
+            let newNotHelpful = review.notHelpful
+
+            // Si l'utilisateur avait déjà voté, retirer l'ancien vote
+            if (previousVote === 'helpful') {
+              newHelpful = Math.max(0, newHelpful - 1)
+            } else if (previousVote === 'notHelpful') {
+              newNotHelpful = Math.max(0, newNotHelpful - 1)
+            }
+
+            // Ajouter le nouveau vote (ou mettre à jour si c'est le même)
+            if (isHelpful) {
+              if (previousVote !== 'helpful') {
+                newHelpful += 1
+              }
+            } else {
+              if (previousVote !== 'notHelpful') {
+                newNotHelpful += 1
+              }
+            }
+
+            return {
+              ...review,
+              helpful: newHelpful,
+              notHelpful: newNotHelpful,
+              userVote: isHelpful ? 'helpful' : 'notHelpful',
+            }
           }
-        : review
-    ))
+          return review
+        }))
+
+        // Recharger les avis pour avoir les compteurs exacts
+        const commentsResponse = await fetch(`/api/products/${product.id}/comments`)
+        if (commentsResponse.ok) {
+          const comments = await commentsResponse.json()
+          const updatedReview = comments.find((c: any) => c.id === reviewId)
+          if (updatedReview) {
+            setReviews(prev => prev.map(review => 
+              review.id === reviewId 
+                ? { ...review, helpful: updatedReview.helpful, notHelpful: updatedReview.notHelpful }
+                : review
+            ))
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Erreur lors du vote:', error)
+      addNotification({
+        type: 'error',
+        title: 'Erreur lors du vote'
+      })
+    }
+  }
+
+  const handleSubmitReview = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (!authState.isAuthenticated || !authState.user) {
+      addNotification({
+        type: 'error',
+        title: 'Vous devez être connecté pour laisser un avis'
+      })
+      return
+    }
+
+    if (!hasPurchased) {
+      addNotification({
+        type: 'error',
+        title: 'Vous devez avoir acheté ce produit pour laisser un avis'
+      })
+      return
+    }
+
+    if (!newReview.rating || !newReview.comment.trim()) {
+      addNotification({
+        type: 'error',
+        title: 'Veuillez remplir tous les champs'
+      })
+      return
+    }
+
+    setIsSubmittingReview(true)
+    try {
+      const response = await fetch(`/api/products/${product.id}/comments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          rating: newReview.rating,
+          comment: newReview.comment.trim(),
+        }),
+      })
+
+      if (response.ok) {
+        addNotification({
+          type: 'success',
+          title: 'Votre avis a été publié !'
+        })
+        setNewReview({ rating: 0, comment: '', title: '' })
+        // Recharger les avis
+        const commentsResponse = await fetch(`/api/products/${product.id}/comments`)
+        if (commentsResponse.ok) {
+          const comments = await commentsResponse.json()
+          const reviewsWithVotes = await Promise.all(
+            comments.map(async (comment: any) => {
+              let userVote: 'helpful' | 'notHelpful' | null = null
+              if (authState.isAuthenticated && authState.user) {
+                try {
+                  const voteResponse = await fetch(`/api/comments/${comment.id}/vote`)
+                  if (voteResponse.ok) {
+                    const voteData = await voteResponse.json()
+                    if (voteData.vote) {
+                      userVote = voteData.vote.isHelpful ? 'helpful' : 'notHelpful'
+                    }
+                  }
+                } catch (error) {
+                  console.error('Erreur lors de la récupération du vote:', error)
+                }
+              }
+              return {
+                id: comment.id,
+                user: comment.userName,
+                rating: comment.rating,
+                date: comment.date,
+                title: comment.comment.substring(0, 50) + '...',
+                comment: comment.comment,
+                verified: comment.verified,
+                helpful: comment.helpful || 0,
+                notHelpful: comment.notHelpful || 0,
+                userVote,
+              }
+            })
+          )
+          setReviews(reviewsWithVotes)
+        }
+      } else {
+        const errorData = await response.json()
+        addNotification({
+          type: 'error',
+          title: errorData.error || 'Erreur lors de la publication de l\'avis'
+        })
+      }
+    } catch (error) {
+      console.error('Erreur lors de la soumission de l\'avis:', error)
+      addNotification({
+        type: 'error',
+        title: 'Erreur lors de la publication de l\'avis'
+      })
+    } finally {
+      setIsSubmittingReview(false)
+    }
   }
 
   const tabs = [
@@ -542,9 +812,79 @@ export default function ProductPage({ product }: { product: Product }) {
                 <h3 className="text-2xl font-bold text-white">Avis clients</h3>
                 <div className="flex items-center space-x-4">
                   <StarRating rating={product.rating} />
-                  <span className="text-gray-400">({product.reviewCount} avis)</span>
+                  <span className="text-gray-400">({reviews.length} avis)</span>
                 </div>
               </div>
+
+              {/* Formulaire d'ajout d'avis */}
+              {authState.isAuthenticated && (
+                <div className="card-bg rounded-lg p-6 mb-6">
+                  {hasPurchased === false ? (
+                    <div className="text-center py-4">
+                      <FontAwesomeIcon icon={faExclamationTriangle} className="text-yellow-500 text-2xl mb-2" />
+                      <p className="text-gray-300">
+                        Vous devez avoir acheté ce produit pour laisser un avis.
+                      </p>
+                    </div>
+                  ) : hasPurchased === true ? (
+                    <form onSubmit={handleSubmitReview}>
+                      <h4 className="text-lg font-semibold text-white mb-4">Laisser un avis</h4>
+                      
+                      <div className="mb-4">
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                          Note
+                        </label>
+                        <div className="flex items-center space-x-2">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <button
+                              key={star}
+                              type="button"
+                              onClick={() => setNewReview({ ...newReview, rating: star })}
+                              className="focus:outline-none"
+                            >
+                              <FontAwesomeIcon
+                                icon={faStar}
+                                className={`text-2xl ${
+                                  star <= newReview.rating
+                                    ? 'text-brand-gold'
+                                    : 'text-gray-600'
+                                }`}
+                              />
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="mb-4">
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                          Votre avis
+                        </label>
+                        <textarea
+                          value={newReview.comment}
+                          onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
+                          placeholder="Partagez votre expérience avec ce produit..."
+                          className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold focus:border-transparent"
+                          rows={4}
+                          required
+                        />
+                      </div>
+
+                      <button
+                        type="submit"
+                        disabled={isSubmittingReview || !newReview.rating || !newReview.comment.trim()}
+                        className="btn-gold text-black font-semibold py-2 px-6 rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {isSubmittingReview ? 'Publication...' : 'Publier l\'avis'}
+                      </button>
+                    </form>
+                  ) : (
+                    <div className="text-center py-4">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-gold mx-auto mb-2"></div>
+                      <p className="text-gray-400">Vérification...</p>
+                    </div>
+                  )}
+                </div>
+              )}
 
               <div className="space-y-6">
                 {reviews.map((review) => (
@@ -577,14 +917,24 @@ export default function ProductPage({ product }: { product: Product }) {
                     <div className="flex items-center space-x-4">
                       <button
                         onClick={() => handleReviewHelpful(review.id, true)}
-                        className="flex items-center space-x-1 text-gray-400 hover:text-brand-green transition-colors"
+                        className={`flex items-center space-x-1 transition-colors ${
+                          review.userVote === 'helpful'
+                            ? 'text-brand-green'
+                            : 'text-gray-400 hover:text-brand-green'
+                        }`}
+                        disabled={!authState.isAuthenticated}
                       >
                         <FontAwesomeIcon icon={faThumbsUp} />
                         <span>Utile ({review.helpful})</span>
                       </button>
                       <button
                         onClick={() => handleReviewHelpful(review.id, false)}
-                        className="flex items-center space-x-1 text-gray-400 hover:text-red-400 transition-colors"
+                        className={`flex items-center space-x-1 transition-colors ${
+                          review.userVote === 'notHelpful'
+                            ? 'text-red-400'
+                            : 'text-gray-400 hover:text-red-400'
+                        }`}
+                        disabled={!authState.isAuthenticated}
                       >
                         <FontAwesomeIcon icon={faThumbsDown} />
                         <span>Pas utile ({review.notHelpful})</span>

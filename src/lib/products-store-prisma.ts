@@ -24,6 +24,8 @@ export interface ProductRecord {
   images: string[] | string
   published: boolean
   isFeatured?: boolean
+  isNew?: boolean
+  isOnSale?: boolean
   categories?: Array<{ name: string; slug: string }>
   variants?: ProductVariant[]
   totalStock?: number
@@ -62,6 +64,8 @@ function prismaProductToRecord(product: any): ProductRecord {
     images: images,
     published: product.published !== false,
     isFeatured: product.isFeatured || false,
+    isNew: product.isNew || false,
+    isOnSale: product.isOnSale || false,
     categories: product.categories?.map((cat: any) => ({
       name: cat.name,
       slug: cat.slug
@@ -153,6 +157,8 @@ export async function upsertProduct(
       images: imagesJson,
       published: product.published !== false,
       isFeatured: product.isFeatured || false,
+      isNew: product.isNew || false,
+      isOnSale: product.isOnSale || false,
       categories: {
         connect: categorySlugs.map(slug => ({ slug }))
       }
