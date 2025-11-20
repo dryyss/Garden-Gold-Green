@@ -61,8 +61,6 @@ export async function GET(
     )
 
     return NextResponse.json(commentsWithVotes)
-
-    return NextResponse.json(formattedComments)
   } catch (error) {
     console.error('Erreur lors de la récupération des commentaires:', error)
     return NextResponse.json(
