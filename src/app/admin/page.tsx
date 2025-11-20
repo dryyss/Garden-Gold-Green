@@ -1175,7 +1175,13 @@ function AdminContent() {
                     <div className="space-y-2 text-gray-300">
                       <p>
                         <span className="text-gray-400">Nom:</span>{' '}
-                        {fullOrderDetails?.customerName || selectedOrder.customerName || selectedOrder.customer || 'Non renseigné'}
+                        {fullOrderDetails?.customerName || 
+                         (fullOrderDetails?.shippingAddress?.firstName && fullOrderDetails?.shippingAddress?.lastName
+                           ? `${fullOrderDetails.shippingAddress.firstName} ${fullOrderDetails.shippingAddress.lastName}`
+                           : null) ||
+                         selectedOrder.customerName || 
+                         selectedOrder.customer || 
+                         'Non renseigné'}
                       </p>
                       <p>
                         <span className="text-gray-400">Email:</span>{' '}
@@ -1193,31 +1199,46 @@ function AdminContent() {
                   </div>
 
                   {/* Adresse de livraison */}
-                  {fullOrderDetails?.shippingAddress && (
+                  {(fullOrderDetails?.shippingAddress || selectedOrder.shippingAddress) && (
                     <div>
                       <h4 className="text-lg font-semibold text-white mb-3">Adresse de livraison</h4>
                       <div className="space-y-2 text-gray-300 bg-white/5 rounded-lg p-4">
-                        {fullOrderDetails.shippingAddress.firstName || fullOrderDetails.shippingAddress.lastName ? (
-                          <p className="text-white font-medium">
-                            {fullOrderDetails.shippingAddress.firstName} {fullOrderDetails.shippingAddress.lastName}
-                          </p>
-                        ) : null}
-                        {fullOrderDetails.shippingAddress.address && (
-                          <p>{fullOrderDetails.shippingAddress.address}</p>
-                        )}
-                        {(fullOrderDetails.shippingAddress.postalCode || fullOrderDetails.shippingAddress.city) && (
-                          <p>
-                            {fullOrderDetails.shippingAddress.postalCode} {fullOrderDetails.shippingAddress.city}
-                          </p>
-                        )}
-                        {fullOrderDetails.shippingAddress.country && (
-                          <p>{fullOrderDetails.shippingAddress.country}</p>
-                        )}
-                        {fullOrderDetails.shippingAddress.phone && (
-                          <p className="text-sm text-gray-400 mt-2">
-                            <span className="text-gray-500">Tél:</span> {fullOrderDetails.shippingAddress.phone}
-                          </p>
-                        )}
+                        {(() => {
+                          const shippingAddr = fullOrderDetails?.shippingAddress || selectedOrder.shippingAddress
+                          if (!shippingAddr) return null
+                          
+                          return (
+                            <>
+                              {(shippingAddr.firstName || shippingAddr.lastName) ? (
+                                <p className="text-white font-medium">
+                                  {shippingAddr.firstName || ''} {shippingAddr.lastName || ''}
+                                </p>
+                              ) : null}
+                              {shippingAddr.address && (
+                                <p>{shippingAddr.address}</p>
+                              )}
+                              {shippingAddr.address2 && (
+                                <p>{shippingAddr.address2}</p>
+                              )}
+                              {(shippingAddr.postalCode || shippingAddr.city) && (
+                                <p>
+                                  {shippingAddr.postalCode || ''} {shippingAddr.city || ''}
+                                </p>
+                              )}
+                              {shippingAddr.country && (
+                                <p>{shippingAddr.country}</p>
+                              )}
+                              {shippingAddr.phone && (
+                                <p className="text-sm text-gray-400 mt-2">
+                                  <span className="text-gray-500">Tél:</span> {shippingAddr.phone}
+                                </p>
+                              )}
+                              {!shippingAddr.address && !shippingAddr.city && !shippingAddr.postalCode && (
+                                <p className="text-gray-500 italic">Adresse non renseignée</p>
+                              )}
+                            </>
+                          )
+                        })()}
                       </div>
                     </div>
                   )}

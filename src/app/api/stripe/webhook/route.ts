@@ -116,14 +116,14 @@ export async function POST(request: NextRequest) {
           const shippingAddressData = shippingDetails?.address || (expandedSession as any).customer_details?.address || null
           const shippingPhone = shippingDetails?.phone || (expandedSession as any).customer_details?.phone || ''
           const shippingName = shippingDetails?.name || (expandedSession as any).customer_details?.name || ''
-          const [shippingFirstName, ...shippingRest] = shippingName ? shippingName.split(' ') : ['']
-          const shippingLastName = shippingRest.join(' ')
+          const [shippingFirstName, ...shippingRest] = shippingName ? shippingName.trim().split(' ') : ['']
+          const shippingLastName = shippingRest.join(' ').trim() || shippingFirstName || ''
 
-          const billingAddressData = expandedSession.customer_details?.address || null
-          const billingName = expandedSession.customer_details?.name || ''
-          const [billingFirstName, ...billingRest] = billingName ? billingName.split(' ') : ['']
-          const billingLastName = billingRest.join(' ')
-          const billingPhone = expandedSession.customer_details?.phone || ''
+          const billingAddressData = expandedSession.customer_details?.address || shippingDetails?.address || null
+          const billingName = expandedSession.customer_details?.name || shippingDetails?.name || ''
+          const [billingFirstName, ...billingRest] = billingName ? billingName.trim().split(' ') : ['']
+          const billingLastName = billingRest.join(' ').trim() || billingFirstName || ''
+          const billingPhone = expandedSession.customer_details?.phone || shippingDetails?.phone || ''
 
           if (cartItems.length === 0) {
             console.error('❌ [WEBHOOK] Aucun item dans cartItems, impossible de créer la commande')
@@ -251,9 +251,9 @@ export async function POST(request: NextRequest) {
             shippingCents,
             taxCents,
             discountCents,
-            customerEmail: userEmail || '',
-            customerName: expandedSession.customer_details?.name || '',
-            customerPhone: expandedSession.customer_details?.phone || '',
+            customerEmail: userEmail || expandedSession.customer_details?.email || '',
+            customerName: expandedSession.customer_details?.name || expandedSession.shipping_details?.name || shippingName || '',
+            customerPhone: expandedSession.customer_details?.phone || expandedSession.shipping_details?.phone || shippingPhone || '',
             shippingAddress: {
               firstName: shippingFirstName || '',
               lastName: shippingLastName || '',

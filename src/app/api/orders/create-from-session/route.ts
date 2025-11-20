@@ -159,17 +159,19 @@ export async function POST(request: NextRequest) {
     const orderNumber = `CMD-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Date.now().toString().slice(-4)}`
 
     // Récupérer les informations de livraison
-    const shippingAddressData = expandedSession.shipping_details?.address || null
-    const shippingName = expandedSession.shipping_details?.name || ''
-    const [shippingFirstName, ...shippingRest] = shippingName ? shippingName.split(' ') : ['']
-    const shippingLastName = shippingRest.join(' ')
-    const shippingPhone = expandedSession.shipping_details?.phone || ''
+    // Priorité: shipping_details > customer_details (billing)
+    const shippingAddressData = expandedSession.shipping_details?.address || expandedSession.customer_details?.address || null
+    const shippingName = expandedSession.shipping_details?.name || expandedSession.customer_details?.name || ''
+    const [shippingFirstName, ...shippingRest] = shippingName ? shippingName.trim().split(' ') : ['']
+    const shippingLastName = shippingRest.join(' ').trim() || shippingFirstName || ''
+    const shippingPhone = expandedSession.shipping_details?.phone || expandedSession.customer_details?.phone || ''
 
-    const billingAddressData = expandedSession.customer_details?.address || null
-    const billingName = expandedSession.customer_details?.name || ''
-    const [billingFirstName, ...billingRest] = billingName ? billingName.split(' ') : ['']
-    const billingLastName = billingRest.join(' ')
-    const billingPhone = expandedSession.customer_details?.phone || ''
+    // Récupérer les informations de facturation
+    const billingAddressData = expandedSession.customer_details?.address || expandedSession.shipping_details?.address || null
+    const billingName = expandedSession.customer_details?.name || expandedSession.shipping_details?.name || ''
+    const [billingFirstName, ...billingRest] = billingName ? billingName.trim().split(' ') : ['']
+    const billingLastName = billingRest.join(' ').trim() || billingFirstName || ''
+    const billingPhone = expandedSession.customer_details?.phone || expandedSession.shipping_details?.phone || ''
 
     const paymentIntentId = typeof expandedSession.payment_intent === 'string'
       ? expandedSession.payment_intent
@@ -194,9 +196,9 @@ export async function POST(request: NextRequest) {
       shippingCents,
       taxCents,
       discountCents,
-      customerEmail: userEmail || '',
-      customerName: expandedSession.customer_details?.name || '',
-      customerPhone: expandedSession.customer_details?.phone || '',
+      customerEmail: userEmail || expandedSession.customer_details?.email || '',
+      customerName: expandedSession.customer_details?.name || expandedSession.shipping_details?.name || shippingName || '',
+      customerPhone: expandedSession.customer_details?.phone || expandedSession.shipping_details?.phone || shippingPhone || '',
       shippingAddress: {
         firstName: shippingFirstName || '',
         lastName: shippingLastName || '',

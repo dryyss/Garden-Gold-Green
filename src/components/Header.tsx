@@ -279,7 +279,7 @@ export function Header() {
                       </Link>
                     )}
                     <Link
-                      href="/auth/logout"
+                      href="/api/auth/logout"
                       className="flex items-center w-full text-left px-3 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors border-t border-white/10"
                       onClick={() => setShowUserMenu(false)}
                     >
@@ -293,13 +293,13 @@ export function Header() {
           ) : (
             <div className="flex items-center space-x-1 sm:space-x-2">
               <Link
-                href="/auth/login"
+                href="/api/auth/login"
                 className="text-gray-300 hover:text-brand-gold transition-colors duration-300 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium hidden sm:block"
               >
                 {t('header.user.login')}
               </Link>
               <Link
-                href="/auth/login?screen_hint=signup"
+                href="/api/auth/login?screen_hint=signup"
                 className="bg-brand-gold text-black font-semibold px-2 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm hover:shadow-gold-glow transition-all duration-300"
               >
                 {t('header.user.register')}
@@ -459,7 +459,7 @@ export function Header() {
                   )}
                   
                   <Link
-                    href="/auth/logout"
+                    href="/api/auth/logout"
                     onClick={(e) => {
                       e.preventDefault()
                       if (auth0State.user) {
@@ -478,7 +478,7 @@ export function Header() {
               ) : (
                 <div className="mb-3 pb-3 border-b border-white/10 space-y-2">
                   <Link
-                    href="/auth/login?screen_hint=signup"
+                    href="/api/auth/login?screen_hint=signup"
                     onClick={() => setIsMenuOpen(false)}
                     className="w-full flex items-center justify-center space-x-2 bg-brand-gold text-black font-semibold px-4 py-2 rounded-full hover:shadow-gold-glow transition-all duration-300"
                   >
@@ -486,7 +486,7 @@ export function Header() {
                     <span>{t('header.user.register')}</span>
                   </Link>
                   <Link
-                    href="/auth/login"
+                    href="/api/auth/login"
                     onClick={() => setIsMenuOpen(false)}
                     className="w-full flex items-center justify-center space-x-2 text-white hover:text-brand-gold transition-colors py-2"
                   >

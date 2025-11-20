@@ -17,6 +17,21 @@ if (!stripePublishableKey) {
   throw new Error('STRIPE_PUBLISHABLE_KEY is not defined in environment variables')
 }
 
+// Détecter le mode Stripe (test ou production)
+export const isStripeTestMode = (): boolean => {
+  const secretKey = process.env.STRIPE_SECRET_KEY || ''
+  const publishableKey = stripePublishableKey || ''
+  
+  // Les clés de test commencent par sk_test_ ou pk_test_
+  // Les clés de production commencent par sk_live_ ou pk_live_
+  return secretKey.startsWith('sk_test_') || publishableKey.startsWith('pk_test_')
+}
+
+// Afficher un avertissement en mode test
+if (typeof window === 'undefined' && isStripeTestMode()) {
+  console.warn('⚠️ STRIPE EN MODE TEST - Assurez-vous d\'utiliser les clés de production en production')
+}
+
 // Types pour les produits
 export interface StripeProduct {
   id: string

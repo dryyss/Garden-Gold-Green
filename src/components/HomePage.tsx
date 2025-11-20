@@ -97,22 +97,25 @@ export default function HomePage() {
   }, [])
 
   // Récupérer les produits en vedette (isFeatured: true)
-  const featuredProducts = allProducts
+  const allFeaturedProducts = allProducts
     .filter(product => product.published && product.isFeatured)
-    .slice(0, 6) // Limiter à 6 produits maximum
     .map(transformProduct)
+  
+  const featuredProducts = allFeaturedProducts.slice(0, 12) // Afficher jusqu'à 12 produits
 
   // Récupérer les best sellers (isFeatured: true, mais différents des featured)
-  const bestSellers = allProducts
-    .filter(product => product.published && product.isFeatured && !featuredProducts.some(fp => fp.id === product.id))
-    .slice(0, 6)
+  const allBestSellers = allProducts
+    .filter(product => product.published && product.isFeatured && !allFeaturedProducts.some(fp => fp.id === product.id))
     .map(transformProduct)
+  
+  const bestSellers = allBestSellers.slice(0, 12) // Afficher jusqu'à 12 produits
 
   // Récupérer les nouveautés (isNew: true)
-  const newProducts = allProducts
+  const allNewProducts = allProducts
     .filter(product => product.published && product.isNew)
-    .slice(0, 6) // Limiter à 6 produits maximum
     .map(transformProduct)
+  
+  const newProducts = allNewProducts.slice(0, 12) // Afficher jusqu'à 12 produits
 
   return (
     <div className="bg-brand-black">

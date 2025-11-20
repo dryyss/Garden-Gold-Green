@@ -284,7 +284,7 @@ function CartSidebarContent() {
                 {!isAuthenticated && (
                   <p className="text-gray-400 text-xs text-center">
                     {t('cart.guestCheckout')}{' '}
-                    <Link href="/auth/login" className="text-brand-gold hover:underline">
+                    <Link href="/api/auth/login" className="text-brand-gold hover:underline">
                       {t('cart.login')}
                     </Link>
                   </p>

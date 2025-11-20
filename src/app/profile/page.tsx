@@ -32,7 +32,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (!isLoading && !user) {
-      router.push('/auth/login')
+      router.push('/api/auth/login')
       return
     }
 
