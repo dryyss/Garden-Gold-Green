@@ -36,8 +36,10 @@ export function StripeCheckoutButton({ className = '' }: StripeCheckoutButtonPro
         title: 'Connexion requise',
         message: 'Il faut se connecter pour passer au paiement',
       })
-      // Rediriger vers la page de connexion Auth0
-      window.location.href = '/api/auth/login?returnTo=' + encodeURIComponent('/cart')
+      // Rediriger vers la page de connexion Auth0 (/auth/login)
+      const baseUrl = window.location.origin
+      const returnTo = baseUrl + '/cart'
+      window.location.href = '/auth/login?returnTo=' + encodeURIComponent(returnTo)
       return
     }
 

@@ -69,8 +69,10 @@ export function PaymentMethodSelector({
         title: 'Connexion requise',
         message: 'Il faut se connecter pour passer au paiement',
       })
-      // Rediriger vers la page de connexion Auth0
-      window.location.href = '/api/auth/login?returnTo=' + encodeURIComponent(window.location.pathname)
+      // Rediriger vers la page de connexion Auth0 (/auth/login)
+      const baseUrl = window.location.origin
+      const returnTo = baseUrl + window.location.pathname
+      window.location.href = '/auth/login?returnTo=' + encodeURIComponent(returnTo)
       return
     }
 

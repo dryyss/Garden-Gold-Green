@@ -1,0 +1,34 @@
+[1mdiff --git a/src/components/PaymentMethodSelector.tsx b/src/components/PaymentMethodSelector.tsx[m
+[1mindex f062ffc..648a241 100644[m
+[1m--- a/src/components/PaymentMethodSelector.tsx[m
+[1m+++ b/src/components/PaymentMethodSelector.tsx[m
+[36m@@ -69,8 +69,10 @@[m [mexport function PaymentMethodSelector({[m
+         title: 'Connexion requise',[m
+         message: 'Il faut se connecter pour passer au paiement',[m
+       })[m
+[31m-      // Rediriger vers la page de connexion Auth0[m
+[31m-      window.location.href = '/api/auth/login?returnTo=' + encodeURIComponent(window.location.pathname)[m
+[32m+[m[32m      // Rediriger vers la page de connexion Auth0 (/auth/login)[m
+[32m+[m[32m      const baseUrl = window.location.origin[m
+[32m+[m[32m      const returnTo = baseUrl + window.location.pathname[m
+[32m+[m[32m      window.location.href = '/auth/login?returnTo=' + encodeURIComponent(returnTo)[m
+       return[m
+     }[m
+ [m
+[1mdiff --git a/src/components/StripeCheckoutButton.tsx b/src/components/StripeCheckoutButton.tsx[m
+[1mindex 3bd0767..66dfc50 100644[m
+[1m--- a/src/components/StripeCheckoutButton.tsx[m
+[1m+++ b/src/components/StripeCheckoutButton.tsx[m
+[36m@@ -36,8 +36,10 @@[m [mexport function StripeCheckoutButton({ className = '' }: StripeCheckoutButtonPro[m
+         title: 'Connexion requise',[m
+         message: 'Il faut se connecter pour passer au paiement',[m
+       })[m
+[31m-      // Rediriger vers la page de connexion Auth0[m
+[31m-      window.location.href = '/api/auth/login?returnTo=' + encodeURIComponent('/cart')[m
+[32m+[m[32m      // Rediriger vers la page de connexion Auth0 (/auth/login)[m[41m[m
+[32m+[m[32m      const baseUrl = window.location.origin[m[41m[m
+[32m+[m[32m      const returnTo = baseUrl + '/cart'[m[41m[m
+[32m+[m[32m      window.location.href = '/auth/login?returnTo=' + encodeURIComponent(returnTo)[m[41m[m
+       return[m
+     }[m
+ [m
