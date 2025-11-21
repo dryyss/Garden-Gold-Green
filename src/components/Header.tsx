@@ -47,21 +47,28 @@ export function Header() {
   const { state, dispatch } = useCart()
   const { state: authState, logout, isAdmin: isAdminAuth } = useAuth()
   const { state: auth0State, logout: logoutAuth0, isAdminOrOwner: isAdminOrOwnerAuth0 } = useAuth0Context()
-  const { t } = useTranslation()
+  const { t, isLoading: translationsLoading } = useTranslation()
   
-  // Catégories par défaut pour éviter un affichage vide - utiliser useMemo pour recalculer quand t change
-  const defaultCategoryTabs = useMemo(() => [
-    { name: t('header.categories.promos'), href: '/products?category=promo', badge: 'HOT', color: 'text-red-500' },
-    { name: t('header.categories.flowers'), href: '/products?category=fleurs-cbd' },
-    { name: t('header.categories.resins'), href: '/products?category=resines' },
-    { name: t('header.categories.packs'), href: '/products?category=packs' },
-    { name: t('header.categories.liquids'), href: '/products?category=liquides' },
-    { name: t('header.categories.oils'), href: '/products?category=huiles-cbd' },
-    { name: t('header.categories.accessories'), href: '/products?category=accessoires' },
-    { name: t('header.categories.liquidations'), href: '/products?category=liquidations', special: true },
-  ], [t])
+  // Catégories par défaut - initialiser avec des valeurs vides, puis mettre à jour quand les traductions sont chargées
+  const [categoryTabs, setCategoryTabs] = useState<Array<{ name: string; href: string; badge?: string; color?: string; special?: boolean }>>([])
   
-  const [categoryTabs, setCategoryTabs] = useState<Array<{ name: string; href: string; badge?: string; color?: string; special?: boolean }>>(defaultCategoryTabs)
+  // Mettre à jour les catégories par défaut quand les traductions sont chargées
+  useEffect(() => {
+    if (!translationsLoading) {
+      const defaultCategoryTabs = [
+        { name: t('header.categories.promos'), href: '/products?category=promo', badge: 'HOT', color: 'text-red-500' },
+        { name: t('header.categories.flowers'), href: '/products?category=fleurs-cbd' },
+        { name: t('header.categories.resins'), href: '/products?category=resines' },
+        { name: t('header.categories.packs'), href: '/products?category=packs' },
+        { name: t('header.categories.liquids'), href: '/products?category=liquides' },
+        { name: t('header.categories.oils'), href: '/products?category=huiles-cbd' },
+        { name: t('header.categories.accessories'), href: '/products?category=accessoires' },
+        { name: t('header.categories.liquidations'), href: '/products?category=liquidations', special: true },
+      ]
+      // Ne mettre à jour que si categoryTabs est vide (première initialisation)
+      setCategoryTabs(prev => prev.length === 0 ? defaultCategoryTabs : prev)
+    }
+  }, [t, translationsLoading])
   const user = auth0State.user || authState.user
   // Utiliser isAdminOrOwner pour Auth0 pour permettre aux owners d'accéder aussi
   const isAdmin = auth0State.user ? isAdminOrOwnerAuth0() : isAdminAuth()
