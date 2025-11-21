@@ -172,9 +172,16 @@ export function ProductCard({ product, className = '' }: ProductCardProps) {
           <StarRating rating={product.rating} size="sm" />
         </div>
 
-        <h3 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2 line-clamp-2 flex-1">
-          {product.name}
-        </h3>
+        <div className="flex items-center gap-2 mb-2 flex-wrap">
+          <h3 className="text-base sm:text-lg md:text-xl font-semibold text-white line-clamp-2 flex-1">
+            {product.name}
+          </h3>
+          {product.cbdPercent !== undefined && product.cbdPercent > 0 && (
+            <span className="text-xs sm:text-sm font-semibold text-brand-green bg-brand-green/20 px-2 py-1 rounded-full whitespace-nowrap">
+              {product.cbdPercent}% CBD
+            </span>
+          )}
+        </div>
 
         {/* Stock indicator */}
         {product.totalStock !== undefined && (
