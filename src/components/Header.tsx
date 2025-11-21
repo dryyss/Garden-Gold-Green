@@ -44,6 +44,11 @@ export function Header() {
   const [showFloatingCart, setShowFloatingCart] = useState(false)
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(true)
   const [isNavigationOpen, setIsNavigationOpen] = useState(true)
+  const { state, dispatch } = useCart()
+  const { state: authState, logout, isAdmin: isAdminAuth } = useAuth()
+  const { state: auth0State, logout: logoutAuth0, isAdminOrOwner: isAdminOrOwnerAuth0 } = useAuth0Context()
+  const { t } = useTranslation()
+  
   // Catégories par défaut pour éviter un affichage vide
   const defaultCategoryTabs = [
     { name: t('header.categories.promos'), href: '/products?category=promo', badge: 'HOT', color: 'text-red-500' },
@@ -57,10 +62,6 @@ export function Header() {
   ]
   
   const [categoryTabs, setCategoryTabs] = useState<Array<{ name: string; href: string; badge?: string; color?: string; special?: boolean }>>(defaultCategoryTabs)
-  const { state, dispatch } = useCart()
-  const { state: authState, logout, isAdmin: isAdminAuth } = useAuth()
-  const { state: auth0State, logout: logoutAuth0, isAdminOrOwner: isAdminOrOwnerAuth0 } = useAuth0Context()
-  const { t } = useTranslation()
   const user = auth0State.user || authState.user
   // Utiliser isAdminOrOwner pour Auth0 pour permettre aux owners d'accéder aussi
   const isAdmin = auth0State.user ? isAdminOrOwnerAuth0() : isAdminAuth()
