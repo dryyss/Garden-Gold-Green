@@ -209,11 +209,16 @@ function AdminContent() {
         setProducts(formattedProducts)
       }
 
-      // Charger les catégories
-      const categoriesResponse = await fetch('/api/admin/categories')
+      // Charger les catégories depuis Prisma (même source que les filtres)
+      const categoriesResponse = await fetch('/api/categories')
       const categoriesData = await categoriesResponse.json()
       if (categoriesData.success && categoriesData.categories) {
-        setCategories(categoriesData.categories)
+        // Convertir le format de l'API en format attendu par l'admin
+        setCategories(categoriesData.categories.map((cat: any) => ({
+          id: cat.id,
+          name: cat.name,
+          slug: cat.slug
+        })))
       }
     
       // Charger les utilisateurs Auth0 (admin/owner ou mode bypass)
