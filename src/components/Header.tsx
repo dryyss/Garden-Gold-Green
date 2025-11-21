@@ -44,7 +44,19 @@ export function Header() {
   const [showFloatingCart, setShowFloatingCart] = useState(false)
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(true)
   const [isNavigationOpen, setIsNavigationOpen] = useState(true)
-  const [categoryTabs, setCategoryTabs] = useState<Array<{ name: string; href: string; badge?: string; color?: string; special?: boolean }>>([])
+  // Catégories par défaut pour éviter un affichage vide
+  const defaultCategoryTabs = [
+    { name: t('header.categories.promos'), href: '/products?category=promo', badge: 'HOT', color: 'text-red-500' },
+    { name: t('header.categories.flowers'), href: '/products?category=fleurs-cbd' },
+    { name: t('header.categories.resins'), href: '/products?category=resines' },
+    { name: t('header.categories.packs'), href: '/products?category=packs' },
+    { name: t('header.categories.liquids'), href: '/products?category=liquides' },
+    { name: t('header.categories.oils'), href: '/products?category=huiles-cbd' },
+    { name: t('header.categories.accessories'), href: '/products?category=accessoires' },
+    { name: t('header.categories.liquidations'), href: '/products?category=liquidations', special: true },
+  ]
+  
+  const [categoryTabs, setCategoryTabs] = useState<Array<{ name: string; href: string; badge?: string; color?: string; special?: boolean }>>(defaultCategoryTabs)
   const { state, dispatch } = useCart()
   const { state: authState, logout, isAdmin: isAdminAuth } = useAuth()
   const { state: auth0State, logout: logoutAuth0, isAdminOrOwner: isAdminOrOwnerAuth0 } = useAuth0Context()
@@ -59,7 +71,7 @@ export function Header() {
       try {
         const response = await fetch('/api/categories')
         const data = await response.json()
-        if (data.success && data.categories) {
+        if (data.success && data.categories && data.categories.length > 0) {
           // Filtrer les catégories qui ont au moins un produit et les transformer en tabs
           const tabs = data.categories
             .filter((cat: any) => cat.productCount > 0)
@@ -70,25 +82,19 @@ export function Header() {
               color: cat.slug === 'promo' || cat.slug === 'promos' ? 'text-red-500' : undefined,
               special: cat.slug === 'liquidations'
             }))
-          setCategoryTabs(tabs)
+          
+          // Si on a des catégories, les utiliser, sinon garder les catégories par défaut
+          if (tabs.length > 0) {
+            setCategoryTabs(tabs)
+          }
         }
       } catch (error) {
         console.error('Erreur lors du chargement des catégories:', error)
-        // Fallback : utiliser les catégories par défaut
-        setCategoryTabs([
-          { name: t('header.categories.promos'), href: '/products?category=promo', badge: 'HOT', color: 'text-red-500' },
-          { name: t('header.categories.flowers'), href: '/products?category=fleurs-cbd' },
-          { name: t('header.categories.resins'), href: '/products?category=resines' },
-          { name: t('header.categories.packs'), href: '/products?category=packs' },
-          { name: t('header.categories.liquids'), href: '/products?category=liquides' },
-          { name: t('header.categories.oils'), href: '/products?category=huiles-cbd' },
-          { name: t('header.categories.accessories'), href: '/products?category=accessoires' },
-          { name: t('header.categories.liquidations'), href: '/products?category=liquidations', special: true },
-        ])
+        // En cas d'erreur, garder les catégories par défaut (déjà initialisées)
       }
     }
     loadCategories()
-  }, [t])
+  }, [])
   
   // DEBUG: Log pour vérifier le rôle
   useEffect(() => {
