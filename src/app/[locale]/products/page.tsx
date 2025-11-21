@@ -62,10 +62,13 @@ function getCategories(products: any[]) {
   // Extraire les catégories uniques des produits
   const categoriesMap = new Map()
   products.forEach(product => {
-    if (product.categories) {
+    if (product.categories && Array.isArray(product.categories)) {
       product.categories.forEach((category: any) => {
-        if (!categoriesMap.has(category.slug)) {
-          categoriesMap.set(category.slug, category)
+        if (category && category.slug && !categoriesMap.has(category.slug)) {
+          categoriesMap.set(category.slug, {
+            name: category.name || category.slug,
+            slug: category.slug
+          })
         }
       })
     }
@@ -76,6 +79,7 @@ function getCategories(products: any[]) {
 export default function ProductsPage() {
   const searchParams = useSearchParams()
   const [allProducts, setAllProducts] = useState<any[]>([])
+  const [categories, setCategories] = useState<Array<{ name: string; slug: string }>>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '')
   const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'newest')
@@ -100,8 +104,35 @@ export default function ProductsPage() {
     loadProducts()
   }, [])
 
+  // Charger les catégories depuis l'API
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const response = await fetch('/api/categories')
+        const data = await response.json()
+        if (data.success && data.categories) {
+          // Filtrer les catégories qui ont au moins un produit
+          const categoriesWithProducts = data.categories
+            .filter((cat: any) => cat.productCount > 0)
+            .map((cat: any) => ({
+              name: cat.name,
+              slug: cat.slug
+            }))
+          setCategories(categoriesWithProducts)
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement des catégories:', error)
+        // Fallback : utiliser les catégories des produits
+        const fallbackCategories = getCategories(allProducts)
+        setCategories(fallbackCategories)
+      }
+    }
+    if (allProducts.length > 0) {
+      loadCategories()
+    }
+  }, [allProducts])
+
   const products = filterProducts(allProducts, searchParams)
-  const categories = getCategories(allProducts)
 
   useEffect(() => {
     setSearchTerm(searchParams.get('search') || '')

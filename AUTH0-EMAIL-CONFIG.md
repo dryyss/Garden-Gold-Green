@@ -133,3 +133,4 @@ AUTH0_M2M_AUDIENCE=https://dev-1tkaqeynik4yy714.us.auth0.com/api/v2/
 3. ✅ Tester depuis l'application
 4. ✅ Vérifier les logs en cas d'erreur
 
+

@@ -26,7 +26,8 @@ interface TransformedProduct {
   price: number
   originalPrice?: number
   image: string
-  category: string
+  category: string // Première catégorie pour compatibilité
+  categories: Array<{ name: string; slug: string }> // Toutes les catégories
   description: string
   rating: number
   reviewCount: number
@@ -72,12 +73,20 @@ function transformProduct(product: Record<string, unknown>): TransformedProduct 
   // Extraire la première image
   const image = images[0] || '/logo2.png'
   
+  // Extraire toutes les catégories
+  const productCategories = (product as { categories?: Array<{ name?: string; slug?: string }> }).categories || []
+  const categories = productCategories.map(cat => ({
+    name: cat.name || '',
+    slug: cat.slug || (cat.name || '').toLowerCase().replace(/\s+/g, '-')
+  }))
+  
   return {
     ...product,
     name: String((product as { title?: string }).title || ''),
     price: (Number((product as { priceCents?: number }).priceCents) || 0) / 100, // Convertir les centimes en euros
     image: String(image),
-    category: String(((product as { categories?: Array<{ name?: string }> }).categories?.[0]?.name) || 'CBD Products'),
+    category: categories[0]?.name || 'CBD Products', // Première catégorie pour compatibilité
+    categories: categories, // Toutes les catégories
     rating: 4.5, // Valeur par défaut
     reviewCount, // Valeur déterministe basée sur l'ID
     inStock: Number((product as { stock?: number }).stock) > 0,
@@ -100,11 +109,12 @@ function filterAndSortProducts(
   
   let products = [...allProducts]
   
-  // Filtrage par catégorie
+  // Filtrage par catégorie - utiliser les slugs réels
   if (category && category !== 'all') {
-    products = products.filter(p => 
-      p.category.toLowerCase().includes(category.toLowerCase())
-    )
+    products = products.filter((p) => {
+      // Vérifier si le produit appartient à la catégorie demandée via ses catégories
+      return p.categories?.some((cat) => cat.slug === category) || false
+    })
   }
   
   // Filtrage par recherche
@@ -170,16 +180,23 @@ function filterAndSortProducts(
 }
 
 function getCategories(products: TransformedProduct[]) {
-  const categories = new Set<string>()
+  const categoriesMap = new Map<string, { name: string; slug: string }>()
+  
   products.forEach((product) => {
-    if (product.category) {
-      categories.add(product.category)
+    // Utiliser toutes les catégories du produit
+    if (product.categories && product.categories.length > 0) {
+      product.categories.forEach((cat) => {
+        if (cat.slug && !categoriesMap.has(cat.slug)) {
+          categoriesMap.set(cat.slug, {
+            name: cat.name,
+            slug: cat.slug
+          })
+        }
+      })
     }
   })
-  return Array.from(categories).map((name: string) => ({
-    name,
-    slug: name.toLowerCase().replace(/\s+/g, '-')
-  }))
+  
+  return Array.from(categoriesMap.values()).sort((a, b) => a.name.localeCompare(b.name))
 }
 
 export default function ProductsPageClient() {
@@ -189,6 +206,7 @@ export default function ProductsPageClient() {
   const [showFilters, setShowFilters] = useState(false)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [allProducts, setAllProducts] = useState<TransformedProduct[]>([])
+  const [categories, setCategories] = useState<Array<{ name: string; slug: string }>>([])
   const [loading, setLoading] = useState(true)
   
   // Charger les produits depuis l'API
@@ -211,13 +229,38 @@ export default function ProductsPageClient() {
     loadProducts()
   }, [])
   
+  // Charger les catégories depuis l'API
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const response = await fetch('/api/categories')
+        const data = await response.json()
+        if (data.success && data.categories) {
+          // Filtrer les catégories qui ont au moins un produit
+          const categoriesWithProducts = data.categories
+            .filter((cat: any) => cat.productCount > 0)
+            .map((cat: any) => ({
+              name: cat.name,
+              slug: cat.slug
+            }))
+          setCategories(categoriesWithProducts)
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement des catégories:', error)
+        // Fallback : utiliser les catégories des produits
+        const fallbackCategories = getCategories(allProducts)
+        setCategories(fallbackCategories)
+      }
+    }
+    loadCategories()
+  }, [allProducts])
+  
   // Mettre à jour la recherche quand les paramètres URL changent
   useEffect(() => {
     setSearch(searchParams.get('search') || '')
   }, [searchParams])
   
   const { products, total, totalPages, currentPage } = filterAndSortProducts(allProducts, searchParams)
-  const categories = getCategories(allProducts)
   const handleSearch = (value: string) => {
     setSearch(value)
     

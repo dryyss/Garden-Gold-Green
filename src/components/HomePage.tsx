@@ -139,7 +139,7 @@ export default function HomePage() {
   const allFeaturedProducts = allProducts
     .filter(product => product.published && product.isFeatured)
     .map(transformProduct)
-  
+
   const featuredProducts = allFeaturedProducts.slice(0, 12) // Afficher jusqu'à 12 produits
 
   // Les best sellers sont chargés depuis l'API (produits les plus vendus)
@@ -149,7 +149,7 @@ export default function HomePage() {
   const allNewProducts = allProducts
     .filter(product => product.published && product.isNew)
     .map(transformProduct)
-  
+
   const newProducts = allNewProducts.slice(0, 12) // Afficher jusqu'à 12 produits
 
   return (

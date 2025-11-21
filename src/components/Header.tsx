@@ -44,6 +44,7 @@ export function Header() {
   const [showFloatingCart, setShowFloatingCart] = useState(false)
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(true)
   const [isNavigationOpen, setIsNavigationOpen] = useState(true)
+  const [categoryTabs, setCategoryTabs] = useState<Array<{ name: string; href: string; badge?: string; color?: string; special?: boolean }>>([])
   const { state, dispatch } = useCart()
   const { state: authState, logout, isAdmin: isAdminAuth } = useAuth()
   const { state: auth0State, logout: logoutAuth0, isAdminOrOwner: isAdminOrOwnerAuth0 } = useAuth0Context()
@@ -51,6 +52,43 @@ export function Header() {
   const user = auth0State.user || authState.user
   // Utiliser isAdminOrOwner pour Auth0 pour permettre aux owners d'accéder aussi
   const isAdmin = auth0State.user ? isAdminOrOwnerAuth0() : isAdminAuth()
+  
+  // Charger les catégories depuis l'API
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const response = await fetch('/api/categories')
+        const data = await response.json()
+        if (data.success && data.categories) {
+          // Filtrer les catégories qui ont au moins un produit et les transformer en tabs
+          const tabs = data.categories
+            .filter((cat: any) => cat.productCount > 0)
+            .map((cat: any) => ({
+              name: cat.name,
+              href: `/products?category=${cat.slug}`,
+              badge: cat.slug === 'promo' || cat.slug === 'promos' ? 'HOT' : undefined,
+              color: cat.slug === 'promo' || cat.slug === 'promos' ? 'text-red-500' : undefined,
+              special: cat.slug === 'liquidations'
+            }))
+          setCategoryTabs(tabs)
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement des catégories:', error)
+        // Fallback : utiliser les catégories par défaut
+        setCategoryTabs([
+          { name: t('header.categories.promos'), href: '/products?category=promo', badge: 'HOT', color: 'text-red-500' },
+          { name: t('header.categories.flowers'), href: '/products?category=fleurs-cbd' },
+          { name: t('header.categories.resins'), href: '/products?category=resines' },
+          { name: t('header.categories.packs'), href: '/products?category=packs' },
+          { name: t('header.categories.liquids'), href: '/products?category=liquides' },
+          { name: t('header.categories.oils'), href: '/products?category=huiles-cbd' },
+          { name: t('header.categories.accessories'), href: '/products?category=accessoires' },
+          { name: t('header.categories.liquidations'), href: '/products?category=liquidations', special: true },
+        ])
+      }
+    }
+    loadCategories()
+  }, [t])
   
   // DEBUG: Log pour vérifier le rôle
   useEffect(() => {
@@ -89,17 +127,6 @@ export function Header() {
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [showUserMenu])
-
-  const categoryTabs = [
-    { name: t('header.categories.promos'), href: '/products?category=promo', badge: 'HOT', color: 'text-red-500' },
-    { name: t('header.categories.flowers'), href: '/products?category=fleurs-cbd' },
-    { name: t('header.categories.resins'), href: '/products?category=resines' },
-    { name: t('header.categories.packs'), href: '/products?category=packs' },
-    { name: t('header.categories.liquids'), href: '/products?category=liquides' },
-    { name: t('header.categories.oils'), href: '/products?category=huiles-cbd' },
-    { name: t('header.categories.accessories'), href: '/products?category=accessoires' },
-    { name: t('header.categories.liquidations'), href: '/products?category=liquidations', special: true },
-  ]
 
   const navigation = [
     { name: t('header.navigation.home'), href: '/' },
@@ -279,7 +306,7 @@ export function Header() {
                       </Link>
                     )}
                     <Link
-                      href="/api/auth/logout"
+                      href="/auth/logout"
                       className="flex items-center w-full text-left px-3 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors border-t border-white/10"
                       onClick={(e) => {
                         e.preventDefault()
@@ -467,7 +494,7 @@ export function Header() {
                   )}
                   
                   <Link
-                    href="/api/auth/logout"
+                    href="/auth/logout"
                     onClick={(e) => {
                       e.preventDefault()
                       if (auth0State.user) {
