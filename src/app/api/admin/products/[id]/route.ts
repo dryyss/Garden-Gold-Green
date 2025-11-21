@@ -133,7 +133,22 @@ export async function PATCH(
       if (isFeatured !== undefined) updateData.isFeatured = isFeatured
       if (isNew !== undefined) updateData.isNew = isNew
       if (isOnSale !== undefined) updateData.isOnSale = isOnSale
-      if (categoryIds !== undefined) updateData.categoryIds = categoryIds
+      
+      // Convertir les categoryIds en catégories Prisma
+      if (categoryIds !== undefined) {
+        if (categoryIds && categoryIds.length > 0) {
+          const categories = await prisma.category.findMany({
+            where: { id: { in: categoryIds } }
+          })
+          updateData.categories = categories.map(cat => ({
+            name: cat.name,
+            slug: cat.slug
+          }))
+        } else {
+          updateData.categories = []
+        }
+      }
+      
       if (variants !== undefined) {
         updateData.variants = variants.map((variant: any, index: number) => ({
           id: variant.id || `${id}-v${index + 1}`,

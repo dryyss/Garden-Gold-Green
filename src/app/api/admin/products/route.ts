@@ -141,6 +141,18 @@ export const POST = requireAdmin(async (request: NextRequest) => {
     const maxId = Math.max(...products.map(p => parseInt(p.id) || 0), 0)
     const newId = String(maxId + 1)
 
+    // Convertir les categoryIds en catégories Prisma
+    let productCategories: Array<{ name: string; slug: string }> = []
+    if (categoryIds && categoryIds.length > 0) {
+      const categories = await prisma.category.findMany({
+        where: { id: { in: categoryIds } }
+      })
+      productCategories = categories.map(cat => ({
+        name: cat.name,
+        slug: cat.slug
+      }))
+    }
+
     // Créer le produit avec ses variants
     const product = await upsertProduct({
       id: newId,
@@ -157,6 +169,7 @@ export const POST = requireAdmin(async (request: NextRequest) => {
       isFeatured,
       isNew,
       isOnSale,
+      categories: productCategories,
       variants: variants.map((variant: any) => ({
         id: `${newId}-v${variants.indexOf(variant) + 1}`,
         title: variant.title,
