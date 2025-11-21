@@ -59,7 +59,8 @@ function transformProduct(product: any) { // eslint-disable-line @typescript-esl
     inStock: product.totalStock > 0 || product.stock > 0,
     totalStock: product.totalStock || product.stock || 0,
     isNew: product.isNew || false, // Utiliser la valeur de la base de données
-    isBestSeller: product.isFeatured || false // Utiliser isFeatured comme bestSeller
+    isBestSeller: product.isFeatured || false, // Utiliser isFeatured comme bestSeller
+    cbdPercent: product.cbdPercent !== undefined ? Number(product.cbdPercent) : undefined // Pourcentage CBD
   }
 }
 

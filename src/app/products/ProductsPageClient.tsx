@@ -80,6 +80,9 @@ function transformProduct(product: Record<string, unknown>): TransformedProduct 
     slug: cat.slug || (cat.name || '').toLowerCase().replace(/\s+/g, '-')
   }))
   
+  // Extraire le pourcentage CBD
+  const cbdPercent = (product as { cbdPercent?: number }).cbdPercent
+  
   return {
     ...product,
     name: String((product as { title?: string }).title || ''),
@@ -92,6 +95,7 @@ function transformProduct(product: Record<string, unknown>): TransformedProduct 
     inStock: Number((product as { stock?: number }).stock) > 0,
     isNew, // Valeur déterministe
     isBestSeller, // Valeur déterministe
+    cbdPercent: cbdPercent !== undefined ? Number(cbdPercent) : undefined, // Pourcentage CBD
   } as TransformedProduct
 }
 
