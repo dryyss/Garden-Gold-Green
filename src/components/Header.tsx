@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -49,8 +49,8 @@ export function Header() {
   const { state: auth0State, logout: logoutAuth0, isAdminOrOwner: isAdminOrOwnerAuth0 } = useAuth0Context()
   const { t } = useTranslation()
   
-  // Catégories par défaut pour éviter un affichage vide
-  const defaultCategoryTabs = [
+  // Catégories par défaut pour éviter un affichage vide - utiliser useMemo pour recalculer quand t change
+  const defaultCategoryTabs = useMemo(() => [
     { name: t('header.categories.promos'), href: '/products?category=promo', badge: 'HOT', color: 'text-red-500' },
     { name: t('header.categories.flowers'), href: '/products?category=fleurs-cbd' },
     { name: t('header.categories.resins'), href: '/products?category=resines' },
@@ -59,7 +59,7 @@ export function Header() {
     { name: t('header.categories.oils'), href: '/products?category=huiles-cbd' },
     { name: t('header.categories.accessories'), href: '/products?category=accessoires' },
     { name: t('header.categories.liquidations'), href: '/products?category=liquidations', special: true },
-  ]
+  ], [t])
   
   const [categoryTabs, setCategoryTabs] = useState<Array<{ name: string; href: string; badge?: string; color?: string; special?: boolean }>>(defaultCategoryTabs)
   const user = auth0State.user || authState.user
