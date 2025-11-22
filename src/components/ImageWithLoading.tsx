@@ -57,6 +57,55 @@ export function ImageWithLoading({
   const validSrc = src && src.trim() !== '' ? src : fallbackSrc
   const shouldShowError = !src || src.trim() === ''
 
+  // Si fill est utilisé, le conteneur parent doit gérer le positionnement
+  if (fill) {
+    return (
+      <>
+        {/* Loading spinner */}
+        {isLoading && !shouldShowError && (
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-800/50 z-10">
+            <div className="flex flex-col items-center space-y-2">
+              <FontAwesomeIcon 
+                icon={faSpinner} 
+                className="w-8 h-8 text-brand-gold animate-spin" 
+              />
+              <span className="text-xs text-gray-300">Chargement...</span>
+            </div>
+          </div>
+        )}
+
+        {/* Image principale */}
+        <Image
+          src={hasError || shouldShowError ? fallbackSrc : validSrc}
+          alt={alt}
+          fill
+          className={`transition-opacity duration-300 ${className} ${
+            isLoading && !shouldShowError ? 'opacity-0' : 'opacity-100'
+          } ${hasError || shouldShowError ? 'grayscale' : ''}`}
+          priority={priority}
+          quality={quality}
+          sizes={sizes}
+          placeholder={placeholder}
+          blurDataURL={blurDataURL}
+          onLoad={handleLoad}
+          onError={handleError}
+        />
+
+        {/* Overlay d'erreur */}
+        {(hasError || shouldShowError) && (
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-800/80 z-20">
+            <div className="text-center text-gray-400">
+              <div className="w-8 h-8 mx-auto mb-2 bg-gray-600 rounded flex items-center justify-center">
+                <span className="text-xs">!</span>
+              </div>
+              <span className="text-xs">Image non disponible</span>
+            </div>
+          </div>
+        )}
+      </>
+    )
+  }
+
   return (
     <div className={`relative ${className}`}>
       {/* Loading spinner */}
@@ -76,9 +125,8 @@ export function ImageWithLoading({
       <Image
         src={hasError || shouldShowError ? fallbackSrc : validSrc}
         alt={alt}
-        width={fill ? undefined : width}
-        height={fill ? undefined : height}
-        fill={fill}
+        width={width}
+        height={height}
         className={`transition-opacity duration-300 ${
           isLoading && !shouldShowError ? 'opacity-0' : 'opacity-100'
         } ${hasError || shouldShowError ? 'grayscale' : ''}`}

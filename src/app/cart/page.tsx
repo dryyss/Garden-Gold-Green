@@ -316,9 +316,9 @@ function CartPageContent() {
                 <div key={item.id} className="bg-white/5 rounded-xl p-4 sm:p-6 hover:bg-white/10 transition-colors">
                   <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
                     {/* Image du produit */}
-                    <div className="w-24 h-24 sm:w-32 sm:h-32 relative flex-shrink-0 mx-auto sm:mx-0">
+                    <div className="w-24 h-24 sm:w-32 sm:h-32 relative flex-shrink-0 mx-auto sm:mx-0 overflow-hidden rounded-lg">
                       {item.slug ? (
-                        <Link href={`/products/${item.slug}`}>
+                        <Link href={`/products/${item.slug}`} className="block w-full h-full">
                           <ImageWithLoading
                             src={item.image || '/logo2.png'}
                             alt={item.name}
