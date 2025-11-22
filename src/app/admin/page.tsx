@@ -336,6 +336,78 @@ function AdminContent() {
     loadData()
   }, [loadData])
 
+  // Générer le slug automatiquement depuis le nom
+  const generateSlug = (name: string) => {
+    return name
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+  }
+
+  // Fonction pour créer une catégorie
+  const handleCreateCategory = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!newCategory.name || !newCategory.slug) {
+      alert('Le nom et le slug sont requis')
+      return
+    }
+
+    setIsSavingCategory(true)
+    try {
+      const response = await fetch('/api/admin/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: newCategory.name,
+          slug: newCategory.slug
+        })
+      })
+
+      const data = await response.json()
+      if (data.success) {
+        // Recharger les catégories
+        await loadData()
+        setNewCategory({ name: '', slug: '' })
+        setShowCategoryModal(false)
+        alert('Catégorie créée avec succès !')
+      } else {
+        alert(data.error || 'Erreur lors de la création de la catégorie')
+      }
+    } catch (error) {
+      console.error('Erreur création catégorie:', error)
+      alert('Erreur lors de la création de la catégorie')
+    } finally {
+      setIsSavingCategory(false)
+    }
+  }
+
+  // Fonction pour supprimer une catégorie
+  const handleDeleteCategory = async (categoryId: string) => {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?')) {
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/admin/categories/${categoryId}`, {
+        method: 'DELETE'
+      })
+
+      const data = await response.json()
+      if (data.success) {
+        // Recharger les catégories
+        await loadData()
+        alert('Catégorie supprimée avec succès !')
+      } else {
+        alert(data.error || 'Erreur lors de la suppression de la catégorie')
+      }
+    } catch (error) {
+      console.error('Erreur suppression catégorie:', error)
+      alert('Erreur lors de la suppression de la catégorie')
+    }
+  }
+
   if (isLoading) {
     return (
       <div className="bg-brand-black min-h-screen flex items-center justify-center pt-24">
