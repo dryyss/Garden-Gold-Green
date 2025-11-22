@@ -319,54 +319,54 @@ export function Header() {
               {showUserMenu && userMenuPos && createPortal(
                 <div 
                   ref={userMenuDropdownRef}
-                  className="fixed w-52 bg-brand-black/95 backdrop-blur-md border border-white/10 rounded-lg shadow-2xl z-[1000] ring-1 ring-brand-gold/20 origin-top-right animate-in fade-in slide-in-from-top-2 duration-200"
+                  className="fixed w-52 bg-brand-black border-2 border-brand-gold/40 rounded-lg shadow-2xl z-[9999] ring-2 ring-brand-gold/20 animate-dropdown"
                   style={{ top: userMenuPos.top, left: userMenuPos.left, width: userMenuPos.width }}
                   role="menu"
                 >
                   <div className="py-2">
                     {/* Header avec info utilisateur */}
-                    <div className="px-4 py-3 border-b border-white/10 bg-gradient-to-r from-brand-gold/5 to-brand-green/5">
+                    <div className="px-4 py-3 border-b border-white/20 bg-gradient-to-r from-brand-gold/10 to-brand-green/10">
                       <p className="text-sm text-white font-semibold truncate">{user.name || 'Utilisateur'}</p>
-                      <p className="text-xs text-gray-400 truncate mt-0.5">{user.email}</p>
+                      <p className="text-xs text-gray-300 truncate mt-0.5">{user.email}</p>
                     </div>
                     
                     {/* Menu items */}
                     <div className="py-1">
                       <Link
                         href="/profile"
-                        className="flex items-center px-4 py-2.5 text-sm text-gray-300 hover:bg-white/10 hover:text-brand-gold transition-all duration-200 group"
+                        className="flex items-center px-4 py-2.5 text-sm text-white hover:bg-white/15 hover:text-brand-gold transition-all duration-200 group"
                         onClick={() => setShowUserMenu(false)}
                       >
-                        <FontAwesomeIcon icon={faUser} className="w-4 h-4 mr-3 group-hover:scale-110 transition-transform" />
-                        <span>{t('header.user.profile')}</span>
+                        <FontAwesomeIcon icon={faUser} className="w-4 h-4 mr-3 text-gray-300 group-hover:text-brand-gold group-hover:scale-110 transition-all" />
+                        <span className="font-medium">{t('header.user.profile')}</span>
                       </Link>
                       <Link
                         href="/orders"
-                        className="flex items-center px-4 py-2.5 text-sm text-gray-300 hover:bg-white/10 hover:text-brand-gold transition-all duration-200 group"
+                        className="flex items-center px-4 py-2.5 text-sm text-white hover:bg-white/15 hover:text-brand-gold transition-all duration-200 group"
                         onClick={() => setShowUserMenu(false)}
                       >
-                        <FontAwesomeIcon icon={faShoppingCart} className="w-4 h-4 mr-3 group-hover:scale-110 transition-transform" />
-                        <span>{t('header.user.orders')}</span>
+                        <FontAwesomeIcon icon={faShoppingCart} className="w-4 h-4 mr-3 text-gray-300 group-hover:text-brand-gold group-hover:scale-110 transition-all" />
+                        <span className="font-medium">{t('header.user.orders')}</span>
                       </Link>
                       <Link
                         href="/track-order"
-                        className="flex items-center px-4 py-2.5 text-sm text-gray-300 hover:bg-white/10 hover:text-brand-gold transition-all duration-200 group"
+                        className="flex items-center px-4 py-2.5 text-sm text-white hover:bg-white/15 hover:text-brand-gold transition-all duration-200 group"
                         onClick={() => setShowUserMenu(false)}
                       >
-                        <FontAwesomeIcon icon={faTruck} className="w-4 h-4 mr-3 group-hover:scale-110 transition-transform" />
-                        <span>{t('header.user.trackOrder')}</span>
+                        <FontAwesomeIcon icon={faTruck} className="w-4 h-4 mr-3 text-gray-300 group-hover:text-brand-gold group-hover:scale-110 transition-all" />
+                        <span className="font-medium">{t('header.user.trackOrder')}</span>
                       </Link>
                     </div>
                     
                     {/* Séparateur */}
-                    <div className="border-t border-white/10 my-1"></div>
+                    <div className="border-t border-white/20 my-1"></div>
                     
                     {/* Admin et Logout */}
                     <div className="py-1">
                       {isAdmin && (
                         <Link
                           href="/admin"
-                          className="flex items-center px-4 py-2.5 text-sm text-brand-gold hover:bg-brand-gold/10 hover:text-yellow-400 transition-all duration-200 group"
+                          className="flex items-center px-4 py-2.5 text-sm text-brand-gold hover:bg-brand-gold/15 hover:text-yellow-400 transition-all duration-200 group"
                           onClick={() => setShowUserMenu(false)}
                         >
                           <FontAwesomeIcon icon={faShieldHalved} className="w-4 h-4 mr-3 group-hover:scale-110 transition-transform" />
@@ -375,7 +375,7 @@ export function Header() {
                       )}
                       <Link
                         href="/auth/logout"
-                        className="flex items-center px-4 py-2.5 text-sm text-gray-300 hover:bg-red-500/10 hover:text-red-400 transition-all duration-200 group"
+                        className="flex items-center px-4 py-2.5 text-sm text-white hover:bg-red-500/15 hover:text-red-400 transition-all duration-200 group"
                         onClick={(e) => {
                           e.preventDefault()
                           setShowUserMenu(false)
@@ -386,8 +386,8 @@ export function Header() {
                           }
                         }}
                       >
-                        <FontAwesomeIcon icon={faSignOutAlt} className="w-4 h-4 mr-3 group-hover:scale-110 transition-transform" />
-                        <span>{t('header.user.logout')}</span>
+                        <FontAwesomeIcon icon={faSignOutAlt} className="w-4 h-4 mr-3 text-gray-300 group-hover:text-red-400 group-hover:scale-110 transition-all" />
+                        <span className="font-medium">{t('header.user.logout')}</span>
                       </Link>
                     </div>
                   </div>
