@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { auth0 } from '@/lib/auth0'
 
 // Cache la validation pendant 10 secondes (les codes promo ne changent pas souvent)
 export const revalidate = 10
@@ -15,6 +16,16 @@ export async function POST(request: NextRequest) {
         { error: 'Code promo requis' },
         { status: 400 }
       )
+    }
+
+    // Récupérer l'utilisateur connecté (optionnel - pour vérifier l'utilisation par utilisateur)
+    let userId: string | null = null
+    try {
+      const session = await auth0.getSession(request)
+      userId = session?.user?.sub || null
+    } catch (error) {
+      // Si l'utilisateur n'est pas connecté, on continue quand même (pour les codes sans limite par utilisateur)
+      console.log('Utilisateur non connecté pour validation code promo')
     }
 
     // Rechercher la promotion
@@ -55,12 +66,41 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 3. Nombre d'utilisations maximum
+    // 3. Nombre d'utilisations maximum (global)
     if (promotion.maxUses && promotion.usedCount >= promotion.maxUses) {
       return NextResponse.json(
         { error: 'Cette promotion a atteint son nombre maximum d\'utilisations' },
         { status: 400 }
       )
+    }
+
+    // 3.5. Vérifier si l'utilisateur a déjà utilisé ce code promo
+    if (userId && promotion.maxUses) {
+      // Chercher dans les commandes de l'utilisateur si ce code a déjà été utilisé
+      const userOrders = await prisma.order.findMany({
+        where: {
+          userId: userId,
+          status: {
+            in: ['paid', 'processing', 'shipped', 'delivered']
+          }
+        },
+        select: {
+          metadata: true
+        }
+      })
+
+      // Vérifier si le code promo est dans les métadonnées d'une commande
+      const hasUsedCode = userOrders.some(order => {
+        const metadata = order.metadata as any
+        return metadata?.promoCode === code.toUpperCase()
+      })
+
+      if (hasUsedCode) {
+        return NextResponse.json(
+          { error: 'Vous avez déjà utilisé ce code promo' },
+          { status: 400 }
+        )
+      }
     }
 
     // 4. Montant minimum
