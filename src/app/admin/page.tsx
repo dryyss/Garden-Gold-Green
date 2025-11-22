@@ -113,10 +113,6 @@ function AdminContent() {
   const [editingCategory, setEditingCategory] = useState<{ id: string; name: string; slug: string } | null>(null)
   const [newCategory, setNewCategory] = useState({ name: '', slug: '' })
   const [isSavingCategory, setIsSavingCategory] = useState(false)
-  const [showCategoryModal, setShowCategoryModal] = useState(false)
-  const [editingCategory, setEditingCategory] = useState<{ id: string; name: string; slug: string } | null>(null)
-  const [newCategory, setNewCategory] = useState({ name: '', slug: '' })
-  const [isSavingCategory, setIsSavingCategory] = useState(false)
   const [newProduct, setNewProduct] = useState({
     title: '',
     slug: '',
