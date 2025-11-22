@@ -38,7 +38,6 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-  try {
     const { searchParams } = new URL(request.url)
     const includeProducts = searchParams.get('includeProducts') === 'true'
     const includeCount = searchParams.get('includeCount') === 'true'
@@ -84,6 +83,12 @@ export async function GET(request: NextRequest) {
       error: 'Erreur interne du serveur',
       details: error?.message || 'Une erreur est survenue lors de la récupération des catégories'
     }, { status: 500 })
+  } catch (error: any) {
+    console.error('❌ Erreur lors de la récupération des catégories:', error)
+    return NextResponse.json({ 
+      error: 'Erreur interne du serveur',
+      details: error?.message || 'Une erreur est survenue lors de la récupération des catégories'
+    }, { status: 500 })
   }
 }
 
@@ -97,7 +102,6 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  try {
   try {
     const body = await request.json()
     const { name, slug } = body
@@ -148,5 +152,5 @@ export async function POST(request: NextRequest) {
       details: error?.message || 'Une erreur est survenue lors de la création de la catégorie'
     }, { status: 500 })
   }
-})
+}
 

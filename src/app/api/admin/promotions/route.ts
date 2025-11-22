@@ -38,7 +38,6 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-  try {
     const { searchParams } = new URL(request.url)
     const active = searchParams.get('active') // Filtrer par actif/inactif
     
@@ -73,7 +72,6 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  try {
   try {
     const body = await request.json()
     const {
@@ -149,5 +147,5 @@ export async function POST(request: NextRequest) {
     console.error('Erreur lors de la création de la promotion:', error)
     return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 })
   }
-})
+}
 
