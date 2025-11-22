@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { readOrdersMap } from '@/lib/orders-store'
 import { sendOrderConfirmationEmail } from '@/lib/email'
-import { getSession } from '@auth0/nextjs-auth0'
+import { auth0 } from '@/lib/auth0'
 
 // POST - Renvoyer le reçu/facture par email
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getSession()
+    const session = await auth0.getSession(request)
     
     if (!session?.user) {
       return NextResponse.json(
@@ -18,7 +18,7 @@ export async function POST(
       )
     }
 
-    const orderId = params.id
+    const { id: orderId } = await params
 
     if (!orderId) {
       return NextResponse.json(
