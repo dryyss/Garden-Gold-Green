@@ -128,29 +128,48 @@ function CartPageContent() {
 
     setIsValidatingPromo(true)
     setPromoError(null)
+    setPromoSuccess(false)
 
     try {
       const productIds = state.items.map(item => item.id)
       const cartTotalCents = Math.round(subtotal * 100) // Convertir en centimes
+      const codeToValidate = promoCodeInput.trim().toUpperCase()
+
+      console.log('🔍 Validation du code promo:', codeToValidate)
+      console.log('📦 Produits:', productIds)
+      console.log('💰 Total:', cartTotalCents)
 
       const response = await fetch('/api/promotions/validate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          code: promoCodeInput.trim().toUpperCase(),
+          code: codeToValidate,
           cartTotal: cartTotalCents,
           productIds
         })
       })
 
+      console.log('📡 Réponse API:', response.status, response.statusText)
+
+      // Lire la réponse même si elle n'est pas OK
+      const data = await response.json().catch(() => {
+        console.error('❌ Erreur parsing JSON')
+        return { error: 'Erreur lors de la validation du code promo' }
+      })
+
+      console.log('📋 Données reçues:', data)
+
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Erreur de validation' }))
-        throw new Error(errorData.error || 'Erreur lors de la validation du code promo')
+        // Si la réponse n'est pas OK, afficher l'erreur
+        const errorMessage = data.error || `Erreur ${response.status}: ${response.statusText}`
+        console.error('❌ Erreur validation:', errorMessage)
+        setPromoError(errorMessage)
+        setPromoSuccess(false)
+        return
       }
 
-      const data = await response.json()
-
       if (data.success) {
+        console.log('✅ Code promo valide, application...')
         dispatch({
           type: 'APPLY_PROMO',
           payload: {
@@ -165,11 +184,12 @@ function CartPageContent() {
         // Masquer le message de succès après 3 secondes
         setTimeout(() => setPromoSuccess(false), 3000)
       } else {
+        console.error('❌ Code promo invalide:', data.error)
         setPromoError(data.error || 'Code promo invalide')
         setPromoSuccess(false)
       }
     } catch (error) {
-      console.error('Erreur validation code promo:', error)
+      console.error('❌ Erreur validation code promo:', error)
       const errorMessage = error instanceof Error ? error.message : 'Erreur lors de la validation du code promo'
       setPromoError(errorMessage)
       setPromoSuccess(false)
