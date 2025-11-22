@@ -48,6 +48,8 @@ interface Order {
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
+  invoicePdf?: string | null
+  receiptUrl?: string | null
   shippingAddress?: {
     firstName?: string
     lastName?: string
