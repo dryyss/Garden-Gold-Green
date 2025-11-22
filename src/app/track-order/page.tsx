@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
@@ -61,12 +62,65 @@ interface Order {
 }
 
 export default function TrackOrderPage() {
+  const searchParams = useSearchParams()
   const [orderId, setOrderId] = useState('')
   const [email, setEmail] = useState('')
   const [order, setOrder] = useState<Order | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [searched, setSearched] = useState(false)
+
+  // Préremplir les champs depuis les paramètres d'URL et lancer la recherche automatiquement
+  useEffect(() => {
+    const urlOrderId = searchParams.get('orderId')
+    const urlEmail = searchParams.get('email')
+    
+    if (urlOrderId) {
+      setOrderId(urlOrderId)
+    }
+    if (urlEmail) {
+      setEmail(decodeURIComponent(urlEmail))
+    }
+    
+    // Si les deux paramètres sont présents, lancer automatiquement la recherche
+    if (urlOrderId && urlEmail) {
+      const searchOrder = async () => {
+        setIsLoading(true)
+        setError(null)
+        setOrder(null)
+        setSearched(true)
+
+        try {
+          const response = await fetch('/api/orders/track', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              orderId: urlOrderId.trim(),
+              email: decodeURIComponent(urlEmail).trim().toLowerCase(),
+            }),
+          })
+
+          if (!response.ok) {
+            const data = await response.json()
+            throw new Error(data.error || 'Erreur lors de la recherche de la commande')
+          }
+
+          const data = await response.json()
+          setOrder(data.order)
+        } catch (error) {
+          console.error('Erreur:', error)
+          setError(error instanceof Error ? error.message : 'Erreur inconnue')
+        } finally {
+          setIsLoading(false)
+        }
+      }
+      
+      // Délai pour s'assurer que les états sont mis à jour
+      setTimeout(searchOrder, 100)
+    }
+  }, [searchParams])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
