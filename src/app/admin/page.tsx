@@ -1953,10 +1953,16 @@ function AdminContent() {
                     </Link>
                     <button
                       onClick={() => {
-                        // TODO: Générer facture PDF
-                        alert('Fonctionnalité de génération de facture à venir')
+                        const invoiceUrl = fullOrderDetails?.invoicePdf || fullOrderDetails?.receiptUrl || selectedOrder.invoicePdf
+                        if (invoiceUrl) {
+                          // Ouvrir la facture dans un nouvel onglet
+                          window.open(invoiceUrl, '_blank', 'noopener,noreferrer')
+                        } else {
+                          alert('Aucune facture disponible pour cette commande')
+                        }
                       }}
-                      className="flex-1 bg-white/10 text-white font-semibold py-2.5 px-4 rounded-lg hover:bg-white/20 transition-all duration-300 text-sm sm:text-base flex items-center justify-center gap-2 hover:scale-105 active:scale-95"
+                      disabled={!fullOrderDetails?.invoicePdf && !fullOrderDetails?.receiptUrl && !selectedOrder.invoicePdf}
+                      className="flex-1 bg-white/10 text-white font-semibold py-2.5 px-4 rounded-lg hover:bg-white/20 transition-all duration-300 text-sm sm:text-base flex items-center justify-center gap-2 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                     >
                       <FontAwesomeIcon icon={faDownload} />
                       <span className="hidden sm:inline">Facture</span>
