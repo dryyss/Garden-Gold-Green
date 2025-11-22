@@ -103,6 +103,7 @@ function CartPageContent() {
   const [promoCodeInput, setPromoCodeInput] = useState('')
   const [isValidatingPromo, setIsValidatingPromo] = useState(false)
   const [promoError, setPromoError] = useState<string | null>(null)
+  const [promoSuccess, setPromoSuccess] = useState(false)
 
   // Calculer le total
   const subtotal = state.items.reduce((total, item) => total + (item.price * item.quantity), 0)
@@ -142,6 +143,11 @@ function CartPageContent() {
         })
       })
 
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Erreur de validation' }))
+        throw new Error(errorData.error || 'Erreur lors de la validation du code promo')
+      }
+
       const data = await response.json()
 
       if (data.success) {
@@ -155,12 +161,18 @@ function CartPageContent() {
         })
         setPromoCodeInput('')
         setPromoError(null)
+        setPromoSuccess(true)
+        // Masquer le message de succès après 3 secondes
+        setTimeout(() => setPromoSuccess(false), 3000)
       } else {
         setPromoError(data.error || 'Code promo invalide')
+        setPromoSuccess(false)
       }
     } catch (error) {
       console.error('Erreur validation code promo:', error)
-      setPromoError('Erreur lors de la validation du code promo')
+      const errorMessage = error instanceof Error ? error.message : 'Erreur lors de la validation du code promo'
+      setPromoError(errorMessage)
+      setPromoSuccess(false)
     } finally {
       setIsValidatingPromo(false)
     }
@@ -171,6 +183,7 @@ function CartPageContent() {
     dispatch({ type: 'REMOVE_PROMO' })
     setPromoCodeInput('')
     setPromoError(null)
+    setPromoSuccess(false)
   }
 
   const handleQuantityChange = (itemId: string, newQuantity: number) => {
@@ -450,6 +463,7 @@ function CartPageContent() {
                       onChange={(e) => {
                         setPromoCodeInput(e.target.value.toUpperCase())
                         setPromoError(null)
+                        setPromoSuccess(false)
                       }}
                       onKeyPress={(e) => {
                         if (e.key === 'Enter') {
@@ -469,7 +483,16 @@ function CartPageContent() {
                     </button>
                   </div>
                   {promoError && (
-                    <p className="text-red-400 text-xs sm:text-sm">{promoError}</p>
+                    <div className="flex items-center gap-2 text-red-400 text-xs sm:text-sm bg-red-500/10 border border-red-500/20 rounded-lg p-2">
+                      <FontAwesomeIcon icon={faXmark} className="text-xs" />
+                      <p>{promoError}</p>
+                    </div>
+                  )}
+                  {promoSuccess && !state.promoCode && (
+                    <div className="flex items-center gap-2 text-brand-green text-xs sm:text-sm bg-brand-green/10 border border-brand-green/20 rounded-lg p-2">
+                      <FontAwesomeIcon icon={faCheck} className="text-xs" />
+                      <p>Code promo appliqué avec succès !</p>
+                    </div>
                   )}
                 </div>
               )}
