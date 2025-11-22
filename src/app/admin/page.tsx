@@ -109,6 +109,14 @@ function AdminContent() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [productSearch, setProductSearch] = useState('')
   const [categories, setCategories] = useState<Array<{ id: string; name: string; slug: string }>>([])
+  const [showCategoryModal, setShowCategoryModal] = useState(false)
+  const [editingCategory, setEditingCategory] = useState<{ id: string; name: string; slug: string } | null>(null)
+  const [newCategory, setNewCategory] = useState({ name: '', slug: '' })
+  const [isSavingCategory, setIsSavingCategory] = useState(false)
+  const [showCategoryModal, setShowCategoryModal] = useState(false)
+  const [editingCategory, setEditingCategory] = useState<{ id: string; name: string; slug: string } | null>(null)
+  const [newCategory, setNewCategory] = useState({ name: '', slug: '' })
+  const [isSavingCategory, setIsSavingCategory] = useState(false)
   const [newProduct, setNewProduct] = useState({
     title: '',
     slug: '',
@@ -376,6 +384,7 @@ function AdminContent() {
               { id: 'dashboard', name: 'Tableau de bord', icon: faChartLine },
               { id: 'orders', name: 'Commandes', icon: faShoppingBag },
               { id: 'products', name: 'Produits', icon: faBox },
+              { id: 'categories', name: 'Catégories', icon: faFilter },
               { id: 'customers', name: 'Utilisateurs', icon: faUserShield },
             ].map(tab => (
               <button
@@ -980,6 +989,141 @@ function AdminContent() {
         )}
 
         {/* Customers Tab */}
+        {/* Categories Tab */}
+        {activeTab === 'categories' && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-white">Gestion des Catégories</h2>
+              <button
+                onClick={() => {
+                  setEditingCategory(null)
+                  setNewCategory({ name: '', slug: '' })
+                  setShowCategoryModal(true)
+                }}
+                className="btn-gold text-black font-semibold py-2.5 px-6 rounded-lg shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300 flex items-center gap-2 hover:scale-105 active:scale-95"
+              >
+                <FontAwesomeIcon icon={faPlus} />
+                Ajouter une catégorie
+              </button>
+            </div>
+
+            {categories.length === 0 ? (
+              <div className="card-bg rounded-xl p-12 text-center">
+                <FontAwesomeIcon icon={faFilter} className="text-6xl text-gray-500 mb-4" />
+                <h3 className="text-xl font-semibold text-white mb-2">Aucune catégorie</h3>
+                <p className="text-gray-400 mb-6">Créez votre première catégorie pour commencer à organiser vos produits</p>
+                <button
+                  onClick={() => {
+                    setEditingCategory(null)
+                    setNewCategory({ name: '', slug: '' })
+                    setShowCategoryModal(true)
+                  }}
+                  className="btn-gold text-black font-semibold py-2.5 px-6 rounded-lg shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300 flex items-center gap-2 mx-auto hover:scale-105 active:scale-95"
+                >
+                  <FontAwesomeIcon icon={faPlus} />
+                  Créer une catégorie
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {categories.map((category) => (
+                  <div key={category.id} className="card-bg rounded-xl p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div>
+                        <h3 className="text-lg font-semibold text-white mb-1">{category.name}</h3>
+                        <p className="text-sm text-gray-400">Slug: {category.slug}</p>
+                      </div>
+                      <button
+                        onClick={() => handleDeleteCategory(category.id)}
+                        className="text-red-400 hover:text-red-500 transition-colors p-2"
+                        title="Supprimer la catégorie"
+                      >
+                        <FontAwesomeIcon icon={faTrash} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Modal de création/édition de catégorie */}
+            {showCategoryModal && (
+              <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+                <div className="card-bg rounded-xl p-6 max-w-md w-full">
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-xl font-bold text-white">
+                      {editingCategory ? 'Modifier la catégorie' : 'Ajouter une catégorie'}
+                    </h3>
+                    <button
+                      onClick={() => setShowCategoryModal(false)}
+                      className="text-gray-400 hover:text-white transition-colors"
+                    >
+                      <FontAwesomeIcon icon={faXmark} className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  <form onSubmit={handleCreateCategory}>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm text-gray-400 mb-2">Nom de la catégorie *</label>
+                        <input
+                          type="text"
+                          required
+                          value={newCategory.name}
+                          onChange={(e) => {
+                            const name = e.target.value
+                            setNewCategory({
+                              name,
+                              slug: newCategory.slug || generateSlug(name)
+                            })
+                          }}
+                          className="w-full px-4 py-2 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                          placeholder="Ex: Fleurs CBD"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm text-gray-400 mb-2">Slug *</label>
+                        <input
+                          type="text"
+                          required
+                          value={newCategory.slug}
+                          onChange={(e) => {
+                            const slug = generateSlug(e.target.value)
+                            setNewCategory({ ...newCategory, slug })
+                          }}
+                          className="w-full px-4 py-2 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                          placeholder="Ex: fleurs-cbd"
+                        />
+                        <p className="text-xs text-gray-500 mt-1">
+                          Le slug est généré automatiquement depuis le nom. Modifiable manuellement.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-3 pt-6 border-t border-white/10 mt-6">
+                      <button
+                        type="button"
+                        onClick={() => setShowCategoryModal(false)}
+                        className="flex-1 bg-white/10 text-white font-semibold py-2.5 px-4 rounded-lg hover:bg-white/20 transition-all duration-300"
+                      >
+                        Annuler
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={isSavingCategory}
+                        className="flex-1 btn-gold text-black font-semibold py-2.5 px-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300"
+                      >
+                        {isSavingCategory ? 'Création...' : 'Créer la catégorie'}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         {activeTab === 'customers' && (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
