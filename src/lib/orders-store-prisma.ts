@@ -280,9 +280,25 @@ export async function getOrderById(orderId: string): Promise<OrderRecord | null>
   try {
     const order = await prisma.order.findUnique({
       where: { id: orderId },
-      include: { items: { include: { product: true } } }
+      include: { items: { include: { product: true } } },
+      // S'assurer que tous les champs sont récupérés, notamment invoicePdf et receiptUrl
     })
-    return order ? prismaOrderToRecord(order) : null
+    
+    if (!order) {
+      return null
+    }
+    
+    const orderRecord = prismaOrderToRecord(order)
+    // Log pour déboguer
+    console.log('📄 Commande récupérée:', {
+      id: orderRecord.id,
+      hasInvoicePdf: !!orderRecord.invoicePdf,
+      hasReceiptUrl: !!orderRecord.receiptUrl,
+      invoicePdf: orderRecord.invoicePdf,
+      receiptUrl: orderRecord.receiptUrl
+    })
+    
+    return orderRecord
   } catch (error: any) {
     console.error('❌ Erreur lors de la récupération de la commande:', error)
     return null

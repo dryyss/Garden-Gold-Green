@@ -464,7 +464,7 @@ export default function OrderDetailPage() {
               
               {/* Actions reçu/facture */}
               <div className="pt-4 border-t border-white/10 space-y-2">
-                {(order.invoicePdf || order.receiptUrl) && (
+                {(order.invoicePdf || order.receiptUrl) ? (
                   <a
                     href={order.invoicePdf || order.receiptUrl || '#'}
                     target="_blank"
@@ -474,6 +474,10 @@ export default function OrderDetailPage() {
                     <FontAwesomeIcon icon={faDownload} />
                     <span>{order.invoicePdf ? 'Télécharger la facture PDF' : 'Voir le reçu Stripe'}</span>
                   </a>
+                ) : (
+                  <p className="text-gray-400 text-sm text-center py-2">
+                    Aucune facture disponible pour cette commande
+                  </p>
                 )}
                 <button
                   onClick={async () => {
