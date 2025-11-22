@@ -119,6 +119,13 @@ export default function OrderDetailPage() {
       }
 
       const data = await response.json()
+      console.log('📦 Commande reçue depuis API:', {
+        id: data.order?.id,
+        hasInvoicePdf: !!data.order?.invoicePdf,
+        hasReceiptUrl: !!data.order?.receiptUrl,
+        invoicePdf: data.order?.invoicePdf,
+        receiptUrl: data.order?.receiptUrl
+      })
       setOrder(data.order)
     } catch (error) {
       console.error('Erreur lors du chargement de la commande:', error)
