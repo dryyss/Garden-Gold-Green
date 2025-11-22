@@ -210,15 +210,29 @@ function AdminContent() {
       }
 
       // Charger les catégories depuis Prisma (même source que les filtres)
-      const categoriesResponse = await fetch('/api/categories')
-      const categoriesData = await categoriesResponse.json()
-      if (categoriesData.success && categoriesData.categories) {
-        // Convertir le format de l'API en format attendu par l'admin
-        setCategories(categoriesData.categories.map((cat: any) => ({
-          id: cat.id,
-          name: cat.name,
-          slug: cat.slug
-        })))
+      try {
+        const categoriesResponse = await fetch('/api/categories')
+        const categoriesData = await categoriesResponse.json()
+        if (categoriesData.success) {
+          // Convertir le format de l'API en format attendu par l'admin
+          // Toujours définir les catégories, même si le tableau est vide
+          const formattedCategories = (categoriesData.categories || []).map((cat: any) => ({
+            id: cat.id,
+            name: cat.name,
+            slug: cat.slug
+          }))
+          setCategories(formattedCategories)
+          
+          if (formattedCategories.length === 0) {
+            console.warn('⚠️ Aucune catégorie trouvée dans la base de données. Créez des catégories via Prisma ou l\'interface admin.')
+          }
+        } else {
+          console.error('Erreur chargement catégories:', categoriesData.error)
+          setCategories([])
+        }
+      } catch (error) {
+        console.error('Erreur chargement catégories:', error)
+        setCategories([])
       }
     
       // Charger les utilisateurs Auth0 (admin/owner ou mode bypass)

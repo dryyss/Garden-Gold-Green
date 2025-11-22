@@ -1,49 +1,44 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAdmin } from '@/lib/auth-utils'
-import categoriesData from '@/data/categories.json'
-import { listProducts } from '@/lib/products-store'
+import { prisma } from '@/lib/prisma'
 
-// GET - Récupérer toutes les catégories depuis le fichier JSON
+// GET - Récupérer toutes les catégories depuis Prisma
 export const GET = requireAdmin(async (request: NextRequest) => {
   try {
     const { searchParams } = new URL(request.url)
     const includeProducts = searchParams.get('includeProducts') === 'true'
     const includeCount = searchParams.get('includeCount') === 'true'
 
-    const categories = [...categoriesData]
+    const categories = await prisma.category.findMany({
+      orderBy: { name: 'asc' },
+      include: {
+        _count: {
+          select: {
+            products: {
+              where: {
+                published: true
+              }
+            }
+          }
+        },
+        ...(includeProducts ? {
+          products: {
+            where: {
+              published: true
+            }
+          }
+        } : {})
+      }
+    })
 
-    // Ajouter le nombre de produits si demandé
-    let categoriesWithCount = categories
-    if (includeCount) {
-      const products = await listProducts()
-      categoriesWithCount = categories.map((category) => {
-        const productCount = products.filter((product: any) => 
-          product.published && 
-          product.categories?.some((cat: any) => cat.slug === category.slug)
-        ).length
-        
-        return {
-          ...category,
-          productCount
-        }
-      })
-    }
-
-    // Ajouter les produits si demandé
-    if (includeProducts) {
-      const products = await listProducts()
-      categoriesWithCount = categories.map((category) => {
-        const categoryProducts = products.filter((product: any) =>
-          product.published &&
-          product.categories?.some((cat: any) => cat.slug === category.slug)
-        )
-        
-        return {
-          ...category,
-          products: categoryProducts
-        }
-      })
-    }
+    // Formater les catégories
+    let categoriesWithCount = categories.map((category) => ({
+      id: category.id,
+      name: category.name,
+      slug: category.slug,
+      ...(includeCount ? { productCount: category._count.products } : {}),
+      ...(includeProducts ? { products: category.products } : {})
+    }))
 
     return NextResponse.json({
       success: true,
@@ -58,9 +53,7 @@ export const GET = requireAdmin(async (request: NextRequest) => {
   }
 })
 
-// POST - Créer une nouvelle catégorie
-// Note: Avec les fichiers JSON, les nouvelles catégories ne sont pas persistées.
-// Pour ajouter une catégorie de manière permanente, modifiez directement categories.json
+// POST - Créer une nouvelle catégorie dans Prisma
 export const POST = requireAdmin(async (request: NextRequest) => {
   try {
     const body = await request.json()
@@ -74,10 +67,13 @@ export const POST = requireAdmin(async (request: NextRequest) => {
       )
     }
 
-    // Vérifier si le slug existe déjà dans le fichier JSON
-    const existingCategory = categoriesData.find(
-      (cat: any) => cat.slug === slug.toLowerCase().replace(/\s+/g, '-')
-    )
+    // Normaliser le slug
+    const finalSlug = slug.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
+
+    // Vérifier si le slug existe déjà dans Prisma
+    const existingCategory = await prisma.category.findUnique({
+      where: { slug: finalSlug }
+    })
 
     if (existingCategory) {
       return NextResponse.json(
@@ -86,25 +82,21 @@ export const POST = requireAdmin(async (request: NextRequest) => {
       )
     }
 
-    // Générer un ID unique
-    const newId = `cat-${slug.toLowerCase().replace(/\s+/g, '-')}`
-    const finalSlug = slug.toLowerCase().replace(/\s+/g, '-')
-
-    // Créer la catégorie (en mémoire uniquement, pas persistée)
-    const category = {
-      id: newId,
-      name,
-      slug: finalSlug
-    }
-
-    // Note: Pour persister, il faudrait écrire dans categories.json
-    // Ceci nécessiterait des permissions système et n'est pas recommandé en production
-    console.warn('⚠️ Nouvelle catégorie créée en mémoire uniquement. Pour la persister, modifiez categories.json manuellement.')
+    // Créer la catégorie dans Prisma
+    const category = await prisma.category.create({
+      data: {
+        name,
+        slug: finalSlug
+      }
+    })
 
     return NextResponse.json({
       success: true,
-      category,
-      warning: 'La catégorie a été créée en mémoire uniquement. Pour la persister, modifiez categories.json manuellement.'
+      category: {
+        id: category.id,
+        name: category.name,
+        slug: category.slug
+      }
     }, { status: 201 })
   } catch (error: any) {
     console.error('❌ Erreur lors de la création de la catégorie:', error)
