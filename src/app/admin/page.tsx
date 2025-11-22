@@ -115,6 +115,33 @@ function AdminContent() {
   const [editingCategory, setEditingCategory] = useState<{ id: string; name: string; slug: string } | null>(null)
   const [newCategory, setNewCategory] = useState({ name: '', slug: '' })
   const [isSavingCategory, setIsSavingCategory] = useState(false)
+  const [promotions, setPromotions] = useState<Array<{
+    id: string
+    code: string
+    description: string | null
+    discountType: string
+    discountValue: number
+    minimumAmount: number | null
+    maxUses: number | null
+    usedCount: number
+    validFrom: string
+    validUntil: string | null
+    isActive: boolean
+  }>>([])
+  const [showPromoModal, setShowPromoModal] = useState(false)
+  const [editingPromo, setEditingPromo] = useState<any>(null)
+  const [newPromo, setNewPromo] = useState({
+    code: '',
+    description: '',
+    discountType: 'percentage' as 'percentage' | 'fixed',
+    discountValue: '',
+    minimumAmount: '',
+    maxUses: '',
+    validFrom: new Date().toISOString().split('T')[0],
+    validUntil: '',
+    isActive: true
+  })
+  const [isSavingPromo, setIsSavingPromo] = useState(false)
   const [newProduct, setNewProduct] = useState({
     title: '',
     slug: '',
