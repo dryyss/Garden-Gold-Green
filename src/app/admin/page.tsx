@@ -2134,21 +2134,28 @@ function AdminContent() {
                   </div>
                   <div>
                     <label className="block text-sm text-gray-400 mb-2">Catégories</label>
-                    <select
-                      multiple
-                      value={editingProduct.categoryIds}
-                      onChange={(e) => {
-                        const selected = Array.from(e.target.selectedOptions, (option) => option.value)
-                        setEditingProduct({ ...editingProduct, categoryIds: selected })
-                      }}
-                      className="w-full px-4 py-2 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                    >
-                      {categories.map((cat) => (
-                        <option key={cat.id} value={cat.id}>
-                          {cat.name}
-                        </option>
-                      ))}
-                    </select>
+                    {categories.length > 0 ? (
+                      <select
+                        multiple
+                        value={editingProduct.categoryIds || []}
+                        onChange={(e) => {
+                          const selected = Array.from(e.target.selectedOptions, (option) => option.value)
+                          setEditingProduct({ ...editingProduct, categoryIds: selected })
+                        }}
+                        className="w-full px-4 py-2 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-gold min-h-[120px]"
+                        size={Math.min(categories.length, 5)}
+                      >
+                        {categories.map((cat) => (
+                          <option key={cat.id} value={cat.id}>
+                            {cat.name}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <div className="w-full px-4 py-2 bg-black/30 border border-white/10 rounded-lg text-gray-500 text-sm">
+                        Aucune catégorie disponible. Créez d'abord des catégories.
+                      </div>
+                    )}
                     <p className="text-xs text-gray-500 mt-1">Maintenez Ctrl/Cmd pour sélectionner plusieurs catégories</p>
                   </div>
                 </div>
