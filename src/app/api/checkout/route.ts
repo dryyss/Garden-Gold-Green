@@ -16,7 +16,7 @@ const stripe = sharedStripe instanceof Stripe ? sharedStripe : new Stripe(proces
 
 export async function POST(request: NextRequest) {
   try {
-    const { items, paymentMethod } = await request.json()
+    const { items, paymentMethod, promoCode } = await request.json()
 
     if (!items || items.length === 0) {
       return NextResponse.json(
@@ -72,7 +72,38 @@ export async function POST(request: NextRequest) {
     // Calculer le sous-total et les frais de livraison
     const subtotal = items.reduce((total: number, item: any) => total + (item.price * item.quantity), 0)
     const shipping = subtotal > 100 ? 0 : 9.90
-    const total = subtotal + shipping
+    
+    // Valider et appliquer le code promo si fourni
+    let discountCents = 0
+    let appliedPromoCode: string | null = null
+    
+    if (promoCode) {
+      try {
+        const productIds = items.map((item: any) => item.id)
+        const cartTotalCents = Math.round(subtotal * 100)
+        
+        const promoResponse = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/promotions/validate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            code: promoCode.toUpperCase(),
+            cartTotal: cartTotalCents,
+            productIds
+          })
+        })
+        
+        const promoData = await promoResponse.json()
+        if (promoData.success) {
+          discountCents = promoData.discountAmount
+          appliedPromoCode = promoData.promotion.code
+        }
+      } catch (error) {
+        console.error('Erreur validation code promo dans checkout:', error)
+        // Continuer sans code promo en cas d'erreur
+      }
+    }
+    
+    const total = Math.max(0, subtotal + shipping - (discountCents / 100))
 
     // Créer les line items pour Stripe
     const lineItems = items.map((item: any) => {
@@ -88,6 +119,21 @@ export async function POST(request: NextRequest) {
         quantity: item.quantity,
       }
     })
+
+    // Ajouter la remise si un code promo est appliqué
+    if (discountCents > 0) {
+      lineItems.push({
+        price_data: {
+          currency: 'eur',
+          product_data: {
+            name: `Remise (${appliedPromoCode})`,
+            description: 'Code promo appliqué',
+          },
+          unit_amount: -discountCents, // Montant négatif pour la remise
+        },
+        quantity: 1,
+      })
+    }
 
     // Ajouter les frais de livraison si nécessaire
     if (shipping > 0) {
@@ -149,6 +195,8 @@ export async function POST(request: NextRequest) {
         userEmail: userEmail || '',
         cartItems: JSON.stringify(metadataItems),
         paymentMethod: paymentMethod || 'stripe',
+        promoCode: appliedPromoCode || '',
+        discountCents: discountCents.toString(),
       },
       invoice_creation: {
         enabled: true,

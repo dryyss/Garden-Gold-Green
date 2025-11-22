@@ -22,7 +22,9 @@ import {
   faUserShield,
   faCrown,
   faXmark,
-  faTruck
+  faTruck,
+  faTag,
+  faTicketAlt
 } from '@fortawesome/free-solid-svg-icons'
 import Image from 'next/image'
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Area, AreaChart } from 'recharts'
@@ -328,9 +330,23 @@ function AdminContent() {
     }
   }, [isAdminOwnerUser, isBypassMode, periodFilter])
 
+  // Fonction pour charger les promotions
+  const loadPromotions = useCallback(async () => {
+    try {
+      const response = await fetch('/api/admin/promotions')
+      const data = await response.json()
+      if (data.success && data.promotions) {
+        setPromotions(data.promotions)
+      }
+    } catch (error) {
+      console.error('Erreur chargement promotions:', error)
+    }
+  }, [])
+
   useEffect(() => {
     loadData()
-  }, [loadData])
+    loadPromotions()
+  }, [loadData, loadPromotions])
 
   // Générer le slug automatiquement depuis le nom
   const generateSlug = (name: string) => {
@@ -453,6 +469,7 @@ function AdminContent() {
               { id: 'orders', name: 'Commandes', icon: faShoppingBag },
               { id: 'products', name: 'Produits', icon: faBox },
               { id: 'categories', name: 'Catégories', icon: faFilter },
+              { id: 'promotions', name: 'Promotions', icon: faTag },
               { id: 'customers', name: 'Utilisateurs', icon: faUserShield },
             ].map(tab => (
               <button
@@ -1183,6 +1200,357 @@ function AdminContent() {
                         className="flex-1 btn-gold text-black font-semibold py-2.5 px-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300"
                       >
                         {isSavingCategory ? 'Création...' : 'Créer la catégorie'}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Promotions Tab */}
+        {activeTab === 'promotions' && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-white">Gestion des Codes Promo</h2>
+              <button
+                onClick={() => {
+                  setEditingPromo(null)
+                  setNewPromo({
+                    code: '',
+                    description: '',
+                    discountType: 'percentage',
+                    discountValue: '',
+                    minimumAmount: '',
+                    maxUses: '',
+                    validFrom: new Date().toISOString().split('T')[0],
+                    validUntil: '',
+                    isActive: true
+                  })
+                  setShowPromoModal(true)
+                }}
+                className="btn-gold text-black font-semibold py-2.5 px-6 rounded-lg shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300 flex items-center gap-2 hover:scale-105 active:scale-95"
+              >
+                <FontAwesomeIcon icon={faPlus} />
+                Ajouter un code promo
+              </button>
+            </div>
+
+            {promotions.length === 0 ? (
+              <div className="card-bg rounded-xl p-12 text-center">
+                <FontAwesomeIcon icon={faTag} className="text-6xl text-gray-500 mb-4" />
+                <h3 className="text-xl font-semibold text-white mb-2">Aucun code promo</h3>
+                <p className="text-gray-400 mb-6">Créez votre premier code promo pour offrir des réductions à vos clients</p>
+                <button
+                  onClick={() => {
+                    setEditingPromo(null)
+                    setNewPromo({
+                      code: '',
+                      description: '',
+                      discountType: 'percentage',
+                      discountValue: '',
+                      minimumAmount: '',
+                      maxUses: '',
+                      validFrom: new Date().toISOString().split('T')[0],
+                      validUntil: '',
+                      isActive: true
+                    })
+                    setShowPromoModal(true)
+                  }}
+                  className="btn-gold text-black font-semibold py-2.5 px-6 rounded-lg shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300 flex items-center gap-2 mx-auto hover:scale-105 active:scale-95"
+                >
+                  <FontAwesomeIcon icon={faPlus} />
+                  Créer un code promo
+                </button>
+              </div>
+            ) : (
+              <div className="card-bg rounded-xl overflow-hidden">
+                <table className="w-full">
+                  <thead className="bg-white/5">
+                    <tr>
+                      <th className="text-left p-4 text-white font-semibold">Code</th>
+                      <th className="text-left p-4 text-white font-semibold">Type</th>
+                      <th className="text-left p-4 text-white font-semibold">Valeur</th>
+                      <th className="text-left p-4 text-white font-semibold">Utilisations</th>
+                      <th className="text-left p-4 text-white font-semibold">Validité</th>
+                      <th className="text-left p-4 text-white font-semibold">Statut</th>
+                      <th className="text-right p-4 text-white font-semibold">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {promotions.map((promo) => (
+                      <tr key={promo.id} className="border-t border-white/10 hover:bg-white/5">
+                        <td className="p-4 text-white font-semibold">{promo.code}</td>
+                        <td className="p-4 text-gray-300">
+                          {promo.discountType === 'percentage' ? 'Pourcentage' : 'Montant fixe'}
+                        </td>
+                        <td className="p-4 text-gray-300">
+                          {promo.discountType === 'percentage' 
+                            ? `${promo.discountValue}%` 
+                            : `${(promo.discountValue / 100).toFixed(2)}€`}
+                        </td>
+                        <td className="p-4 text-gray-300">
+                          {promo.usedCount} / {promo.maxUses || '∞'}
+                        </td>
+                        <td className="p-4 text-gray-300 text-sm">
+                          {new Date(promo.validFrom).toLocaleDateString('fr-FR')}
+                          {promo.validUntil && ` - ${new Date(promo.validUntil).toLocaleDateString('fr-FR')}`}
+                        </td>
+                        <td className="p-4">
+                          <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                            promo.isActive ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'
+                          }`}>
+                            {promo.isActive ? 'Actif' : 'Inactif'}
+                          </span>
+                        </td>
+                        <td className="p-4 text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <button
+                              onClick={async () => {
+                                setEditingPromo(promo)
+                                setNewPromo({
+                                  code: promo.code,
+                                  description: promo.description || '',
+                                  discountType: promo.discountType as 'percentage' | 'fixed',
+                                  discountValue: promo.discountValue.toString(),
+                                  minimumAmount: promo.minimumAmount ? (promo.minimumAmount / 100).toString() : '',
+                                  maxUses: promo.maxUses?.toString() || '',
+                                  validFrom: new Date(promo.validFrom).toISOString().split('T')[0],
+                                  validUntil: promo.validUntil ? new Date(promo.validUntil).toISOString().split('T')[0] : '',
+                                  isActive: promo.isActive
+                                })
+                                setShowPromoModal(true)
+                              }}
+                              className="text-brand-gold hover:text-brand-gold/80 transition-colors p-2"
+                              title="Modifier"
+                            >
+                              <FontAwesomeIcon icon={faEdit} />
+                            </button>
+                            <button
+                              onClick={async () => {
+                                if (!confirm('Êtes-vous sûr de vouloir supprimer ce code promo ?')) return
+                                try {
+                                  const response = await fetch(`/api/admin/promotions/${promo.id}`, {
+                                    method: 'DELETE'
+                                  })
+                                  const data = await response.json()
+                                  if (data.success) {
+                                    await loadPromotions()
+                                    alert('Code promo supprimé avec succès !')
+                                  } else {
+                                    alert(data.error || 'Erreur lors de la suppression')
+                                  }
+                                } catch (error) {
+                                  console.error('Erreur suppression promo:', error)
+                                  alert('Erreur lors de la suppression')
+                                }
+                              }}
+                              className="text-red-400 hover:text-red-500 transition-colors p-2"
+                              title="Supprimer"
+                            >
+                              <FontAwesomeIcon icon={faTrash} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {/* Modal de création/édition de code promo */}
+            {showPromoModal && (
+              <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+                <div className="card-bg rounded-xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-xl font-bold text-white">
+                      {editingPromo ? 'Modifier le code promo' : 'Ajouter un code promo'}
+                    </h3>
+                    <button
+                      onClick={() => setShowPromoModal(false)}
+                      className="text-gray-400 hover:text-white transition-colors"
+                    >
+                      <FontAwesomeIcon icon={faXmark} className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  <form onSubmit={async (e) => {
+                    e.preventDefault()
+                    setIsSavingPromo(true)
+                    try {
+                      const payload = {
+                        code: newPromo.code.toUpperCase(),
+                        description: newPromo.description,
+                        discountType: newPromo.discountType,
+                        discountValue: newPromo.discountType === 'percentage' 
+                          ? parseInt(newPromo.discountValue) 
+                          : Math.round(parseFloat(newPromo.discountValue) * 100),
+                        minimumAmount: newPromo.minimumAmount ? Math.round(parseFloat(newPromo.minimumAmount) * 100) : null,
+                        maxUses: newPromo.maxUses ? parseInt(newPromo.maxUses) : null,
+                        validFrom: new Date(newPromo.validFrom).toISOString(),
+                        validUntil: newPromo.validUntil ? new Date(newPromo.validUntil).toISOString() : null,
+                        isActive: newPromo.isActive
+                      }
+
+                      const url = editingPromo 
+                        ? `/api/admin/promotions/${editingPromo.id}`
+                        : '/api/admin/promotions'
+                      const method = editingPromo ? 'PATCH' : 'POST'
+
+                      const response = await fetch(url, {
+                        method,
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                      })
+
+                      const data = await response.json()
+                      if (data.success) {
+                        await loadPromotions()
+                        setShowPromoModal(false)
+                        alert(editingPromo ? 'Code promo modifié avec succès !' : 'Code promo créé avec succès !')
+                      } else {
+                        alert(data.error || 'Erreur lors de la sauvegarde')
+                      }
+                    } catch (error) {
+                      console.error('Erreur sauvegarde promo:', error)
+                      alert('Erreur lors de la sauvegarde')
+                    } finally {
+                      setIsSavingPromo(false)
+                    }
+                  }}>
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm text-gray-400 mb-2">Code promo *</label>
+                          <input
+                            type="text"
+                            required
+                            value={newPromo.code}
+                            onChange={(e) => setNewPromo({ ...newPromo, code: e.target.value.toUpperCase() })}
+                            className="w-full px-4 py-2 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                            placeholder="EX: SUMMER2024"
+                            disabled={!!editingPromo}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm text-gray-400 mb-2">Type de remise *</label>
+                          <select
+                            required
+                            value={newPromo.discountType}
+                            onChange={(e) => setNewPromo({ ...newPromo, discountType: e.target.value as 'percentage' | 'fixed' })}
+                            className="w-full px-4 py-2 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                          >
+                            <option value="percentage">Pourcentage (%)</option>
+                            <option value="fixed">Montant fixe (€)</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm text-gray-400 mb-2">
+                            Valeur de la remise * 
+                            {newPromo.discountType === 'percentage' ? ' (%)' : ' (€)'}
+                          </label>
+                          <input
+                            type="number"
+                            required
+                            min="0"
+                            max={newPromo.discountType === 'percentage' ? '100' : undefined}
+                            step={newPromo.discountType === 'percentage' ? '1' : '0.01'}
+                            value={newPromo.discountValue}
+                            onChange={(e) => setNewPromo({ ...newPromo, discountValue: e.target.value })}
+                            className="w-full px-4 py-2 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                            placeholder={newPromo.discountType === 'percentage' ? 'Ex: 20' : 'Ex: 10.00'}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm text-gray-400 mb-2">Montant minimum (€)</label>
+                          <input
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            value={newPromo.minimumAmount}
+                            onChange={(e) => setNewPromo({ ...newPromo, minimumAmount: e.target.value })}
+                            className="w-full px-4 py-2 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                            placeholder="Ex: 50.00"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm text-gray-400 mb-2">Description</label>
+                        <textarea
+                          value={newPromo.description}
+                          onChange={(e) => setNewPromo({ ...newPromo, description: e.target.value })}
+                          className="w-full px-4 py-2 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                          rows={2}
+                          placeholder="Description de la promotion..."
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                          <label className="block text-sm text-gray-400 mb-2">Date de début *</label>
+                          <input
+                            type="date"
+                            required
+                            value={newPromo.validFrom}
+                            onChange={(e) => setNewPromo({ ...newPromo, validFrom: e.target.value })}
+                            className="w-full px-4 py-2 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm text-gray-400 mb-2">Date de fin</label>
+                          <input
+                            type="date"
+                            value={newPromo.validUntil}
+                            onChange={(e) => setNewPromo({ ...newPromo, validUntil: e.target.value })}
+                            className="w-full px-4 py-2 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm text-gray-400 mb-2">Utilisations max</label>
+                          <input
+                            type="number"
+                            min="1"
+                            value={newPromo.maxUses}
+                            onChange={(e) => setNewPromo({ ...newPromo, maxUses: e.target.value })}
+                            className="w-full px-4 py-2 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                            placeholder="Illimité si vide"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="flex items-center gap-2 text-white cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={newPromo.isActive}
+                            onChange={(e) => setNewPromo({ ...newPromo, isActive: e.target.checked })}
+                            className="w-4 h-4 text-brand-gold focus:ring-brand-gold rounded"
+                          />
+                          <span>Code promo actif</span>
+                        </label>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-3 pt-6 border-t border-white/10 mt-6">
+                      <button
+                        type="button"
+                        onClick={() => setShowPromoModal(false)}
+                        className="flex-1 bg-white/10 text-white font-semibold py-2.5 px-4 rounded-lg hover:bg-white/20 transition-all duration-300"
+                      >
+                        Annuler
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={isSavingPromo}
+                        className="flex-1 btn-gold text-black font-semibold py-2.5 px-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed shadow-gold-glow hover:shadow-gold-glow-lg transition-all duration-300"
+                      >
+                        {isSavingPromo ? 'Sauvegarde...' : editingPromo ? 'Modifier' : 'Créer le code promo'}
                       </button>
                     </div>
                   </form>

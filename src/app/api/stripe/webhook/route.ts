@@ -233,7 +233,12 @@ export async function POST(request: NextRequest) {
             expandedSession.total_details?.amount_tax ??
             ((paymentIntentObj?.amount_details as any)?.tax?.amount ?? null)
 
-          const discountCents = expandedSession.total_details?.amount_discount ?? null
+          // Récupérer la remise depuis les metadata ou depuis Stripe
+          const promoCodeFromMetadata = metadata?.promoCode || null
+          const discountCentsFromMetadata = metadata?.discountCents 
+            ? parseInt(metadata.discountCents) 
+            : null
+          const discountCents = discountCentsFromMetadata ?? expandedSession.total_details?.amount_discount ?? null
 
           console.log(`📝 Création commande ${orderNumber} - userId: "${userId}", email: "${userEmail}"`)
           console.log(`📦 Items à sauvegarder (${mappedItems.length}):`, JSON.stringify(mappedItems.slice(0, 2), null, 2))

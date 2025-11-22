@@ -1,9 +1,43 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { requireAdmin } from '@/lib/auth-utils'
+import { auth0 } from '@/lib/auth0'
+import { getAuth0UserRoles } from '@/lib/auth0-management'
+import { mapToBackofficeRoles } from '@/lib/roles'
+
+// Helper pour vérifier les droits admin avec Auth0
+async function checkAdminAccess(request: NextRequest) {
+  try {
+    const session = await auth0.getSession(request)
+    if (!session?.user?.sub) {
+      return { authorized: false, error: 'Non authentifié' }
+    }
+
+    const roles = await getAuth0UserRoles(session.user.sub)
+    const backofficeRoles = mapToBackofficeRoles(roles)
+    const isAdmin = backofficeRoles.includes('admin') || backofficeRoles.includes('owner')
+
+    if (!isAdmin) {
+      return { authorized: false, error: 'Accès non autorisé' }
+    }
+
+    return { authorized: true }
+  } catch (error) {
+    console.error('Erreur vérification admin:', error)
+    return { authorized: false, error: 'Erreur de vérification' }
+  }
+}
 
 // GET - Récupérer toutes les promotions
-export const GET = requireAdmin(async (request: NextRequest) => {
+export async function GET(request: NextRequest) {
+  const accessCheck = await checkAdminAccess(request)
+  if (!accessCheck.authorized) {
+    return NextResponse.json(
+      { error: accessCheck.error || 'Accès non autorisé' },
+      { status: accessCheck.error === 'Non authentifié' ? 401 : 403 }
+    )
+  }
+
+  try {
   try {
     const { searchParams } = new URL(request.url)
     const active = searchParams.get('active') // Filtrer par actif/inactif
@@ -30,7 +64,16 @@ export const GET = requireAdmin(async (request: NextRequest) => {
 })
 
 // POST - Créer une nouvelle promotion
-export const POST = requireAdmin(async (request: NextRequest) => {
+export async function POST(request: NextRequest) {
+  const accessCheck = await checkAdminAccess(request)
+  if (!accessCheck.authorized) {
+    return NextResponse.json(
+      { error: accessCheck.error || 'Accès non autorisé' },
+      { status: accessCheck.error === 'Non authentifié' ? 401 : 403 }
+    )
+  }
+
+  try {
   try {
     const body = await request.json()
     const {

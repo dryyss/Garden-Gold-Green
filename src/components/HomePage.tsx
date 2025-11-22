@@ -48,10 +48,22 @@ function transformProduct(product: any) { // eslint-disable-line @typescript-esl
   // Extraire la première image
   const image = images[0] || '/logo2.png'
   
+  // Calculer le prix original si le produit est en promotion
+  const price = product.priceCents / 100 // Convertir les centimes en euros
+  let originalPrice: number | undefined = undefined
+  
+  if (product.isOnSale) {
+    // Si le produit est en promotion, calculer le prix original (supposons 20% de réduction par défaut)
+    // Vous pouvez ajuster ce pourcentage ou le stocker dans la base de données
+    const discountPercent = 0.20 // 20% de réduction par défaut
+    originalPrice = price / (1 - discountPercent)
+  }
+
   return {
     ...product,
     name: product.title,
-    price: product.priceCents / 100, // Convertir les centimes en euros
+    price: price,
+    originalPrice: originalPrice,
     image: image,
     category: product.categories?.[0]?.name || 'CBD Products',
     rating: 4.5, // Valeur par défaut
@@ -60,6 +72,7 @@ function transformProduct(product: any) { // eslint-disable-line @typescript-esl
     totalStock: product.totalStock || product.stock || 0,
     isNew: product.isNew || false, // Utiliser la valeur de la base de données
     isBestSeller: product.isFeatured || false, // Utiliser isFeatured comme bestSeller
+    isOnSale: product.isOnSale || false, // Produit en promotion
     cbdPercent: product.cbdPercent !== undefined ? Number(product.cbdPercent) : undefined // Pourcentage CBD
   }
 }

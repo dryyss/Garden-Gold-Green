@@ -33,6 +33,7 @@ interface Product {
   inStock: boolean
   isNew?: boolean
   isBestSeller?: boolean
+  isOnSale?: boolean
   slug?: string
   cbdPercent?: number
   variants?: Variant[]
@@ -141,6 +142,11 @@ export function ProductCard({ product, className = '' }: ProductCardProps) {
         
         {/* Badges */}
         <div className="absolute top-2 left-2 sm:top-3 sm:left-3 flex flex-col gap-1 sm:gap-2">
+          {product.isOnSale && (
+            <span className="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
+              PROMO
+            </span>
+          )}
           {product.isNew && (
             <span className="bg-brand-green text-white text-xs font-semibold px-2 py-1 rounded-full">
               {t('products.new')}
@@ -203,11 +209,25 @@ export function ProductCard({ product, className = '' }: ProductCardProps) {
         </p>
 
         <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-1">
-            <span className="text-lg sm:text-xl md:text-2xl font-bold gold-text-gradient">
-              {product.price.toFixed(2)} €
-            </span>
-            {product.originalPrice && product.originalPrice > product.price && (
+          <div className="flex items-center gap-2 flex-wrap">
+            {product.isOnSale && product.originalPrice && product.originalPrice > product.price ? (
+              <>
+                <span className="text-lg sm:text-xl md:text-2xl font-bold text-brand-green">
+                  {product.price.toFixed(2)} €
+                </span>
+                <span className="text-gray-500 line-through text-sm">
+                  {product.originalPrice.toFixed(2)} €
+                </span>
+                <span className="bg-red-500/20 text-red-400 px-2 py-0.5 rounded text-xs font-semibold">
+                  -{Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
+                </span>
+              </>
+            ) : (
+              <span className="text-lg sm:text-xl md:text-2xl font-bold gold-text-gradient">
+                {product.price.toFixed(2)} €
+              </span>
+            )}
+            {!product.isOnSale && product.originalPrice && product.originalPrice > product.price && (
               <span className="text-gray-500 line-through text-xs">
                 {product.originalPrice.toFixed(2)} €
               </span>

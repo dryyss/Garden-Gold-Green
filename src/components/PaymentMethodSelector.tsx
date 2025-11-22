@@ -88,7 +88,7 @@ export function PaymentMethodSelector({
     setIsProcessing(true)
 
     try {
-      await handleStripeCheckout(selectedMethod)
+      await handleStripeCheckout(selectedMethod, state.promoCode)
     } catch (error) {
       console.error('Erreur de paiement:', error)
       const errorMessage = error instanceof Error ? error.message : 'Erreur de paiement'
@@ -103,7 +103,7 @@ export function PaymentMethodSelector({
     }
   }
 
-  const handleStripeCheckout = async (preferredMethod: PaymentMethod) => {
+  const handleStripeCheckout = async (preferredMethod: PaymentMethod, promoCode?: string) => {
     const response = await fetch('/api/checkout', {
       method: 'POST',
       headers: {
@@ -111,7 +111,8 @@ export function PaymentMethodSelector({
       },
       body: JSON.stringify({
         items: state.items,
-        paymentMethod: preferredMethod
+        paymentMethod: preferredMethod,
+        promoCode: promoCode
       }),
     })
 

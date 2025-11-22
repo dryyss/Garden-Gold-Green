@@ -16,7 +16,10 @@ import {
   faShare,
   faGift,
   faShield,
-  faTruck
+  faTruck,
+  faTag,
+  faXmark,
+  faCheck
 } from '@fortawesome/free-solid-svg-icons'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -94,10 +97,71 @@ function CartPageContent() {
     fetchMissingImages()
   }, [state.items, dispatch])
   
+  // État pour le code promo
+  const [promoCodeInput, setPromoCodeInput] = useState('')
+  const [isValidatingPromo, setIsValidatingPromo] = useState(false)
+  const [promoError, setPromoError] = useState<string | null>(null)
+
   // Calculer le total
   const subtotal = state.items.reduce((total, item) => total + (item.price * item.quantity), 0)
   const shipping = subtotal > 100 ? 0 : 9.90
-  const total = subtotal + shipping
+  const discountAmount = state.discountAmount ? state.discountAmount / 100 : 0 // Convertir centimes en euros
+  const total = Math.max(0, subtotal + shipping - discountAmount)
+
+  // Fonction pour appliquer un code promo
+  const handleApplyPromo = async () => {
+    if (!promoCodeInput.trim()) {
+      setPromoError('Veuillez entrer un code promo')
+      return
+    }
+
+    setIsValidatingPromo(true)
+    setPromoError(null)
+
+    try {
+      const productIds = state.items.map(item => item.id)
+      const cartTotalCents = Math.round(subtotal * 100) // Convertir en centimes
+
+      const response = await fetch('/api/promotions/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          code: promoCodeInput.trim().toUpperCase(),
+          cartTotal: cartTotalCents,
+          productIds
+        })
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        dispatch({
+          type: 'APPLY_PROMO',
+          payload: {
+            code: data.promotion.code,
+            discountAmount: data.discountAmount,
+            discountType: data.promotion.discountType
+          }
+        })
+        setPromoCodeInput('')
+        setPromoError(null)
+      } else {
+        setPromoError(data.error || 'Code promo invalide')
+      }
+    } catch (error) {
+      console.error('Erreur validation code promo:', error)
+      setPromoError('Erreur lors de la validation du code promo')
+    } finally {
+      setIsValidatingPromo(false)
+    }
+  }
+
+  // Fonction pour retirer le code promo
+  const handleRemovePromo = () => {
+    dispatch({ type: 'REMOVE_PROMO' })
+    setPromoCodeInput('')
+    setPromoError(null)
+  }
 
   const handleQuantityChange = (itemId: string, newQuantity: number) => {
     if (newQuantity <= 0) {
@@ -345,19 +409,58 @@ function CartPageContent() {
             {/* Code promo */}
             <div className="mt-6 sm:mt-8 bg-gradient-to-r from-brand-gold/10 to-brand-green/10 rounded-xl p-4 sm:p-6 border border-brand-gold/20">
               <h3 className="text-white font-semibold mb-3 sm:mb-4 flex items-center text-sm sm:text-base">
-                <FontAwesomeIcon icon={faGift} className="mr-2 text-brand-gold text-sm sm:text-base" />
+                <FontAwesomeIcon icon={faTag} className="mr-2 text-brand-gold text-sm sm:text-base" />
                 Code promo
               </h3>
-              <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
-                <input
-                  type="text"
-                  placeholder="Entrez votre code promo"
-                  className="flex-1 bg-white/10 border border-white/20 rounded-lg px-3 sm:px-4 py-2 sm:py-2 text-white placeholder-gray-400 focus:outline-none focus:border-brand-gold text-sm sm:text-base"
-                />
-                <button className="btn-gold text-black font-semibold px-4 sm:px-6 py-2 rounded-lg text-sm sm:text-base">
-                  Appliquer
-                </button>
-              </div>
+              {state.promoCode ? (
+                <div className="flex items-center justify-between bg-brand-green/20 rounded-lg p-3 border border-brand-green/30">
+                  <div className="flex items-center">
+                    <FontAwesomeIcon icon={faCheck} className="text-brand-green mr-2" />
+                    <span className="text-white font-semibold">{state.promoCode}</span>
+                    <span className="text-brand-green ml-2 text-sm">
+                      -{discountAmount.toFixed(2)}€
+                    </span>
+                  </div>
+                  <button
+                    onClick={handleRemovePromo}
+                    className="text-gray-400 hover:text-red-400 transition-colors"
+                    title="Retirer le code promo"
+                  >
+                    <FontAwesomeIcon icon={faXmark} />
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
+                    <input
+                      type="text"
+                      value={promoCodeInput}
+                      onChange={(e) => {
+                        setPromoCodeInput(e.target.value.toUpperCase())
+                        setPromoError(null)
+                      }}
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          handleApplyPromo()
+                        }
+                      }}
+                      placeholder="Entrez votre code promo"
+                      className="flex-1 bg-white/10 border border-white/20 rounded-lg px-3 sm:px-4 py-2 sm:py-2 text-white placeholder-gray-400 focus:outline-none focus:border-brand-gold text-sm sm:text-base"
+                      disabled={isValidatingPromo}
+                    />
+                    <button
+                      onClick={handleApplyPromo}
+                      disabled={isValidatingPromo || !promoCodeInput.trim()}
+                      className="btn-gold text-black font-semibold px-4 sm:px-6 py-2 rounded-lg text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isValidatingPromo ? 'Validation...' : 'Appliquer'}
+                    </button>
+                  </div>
+                  {promoError && (
+                    <p className="text-red-400 text-xs sm:text-sm">{promoError}</p>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
@@ -372,6 +475,12 @@ function CartPageContent() {
                   <span>Sous-total ({state.totalItems} articles)</span>
                   <span>{subtotal.toFixed(2)} €</span>
                 </div>
+                {state.promoCode && discountAmount > 0 && (
+                  <div className="flex justify-between text-brand-green text-sm sm:text-base">
+                    <span>Remise ({state.promoCode})</span>
+                    <span>-{discountAmount.toFixed(2)} €</span>
+                  </div>
+                )}
                 <div className="flex justify-between text-gray-300 text-sm sm:text-base">
                   <span>Livraison</span>
                   <span className={shipping === 0 ? 'text-brand-green' : ''}>

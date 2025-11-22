@@ -18,6 +18,9 @@ interface CartState {
   totalItems: number
   totalPrice: number
   isOpen: boolean
+  promoCode?: string
+  discountAmount?: number
+  discountType?: 'percentage' | 'fixed'
 }
 
 type CartAction =
@@ -28,6 +31,8 @@ type CartAction =
   | { type: 'TOGGLE_CART' }
   | { type: 'CLOSE_CART' }
   | { type: 'LOAD_CART'; payload: CartItem[] }
+  | { type: 'APPLY_PROMO'; payload: { code: string; discountAmount: number; discountType: 'percentage' | 'fixed' } }
+  | { type: 'REMOVE_PROMO' }
 
 const CartContext = createContext<{
   state: CartState
@@ -139,6 +144,24 @@ function cartReducer(state: CartState, action: CartAction): CartState {
       }
     }
 
+    case 'APPLY_PROMO': {
+      return {
+        ...state,
+        promoCode: action.payload.code,
+        discountAmount: action.payload.discountAmount,
+        discountType: action.payload.discountType
+      }
+    }
+
+    case 'REMOVE_PROMO': {
+      return {
+        ...state,
+        promoCode: undefined,
+        discountAmount: undefined,
+        discountType: undefined
+      }
+    }
+
     default:
       return state
   }
@@ -148,7 +171,10 @@ const initialState: CartState = {
   items: [],
   totalItems: 0,
   totalPrice: 0,
-  isOpen: false
+  isOpen: false,
+  promoCode: undefined,
+  discountAmount: undefined,
+  discountType: undefined
 }
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
@@ -197,9 +223,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     if (raw) {
       try {
         const parsed = JSON.parse(raw)
-        // Compatibilité: ancien format = tableau d'items, nouveau format = { items, updatedAt }
+        // Compatibilité: ancien format = tableau d'items, nouveau format = { items, updatedAt, promoCode, etc. }
         const items = Array.isArray(parsed) ? parsed : Array.isArray(parsed?.items) ? parsed.items : []
         const updatedAt: string | undefined = Array.isArray(parsed) ? undefined : parsed?.updatedAt
+        const promoCode = Array.isArray(parsed) ? undefined : parsed?.promoCode
+        const discountAmount = Array.isArray(parsed) ? undefined : parsed?.discountAmount
+        const discountType = Array.isArray(parsed) ? undefined : parsed?.discountType
 
         // Nettoyer les items avec des prix invalides
         const validItems = items.filter((item: any) => {
@@ -216,6 +245,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           dispatch({ type: 'CLEAR_CART' })
         } else {
           dispatch({ type: 'LOAD_CART', payload: validItems })
+          // Restaurer le code promo si présent
+          if (promoCode && discountAmount !== undefined) {
+            dispatch({
+              type: 'APPLY_PROMO',
+              payload: {
+                code: promoCode,
+                discountAmount: discountAmount,
+                discountType: discountType || 'fixed'
+              }
+            })
+          }
           // Programmer l'expiration si disponible
           scheduleExpiry(updatedAt)
         }
@@ -250,6 +290,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
     const payload = {
       items: state.items,
+      promoCode: state.promoCode,
+      discountAmount: state.discountAmount,
+      discountType: state.discountType,
       updatedAt: new Date().toISOString()
     }
     try {
