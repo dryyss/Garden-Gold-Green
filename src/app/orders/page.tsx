@@ -4,7 +4,7 @@ import { useUser } from '@auth0/nextjs-auth0'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState, useCallback } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faShoppingCart, faBox, faTruck, faCheckCircle, faSpinner } from '@fortawesome/free-solid-svg-icons'
+import { faShoppingCart, faBox, faTruck, faCheckCircle, faSpinner, faEnvelope, faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import { ResponsiveContainer } from '@/components/ResponsiveContainer'
 import { ResponsiveCard } from '@/components/ResponsiveCard'
 
@@ -58,6 +58,7 @@ export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [resendingReceipt, setResendingReceipt] = useState<string | null>(null)
 
   const fetchOrders = useCallback(async () => {
     try {
@@ -341,6 +342,46 @@ export default function OrdersPage() {
                           <span className="sm:hidden">{order.invoicePdf ? 'Facture PDF' : 'Reçu'}</span>
                         </a>
                       )}
+                      <button
+                        onClick={async () => {
+                          if (!confirm('Renvoyer le reçu/facture par email ?')) return
+                          
+                          setResendingReceipt(order.id)
+                          try {
+                            const response = await fetch(`/api/orders/${order.id}/resend-receipt`, {
+                              method: 'POST',
+                            })
+                            
+                            const data = await response.json()
+                            
+                            if (response.ok) {
+                              alert('Reçu renvoyé avec succès !')
+                            } else {
+                              alert('Erreur: ' + (data.error || 'Impossible de renvoyer le reçu'))
+                            }
+                          } catch (error) {
+                            console.error('Erreur:', error)
+                            alert('Erreur lors du renvoi du reçu')
+                          } finally {
+                            setResendingReceipt(null)
+                          }
+                        }}
+                        disabled={resendingReceipt === order.id}
+                        className="text-xs sm:text-sm text-brand-gold hover:text-white transition-colors font-medium sm:mr-4 text-center sm:text-left disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 sm:gap-2"
+                      >
+                        {resendingReceipt === order.id ? (
+                          <>
+                            <FontAwesomeIcon icon={faSpinner} className="animate-spin" />
+                            <span className="hidden sm:inline">Envoi...</span>
+                          </>
+                        ) : (
+                          <>
+                            <FontAwesomeIcon icon={faPaperPlane} />
+                            <span className="hidden sm:inline">Renvoyer le reçu</span>
+                            <span className="sm:hidden">Reçu</span>
+                          </>
+                        )}
+                      </button>
                       <a
                         href={`/orders/${order.id}`}
                         className="text-brand-gold hover:text-white transition-colors text-xs sm:text-sm font-medium text-center sm:text-left"

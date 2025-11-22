@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { createPortal } from 'react-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
   faMagnifyingGlass, 
@@ -127,19 +128,51 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  // Refs pour le menu utilisateur
+  const userMenuContainerRef = useRef<HTMLDivElement>(null)
+  const userMenuButtonRef = useRef<HTMLButtonElement>(null)
+  const userMenuDropdownRef = useRef<HTMLDivElement>(null)
+  const [userMenuPos, setUserMenuPos] = useState<{ top: number; left: number; width: number } | null>(null)
+
+  // Calculer la position du menu utilisateur (fixed) quand on ouvre
+  useEffect(() => {
+    if (!showUserMenu || !userMenuButtonRef.current) {
+      setUserMenuPos(null)
+      return
+    }
+    const rect = userMenuButtonRef.current.getBoundingClientRect()
+    const width = 208 // w-52
+    const left = Math.max(8, Math.min(rect.right - width, window.innerWidth - width - 8))
+    const top = rect.bottom + 8
+    setUserMenuPos({ top, left, width })
+  }, [showUserMenu])
+
   // Fermer les menus quand on clique ailleurs
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (showUserMenu) {
-        const target = event.target as HTMLElement
-        if (!target.closest('.user-menu-container')) {
-          setShowUserMenu(false)
-        }
+    if (!showUserMenu) return
+
+    const handleClickOutside = (event: MouseEvent | PointerEvent) => {
+      const target = event.target as Node
+      if (
+        !userMenuContainerRef.current?.contains(target) && 
+        !userMenuDropdownRef.current?.contains(target)
+      ) {
+        setShowUserMenu(false)
       }
     }
 
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setShowUserMenu(false)
+      }
+    }
+
+    document.addEventListener('pointerdown', handleClickOutside)
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('pointerdown', handleClickOutside)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
   }, [showUserMenu])
 
   const navigation = [
@@ -269,74 +302,97 @@ export function Header() {
           
           {/* User Menu */}
           {user ? (
-            <div className="relative user-menu-container">
+            <div ref={userMenuContainerRef} className="relative">
               <button 
+                ref={userMenuButtonRef}
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="text-gray-300 hover:text-brand-gold transition-colors duration-300 flex items-center space-x-1 sm:space-x-2 p-1.5 sm:p-2"
+                className="text-gray-300 hover:text-brand-gold transition-colors duration-300 flex items-center space-x-1 sm:space-x-2 p-1.5 sm:p-2 rounded-md hover:bg-white/5"
               >
                 <FontAwesomeIcon icon={faUserCircle} className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span className="hidden lg:block text-xs sm:text-sm">{user.name || user.email}</span>
+                <FontAwesomeIcon 
+                  icon={faChevronDown} 
+                  className={`w-3 h-3 transition-transform duration-200 ${showUserMenu ? 'rotate-180' : ''}`} 
+                />
               </button>
               
-              {showUserMenu && (
-                <div className="absolute right-0 top-full mt-1 w-52 bg-brand-black border border-white/20 rounded-md shadow-xl z-50">
-                  <div className="py-1">
-                    <div className="px-3 py-2 border-b border-white/10">
-                      <p className="text-xs text-white font-medium truncate">{user.name}</p>
-                      <p className="text-xs text-gray-400 truncate">{user.email}</p>
+              {showUserMenu && userMenuPos && createPortal(
+                <div 
+                  ref={userMenuDropdownRef}
+                  className="fixed w-52 bg-brand-black/95 backdrop-blur-md border border-white/10 rounded-lg shadow-2xl z-[1000] ring-1 ring-brand-gold/20 origin-top-right animate-in fade-in slide-in-from-top-2 duration-200"
+                  style={{ top: userMenuPos.top, left: userMenuPos.left, width: userMenuPos.width }}
+                  role="menu"
+                >
+                  <div className="py-2">
+                    {/* Header avec info utilisateur */}
+                    <div className="px-4 py-3 border-b border-white/10 bg-gradient-to-r from-brand-gold/5 to-brand-green/5">
+                      <p className="text-sm text-white font-semibold truncate">{user.name || 'Utilisateur'}</p>
+                      <p className="text-xs text-gray-400 truncate mt-0.5">{user.email}</p>
                     </div>
-                    <Link
-                      href="/profile"
-                      className="flex items-center px-3 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
-                      onClick={() => setShowUserMenu(false)}
-                    >
-                      <FontAwesomeIcon icon={faUser} className="w-3 h-3 mr-2" />
-                      {t('header.user.profile')}
-                    </Link>
-                    <Link
-                      href="/orders"
-                      className="flex items-center px-3 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
-                      onClick={() => setShowUserMenu(false)}
-                    >
-                      <FontAwesomeIcon icon={faShoppingCart} className="w-3 h-3 mr-2" />
-                      {t('header.user.orders')}
-                    </Link>
-                    <Link
-                      href="/track-order"
-                      className="flex items-center px-3 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
-                      onClick={() => setShowUserMenu(false)}
-                    >
-                      <FontAwesomeIcon icon={faTruck} className="w-3 h-3 mr-2" />
-                      {t('header.user.trackOrder')}
-                    </Link>
-                    {isAdmin && (
+                    
+                    {/* Menu items */}
+                    <div className="py-1">
                       <Link
-                        href="/admin"
-                        className="flex items-center px-3 py-2 text-sm text-brand-gold hover:bg-white/10 hover:text-yellow-400 transition-colors border-t border-white/10"
+                        href="/profile"
+                        className="flex items-center px-4 py-2.5 text-sm text-gray-300 hover:bg-white/10 hover:text-brand-gold transition-all duration-200 group"
                         onClick={() => setShowUserMenu(false)}
                       >
-                        <FontAwesomeIcon icon={faShieldHalved} className="w-3 h-3 mr-2" />
-                        Admin
+                        <FontAwesomeIcon icon={faUser} className="w-4 h-4 mr-3 group-hover:scale-110 transition-transform" />
+                        <span>{t('header.user.profile')}</span>
                       </Link>
-                    )}
-                    <Link
-                      href="/auth/logout"
-                      className="flex items-center w-full text-left px-3 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors border-t border-white/10"
-                      onClick={(e) => {
-                        e.preventDefault()
-                        setShowUserMenu(false)
-                        if (auth0State.user) {
-                          logoutAuth0()
-                        } else {
-                          logout()
-                        }
-                      }}
-                    >
-                      <FontAwesomeIcon icon={faSignOutAlt} className="w-3 h-3 mr-2" />
-                      {t('header.user.logout')}
-                    </Link>
+                      <Link
+                        href="/orders"
+                        className="flex items-center px-4 py-2.5 text-sm text-gray-300 hover:bg-white/10 hover:text-brand-gold transition-all duration-200 group"
+                        onClick={() => setShowUserMenu(false)}
+                      >
+                        <FontAwesomeIcon icon={faShoppingCart} className="w-4 h-4 mr-3 group-hover:scale-110 transition-transform" />
+                        <span>{t('header.user.orders')}</span>
+                      </Link>
+                      <Link
+                        href="/track-order"
+                        className="flex items-center px-4 py-2.5 text-sm text-gray-300 hover:bg-white/10 hover:text-brand-gold transition-all duration-200 group"
+                        onClick={() => setShowUserMenu(false)}
+                      >
+                        <FontAwesomeIcon icon={faTruck} className="w-4 h-4 mr-3 group-hover:scale-110 transition-transform" />
+                        <span>{t('header.user.trackOrder')}</span>
+                      </Link>
+                    </div>
+                    
+                    {/* Séparateur */}
+                    <div className="border-t border-white/10 my-1"></div>
+                    
+                    {/* Admin et Logout */}
+                    <div className="py-1">
+                      {isAdmin && (
+                        <Link
+                          href="/admin"
+                          className="flex items-center px-4 py-2.5 text-sm text-brand-gold hover:bg-brand-gold/10 hover:text-yellow-400 transition-all duration-200 group"
+                          onClick={() => setShowUserMenu(false)}
+                        >
+                          <FontAwesomeIcon icon={faShieldHalved} className="w-4 h-4 mr-3 group-hover:scale-110 transition-transform" />
+                          <span className="font-semibold">Admin</span>
+                        </Link>
+                      )}
+                      <Link
+                        href="/auth/logout"
+                        className="flex items-center px-4 py-2.5 text-sm text-gray-300 hover:bg-red-500/10 hover:text-red-400 transition-all duration-200 group"
+                        onClick={(e) => {
+                          e.preventDefault()
+                          setShowUserMenu(false)
+                          if (auth0State.user) {
+                            logoutAuth0()
+                          } else {
+                            logout()
+                          }
+                        }}
+                      >
+                        <FontAwesomeIcon icon={faSignOutAlt} className="w-4 h-4 mr-3 group-hover:scale-110 transition-transform" />
+                        <span>{t('header.user.logout')}</span>
+                      </Link>
+                    </div>
                   </div>
-                </div>
+                </div>,
+                document.body
               )}
             </div>
           ) : (

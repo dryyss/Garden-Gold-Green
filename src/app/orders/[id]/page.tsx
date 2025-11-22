@@ -16,7 +16,9 @@ import {
   faUser,
   faEnvelope,
   faPhone,
-  faMapMarkerAlt
+  faMapMarkerAlt,
+  faPaperPlane,
+  faDownload
 } from '@fortawesome/free-solid-svg-icons'
 import { ReturnRequest } from '@/components/ReturnRequest'
 import { useUser } from '@auth0/nextjs-auth0/client'
@@ -73,6 +75,8 @@ interface Order {
   shippingCents?: number | null
   taxCents?: number | null
   discountCents?: number | null
+  receiptUrl?: string | null
+  invoicePdf?: string | null
 }
 
 export default function OrderDetailPage() {
@@ -83,6 +87,7 @@ export default function OrderDetailPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [showReturnForm, setShowReturnForm] = useState(false)
+  const [isResendingReceipt, setIsResendingReceipt] = useState(false)
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -440,7 +445,7 @@ export default function OrderDetailPage() {
             {/* Informations de paiement */}
             <div className="bg-white/5 rounded-xl p-6 border border-white/10">
               <h2 className="text-xl font-semibold text-white mb-4">Paiement</h2>
-              <div className="space-y-2">
+              <div className="space-y-2 mb-4">
                 <div className="flex justify-between">
                   <span className="text-gray-400">Méthode</span>
                   <span className="text-white">Carte bancaire</span>
@@ -455,6 +460,60 @@ export default function OrderDetailPage() {
                     <span className="text-gray-300 text-xs font-mono">{order.paymentIntentId}</span>
                   </div>
                 )}
+              </div>
+              
+              {/* Actions reçu/facture */}
+              <div className="pt-4 border-t border-white/10 space-y-2">
+                {(order.invoicePdf || order.receiptUrl) && (
+                  <a
+                    href={order.invoicePdf || order.receiptUrl || '#'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 w-full bg-brand-green/20 hover:bg-brand-green/30 text-brand-green font-medium py-2 px-4 rounded-lg transition-colors"
+                  >
+                    <FontAwesomeIcon icon={faDownload} />
+                    <span>{order.invoicePdf ? 'Télécharger la facture PDF' : 'Voir le reçu Stripe'}</span>
+                  </a>
+                )}
+                <button
+                  onClick={async () => {
+                    if (!confirm('Renvoyer le reçu/facture par email ?')) return
+                    
+                    setIsResendingReceipt(true)
+                    try {
+                      const response = await fetch(`/api/orders/${order.id}/resend-receipt`, {
+                        method: 'POST',
+                      })
+                      
+                      const data = await response.json()
+                      
+                      if (response.ok) {
+                        alert('Reçu renvoyé avec succès !')
+                      } else {
+                        alert('Erreur: ' + (data.error || 'Impossible de renvoyer le reçu'))
+                      }
+                    } catch (error) {
+                      console.error('Erreur:', error)
+                      alert('Erreur lors du renvoi du reçu')
+                    } finally {
+                      setIsResendingReceipt(false)
+                    }
+                  }}
+                  disabled={isResendingReceipt}
+                  className="flex items-center justify-center gap-2 w-full bg-brand-gold/20 hover:bg-brand-gold/30 text-brand-gold font-medium py-2 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isResendingReceipt ? (
+                    <>
+                      <FontAwesomeIcon icon={faSpinner} className="animate-spin" />
+                      <span>Envoi en cours...</span>
+                    </>
+                  ) : (
+                    <>
+                      <FontAwesomeIcon icon={faPaperPlane} />
+                      <span>Renvoyer le reçu par email</span>
+                    </>
+                  )}
+                </button>
               </div>
             </div>
           </div>
