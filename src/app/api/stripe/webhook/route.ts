@@ -287,6 +287,7 @@ export async function POST(request: NextRequest) {
             metadata: {
               userId,
               paymentMethod: metadata?.paymentMethod,
+              promoCode: promoCodeFromMetadata || null,
             },
           })
 
