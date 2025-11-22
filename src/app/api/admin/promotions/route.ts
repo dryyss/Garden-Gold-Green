@@ -61,7 +61,7 @@ export async function GET(request: NextRequest) {
     console.error('Erreur lors de la récupération des promotions:', error)
     return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 })
   }
-})
+}
 
 // POST - Créer une nouvelle promotion
 export async function POST(request: NextRequest) {

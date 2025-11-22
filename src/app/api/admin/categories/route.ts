@@ -85,7 +85,7 @@ export async function GET(request: NextRequest) {
       details: error?.message || 'Une erreur est survenue lors de la récupération des catégories'
     }, { status: 500 })
   }
-})
+}
 
 // POST - Créer une nouvelle catégorie dans Prisma
 export async function POST(request: NextRequest) {
