@@ -83,12 +83,6 @@ export async function GET(request: NextRequest) {
       error: 'Erreur interne du serveur',
       details: error?.message || 'Une erreur est survenue lors de la récupération des catégories'
     }, { status: 500 })
-  } catch (error: any) {
-    console.error('❌ Erreur lors de la récupération des catégories:', error)
-    return NextResponse.json({ 
-      error: 'Erreur interne du serveur',
-      details: error?.message || 'Une erreur est survenue lors de la récupération des catégories'
-    }, { status: 500 })
   }
 }
 
