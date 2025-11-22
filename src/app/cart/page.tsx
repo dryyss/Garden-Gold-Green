@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useCart } from '@/contexts/CartContext'
 import { useAuth } from '@/contexts/AuthContext'
+import { useAuth0Context } from '@/contexts/Auth0Context'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
   faShoppingCart, 
@@ -44,6 +45,7 @@ function CartPageContent() {
   const { state, dispatch } = useCart()
   const authContext = useAuth()
   const authState = authContext?.state || { isAuthenticated: false }
+  const { state: auth0State } = useAuth0Context()
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false)
   const [productImages, setProductImages] = useState<Record<string, string>>({})
   
@@ -110,6 +112,14 @@ function CartPageContent() {
 
   // Fonction pour appliquer un code promo
   const handleApplyPromo = async () => {
+    // Vérifier si l'utilisateur est connecté (via Auth0 ou Auth)
+    const isAuthenticated = auth0State.isAuthenticated || authState?.isAuthenticated
+    if (!isAuthenticated) {
+      // Rediriger vers la page de connexion
+      window.location.href = '/auth'
+      return
+    }
+
     if (!promoCodeInput.trim()) {
       setPromoError('Veuillez entrer un code promo')
       return
@@ -180,7 +190,9 @@ function CartPageContent() {
   }
 
   const handleAddToFavorites = (itemId: string) => {
-    if (!authState?.isAuthenticated) {
+    // Vérifier si l'utilisateur est connecté (via Auth0 ou Auth)
+    const isAuthenticated = auth0State.isAuthenticated || authState?.isAuthenticated
+    if (!isAuthenticated) {
       // Rediriger vers la page de connexion
       window.location.href = '/auth'
       return
